@@ -1,0 +1,23 @@
+{
+  "name": "sumocoders/framework-core-bundle",
+  "type": "symfony-bundle",
+  "description": "The core bundle for our mini-framework",
+  "keywords": ["Framework", "SumoCoders"],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Tijs Verkoyen",
+      "email": "tijs@sumocoders.be"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "php": ">=5.3.3",
+    "symfony/framework-bundle": "~2.1",
+    "sumocoders/framework-error-bundle": "*"
+  },
+  "autoload": {
+    "psr-0": { "SumoCoders\\FrameworkCoreBundle": "" }
+  },
+  "target-dir": "SumoCoders/FrameworkCoreBundle"
+}

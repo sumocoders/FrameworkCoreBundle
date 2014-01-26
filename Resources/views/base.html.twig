@@ -1,0 +1,56 @@
+<!doctype html>
+{# @todo populate language#}
+<html lang="">
+{{ include('SumoCodersFrameworkCoreBundle::head.html.twig') }}
+
+{# @todo populate the class with the module and action#}
+<body class="">
+<!--[if lt IE 8 ]>
+    <div id="ie6" class="alert alert-block" role="alert">
+        <a href="#" class="close" data-dismiss="alert" title="{{ 'dialogs.close'|trans|capitalize }}">x</a>
+        {{ 'core.warnings.oldBrowser'|trans }}
+    </div>
+<![endif]-->
+    {{ include('SumoCodersFrameworkCoreBundle::navigation.html.twig') }}
+
+    <div id="contentWrap">
+        <div id="content">
+            <header id="header" role="banner">
+                <div class="container bar">
+                    <div class="title">
+                        <a id="toggleMenu" class="visible-phone iconLink" href="#">{{ 'navigation.titles.showHideMenu'|trans|capitalize }}</a>
+                        {% block header_title %}
+                        {% endblock %}
+                    </div>
+                    <div class="actions">
+                        <a href="#" class="dropdownToggle visible-phone">{{ 'navigation.titles.possible_actions'|trans|capitalize }}:</a>
+                        {% block header_navigation %}
+                        {% endblock %}
+                    </div>
+                </div>
+            </header>
+
+            {{ include('SumoCodersFrameworkCoreBundle::notifications.html.twig') }}
+
+            <section id="main" role="main">
+                <div class="container">
+                    {% block main %}
+                    {% endblock %}
+                </div>
+            </section>
+        </div>
+
+    {{ include('SumoCodersFrameworkCoreBundle::footer.html.twig') }}
+    {{ include('SumoCodersFrameworkCoreBundle::dialogs.html.twig') }}
+
+    {% block javascripts %}{% endblock %}
+</body>
+</html>
+
+
+
+
+
+
+
+

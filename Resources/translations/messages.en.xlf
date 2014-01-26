@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="4fa9cb4f780e12806844d800ceb9f1fd5b3aa611" resname="core.interface.backToTop">
+                <source>core.interface.backToTop</source>
+                <target>back to top</target>
+            </trans-unit>
+            <trans-unit id="940043c6539cbc5e4ad41b51ba81410ee0726042" resname="core.warnings.oldBrowser">
+                <source>core.warnings.oldBrowser</source>
+                <target><![CDATA[<strong>Warning:<\/strong> You are using an older browser. If you want to see the site as it is intended, you may want to download a new version or a decent browser like <a href=\"http:\/\/www.google.com/chrome\‎">Chrome<\/a>.]]></target>
+            </trans-unit>
+            <trans-unit id="18cbaa7a212a4ebb5aa2e50de42ed7d0209e493e" resname="dialogs.buttons.cancel">
+                <source>dialogs.buttons.cancel</source>
+                <target>cancel</target>
+            </trans-unit>
+            <trans-unit id="1640b4ebcbbe52cd27e8dd021cd8855f7adc1462" resname="dialogs.buttons.ok">
+                <source>dialogs.buttons.ok</source>
+                <target>OK</target>
+            </trans-unit>
+            <trans-unit id="a949ce658c796eecd6771c3736726a283283f948" resname="dialogs.close">
+                <source>dialogs.close</source>
+                <target>close</target>
+            </trans-unit>
+            <trans-unit id="f5366bdcdb4f0c489caaaf1982bf5009e55ca88a" resname="forms.search.buttons.search">
+                <source>forms.search.buttons.search</source>
+                <target>search</target>
+            </trans-unit>
+            <trans-unit id="9d763d302bcc7711c8de081a159953279ca1b3bd" resname="forms.search.placeholders.search">
+                <source>forms.search.placeholders.search</source>
+                <target>search</target>
+            </trans-unit>
+            <trans-unit id="af9212c1a19b6ceece9bdf604a10ce84d758b580" resname="navigation.titles.possible_actions">
+                <source>navigation.titles.possible_actions</source>
+                <target>possible actions</target>
+            </trans-unit>
+            <trans-unit id="322e1506c72e22e11d437ac0bbf738367c0938ba" resname="navigation.titles.showHideMenu">
+                <source>navigation.titles.showHideMenu</source>
+                <target>show or hide the menu</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

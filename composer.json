@@ -11,6 +11,12 @@
     }
   ],
   "minimum-stability": "dev",
+  "repositories": [
+    {
+      "type":"vcs",
+      "url":"/Users/tijs/Sites/sumocoders/frameworkBundles/FrameworkErrorBundle"
+    }
+  ],
   "require": {
     "php": ">=5.3.3",
     "symfony/framework-bundle": "~2.1",

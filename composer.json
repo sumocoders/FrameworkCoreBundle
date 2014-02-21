@@ -13,7 +13,8 @@
   "minimum-stability": "dev",
   "require": {
     "php": ">=5.3.3",
-    "symfony/framework-bundle": "~2.1"
+    "symfony/framework-bundle": "~2.1",
+    "sumocoders/framework-error-bundle": "dev-master"
   },
   "autoload": {
     "psr-0": { "SumoCoders\\FrameworkCoreBundle": "" }

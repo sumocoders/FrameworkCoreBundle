@@ -1,6 +1,6 @@
 <?php
 
-namespace SumoCoders\FrameWorkCoreBundle;
+namespace SumoCoders\FrameworkCoreBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 

@@ -18,16 +18,18 @@
     </div>
     <div class="container">
         <ul class="nav">
-            {#
-                {option:currentUser}
+            {# @todo what if the user bundle isn't used? #}
+            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
                 <li id="user">
-                    <a href="#" class="toggleSubNavigation"><i class="iconUser"></i>&nbsp;&nbsp;{$currentUser.name|uppercase}</a>
+                    <a href="#" class="toggleSubNavigation"><i class="iconUser"></i>&nbsp;&nbsp;{{ app.user.username }}</a>
                     <ul class="subNavigation">
-                        <li><a href="{$var|buildurl:'edit':'users'}/{$currentUser.id}">{$lblSettings|ucfirst}</a></li>
-                        <li><a href="{$var|buildurl:'logout':'users'}">{$lblLogout|ucfirst}</a></li>
+                        <li><a href="{{ path('fos_user_profile_edit') }}">{$lblSettings|ucfirst}</a></li>
+                        <li><a href="{{ path('fos_user_security_logout') }}">{{ 'layout.logout'|trans({}, 'FOSUserBundle') }}</a></li>
                     </ul>
                 </li>
-                {/option:currentUser}
+            {% endif %}
+
+            {#
                 <li><a href="/" rel="home">{$lblHome|ucfirst}</a></li>
                     @remark insert your navigation per module here. Below you
                     can find an example on how to use the correct markup.

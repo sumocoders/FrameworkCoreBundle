@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
-    <file source-language="en" datatype="plaintext" original="file.ext">
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
+    <file date="2014-03-01T22:54:38Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
+        <header>
+            <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV" />
+            <note>The source node in most cases contains the sample message as written by the developer. If it looks
+                like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a
+                default message.
+            </note>
+        </header>
         <body>
             <trans-unit id="4fa9cb4f780e12806844d800ceb9f1fd5b3aa611" resname="core.interface.backToTop">
                 <source>core.interface.backToTop</source>
@@ -8,7 +15,8 @@
             </trans-unit>
             <trans-unit id="940043c6539cbc5e4ad41b51ba81410ee0726042" resname="core.warnings.oldBrowser">
                 <source>core.warnings.oldBrowser</source>
-                <target><![CDATA[<strong>Opgelet:<\/strong> Je gebruikt een verouderde browser. Indien je de website wil zien zoals deze bedoeld is, kan je beter een nieuwe versie downloaden of een degelijke browser zoals <a href=\"http:\/\/www.google.com/chrome\">Chrome<\/a> installeren.]]></target>
+                <target>
+                    <![CDATA[<strong>Opgelet:<\/strong> Je gebruikt een verouderde browser. Indien je de website wil zien zoals deze bedoeld is, kan je beter een nieuwe versie downloaden of een degelijke browser zoals <a href=\"http:\/\/www.google.com/chrome\">Chrome<\/a> installeren.]]></target>
             </trans-unit>
             <trans-unit id="18cbaa7a212a4ebb5aa2e50de42ed7d0209e493e" resname="dialogs.buttons.cancel">
                 <source>dialogs.buttons.cancel</source>
@@ -30,6 +38,10 @@
                 <source>forms.search.placeholders.search</source>
                 <target>zoeken</target>
             </trans-unit>
+            <trans-unit id="7c6a92867ea9e62fc5a95316b3948187c3cff1e1" resname="header.navigation.actions.edit">
+                <source>header.navigation.actions.edit</source>
+                <target>bewerken</target>
+            </trans-unit>
             <trans-unit id="c611911d6a708cbb2f13eeff9c35110e01ee1554" resname="header.navigation.actions.add">
                 <source>header.navigation.actions.add</source>
                 <target>toevoegen</target>
@@ -38,9 +50,13 @@
                 <source>header.navigation.actions.overview</source>
                 <target>overzicht</target>
             </trans-unit>
-            <trans-unit id="6012cf926caf721dd20b836cc61b44e7415e3b43" resname="header.navigation.actions.print">
-                <source>header.navigation.actions.print</source>
-                <target>afdrukken</target>
+            <trans-unit id="89984afe2d8b76679eb07a21b2a99b1a8d4a15b7" resname="header.title.edit">
+                <source>header.title.edit</source>
+                <target>bewerk %entity%</target>
+            </trans-unit>
+            <trans-unit id="5f7ce99c49f17cddf5af906deac2d4638bac91bb" resname="header.title.show">
+                <source>header.title.show</source>
+                <target>details %entity%</target>
             </trans-unit>
             <trans-unit id="af9212c1a19b6ceece9bdf604a10ce84d758b580" resname="navigation.titles.possible_actions">
                 <source>navigation.titles.possible_actions</source>
@@ -49,6 +65,10 @@
             <trans-unit id="322e1506c72e22e11d437ac0bbf738367c0938ba" resname="navigation.titles.showHideMenu">
                 <source>navigation.titles.showHideMenu</source>
                 <target>toon/verberg menu</target>
+            </trans-unit>
+            <trans-unit id="8075104b38259975fc5afbe9e01eec5b0302e6c5" resname="navigation.user.settings">
+                <source>navigation.user.settings</source>
+                <target state="new">settings</target>
             </trans-unit>
         </body>
     </file>

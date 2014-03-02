@@ -1,0 +1,10 @@
+services:
+  framework_core_fallbacks:
+    class:  SumoCoders\FrameworkCoreBundle\Service\Fallbacks
+    arguments: [%fallbacks%]
+
+twig:
+  debug:  %kernel.debug%
+  strict_variables: %kernel.debug%
+  globals:
+    fallbacks: "@framework_core_fallbacks"

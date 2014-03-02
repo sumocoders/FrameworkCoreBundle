@@ -46,3 +46,8 @@ doctrine:
         auto_generate_proxy_classes: "%kernel.debug%"
         auto_mapping: true
 
+# I18n Configuration
+jms_i18n_routing:
+    default_locale: "%locale%"
+    locales: ~
+    strategy: prefix

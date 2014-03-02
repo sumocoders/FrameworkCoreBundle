@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="{{ app.request.locale }}">
+{{ include('SumoCodersFrameworkCoreBundle::head.html.twig') }}
+
+{# @todo populate the class with the module and action#}
+<body class="">
+<!--[if lt IE 8 ]>
+    <div id="ie6" class="alert alert-block" role="alert">
+        <a href="#" class="close" data-dismiss="alert" title="{{ 'dialogs.close'|trans|capitalize }}">x</a>
+        {{ 'core.warnings.oldBrowser'|trans }}
+    </div>
+<![endif]-->
+
+    {% block main %}
+    {% endblock %}
+    {% block javascripts %}{% endblock %}
+</body>
+</html>

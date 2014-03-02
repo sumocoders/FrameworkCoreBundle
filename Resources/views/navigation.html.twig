@@ -1,7 +1,6 @@
 {# @todo fix the translation #}
 <nav id="navbar" role="navigation">
-    {# @todo populate site title #}
-    <a href="/" rel="home" class="logo hidden-phone">{$SITE_DEFAULT_TITLE}</a>
+    <a href="/" rel="home" class="logo hidden-phone">{{ fallbacks.get('site_title') }}</a>
 
     {# @todo mathias twee keer zelfde id mag niet he #}
     {# @todo implement me #}

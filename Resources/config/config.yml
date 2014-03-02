@@ -8,3 +8,25 @@ twig:
   strict_variables: %kernel.debug%
   globals:
     fallbacks: "@framework_core_fallbacks"
+
+# Assetic Configuration
+assetic:
+    debug:  "%kernel.debug%"
+    use_controller: false
+    bundles:  [ SumoCodersFrameworkCoreBundle ]
+    filters:
+        less: ~
+        sass: ~
+        compass:
+          images_dir: "%kernel.root_dir%/../vendor/sumocoders/framework-core-bundle/SumoCoders/FrameworkCoreBundle/Resources/assets/images"
+          fonts_dir:  "%kernel.root_dir%/../vendor/sumocoders/framework-core-bundle//SumoCoders/FrameworkCoreBundle/Resources/public/fonts"
+          http_fonts_path:  "../bundles/sumocodersframeworkcore/fonts"
+          http_path:  /
+          plugins:
+            - compass_twitter_bootstrap
+            - compass_sumo
+        cssrewrite: ~
+        coffee:
+          bin:  /usr/local/bin/coffee
+          node: /usr/local/bin/node
+          apply_to: "\.coffee$"

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-    <file date="2014-03-01T23:18:34Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
+    <file date="2014-03-02T13:17:50Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
         <header>
             <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV" />
             <note>The source node in most cases contains the sample message as written by the developer. If it looks
@@ -29,6 +29,14 @@
             <trans-unit id="a949ce658c796eecd6771c3736726a283283f948" resname="dialogs.close">
                 <source>dialogs.close</source>
                 <target>close</target>
+            </trans-unit>
+            <trans-unit id="bfaa725b829b4ac40a8b2e1b3684b723653c9621" resname="forms.errors.fieldIsRequired">
+                <source>forms.errors.fieldIsRequired</source>
+                <target>field is required</target>
+            </trans-unit>
+            <trans-unit id="67feda55aa56b5ee53940e13613a7fe98982e9ef" resname="forms.login.action.forgotPassword">
+                <source>forms.login.action.forgotPassword</source>
+                <target>forgot password?</target>
             </trans-unit>
             <trans-unit id="f5366bdcdb4f0c489caaaf1982bf5009e55ca88a" resname="forms.search.buttons.search">
                 <source>forms.search.buttons.search</source>
@@ -68,7 +76,7 @@
             </trans-unit>
             <trans-unit id="8075104b38259975fc5afbe9e01eec5b0302e6c5" resname="navigation.user.settings">
                 <source>navigation.user.settings</source>
-                <target state="new">settings</target>
+                <target>settings</target>
             </trans-unit>
         </body>
     </file>

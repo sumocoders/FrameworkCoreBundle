@@ -22,7 +22,7 @@
                 <li id="user">
                     <a href="#" class="toggleSubNavigation"><i class="iconUser"></i>&nbsp;&nbsp;{{ app.user.username }}</a>
                     <ul class="subNavigation">
-                        <li><a href="{{ path('fos_user_profile_edit') }}">{{ 'navigation.user.settings'|trans|capitalize }} {$lblSettings|ucfirst}</a></li>
+                        <li><a href="{{ path('fos_user_profile_edit') }}">{{ 'navigation.user.settings'|trans|capitalize }}</a></li>
                         <li><a href="{{ path('fos_user_security_logout') }}">{{ 'layout.logout'|trans({}, 'FOSUserBundle') }}</a></li>
                     </ul>
                 </li>

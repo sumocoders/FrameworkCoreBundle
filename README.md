@@ -1,9 +1,10 @@
-# SumoCoders FrameworkErrorBundle
+# SumoCoders FrameworkCoreBundle
 
-The FrameworkErrorBundle will add some functionality related to errors. Below
-all functionality is listed:
+The FrameworkCoreBundle will add some functionality which will enable you build
+application in a short timespan. Below all functionality is listed:
 
-* Overrules the default error pages with some nicely styled ones
+* Error handling
+* Integrates Twitter Bootstrap
 
 ## Documentation
 
@@ -17,7 +18,7 @@ This bundle is under the MIT license. See the complete license in the bundle:
 
 ## About
 
-FrameworkErrorBundle is a bundle created by [SumoCoders](https://github.com/sumocoders)
+FrameworkCoreBundle is a bundle created by [SumoCoders](https://github.com/sumocoders)
 and is intended to be used with the Framework
 
 ## Issues?

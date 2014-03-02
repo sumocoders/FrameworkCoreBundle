@@ -49,3 +49,8 @@ public function registerBundles()
 }
 ```
 
+## Bootstrap integration
+
+We use ...
+
+See [http://bootstrap1.braincrafted.com](http://bootstrap1.braincrafted.com/) for more information.

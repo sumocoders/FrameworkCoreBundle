@@ -10,6 +10,8 @@ namespace SumoCoders\FrameworkCoreBundle\Service;
  */
 class Fallbacks
 {
+    const SPLITCHAR = '.';
+
     /**
      * @var array
      */
@@ -34,7 +36,7 @@ class Fallbacks
     {
         $key = $name;
         if ($prefix) {
-            $key = $prefix . '.' . $name;
+            $key = $prefix . self::SPLITCHAR . $name;
         }
         $this->fallbacks[$key] = $value;
     }
@@ -72,6 +74,16 @@ class Fallbacks
                     $this->populateFallbacks($value, $name);
                 } else {
                     $this->addFallback($name, $value, $prefix);
+
+                    $newPrefix = $prefix;
+                    if ($newPrefix != '') {
+                        $newPrefix .= self::SPLITCHAR;
+                    }
+                    $newPrefix .= $name;
+
+                    foreach ($value as $index => $realValue) {
+                        $this->addFallback($index, $realValue, $newPrefix);
+                    }
                 }
             } else {
                 $this->addFallback($name, $value, $prefix);

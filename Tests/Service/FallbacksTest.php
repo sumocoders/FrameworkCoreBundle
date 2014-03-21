@@ -43,6 +43,15 @@ class FallbacksTest extends \PHPUnit_Framework_TestCase
     );
 
     /**
+     * Test Fallbacks()
+     */
+    public function testPopulateFallbacks()
+    {
+        $this->fallbacks = new Fallbacks();
+        $this->assertNull($this->fallbacks->get('foo')); // we no data is passed we can't grab anything
+    }
+
+    /**
      * Tests Fallbacks->get()
      */
     public function testGet()

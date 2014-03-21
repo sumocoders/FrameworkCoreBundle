@@ -36,6 +36,10 @@ class FallbacksTest extends \PHPUnit_Framework_TestCase
                 )
             ),
         ),
+        'errorcodes' => array(
+            404 => 'Not Found',
+            500 => 'Internal server error',
+        ),
     );
 
     /**
@@ -53,5 +57,6 @@ class FallbacksTest extends \PHPUnit_Framework_TestCase
             $this->defaultData['a']['very']['deep']['array']['x'],
             $this->fallbacks->get('a.very.deep.array.x')
         );
+        $this->assertEquals($this->defaultData['errorcodes'][404], $this->fallbacks->get('errorcodes.404'));
     }
 }

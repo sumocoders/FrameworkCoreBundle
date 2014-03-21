@@ -75,15 +75,11 @@ class Fallbacks
                 } else {
                     $this->addFallback($name, $value, $prefix);
 
-                    $newPrefix = $prefix;
-                    if ($newPrefix != '') {
-                        $newPrefix .= self::SPLITCHAR;
-                    }
-                    $newPrefix .= $name;
-
-                    foreach ($value as $index => $realValue) {
-                        $this->addFallback($index, $realValue, $newPrefix);
-                    }
+                    // we will loop the array and add each item with the index
+                    // so we are able to get a single item from an array
+                    $prefixChunks = array($prefix, $name);
+                    $newPrefix = trim(implode(self::SPLITCHAR, $prefixChunks), self::SPLITCHAR);
+                    $this->populateFallbacks($value, $newPrefix);
                 }
             } else {
                 $this->addFallback($name, $value, $prefix);

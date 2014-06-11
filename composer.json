@@ -10,13 +10,31 @@
       "email": "tijs@sumocoders.be"
     }
   ],
+  "repositories": [
+    {
+      "type":"vcs",
+      "url":"/Users/tijs/Sites/sumocoders/frameworkBundles/FrameworkErrorBundle"
+    },
+    {
+      "type":"vcs",
+      "url":"/Users/tijs/Sites/sumocoders/frameworkBundles/FrameworkCoreBundle"
+    },
+    {
+      "type":"vcs",
+      "url":"/Users/tijs/Sites/sumocoders/frameworkBundles/FrameworkUserBundle"
+    },
+    {
+      "type":"vcs",
+      "url":"/Users/tijs/Sites/sumocoders/frameworkBundles/FrameworkExampleBundle"
+    }
+  ],
   "minimum-stability": "dev",
   "require": {
     "php": ">=5.3.3",
     "symfony/framework-bundle": "~2.1",
     "jms/i18n-routing-bundle": "1.*",
     "jms/translation-bundle": "1.1.*",
-    "mopa/bootstrap-bundle": "2.3.x-dev",
+    "mopa/bootstrap-bundle": "dev-master",
     "sumocoders/framework-error-bundle": "dev-master"
   },
   "autoload": {

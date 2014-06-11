@@ -9,10 +9,13 @@
   margin-bottom: -6px;
 }
 
+.icon-remove {
+  color: #ee360c;
+}
 // No items message
 
 .noItems {
-  font-size: 1.71 * $baseFontSize;
+  @include font-size(1.71 * $baseFont);
   color: #c8c9d2;
   font-family: $opensans-bold-webfont;
   text-align: center;

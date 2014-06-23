@@ -9,6 +9,10 @@
             </note>
         </header>
         <body>
+            <trans-unit id="4fa9cb4f780e12806844d800ceb9f1fd5b3aa610" resname="core.errors.notFound">
+                <source>core.errors.notFound</source>
+                <target>Not Found</target>
+            </trans-unit>
             <trans-unit id="4fa9cb4f780e12806844d800ceb9f1fd5b3aa611" resname="core.interface.backToTop">
                 <source>core.interface.backToTop</source>
                 <target>back to top</target>
@@ -17,6 +21,10 @@
                 <source>core.warnings.oldBrowser</source>
                 <target><![CDATA[
                     <strong>Warning:<\/strong> You are using an older browser. If you want to see the site as it is intended, you may want to download a new version or a decent browser like <a href=\"http:\/\/www.google.com/chrome\‎">Chrome<\/a>.]]></target>
+            </trans-unit>
+            <trans-unit id="18cbaa7a212a4ebb5aa2e50de42ed7d0209e4932" resname="dialogs.messages.confirmDelete">
+                <source>dialogs.messages.confirmDelete</source>
+                <target>Are you sure you want to delete %entity%?</target>
             </trans-unit>
             <trans-unit id="18cbaa7a212a4ebb5aa2e50de42ed7d0209e493e" resname="dialogs.buttons.cancel">
                 <source>dialogs.buttons.cancel</source>
@@ -33,6 +41,10 @@
             <trans-unit id="bfaa725b829b4ac40a8b2e1b3684b723653c9621" resname="forms.errors.fieldIsRequired">
                 <source>forms.errors.fieldIsRequired</source>
                 <target>field is required</target>
+            </trans-unit>
+            <trans-unit id="bfaa725b829b4ac40a8b2e1b3684b723653c9622" resname="forms.errors.invalidToken">
+                <source>forms.errors.invalidToken</source>
+                <target>Woops, invalid token! Are you trying to CSRF us?</target>
             </trans-unit>
             <trans-unit id="67feda55aa56b5ee53940e13613a7fe98982e9ef" resname="forms.login.action.forgotPassword">
                 <source>forms.login.action.forgotPassword</source>
@@ -77,6 +89,18 @@
             <trans-unit id="8075104b38259975fc5afbe9e01eec5b0302e6c5" resname="navigation.user.settings">
                 <source>navigation.user.settings</source>
                 <target>settings</target>
+            </trans-unit>
+            <trans-unit id="00a9bcba07424886eab4e73145da8e2b7789bca5" resname="datagrids.actions.edit">
+                <source>datagrids.actions.edit</source>
+                <target>edit</target>
+            </trans-unit>
+            <trans-unit id="e1bf10b44df3a40c7ed8bfb2f121c94e333c13a6" resname="forms.general.buttons.add">
+                <source>forms.general.buttons.add</source>
+                <target>add</target>
+            </trans-unit>
+            <trans-unit id="e1bf10b44df3a40c7ed8bfb2f121c94e333c13a7" resname="forms.general.buttons.delete">
+                <source>forms.general.buttons.delete</source>
+                <target>delete</target>
             </trans-unit>
         </body>
     </file>

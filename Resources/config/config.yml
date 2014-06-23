@@ -77,3 +77,8 @@ jms_i18n_routing:
 mopa_bootstrap:
   form:
     show_legend: false
+
+knp_paginator:
+  template:
+    pagination: MopaBootstrapBundle:Pagination:sliding.html.twig
+    sortable: MopaBootstrapBundle:Pagination:sortable_link.html.twig

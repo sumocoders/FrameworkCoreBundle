@@ -271,10 +271,6 @@ class Framework extends DefaultObject
       .attr('style', 'display: none;')
       .attr('action', e.attr('href'))
       .attr('method', 'POST')
-      .append(
-        $('<input type="hidden">').attr('name', 'form_token')
-          .attr('value', Data.get('core.form_token'))
-      )
 
     # append the data
     for name, value of e.data()

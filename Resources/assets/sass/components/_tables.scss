@@ -6,6 +6,9 @@
 // tables
 
 .table {
+  tr.striked td {
+    text-decoration: line-through;
+  }
 
   tfoot {
 

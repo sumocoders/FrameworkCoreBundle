@@ -21,7 +21,7 @@
                     </a>
                     <ul class="subNavigation">
                         <li>
-                            <a href="{{ path('fos_user_profile_edit') }}">{{ 'navigation.user.settings'|trans|capitalize }}</a>
+                            <a href="{{ path('sumocoders_frameworkuser_default_edit', {'id': app.user.id }) }}">{{ 'navigation.user.settings'|trans|capitalize }}</a>
                         </li>
                         <li>
                             <a href="{{ path('fos_user_security_logout') }}">{{ 'layout.logout'|trans({}, 'FOSUserBundle') }}</a>

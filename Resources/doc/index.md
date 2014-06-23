@@ -53,4 +53,4 @@ public function registerBundles()
 
 We use ...
 
-See [http://bootstrap1.braincrafted.com](http://bootstrap1.braincrafted.com/) for more information.
+See [https://github.com/phiamo/MopaBootstrapBundle](https://github.com/phiamo/MopaBootstrapBundle) for more information.

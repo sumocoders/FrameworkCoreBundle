@@ -27,6 +27,9 @@ public function registerBundles()
 {
     $bundles = array(
         // ...
+        new JMS\I18nRoutingBundle\JMSI18nRoutingBundle(),
+        new JMS\TranslationBundle\JMSTranslationBundle(),
+        new Mopa\Bundle\BootstrapBundle\MopaBootstrapBundle(),
         new SumoCoders\FrameworkCoreBundle\SumoCodersFrameworkCoreBundle(),
     );
 }

@@ -74,6 +74,10 @@
                 <source>header.title.edit</source>
                 <target>edit %entity%</target>
             </trans-unit>
+            <trans-unit id="89984afe2d8b76679eb07a21b2a99b1a8d4a15b8" resname="header.title.add">
+                <source>header.title.add</source>
+                <target>add</target>
+            </trans-unit>
             <trans-unit id="5f7ce99c49f17cddf5af906deac2d4638bac91bb" resname="header.title.show">
                 <source>header.title.show</source>
                 <target>show %entity%</target>
@@ -97,6 +101,10 @@
             <trans-unit id="e1bf10b44df3a40c7ed8bfb2f121c94e333c13a6" resname="forms.general.buttons.add">
                 <source>forms.general.buttons.add</source>
                 <target>add</target>
+            </trans-unit>
+            <trans-unit id="e1bf10b44df3a40c7ed8bfb2f121c94e333c13a8" resname="forms.general.buttons.edit">
+                <source>forms.general.buttons.edit</source>
+                <target>edit</target>
             </trans-unit>
             <trans-unit id="e1bf10b44df3a40c7ed8bfb2f121c94e333c13a7" resname="forms.general.buttons.delete">
                 <source>forms.general.buttons.delete</source>

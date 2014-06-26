@@ -41,10 +41,9 @@ assetic:
     compass:
       images_dir: "%kernel.root_dir%/../vendor/sumocoders/framework-core-bundle/SumoCoders/FrameworkCoreBundle/Resources/assets/images"
       fonts_dir:  "%kernel.root_dir%/../vendor/sumocoders/framework-core-bundle//SumoCoders/FrameworkCoreBundle/Resources/public/fonts"
-      http_fonts_path:  "../bundles/framework/fonts"
+      http_fonts_path:  "/bundles/sumocodersframeworkcore/fonts"
       http_path:  /
       plugins:
-        - compass_twitter_bootstrap
         - compass_sumo
     cssrewrite: ~
     coffee:

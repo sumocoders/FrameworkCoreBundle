@@ -2,32 +2,35 @@
     <a href="/" rel="home" class="logo hidden-xs">{{ fallbacks.get('site_title') }}</a>
 
     <div class="searchBox" role="search">
-        <form action="#">
-            <div class="controls">
-                <input id="searchQuery" name="q" type="search" placeholder="{{ 'forms.search.placeholders.search'|trans|capitalize }}" class="form-control">
-                <button type="submit" class="btn">
-                    <i class="icon-search"></i>
-                    <span class="hide">{{ 'forms.search.buttons.search'|trans|capitalize }}</span>
-                </button>
-            </div>
-        </form>
+        {% if bundleExists('SumoCodersFrameworkSearchBundle') %}
+            <form action="#">
+                <div class="controls">
+                    <input id="searchQuery" name="q" type="search" placeholder="{{ 'forms.search.placeholders.search'|trans|capitalize }}" class="form-control">
+                    <button type="submit" class="btn">
+                        <i class="icon-search"></i>
+                        <span class="hide">{{ 'forms.search.buttons.search'|trans|capitalize }}</span>
+                    </button>
+                </div>
+            </form>
+        {% endif %}
     </div>
     <div class="container">
         <ul class="nav">
-            {# @todo what if the user bundle isn't used? #}
-            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                <li id="user">
-                    <a href="#" class="toggleSubNavigation"><i class="iconUser"></i>&nbsp;&nbsp;{{ app.user.username }}
-                    </a>
-                    <ul class="subNavigation">
-                        <li>
-                            <a href="{{ path('sumocoders_frameworkuser_default_edit', {'id': app.user.id }) }}">{{ 'navigation.user.settings'|trans|capitalize }}</a>
-                        </li>
-                        <li>
-                            <a href="{{ path('fos_user_security_logout') }}">{{ 'layout.logout'|trans({}, 'FOSUserBundle') }}</a>
-                        </li>
-                    </ul>
-                </li>
+            {% if bundleExists('SumoCodersFrameworkUserBundle') %}
+                {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                    <li id="user">
+                        <a href="#" class="toggleSubNavigation"><i class="iconUser"></i>&nbsp;&nbsp;{{ app.user.username }}
+                        </a>
+                        <ul class="subNavigation">
+                            <li>
+                                <a href="{{ path('sumocoders_frameworkuser_default_edit', {'id': app.user.id }) }}">{{ 'navigation.user.settings'|trans|capitalize }}</a>
+                            </li>
+                            <li>
+                                <a href="{{ path('fos_user_security_logout') }}">{{ 'layout.logout'|trans({}, 'FOSUserBundle') }}</a>
+                            </li>
+                        </ul>
+                    </li>
+                {% endif %}
             {% endif %}
 
             {#

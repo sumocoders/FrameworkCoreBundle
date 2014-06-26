@@ -2,6 +2,12 @@ services:
   framework_core_fallbacks:
     class:  SumoCoders\FrameworkCoreBundle\Service\Fallbacks
     arguments: [%fallbacks%]
+  framework.twig.framework_extension:
+    class: SumoCoders\FrameworkCoreBundle\Twig\FrameworkExtension
+    arguments:
+      - @service_container
+    tags:
+      - { name: twig.extension }
 
 # Framework configuration
 framework:

@@ -2,6 +2,10 @@ services:
   framework.fallbacks:
     class:  SumoCoders\FrameworkCoreBundle\Service\Fallbacks
     arguments: [%fallbacks%]
+  framework.jsdata:
+    class: SumoCoders\FrameworkCoreBundle\Service\JsData
+    calls:
+      - [setRequestStack, ["@request_stack"]]
   framework.twig.framework_extension:
     class: SumoCoders\FrameworkCoreBundle\Twig\FrameworkExtension
     arguments:
@@ -35,6 +39,7 @@ twig:
   strict_variables: %kernel.debug%
   globals:
     fallbacks: "@framework.fallbacks"
+    jsData: "@framework.jsData"
 
 # Assetic Configuration
 assetic:

@@ -45,7 +45,7 @@
 
     {% block head_javascripts %}
         <script>
-            var jsData = [];
+            var jsData = {{ jsData.parse()|raw }};
         </script>
 
         {% javascripts output="/js/libs.js"

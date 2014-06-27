@@ -64,7 +64,6 @@ class Framework extends DefaultObject
       ajax_stop : 'hideLoadingBar'
 
   @onDomReady [
-#    'functionname'
     '_initAjax'
     '_initForm'
     '_initTabs'

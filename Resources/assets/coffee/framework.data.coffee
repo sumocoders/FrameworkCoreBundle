@@ -13,15 +13,7 @@ class Data
 
   get: (key) ->
     @initialize() if not @isInitialized
-    chunks = key.split '.'
-    module = chunks[0]
-
-    if chunks.length >= 2
-      dataKey = chunks.splice(1, 1).join '.'
-      value = @data[module][dataKey]
-    else
-      value = @data[module]
-    value
+    @data[key]
 
 Data.current = new Data
 

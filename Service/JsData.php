@@ -38,7 +38,10 @@ class JsData
     protected function handleRequestStack()
     {
         $currentRequest = $this->requestStack->getCurrentRequest();
-        $this->add('request.locale', $currentRequest->getLocale());
+
+        if ($currentRequest) {
+            $this->add('request.locale', $currentRequest->getLocale());
+        }
     }
 
     /**

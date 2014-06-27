@@ -1,5 +1,5 @@
 services:
-  framework_core_fallbacks:
+  framework.fallbacks:
     class:  SumoCoders\FrameworkCoreBundle\Service\Fallbacks
     arguments: [%fallbacks%]
   framework.twig.framework_extension:
@@ -34,7 +34,7 @@ twig:
   debug:  %kernel.debug%
   strict_variables: %kernel.debug%
   globals:
-    fallbacks: "@framework_core_fallbacks"
+    fallbacks: "@framework.fallbacks"
 
 # Assetic Configuration
 assetic:

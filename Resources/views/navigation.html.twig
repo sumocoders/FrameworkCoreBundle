@@ -15,59 +15,7 @@
         {% endif %}
     </div>
     <div class="container">
-        <ul class="nav">
-            {% if bundleExists('SumoCodersFrameworkUserBundle') %}
-                {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                    <li id="user">
-                        <a href="#" class="toggleSubNavigation"><i class="iconUser"></i>&nbsp;&nbsp;{{ app.user.username }}
-                        </a>
-                        <ul class="subNavigation">
-                            <li>
-                                <a href="{{ path('sumocoders_frameworkuser_default_edit', {'id': app.user.id }) }}">{{ 'navigation.user.settings'|trans|capitalize }}</a>
-                            </li>
-                            <li>
-                                <a href="{{ path('fos_user_security_logout') }}">{{ 'layout.logout'|trans({}, 'FOSUserBundle') }}</a>
-                            </li>
-                        </ul>
-                    </li>
-                {% endif %}
-            {% endif %}
-
-            {#
-                <li><a href="/" rel="home">Home</a></li>
-                <li>
-                    <a href="/nl/example/typography" class="toggleSubNavigation">Bootstrap</a>
-                    <ul class="subNavigation">
-                        <li><a href="/nl/example/typography">Typography</a></li>
-                        <li><a href="/nl/example/code">Code</a></li>
-                        <li><a href="/nl/example/tables">Tables</a></li>
-                        <li><a href="/nl/example/forms">Forms</a></li>
-                        <li><a href="/nl/example/buttons">Buttons</a></li>
-                        <li><a href="/nl/example/images">Images</a></li>
-                        <li><a href="/nl/example/responsive-utilities">Responsive utilities</a></li>
-                        <li><a href="/nl/example/icons">Icons</a></li>
-
-                        <li><a href="/nl/example/dropdowns">Dropdowns</a></li>
-                        <li><a href="/nl/example/button-groups">Button groups</a></li>
-                        <li><a href="/nl/example/button-dropdowns">Button dropdowns</a></li>
-                        <li><a href="/nl/example/navs">Navs</a></li>
-                        <li><a href="/nl/example/breadcrumbs">Breadcrumbs</a></li>
-                        <li><a href="/nl/example/pagination-example">Pagination</a></li>
-                        <li><a href="/nl/example/labels-and-badges">Labels and badges</a></li>
-                        <li><a href="/nl/example/typography-example">Typography</a></li>
-                        <li><a href="/nl/example/thumbnails-example">Thumbnails</a></li>
-                        <li><a href="/nl/example/alerts">Alerts</a></li>
-                        <li><a href="/nl/example/progress-bars">Progress bars</a></li>
-                        <li><a href="/nl/example/media-object">Media object</a></li>
-                        <li><a href="/nl/example/panels">Panels</a></li>
-                        <li><a href="/nl/example/misc">Misc</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="/nl/users/index">Gebruikers</a>
-                </li>
-            #}
-        </ul>
+        {{ knp_menu_render('main', {'template': 'SumoCodersFrameworkCoreBundle:menu:menu.html.twig'}) }}
     </div>
 </nav>
 <a href="#" id="toggleTabletNavbar">{{ 'navigation.titles.showHideMenu'|trans|capitalize }}</a>

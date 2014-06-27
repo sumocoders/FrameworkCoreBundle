@@ -30,6 +30,7 @@ public function registerBundles()
         new JMS\I18nRoutingBundle\JMSI18nRoutingBundle(),
         new JMS\TranslationBundle\JMSTranslationBundle(),
         new Mopa\Bundle\BootstrapBundle\MopaBootstrapBundle(),
+        new Knp\Bundle\MenuBundle\KnpMenuBundle(),
         new SumoCoders\FrameworkCoreBundle\SumoCodersFrameworkCoreBundle(),
     );
 }
@@ -57,3 +58,7 @@ public function registerBundles()
 We use ...
 
 See [https://github.com/phiamo/MopaBootstrapBundle](https://github.com/phiamo/MopaBootstrapBundle) for more information.
+
+## Other
+
+* [Adding items into the menu/navigation](./menu.md)

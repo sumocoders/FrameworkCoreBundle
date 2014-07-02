@@ -13,19 +13,7 @@
   "repositories": [
     {
       "type":"vcs",
-      "url":"/Users/tijs/Sites/sumocoders/frameworkBundles/FrameworkErrorBundle"
-    },
-    {
-      "type":"vcs",
-      "url":"/Users/tijs/Sites/sumocoders/frameworkBundles/FrameworkCoreBundle"
-    },
-    {
-      "type":"vcs",
-      "url":"/Users/tijs/Sites/sumocoders/frameworkBundles/FrameworkUserBundle"
-    },
-    {
-      "type":"vcs",
-      "url":"/Users/tijs/Sites/sumocoders/frameworkBundles/FrameworkExampleBundle"
+      "url":"git@git.sumocoders.be:tijs/frameworkerrorbundle.git"
     }
   ],
   "minimum-stability": "dev",

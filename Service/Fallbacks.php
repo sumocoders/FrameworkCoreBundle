@@ -32,7 +32,7 @@ class Fallbacks
      * @param mixed       $value
      * @param null|string $prefix
      */
-    protected function addFallback($name, $value, $prefix = null)
+    protected function add($name, $value, $prefix = null)
     {
         $key = $name;
         if ($prefix) {
@@ -73,7 +73,7 @@ class Fallbacks
                 if ($anyNonNumericKeys) {
                     $this->populateFallbacks($value, $name);
                 } else {
-                    $this->addFallback($name, $value, $prefix);
+                    $this->add($name, $value, $prefix);
 
                     // we will loop the array and add each item with the index
                     // so we are able to get a single item from an array
@@ -82,7 +82,7 @@ class Fallbacks
                     $this->populateFallbacks($value, $newPrefix);
                 }
             } else {
-                $this->addFallback($name, $value, $prefix);
+                $this->add($name, $value, $prefix);
             }
         }
     }

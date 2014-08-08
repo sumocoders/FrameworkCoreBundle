@@ -1,5 +1,7 @@
 # SumoCoders FrameworkCoreBundle
 
+[![Build Status](https://travis-ci.org/sumocoders/FrameworkCoreBundle.svg?branch=master)](https://travis-ci.org/sumocoders/FrameworkCoreBundle)
+
 The FrameworkCoreBundle will add some functionality which will enable you build
 application in a short timespan. Below all functionality is listed:
 

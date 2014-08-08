@@ -2,8 +2,6 @@
 
 namespace SumoCoders\FrameworkCoreBundle\Tests\Service;
 
-require_once __DIR__ . '/../../Service/Fallbacks.php';
-
 use SumoCoders\FrameworkCoreBundle\Service\Fallbacks;
 
 class FallbacksTest extends \PHPUnit_Framework_TestCase

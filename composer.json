@@ -10,12 +10,6 @@
       "email": "tijs@sumocoders.be"
     }
   ],
-  "repositories": [
-    {
-      "type":"vcs",
-      "url":"git@git.sumocoders.be:tijs/frameworkerrorbundle.git"
-    }
-  ],
   "minimum-stability": "dev",
   "require": {
     "php": ">=5.3.3",

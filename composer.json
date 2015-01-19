@@ -11,6 +11,7 @@
     }
   ],
   "minimum-stability": "dev",
+  "prefer-stable": true,
   "require": {
     "php": ">=5.3.3",
     "symfony/framework-bundle": "~2.1",

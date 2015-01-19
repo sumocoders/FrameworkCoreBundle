@@ -14,11 +14,10 @@
   "prefer-stable": true,
   "require": {
     "php": ">=5.3.3",
-    "symfony/framework-bundle": "~2.1",
+    "symfony/framework-bundle": "2.3.*",
     "jms/i18n-routing-bundle": "1.*",
     "jms/translation-bundle": "1.1.*",
-    "mopa/bootstrap-bundle": "dev-master",
-    "knplabs/knp-menu": "2.0.*@dev",
+    "mopa/bootstrap-bundle": "3.*@dev",
     "knplabs/knp-menu-bundle": "2.0.*@dev",
     "sumocoders/framework-error-bundle": "dev-master"
   },

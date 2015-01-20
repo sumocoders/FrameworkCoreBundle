@@ -66,6 +66,7 @@ class Framework extends DefaultObject
   @onDomReady [
     '_initAjax'
     '_initForm'
+    '_initSearchForm'
     '_initTabs'
     '_calculateActionsWidths'
     'setContentHeight'
@@ -120,6 +121,9 @@ class Framework extends DefaultObject
       throw className + ' is not defined' unless window[className]
       formClass = window[className]
       new formClass(this)
+
+  _initSearchForm: ->
+    new SearchForm
 
   _initTabs: ->
     url = document.location.toString()

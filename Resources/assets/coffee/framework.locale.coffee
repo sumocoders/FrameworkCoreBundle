@@ -10,7 +10,7 @@ class Locale
       success: (data) =>
         @data = data
         @isInitialized = true
-      error: (jqXHR, textStatus, errorThrown) ->
+      error: (jqXHR, textStatus, errorThrown) =>
         # throw Error('Regenerate your locale-files.')
         @isInitialized = true
   false

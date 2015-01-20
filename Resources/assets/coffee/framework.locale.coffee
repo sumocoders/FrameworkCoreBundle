@@ -3,7 +3,7 @@ class Locale
   data: null
 
   initialize: ->
-    $.ajax '/cache/locale/' + Data.get('core.language') + '.json',
+    $.ajax '/cache/locale/' + Data.get('request.locale') + '.json',
       type: 'GET'
       dataType: 'json'
       async: false,

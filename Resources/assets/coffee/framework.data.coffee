@@ -2,6 +2,9 @@ class Data
   isInitialized: false
   data: null
 
+  constructor: ->
+    @initialize()
+
   initialize: ->
     throw Error('jsData is not available') if not jsData?
     @data = jsData

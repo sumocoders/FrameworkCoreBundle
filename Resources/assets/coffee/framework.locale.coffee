@@ -11,7 +11,8 @@ class Locale
         @data = data
         @isInitialized = true
       error: (jqXHR, textStatus, errorThrown) ->
-        throw Error('Regenerate your locale-files.')
+        # throw Error('Regenerate your locale-files.')
+        @isInitialized = true
   false
 
   exists: (key) ->
@@ -19,8 +20,8 @@ class Locale
 
   get: (type, key) ->
     @initialize() if not @isInitialized
-    return '{$' + type + key + '}' if not @data[type][key]?
-    @data[type][key]
+    return @data[type][key] if @data? and @data.type? and @data.type.key?
+    '{$' + type + key + '}'
 
   act: (key) ->
     @get('act', key)

@@ -26,6 +26,10 @@ services:
       - @service_container
     tags:
       - { name: twig.extension }
+  locale_cache_cleaner:
+    class: SumoCoders\FrameworkCoreBundle\Cache\LocaleClearer
+    tags:
+      - { name: kernel.cache_clearer }
 
 # Framework configuration
 framework:

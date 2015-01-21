@@ -30,7 +30,7 @@ class DefaultController extends Controller
         }
 
         $response = new JsonResponse();
-        $response->setContent($translations);
+        $response->setData($translations);
 
         return $response;
     }

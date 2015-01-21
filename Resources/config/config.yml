@@ -28,6 +28,8 @@ services:
       - { name: twig.extension }
   locale_cache_cleaner:
     class: SumoCoders\FrameworkCoreBundle\Cache\LocaleClearer
+    arguments:
+      - %kernel.root_dir%
     tags:
       - { name: kernel.cache_clearer }
 

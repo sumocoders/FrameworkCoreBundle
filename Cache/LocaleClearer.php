@@ -8,16 +8,26 @@ use Symfony\Component\Finder\Finder;
 
 class LocaleClearer implements CacheClearerInterface
 {
+    private $rootDir;
+
+    /**
+     * Inject the kernel root directory
+     */
+    public function __construct($rootDir)
+    {
+        $this->rootDir = $rootDir;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function clear($cacheDir)
     {
-        // convert the cache dir in the web dir
-        $webDir = $cacheDir . '/../../../web';
-
         $fs = new Filesystem();
         $finder = new Finder();
 
         // remove all files in /web/*/ that are called locale.json
-        $finder->files()->in($webDir . '/*/');
+        $finder->files()->in($this->rootDir . '/../web/*/');
         foreach ($finder as $file) {
             if ($file->getFilename() === 'locale.json') {
                 $fs->remove($file->getPath() . '/' . $file->getFilename());

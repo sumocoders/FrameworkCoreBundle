@@ -3,7 +3,7 @@ class Locale
   data: null
 
   initialize: ->
-    $.ajax '/cache/locale/' + Data.get('request.locale') + '.json',
+    $.ajax '/' + Data.get('request.locale') + '/locale.json',
       type: 'GET'
       dataType: 'json'
       async: false,
@@ -11,31 +11,30 @@ class Locale
         @data = data
         @isInitialized = true
       error: (jqXHR, textStatus, errorThrown) =>
-        # throw Error('Regenerate your locale-files.')
-        @isInitialized = true
+        throw Error('Regenerate your locale-files.')
   false
 
   exists: (key) ->
     @get(key)?
 
-  get: (type, key) ->
+  get: (key) ->
     @initialize() if not @isInitialized
-    return @data[type][key] if @data? and @data.type? and @data.type.key?
-    '{$' + type + key + '}'
+    return @data[key] if @data[key]?
+    key
 
   act: (key) ->
-    @get('act', key)
+    @get(key)
 
   err: (key) ->
-    @get('err', key)
+    @get( key)
 
   lbl: (key) ->
-    @get('lbl', key)
+    @get(key)
 
   loc: (key) ->
-    @get('loc', key)
+    @get(key)
 
   msg: (key) ->
-    @get('msg', key)
+    @get(key)
 
 window.Locale = new Locale

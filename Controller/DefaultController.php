@@ -5,7 +5,8 @@ namespace SumoCoders\FrameworkCoreBundle\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Filesystem\Filesystem;
 
 use JMS\TranslationBundle\Model\MessageCatalogue;
 
@@ -16,6 +17,26 @@ class DefaultController extends Controller
      */
     public function generateLocaleAction(Request $request)
     {
+        $translations = $this->getAllTranslations($request->getLocale());
+
+        // cache the result when we're in production environment
+        if ($this->container->get('kernel')->getEnvironment() === 'prod') {
+            $webDir = $this->get('kernel')->getRootDir() . '/../web/';
+            $fs = new Filesystem();
+            $fs->dumpfile(
+                $webDir . $request->getLocale() . '/locale.json',
+                json_encode($translations)
+            );
+        }
+
+        $response = new JsonResponse();
+        $response->setContent($translations);
+
+        return $response;
+    }
+
+    private function getAllTranslations($locale)
+    {
         $catalogue = new MessageCatalogue();
         $loader = $this->get('jms_translation.loader_manager');
 
@@ -23,7 +44,7 @@ class DefaultController extends Controller
         foreach ($this->retrieveDirs() as $resource) {
             $catalogue->merge($loader->loadFromDirectory(
                 $resource,
-                $request->getLocale()
+                $locale
             ));
         }
 
@@ -34,11 +55,7 @@ class DefaultController extends Controller
             }
         }
 
-        $response = new Response();
-        $response->headers->set('Content-Type', 'application/json');
-        $response->setContent(json_encode($localesArray));
-
-        return $response;
+        return $localesArray;
     }
 
     /**

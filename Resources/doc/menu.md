@@ -53,8 +53,6 @@ Add the configuration
 services:
   framework_example.listener.menu_listener:
     class: SumoCoders\FrameworkExampleBundle\EventListener\MenuListener
-    arguments:
-      - @service_container
     calls:
       - [setSecurityContext, ["@security.context"]]
     tags:

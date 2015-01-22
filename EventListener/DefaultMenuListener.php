@@ -2,37 +2,14 @@
 
 namespace SumoCoders\FrameworkCoreBundle\EventListener;
 
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Security\Core\SecurityContext;
 
-class DefaultMenuListener implements ContainerAwareInterface
+class DefaultMenuListener
 {
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
-
     /**
      * @var SecurityContext
      */
     private $securityContext;
-
-    /**
-     * @param ContainerInterface $container
-     */
-    public function __construct(ContainerInterface $container)
-    {
-        $this->setContainer($container);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
-    }
 
     /**
      * @return \Symfony\Component\Security\Core\SecurityContext

@@ -16,19 +16,7 @@ class DefaultMenuListenerTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->defaultMenuListener = new DefaultMenuListener(
-            $this->getContainer()
-        );
-    }
-
-    /**
-     * @return \PHPUnit_Framework_MockObject_MockObject
-     */
-    protected function getContainer()
-    {
-        $container = $this->getMock('\Symfony\Component\DependencyInjection\ContainerInterface');
-
-        return $container;
+        $this->defaultMenuListener = new DefaultMenuListener();
     }
 
     /**

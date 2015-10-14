@@ -7,7 +7,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Filesystem\Filesystem;
-
 use JMS\TranslationBundle\Model\MessageCatalogue;
 
 class DefaultController extends Controller

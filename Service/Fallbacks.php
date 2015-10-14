@@ -2,7 +2,6 @@
 
 namespace SumoCoders\FrameworkCoreBundle\Service;
 
-
 /**
  * Class Fallbacks
  *

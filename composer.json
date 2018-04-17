@@ -18,19 +18,14 @@
   "prefer-stable": true,
   "require": {
     "php": "^7.1",
-    "jms/i18n-routing-bundle": "1.*",
-    "jms/translation-bundle": "1.1.*",
-    "mopa/bootstrap-bundle": "3.*@dev",
-    "knplabs/knp-menu-bundle": "2.0.*@dev",
     "gedmo/doctrine-extensions": "^2.4",
     "friendsofsymfony/jsrouting-bundle": "^2",
     "white-october/pagerfanta-bundle": "^1.0",
     "ramsey/uuid": "^3.7",
     "mopa/bootstrap-bundle": "^3.0",
-    "jms/i18n-routing-bundle": "^2.0",
-    "jms/translation-bundle": "^1.1",
-    "knplabs/knp-menu-bundle": "^2.1",
-    "tijsverkoyen/css-to-inline-styles": "^2.0"
+    "jms/i18n-routing-bundle": "^3.0",
+    "knplabs/knp-menu-bundle": "^2.2",
+    "tijsverkoyen/css-to-inline-styles": "^2.2"
   },
   "require-dev": {
     "phpunit/phpunit": "4.1.*"

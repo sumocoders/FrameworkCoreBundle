@@ -3,6 +3,8 @@
 namespace SumoCoders\FrameworkCoreBundle\Tests\EventListener;
 
 use SumoCoders\FrameworkCoreBundle\EventListener\DefaultMenuListener;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class DefaultMenuListenerTest extends \PHPUnit_Framework_TestCase
 {
@@ -16,21 +18,28 @@ class DefaultMenuListenerTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->defaultMenuListener = new DefaultMenuListener();
+        $this->defaultMenuListener = new DefaultMenuListener(
+            $this->getSecurityAuthorizationChecker(),
+            $this->getSecurityTokenStorage()
+        );
     }
 
     /**
      * @return \PHPUnit_Framework_MockObject_MockObject
      */
-    protected function getSecurityContext()
+    protected function getSecurityAuthorizationChecker()
     {
-        $securityContext = $this->getMock(
-            '\Symfony\Component\Security\Core\SecurityContext',
-            array(),
-            array(),
-            '',
-            false
-        );
+        $container = $this->getMockBuilder(AuthorizationCheckerInterface::class)->getMock();
+
+        return $container;
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject
+     */
+    protected function getSecurityTokenStorage()
+    {
+        $securityContext = $this->getMockBuilder(TokenStorageInterface::class)->getMock();
 
         return $securityContext;
     }
@@ -48,8 +57,13 @@ class DefaultMenuListenerTest extends \PHPUnit_Framework_TestCase
      */
     public function testGettersAndSetters()
     {
-        $securityContext = $this->getSecurityContext();
-        $this->defaultMenuListener->setSecurityContext($securityContext);
-        $this->assertEquals($securityContext, $this->defaultMenuListener->getSecurityContext());
+        $securityAuthorizationChecker = $this->getSecurityAuthorizationChecker();
+        $this->assertEquals(
+            $securityAuthorizationChecker,
+            $this->defaultMenuListener->getSecurityAuthorizationChecker()
+        );
+
+        $securityTokenStorage = $this->getSecurityTokenStorage();
+        $this->assertEquals($securityTokenStorage, $this->defaultMenuListener->getSecurityTokenStorage());
     }
 }

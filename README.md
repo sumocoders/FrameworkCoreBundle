@@ -1,15 +1,4 @@
-** IMPORTANT ** 
-
-DO NOT USE THIS BUNDLE ANYMORE
-USE THE FRAMEWORK-APP INSTEAD, SEE [SumoCoders framework](https://github.com/sumocoders/Framework)
-
-
-** IMPORTANT **
-
-
 # SumoCoders FrameworkCoreBundle
-
-[![Build Status](https://travis-ci.org/sumocoders/FrameworkCoreBundle.svg?branch=master)](https://travis-ci.org/sumocoders/FrameworkCoreBundle) [![Code Climate](https://codeclimate.com/github/sumocoders/FrameworkCoreBundle/badges/gpa.svg)](https://codeclimate.com/github/sumocoders/FrameworkCoreBundle)
 
 The FrameworkCoreBundle will add some functionality which will enable you build
 application in a short timespan. Below all functionality is listed:

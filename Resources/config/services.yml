@@ -1,0 +1,115 @@
+services:
+  framework.fallbacks:
+    class:  SumoCoders\FrameworkCoreBundle\Service\Fallbacks
+    arguments: ["%fallbacks%"]
+
+  framework.jsdata:
+    class: SumoCoders\FrameworkCoreBundle\Service\JsData
+    arguments:
+      - "@request_stack"
+
+  framework.menu_builder:
+    class: SumoCoders\FrameworkCoreBundle\Menu\MenuBuilder
+    calls:
+      - [setFactory, ["@knp_menu.factory"]]
+      - [setEventDispatcher, ["@event_dispatcher"]]
+  framework.menu.main:
+    class: Kpn\Menu\MenuItem
+    factory: ["@framework.menu_builder", "createMainMenu"]
+    arguments:
+      - "@request_stack"
+    tags:
+      - { name: knp_menu.menu, alias: side_menu }
+
+  framework.breadcrumb_builder:
+    class: SumoCoders\FrameworkCoreBundle\BreadCrumb\BreadCrumbBuilder
+    arguments:
+      - "@knp_menu.factory"
+      - "@event_dispatcher"
+  framework.breadcrumb.main:
+    class: Kpn\Menu\MenuItem
+    factory: ["@framework.breadcrumb_builder", "createBreadCrumb"]
+    arguments:
+      - "@request_stack"
+    tags:
+      - { name: knp_menu.menu, alias: breadcrumb }
+
+  framework.date_type_extension:
+    class: SumoCoders\FrameworkCoreBundle\Form\Extension\DateTypeExtension
+    tags:
+      - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\DateType }
+
+  framework.birthday_type_extension:
+    class: SumoCoders\FrameworkCoreBundle\Form\Extension\BirthdayTypeExtension
+    tags:
+      - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\BirthdayType }
+
+  framework.date_time_type_extension:
+    class: SumoCoders\FrameworkCoreBundle\Form\Extension\DateTimeTypeExtension
+    tags:
+      - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\DateTimeType }
+
+  framework.button_type_icon_extension:
+    class: SumoCoders\FrameworkCoreBundle\Form\Extension\ButtonTypeIconExtension
+    tags:
+        - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\ButtonType }
+
+  twig.framework_extension:
+    class: SumoCoders\FrameworkCoreBundle\Twig\FrameworkExtension
+    arguments:
+      - "@service_container"
+    tags:
+      - { name: twig.extension }
+
+  framework.response_securer:
+    class: SumoCoders\FrameworkCoreBundle\EventListener\ResponseSecurer
+    tags:
+       - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
+
+  framework.message_factory:
+    class: SumoCoders\FrameworkCoreBundle\Mail\MessageFactory
+    arguments:
+      - "@templating"
+      - "mails/default_email.html.twig"
+      - "%kernel.root_dir%/../web/assets/css/mail.css"
+    calls:
+      - [setDefaultSender, ["%mailer.default_sender_email%", "%mailer.default_sender_name%"]]
+      - [setDefaultReplyTo, ["%mailer.default_reply_to_email%", "%mailer.default_reply_to_name%"]]
+      - [setDefaultTo, ["%mailer.default_to_email%", "%mailer.default_to_name%"]]
+
+  sumocoders_form_type_fieldset:
+    class: SumoCoders\FrameworkCoreBundle\Form\Type\FieldsetType
+    arguments: []
+    tags:
+        - { name: form.type, alias: fieldset }
+
+  sumocoders_form_type_image:
+    class: SumoCoders\FrameworkCoreBundle\Form\Type\ImageType
+    tags:
+      - { name: form.type, alias: image }
+
+  sumocoders_form_type_file:
+    class: SumoCoders\FrameworkCoreBundle\Form\Type\FileType
+    tags:
+      - { name: form.type, alias: sumoFile }
+
+  pagerfanta.view.sumocoders:
+    class: SumoCoders\FrameworkCoreBundle\Twig\TwitterBootstrap3View
+    public: false
+    tags: [{ name: pagerfanta.view, alias: sumocoders }]
+
+  sumocoders_other_choice_option_repository:
+    public: false
+    class: SumoCoders\FrameworkCoreBundle\Repository\OtherChoiceOptionRepository
+    factory: ["@doctrine.orm.entity_manager", getRepository]
+    arguments:
+      - SumoCoders\FrameworkCoreBundle\Entity\OtherChoiceOption
+
+  sumocoders_form_type_other_choice_type:
+    class: SumoCoders\FrameworkCoreBundle\Form\Type\OtherChoiceType
+    arguments:
+      - "@sumocoders_other_choice_option_repository"
+      - "@translator"
+    tags:
+      - { name: form.type, alias: otherChoiceType }
+

@@ -2,6 +2,7 @@
 
 namespace SumoCoders\FrameworkCoreBundle\Service;
 
+use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
@@ -9,15 +10,8 @@ use Symfony\Component\HttpFoundation\RequestStack;
  *
  * @package SumoCoders\FrameworkCoreBundle\Service
  */
-class JsData
+class JsData extends ParameterBag
 {
-    const SPLITCHAR = '.';
-
-    /**
-     * @var array
-     */
-    private $data = array();
-
     /**
      * @var \Symfony\Component\HttpFoundation\RequestStack
      */
@@ -26,10 +20,11 @@ class JsData
     /**
      * @param RequestStack $requestStack
      */
-    public function setRequestStack(RequestStack $requestStack)
+    public function __construct(RequestStack $requestStack)
     {
+        parent::__construct();
+
         $this->requestStack = $requestStack;
-        $this->handleRequestStack();
     }
 
     /**
@@ -40,43 +35,23 @@ class JsData
         $currentRequest = $this->requestStack->getCurrentRequest();
 
         if ($currentRequest) {
-            $this->add('request.locale', $currentRequest->getLocale());
+            $requestData = [
+                'locale' => $currentRequest->getLocale(),
+            ];
+
+            $this->set('request', $requestData);
         }
     }
 
     /**
-     * Add a value into the array with a given name
+     * Parse into string
      *
-     * @param string      $name
-     * @param mixed       $value
-     * @param null|string $prefix
+     * @return string
      */
-    protected function add($name, $value, $prefix = null)
+    public function __toString()
     {
-        $key = $name;
-        if ($prefix) {
-            $key = $prefix . self::SPLITCHAR . $name;
-        }
-        $this->data[$key] = $value;
-    }
+        $this->handleRequestStack();
 
-    /**
-     * Get a fallback
-     *
-     * @param string $key
-     * @return null|mixed
-     */
-    public function get($key)
-    {
-        if (isset($this->data[$key])) {
-            return $this->data[$key];
-        }
-
-        return null;
-    }
-
-    public function parse()
-    {
-        return json_encode($this->data);
+        return json_encode($this->all());
     }
 }

@@ -3,6 +3,8 @@
 namespace SumoCoders\FrameworkCoreBundle\Tests\Service;
 
 use SumoCoders\FrameworkCoreBundle\Service\JsData;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class JsDataTest extends \PHPUnit_Framework_TestCase
 {
@@ -16,7 +18,7 @@ class JsDataTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->jsData = new JsData();
+        $this->jsData = new JsData($this->getRequestStack());
     }
 
     /**
@@ -32,13 +34,13 @@ class JsDataTest extends \PHPUnit_Framework_TestCase
      */
     protected function getRequestStack()
     {
-        $currentRequest = $this->getMock('\Symfony\Component\HttpFoundation\Request');
+        $currentRequest = $this->getMockBuilder(Request::class)->getMock();
         $currentRequest->method('getLocale')
             ->will(
                 $this->returnValue('nl')
             );
 
-        $requestStack = $this->getMock('\Symfony\Component\HttpFoundation\RequestStack');
+        $requestStack = $this->getMockBuilder(RequestStack::class)->getMock();
         $requestStack->method('getCurrentRequest')
             ->will(
                 $this->returnValue(
@@ -54,23 +56,25 @@ class JsDataTest extends \PHPUnit_Framework_TestCase
      */
     public function testGet()
     {
-        $this->jsData->setRequestStack($this->getRequestStack());
-        $this->assertEquals('nl', $this->jsData->get('request.locale'));
+        // request is only parsed when fetching the data from the javascript
+        (string) $this->jsData;
+        $this->assertEquals('nl', $this->jsData->get('request')['locale']);
     }
 
     /**
      * Test jsData->parse()
      */
-    public function testParse()
+    public function testToString()
     {
-        $data = array();
-        $var = $this->jsData->parse();
-        $this->assertEquals(json_encode($data), $var);
+        $var = (string) $this->jsData;
+        $this->assertEquals('{"request":{"locale":"nl"}}', $var);
+    }
 
-        $data = new \stdClass();
-        $data->{'request.locale'} = 'nl';
-        $this->jsData->setRequestStack($this->getRequestStack());
-        $var = $this->jsData->parse();
-        $this->assertEquals(json_encode($data), $var);
+    /**
+     * This will check that the parent constructor is called
+     */
+    public function testCorrectConstruction()
+    {
+        self::assertEquals([], $this->jsData->all());
     }
 }

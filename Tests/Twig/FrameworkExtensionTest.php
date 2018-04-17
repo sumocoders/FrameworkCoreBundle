@@ -3,6 +3,7 @@
 namespace SumoCoders\FrameworkCoreBundle\Tests\Twig;
 
 use SumoCoders\FrameworkCoreBundle\Twig\FrameworkExtension;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class FrameworkExtensionTest extends \PHPUnit_Framework_TestCase
 {
@@ -26,13 +27,13 @@ class FrameworkExtensionTest extends \PHPUnit_Framework_TestCase
      */
     protected function getContainer()
     {
-        $container = $this->getMock('\Symfony\Component\DependencyInjection\ContainerInterface');
+        $container = $this->getMockBuilder(ContainerInterface::class)->getMock();
         $container->method('getParameter')
             ->will(
                 $this->returnValue(
-                    array(
+                    [
                         'existing' => null,
-                    )
+                    ]
                 )
             );
 
@@ -71,11 +72,80 @@ class FrameworkExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->frameworkExtension->bundleExists('non-existing'), 'non-existing bundle found');
     }
 
-    /**
-     * Test FrameworkExtension->getName()
-     */
-    public function testGetName()
+    public function testConvertToTranslationTrim()
     {
-        $this->assertEquals('framework_extension', $this->frameworkExtension->getName());
+        $this->assertEquals('foo', $this->frameworkExtension->convertToTranslation(' foo'));
+        $this->assertEquals('foo', $this->frameworkExtension->convertToTranslation('foo '));
+        $this->assertEquals('foo', $this->frameworkExtension->convertToTranslation(' foo '));
+    }
+
+    public function testConvertToTranslationToLowerCase()
+    {
+        $this->assertEquals('foo', $this->frameworkExtension->convertToTranslation('foo'));
+        $this->assertEquals('FOO', $this->frameworkExtension->convertToTranslation('FOO'));
+        $this->assertEquals('FoO', $this->frameworkExtension->convertToTranslation('FoO'));
+        $this->assertEquals('fOo', $this->frameworkExtension->convertToTranslation('fOo'));
+    }
+
+    public function testConvertToTranslationReplaceFakeSpaces()
+    {
+        $this->assertEquals('f.o.o', $this->frameworkExtension->convertToTranslation('f_o_o'));
+        $this->assertEquals('f.o.o', $this->frameworkExtension->convertToTranslation('f-o-o'));
+        $this->assertEquals('f.o.o', $this->frameworkExtension->convertToTranslation('f o o'));
+        $this->assertEquals('f.o.o', $this->frameworkExtension->convertToTranslation('f_o_o_'));
+        $this->assertEquals('f.o.o', $this->frameworkExtension->convertToTranslation('_f_o_o'));
+        $this->assertEquals('f.o.o', $this->frameworkExtension->convertToTranslation('_f_o_o_'));
+    }
+
+    public function testTranslationWithNumbersAtTheEnd()
+    {
+        $this->assertEquals('foo', $this->frameworkExtension->convertToTranslation('foo1'));
+        $this->assertEquals('foo', $this->frameworkExtension->convertToTranslation('foo123'));
+        $this->assertEquals('foo', $this->frameworkExtension->convertToTranslation('foo 123'));
+    }
+
+    public function testTranslationWithSumoCodersInTheString()
+    {
+        $this->assertEquals('foo', $this->frameworkExtension->convertToTranslation('SumoCoders.foo'));
+        $this->assertEquals('foo', $this->frameworkExtension->convertToTranslation('sumocoders.foo'));
+        $this->assertEquals('foo.sumocoders', $this->frameworkExtension->convertToTranslation('foo.sumocoders'));
+        $this->assertEquals('foo.bar', $this->frameworkExtension->convertToTranslation('SumoCoders.foo.bar'));
+    }
+
+    public function testTranslationWithBundleInTheString()
+    {
+        $this->assertEquals('foo', $this->frameworkExtension->convertToTranslation('fooBundle'));
+        $this->assertEquals('foo', $this->frameworkExtension->convertToTranslation('foo.frameworkBundle'));
+        $this->assertEquals('Foo.bar', $this->frameworkExtension->convertToTranslation('FooBundle.bar'));
+        $this->assertEquals('Foo.bar', $this->frameworkExtension->convertToTranslation('Foo.barBundle'));
+    }
+
+    public function testTranslationWithDotsInTheString()
+    {
+        $this->assertEquals('foo.bar', $this->frameworkExtension->convertToTranslation('foo.......bar'));
+    }
+
+    public function testTranslationsWithNumbersAsSingleItems()
+    {
+        $this->assertEquals('f.o.o', $this->frameworkExtension->convertToTranslation('f_1_o_o'));
+    }
+
+    public function testIfFrameworkIsRemoved()
+    {
+        $this->assertEquals('foo', $this->frameworkExtension->convertToTranslation('framework_foo'));
+        $this->assertEquals('foo', $this->frameworkExtension->convertToTranslation('framework_foo_framework'));
+        $this->assertEquals('foo', $this->frameworkExtension->convertToTranslation('foo_framework'));
+    }
+
+    public function testIfBundleIsCleaned()
+    {
+        $this->assertEquals(
+            'Core.foo',
+            $this->frameworkExtension->convertToTranslation('SumoCoders_FrameworkCoreBundle_foo')
+        );
+        $this->assertEquals(
+            'Namespace.NameOfThe.foo',
+            $this->frameworkExtension->convertToTranslation('Namespace_NameOfTheBundle_foo')
+        );
     }
 }

@@ -31,7 +31,7 @@ class ConfigureMenuEvent extends Event
     }
 
     /**
-     * @param \Knp\Menu\FactoryInterface $factory
+     * @param FactoryInterface $factory
      */
     private function setFactory($factory)
     {
@@ -47,7 +47,7 @@ class ConfigureMenuEvent extends Event
     }
 
     /**
-     * @param \Knp\Menu\ItemInterface $menu
+     * @param ItemInterface $menu
      */
     private function setMenu($menu)
     {

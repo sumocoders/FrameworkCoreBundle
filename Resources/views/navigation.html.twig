@@ -1,21 +1,21 @@
-<nav id="navbar" role="navigation">
-    <a href="/" rel="home" class="logo hidden-xs">{{ fallbacks.get('site_title') }}</a>
-
-    <div class="searchBox" role="search">
-        {% if bundleExists('SumoCodersFrameworkSearchBundle') %}
-            <form action="{{ path('sumocoders_frameworksearch_default_index') }}" data-form-class="SearchForm">
-                <div class="controls">
-                    <input id="searchQuery" name="q" type="search" placeholder="{{ 'forms.search.placeholders.search'|trans|capitalize }}" class="form-control">
-                    <button type="submit" class="btn">
-                        <i class="icon-search"></i>
-                        <span class="hide">{{ 'forms.search.buttons.search'|trans|capitalize }}</span>
-                    </button>
-                </div>
-            </form>
-        {% endif %}
+<div id="main-menu-inner">
+  <div class="navbar navbar-default">
+    <div class="wrapper-brand">
+      <a href="/" rel="home" class="logo">
+        <img class="img-responsive" src="/assets/images/logo-application.svg" alt="{{ fallbacks.get('site_title') }}">
+      </a>
     </div>
-    <div class="container">
-        {{ knp_menu_render('main', {'template': 'SumoCodersFrameworkCoreBundle:menu:menu.html.twig'}) }}
+    <div class="navbar-header hidden-sm hidden-md hidden-lg">
+      <a class="navbar-brand" href="#">Menu</a>
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
     </div>
-</nav>
-<a href="#" id="toggleTabletNavbar">{{ 'navigation.titles.showHideMenu'|trans|capitalize }}</a>
+    <div class="collapse navbar-collapse" id="navbar-collapse-1">
+      {{ knp_menu_render('side_menu', {'template': 'SumoCodersFrameworkCoreBundle:menu:menu.html.twig', 'ancestorClass': 'open active'}) }}
+    </div>
+  </div>
+</div>

@@ -1,0 +1,14 @@
+{% extends 'knp_menu.html.twig' %}
+
+{% block list %}
+    {% if item.hasChildren and options.depth is not same as(0) and item.displayChildren %}
+        <ol class="breadcrumb">
+            {{ block('children') }}
+        </ol>
+    {% endif %}
+{% endblock %}
+
+{% block label %}
+    {{ item.label|trans(item.getExtra('translation_params', {}), item.getExtra('translation_domain', 'messages'))|capitalize }}
+{% endblock %}
+

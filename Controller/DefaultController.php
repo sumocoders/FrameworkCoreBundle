@@ -16,7 +16,24 @@ class DefaultController extends Controller
      */
     public function generateLocaleAction(Request $request)
     {
-        $translations = $this->getAllTranslations($request->getLocale());
+        $translations = [];
+
+        // fetch the translations for the fallback languages
+        $fallbackLocales = $this->get('translator')->getFallbackLocales();
+        foreach (array_reverse($fallbackLocales) as $locale) {
+            if ($locale !== $request->getLocale()) {
+                $translations = array_merge(
+                    $translations,
+                    $this->getAllTranslations($locale)
+                );
+            }
+        }
+
+        // overwrite the translations that exist in our current languages
+        $translations = array_merge(
+            $translations,
+            $this->getAllTranslations($request->getLocale())
+        );
 
         // cache the result when we're in production environment
         if ($this->container->get('kernel')->getEnvironment() === 'prod') {
@@ -41,16 +58,18 @@ class DefaultController extends Controller
 
         // load external resources, so current translations can be reused in the final translation
         foreach ($this->retrieveDirs() as $resource) {
-            $catalogue->merge($loader->loadFromDirectory(
-                $resource,
-                $locale
-            ));
+            $catalogue->merge(
+                $loader->loadFromDirectory(
+                    $resource,
+                    $locale
+                )
+            );
         }
 
-        $localesArray = array();
+        $localesArray = [];
         foreach ($catalogue->getDomains() as $domain => $collection) {
             foreach ($collection->all() as $key => $translation) {
-                $localesArray[$key] =  $translation->getLocaleString();
+                $localesArray[$key] = $translation->getLocaleString();
             }
         }
 
@@ -65,15 +84,15 @@ class DefaultController extends Controller
     private function retrieveDirs()
     {
         // Discover translation directories
-        $dirs = array();
+        $dirs = [];
         foreach ($this->container->getParameter('kernel.bundles') as $bundle) {
             $reflection = new \ReflectionClass($bundle);
-            if (is_dir($dir = dirname($reflection->getFilename()).'/Resources/translations')) {
+            if (is_dir($dir = dirname($reflection->getFilename()) . '/Resources/translations')) {
                 $dirs[] = $dir;
             }
         }
 
-        if (is_dir($dir = $this->container->getParameter('kernel.root_dir').'/Resources/translations')) {
+        if (is_dir($dir = $this->container->getParameter('kernel.root_dir') . '/Resources/translations')) {
             $dirs[] = $dir;
         }
 

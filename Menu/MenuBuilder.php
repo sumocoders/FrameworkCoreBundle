@@ -20,7 +20,7 @@ class MenuBuilder
     private $factory;
 
     /**
-     * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
+     * @param EventDispatcherInterface $eventDispatcher
      */
     public function setEventDispatcher($eventDispatcher)
     {
@@ -28,7 +28,7 @@ class MenuBuilder
     }
 
     /**
-     * @return \Symfony\Component\EventDispatcher\EventDispatcherInterface
+     * @return EventDispatcherInterface
      */
     public function getEventDispatcher()
     {
@@ -36,7 +36,7 @@ class MenuBuilder
     }
 
     /**
-     * @param \Knp\Menu\FactoryInterface $factory
+     * @param FactoryInterface $factory
      */
     public function setFactory($factory)
     {
@@ -57,7 +57,7 @@ class MenuBuilder
     public function createMainMenu()
     {
         $menu = $this->factory->createItem('root');
-        $menu->setChildrenAttribute('class', 'nav');
+        $menu->setChildrenAttribute('class', 'nav navbar-nav');
 
         $this->eventDispatcher->dispatch(
             ConfigureMenuEvent::EVENT_NAME,
@@ -79,9 +79,9 @@ class MenuBuilder
      */
     protected function reorderMenuItems(ItemInterface $menu)
     {
-        $menuOrderArray = array();
-        $addLast = array();
-        $alreadyTaken = array();
+        $menuOrderArray = [];
+        $addLast = [];
+        $alreadyTaken = [];
 
         foreach ($menu->getChildren() as $menuItem) {
             if ($menuItem->hasChildren()) {
@@ -90,7 +90,7 @@ class MenuBuilder
 
             $orderNumber = $menuItem->getExtra('orderNumber');
 
-            if ($orderNumber != null) {
+            if ($orderNumber !== null) {
                 if (!isset($menuOrderArray[$orderNumber])) {
                     $menuOrderArray[$orderNumber] = $menuItem->getName();
                 } else {
@@ -114,7 +114,7 @@ class MenuBuilder
 
                 $menuOrderArray = array_merge(
                     array_slice($menuOrderArray, 0, $position),
-                    array($value),
+                    [$value],
                     array_slice($menuOrderArray, $position)
                 );
             }

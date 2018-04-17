@@ -14,31 +14,31 @@ class FallbacksTest extends \PHPUnit_Framework_TestCase
     /**
      * @var array
      */
-    private $defaultData = array(
+    private $defaultData = [
         'foo' => 'bar',
-        'name' => array(
+        'name' => [
             'first' => 'John',
             'last' => 'Doe',
-        ),
-        'servers' => array(
+        ],
+        'servers' => [
             'web01',
             'web02',
-        ),
-        'a' => array(
-            'very' => array(
-                'deep' => array(
-                    'array' => array(
+        ],
+        'a' => [
+            'very' => [
+                'deep' => [
+                    'array' => [
                         'x' => 0,
                         'y' => 0,
-                    )
-                )
-            ),
-        ),
-        'errorcodes' => array(
+                    ],
+                ],
+            ],
+        ],
+        'errorcodes' => [
             404 => 'Not Found',
             500 => 'Internal server error',
-        ),
-    );
+        ],
+    ];
 
     /**
      * Test Fallbacks()
@@ -57,13 +57,15 @@ class FallbacksTest extends \PHPUnit_Framework_TestCase
         $this->fallbacks = new Fallbacks($this->defaultData);
 
         $this->assertEquals($this->defaultData['foo'], $this->fallbacks->get('foo'));
-        $this->assertEquals($this->defaultData['name']['first'], $this->fallbacks->get('name.first'));
-        $this->assertNull($this->fallbacks->get('name')); // we can't grab a key-value-array
+        $this->assertEquals($this->defaultData['name']['first'], $this->fallbacks->get('name')['first']);
         $this->assertEquals($this->defaultData['servers'], $this->fallbacks->get('servers'));
         $this->assertEquals(
             $this->defaultData['a']['very']['deep']['array']['x'],
-            $this->fallbacks->get('a.very.deep.array.x')
+            $this->fallbacks->get('a')['very']['deep']['array']['x']
         );
-        $this->assertEquals($this->defaultData['errorcodes'][404], $this->fallbacks->get('errorcodes.404'));
+        $this->assertEquals(
+            $this->defaultData['errorcodes'][404],
+            $this->fallbacks->get('errorcodes')[404]
+        );
     }
 }

@@ -2,6 +2,8 @@
 
 namespace SumoCoders\FrameworkCoreBundle\Tests\Event;
 
+use Knp\Menu\FactoryInterface;
+use Knp\Menu\ItemInterface;
 use SumoCoders\FrameworkCoreBundle\Event\ConfigureMenuEvent;
 
 class ConfigureMenuEventTest extends \PHPUnit_Framework_TestCase
@@ -27,7 +29,7 @@ class ConfigureMenuEventTest extends \PHPUnit_Framework_TestCase
      */
     protected function getFactory()
     {
-        $factory = $this->getMock('Knp\Menu\FactoryInterface');
+        $factory = $this->getMockBuilder(FactoryInterface::class)->getMock();
 
         return $factory;
     }
@@ -37,7 +39,7 @@ class ConfigureMenuEventTest extends \PHPUnit_Framework_TestCase
      */
     protected function getItem()
     {
-        $item = $this->getMock('Knp\Menu\ItemInterface');
+        $item = $this->getMockBuilder(ItemInterface::class)->getMock();
 
         return $item;
     }

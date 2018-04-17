@@ -1,0 +1,4 @@
+forms:
+  not_blank: Dit veld is verplicht.
+  url: Dit is geen geldige URL.
+  email: Dit is geen geldige e-mailadres.

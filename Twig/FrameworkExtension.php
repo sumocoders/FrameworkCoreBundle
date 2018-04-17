@@ -26,12 +26,16 @@ class FrameworkExtension extends \Twig_Extension
      */
     public function getFunctions()
     {
-        return array(
+        return [
             new \Twig_SimpleFunction(
                 'bundleExists',
-                array($this, 'bundleExists')
-            )
-        );
+                [$this, 'bundleExists']
+            ),
+            new \Twig_SimpleFunction(
+                'toTranslation',
+                [$this, 'convertToTranslation']
+            ),
+        ];
     }
 
     /**
@@ -48,10 +52,36 @@ class FrameworkExtension extends \Twig_Extension
     }
 
     /**
-     * {@inheritdoc}
+     * Convert a given string into a string that will/can be used as a id for
+     * translations
+     *
+     * @param string $stringToConvert
+     * @return string
      */
-    public function getName()
+    public function convertToTranslation($stringToConvert)
     {
-        return 'framework_extension';
+        $stringToConvert = trim($stringToConvert);
+        $stringToConvert = str_replace(
+            ['_', '-', ' ', 'framework', 'Framework'],
+            '.',
+            $stringToConvert
+        );
+
+        // the first item will mostly be the prefix of the namespace
+        $stringToConvert = preg_replace('/(.*)\.(.*)bundle/U', '$1$2', $stringToConvert);
+        $stringToConvert = str_replace('bundle', '', $stringToConvert);
+        $stringToConvert = str_replace('Bundle', '', $stringToConvert);
+
+        if (strtolower(mb_substr($stringToConvert, 0, 11)) == 'sumocoders.') {
+            $stringToConvert = substr($stringToConvert, 11);
+        }
+
+        // remove numbers if they appear at the end or as single items
+        $stringToConvert = preg_replace('/\d+$/', '', $stringToConvert);
+        $stringToConvert = preg_replace('/\.\d*\./', '.', $stringToConvert);
+
+        $stringToConvert = preg_replace('/\.+/', '.', $stringToConvert);
+
+        return trim($stringToConvert, '.');
     }
 }

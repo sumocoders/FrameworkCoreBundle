@@ -22,9 +22,7 @@
     <![endif]-->
 
     {% block stylesheets %}
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" />
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css" />
-      <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}" />
+      <link rel="stylesheet" href="{{ asset('build/css/app.css') }}" />
     {% endblock %}
 
     {% block head_javascripts %}
@@ -32,19 +30,7 @@
         var jsData = {{ jsData|raw }};
       </script>
 
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.min.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.1.1/Chart.min.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment-with-locales.min.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js" ></script>
-      <script type="text/javascript" src="{{ asset('/bundles/mopabootstrap/js/mopabootstrap-collection.js') }}"></script>
-      <script type="text/javascript" src="{{ asset('/assets/js/SumoPlugins.js') }}"></script>
+      <script type="text/javascript" src="{{ asset('build/js/app.js') }}"></script>
 
     {% endblock %}
 
@@ -148,7 +134,6 @@
     {{ include('SumoCodersFrameworkCoreBundle::dialogs.html.twig') }}
 
     {% block javascripts %}
-      <script type="text/javascript" src="{{ asset('/assets/js/Bundle.js') }}"></script>
     {% endblock %}
 
     {% if app.environment == 'dev' %}

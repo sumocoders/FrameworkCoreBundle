@@ -22,7 +22,7 @@
     <![endif]-->
 
     {% block stylesheets %}
-      <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}" />
+      <link rel="stylesheet" href="{{ asset('build/css/app.css') }}" />
     {% endblock %}
 
     {% block head_javascripts %}
@@ -30,11 +30,7 @@
         var jsData = {{ jsData|raw }};
       </script>
 
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
-      <script type="text/javascript" src="{{ asset('/assets/js/SumoPlugins.js') }}"></script>
+      <script type="text/javascript" src="{{ asset('build/js/app.js') }}"></script>
     {% endblock %}
 
     {% block icons %}
@@ -56,7 +52,6 @@
     {% endblock %}
 
     {% block javascripts %}
-      <script type="text/javascript" src="{{ asset('/assets/js/Bundle.js') }}"></script>
     {% endblock %}
 
     {% if app.environment == 'dev' %}

@@ -21,11 +21,15 @@ services:
     tags:
       - { name: knp_menu.menu, alias: side_menu }
 
+  SumoCoders\FrameworkCoreBundle\BreadCrumb\BreadCrumbBuilder:
+    alias: framework.breadcrumb_builder
+
   framework.breadcrumb_builder:
     class: SumoCoders\FrameworkCoreBundle\BreadCrumb\BreadCrumbBuilder
     arguments:
       - "@knp_menu.factory"
       - "@event_dispatcher"
+
   framework.breadcrumb.main:
     class: Kpn\Menu\MenuItem
     factory: ["@framework.breadcrumb_builder", "createBreadCrumb"]

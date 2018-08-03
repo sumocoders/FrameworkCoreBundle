@@ -9,6 +9,6 @@
 {% endblock %}
 
 {% block label %}
-    {{ item.label|trans(item.getExtra('translation_params', {}), item.getExtra('translation_domain', 'messages'))|capitalize }}
+    {{ item.label|trans(item.getExtra('translation_params', {}), item.getExtra('translation_domain', 'messages')) }}
 {% endblock %}
 

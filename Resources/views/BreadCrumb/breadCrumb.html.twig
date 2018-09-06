@@ -1,14 +1,19 @@
 {% extends 'knp_menu.html.twig' %}
 
 {% block list %}
-    {% if item.hasChildren and options.depth is not same as(0) and item.displayChildren %}
-        <ol class="breadcrumb">
-            {{ block('children') }}
-        </ol>
-    {% endif %}
+  {% if item.hasChildren and options.depth is not same as(0) and item.displayChildren %}
+      <ol class="breadcrumb">
+        {{ block('children') }}
+      </ol>
+  {% endif %}
+{% endblock %}
+
+{% block item %}
+  {% set item = item.setAttributes({ 'class': 'breadcrumb-item' }) %}
+  {{ parent() }}
 {% endblock %}
 
 {% block label %}
-    {{ item.label|trans(item.getExtra('translation_params', {}), item.getExtra('translation_domain', 'messages')) }}
+  {{ item.label|trans(item.getExtra('translation_params', {}), item.getExtra('translation_domain', 'messages'))|capitalize }}
 {% endblock %}
 

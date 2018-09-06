@@ -1,17 +1,14 @@
 <div id="main-menu-inner">
-  <div class="navbar navbar-default">
+  <div class="navbar navbar-light bg-light p-0 navbar-expand-md flex-column">
     <div class="wrapper-brand">
       <a href="/" rel="home" class="logo">
         <img class="img-responsive" src="/assets/images/logo-application.svg" alt="{{ fallbacks.get('site_title') }}">
       </a>
     </div>
-    <div class="navbar-header hidden-sm hidden-md hidden-lg">
+    <div class="navbar-header d-sm-none">
       <a class="navbar-brand" href="#">Menu</a>
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse-1" aria-controls="navbar-collapse-1" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
       </button>
     </div>
     <div class="collapse navbar-collapse" id="navbar-collapse-1">

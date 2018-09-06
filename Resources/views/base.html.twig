@@ -74,7 +74,7 @@
                     <ul class="dropdown-menu" role="menu">
                       <li>
                         <a
-                          {% if app.user is admin %}
+                          {% if is_granted('ROLE_ADMIN') %}
                             href="{{ path('sumo_coders.user.route.edit_admin', {'id': app.user.id}) }}"
                           {% else %}
                             href="{{ path('sumo_coders.user.route.edit_user', {'id': app.user.id}) }}"

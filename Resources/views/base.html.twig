@@ -60,26 +60,18 @@
           </div>
           <div class="ml-auto">
             <div class="user-nav d-flex">
-              {% if bundleExists('SumoCodersFrameworkUserBundle') %}
+              {% if bundleExists('SumoCodersFrameworkMultiUserBundle') %}
                 {% if app.user is not null %}
                   <div class="btn-group dropdown">
                     <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                      <i class="fa fa-user-circle-o"></i>
+                      <i class="fas fa-user-circle"></i>
                       <span class="hidden-xs hidden-sm">{{ app.user.username }}</span>
                       <span class="fa fa-chevron-right hidden-xs hidden-sm"></span>
                     </button>
                     <ul class="dropdown-menu" role="menu">
-                      <li>
-                        <a
-                          {% if is_granted('ROLE_ADMIN') %}
-                            href="{{ path('sumo_coders.user.route.edit_admin', {'id': app.user.id}) }}"
-                          {% else %}
-                            href="{{ path('sumo_coders.user.route.edit_user', {'id': app.user.id}) }}"
-                          {% endif %}
-                        >
-                          {{ 'user.actions.settings'|trans|capitalize }}
-                        </a>
-                      </li>
+                      {% block userNavigation %}
+
+                      {% endblock %}
                       {% if is_granted('ROLE_PREVIOUS_ADMIN') %}
                         <li><a href="{{ path('sumocoders_frameworkuser_index_index') }}?_switch_user=_exit">{{ 'user.actions.switchBack'|trans|capitalize }}</a></li>
                       {% else %}

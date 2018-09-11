@@ -58,8 +58,8 @@
               {{ knp_menu_render('breadcrumb', {'template': 'SumoCodersFrameworkCoreBundle:BreadCrumb:breadCrumb.html.twig'}) }}
             </nav>
           </div>
-          <div class="col-sm-6 col-md-8 col-alternative">
-            <div class="user-nav">
+          <div class="ml-auto">
+            <div class="user-nav d-flex">
               {% if bundleExists('SumoCodersFrameworkUserBundle') %}
                 {% if app.user is not null %}
                   <div class="btn-group dropdown">

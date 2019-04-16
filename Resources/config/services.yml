@@ -48,11 +48,6 @@ services:
     tags:
       - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\BirthdayType }
 
-  framework.date_time_type_extension:
-    class: SumoCoders\FrameworkCoreBundle\Form\Extension\DateTimeTypeExtension
-    tags:
-      - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\DateTimeType }
-
   framework.button_type_icon_extension:
     class: SumoCoders\FrameworkCoreBundle\Form\Extension\ButtonTypeIconExtension
     tags:

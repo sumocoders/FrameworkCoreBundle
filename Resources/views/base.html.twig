@@ -53,7 +53,7 @@
     <div id="content-wrapper">
       <div class="main-header">
         <div class="sub-nav row">
-          <div class="col-sm-6 col-md-4 col-alternative">
+          <div class="col-sm-6 col-md-4{% if not bundleExists('SumoCodersFrameworkSearchBundle') %} col-lg-8{% endif %} col-alternative">
             <nav aria-label="breadcrumb">
               {{ knp_menu_render('breadcrumb', {'template': '@SumoCodersFrameworkCore/BreadCrumb/breadCrumb.html.twig'}) }}
             </nav>

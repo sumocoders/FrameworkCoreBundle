@@ -22,7 +22,6 @@
     "friendsofsymfony/jsrouting-bundle": "^2",
     "white-october/pagerfanta-bundle": "^1.0",
     "ramsey/uuid": "^3.7",
-    "mopa/bootstrap-bundle": "^3.0",
     "jms/i18n-routing-bundle": "^3.0",
     "knplabs/knp-menu-bundle": "^2.2",
     "tijsverkoyen/css-to-inline-styles": "^2.2"

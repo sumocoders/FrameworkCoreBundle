@@ -10,354 +10,76 @@
         {% set label_attr = label_attr|merge({'for': id}) %}
       {% endif %}
       {% set label_attr_class = '' %}
-      {% if horizontal %}
-        {% set label_attr_class = 'control-label ' ~ label_attr_class ~ horizontal_label_class %}
-      {% endif %}
       {% set label_attr = label_attr|merge({'class': label_attr.class|default('') ~ " " ~ label_attr_class ~ (required ? ' required' : ' optional') }) %}
       <label{% for attrname,attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
-      {{ label }}{{- block('label_asterisk') }}
-      {% if help_label %}
-        {{ block('help_label') }}
-      {% endif %}
-      {% if help_label_tooltip.title %}
-        {{ block('help_label_tooltip') }}
-      {% endif %}
-      {% if help_label_popover.title %}
-        {{ block('help_label_popover') }}
-      {% endif %}
+      {{ label|trans|capitalize }}{{- block('label_asterisk') }}
       </label>
-
     {% endif %}
   {% endif %}
 {% endblock form_label %}
 
-{% block help_label_tooltip %}
-  <span class="help-block{% if help_label_tooltip.icon is not same as(false) %} inline{% endif %}">
-    <a href="#" data-toggle="tooltip" data-placement="{{ help_label_tooltip.placement }}"
-      data-title="{{ help_label_tooltip.title|trans({}, translation_domain) }}">
-      {% if help_label_tooltip.icon is not same as(false) %}
-        <i class="fas fa-{{ help_label_tooltip.icon }}"></i>
-      {% endif %}
-      {% if help_label_tooltip.text is not same as(null) %}
-        <span class="text-muted">{{ help_label_tooltip.text }}</span>
-      {% endif %}
-    </a>
-  </span>
-{% endblock help_label_tooltip %}
-
-{% block help_label_popover %}
-  <span class="help-block{% if help_label_popover.icon is not same as(false) %} inline{% endif %}">
-    <a href="#" data-toggle="popover" data-trigger="hover" data-placement="{{ help_label_popover.placement }}"
-      data-title="{{ help_label_popover.title|trans({}, translation_domain) }}"
-      data-content="{{ help_label_popover.content|trans({}, translation_domain) }}">
-      {% if help_label_popover.icon is not same as(false) %}
-        {{ <i class="fa fa-{{ help_label_popover.icon }}"></i> }}
-      {% endif %}
-      {% if help_label_popover.text is not same as(null) %}
-        <span class="text-muted">{{ help_label_popover.text }}</span>
-      {% endif %}
-    </a>
-  </span>
-{% endblock help_label_popover %}
-
-
 {%- block label_asterisk -%}
   {% if required %}
-    {%- if render_required_asterisk %}<abbr title="{{ 'forms.labels.required'|trans({}, translation_domain) }}">
-        *</abbr>{% endif -%}
+    <abbr title="{{ 'forms.labels.required'|trans({}, translation_domain) }}">*</abbr>
   {% else %}
     {%- if render_optional_text %}
       <small class="text-muted">{{ 'forms.labels.optional'|trans({}, translation_domain) }}</small>{% endif -%}
   {% endif %}
 {%- endblock label_asterisk -%}
 
-{% block date_widget %}
-  {% spaceless %}
-    {% if widget == 'single_text' %}
-      {% if datepicker %}
-        {% set widget_addon_icon = widget_addon_append.icon is defined ? widget_addon_append.icon : 'calendar' %}
-        <div class="input-group">
-          <input type="text"
-            {% if widget_form_control_class is not same as(false) %}
-              class="{{ widget_form_control_class }}"
-            {% endif %}
-            data-role="datepicker"
-            data-format="{{ format }}"
-            value="{{ value }}"
-            {{ block('widget_attributes') }}
-            {% if maximum_date is not null %}
-              data-date-end-date="{{ maximum_date }}"
-            {% endif %}
-            {% if minimum_date is not null %}
-              data-date-start-date="{{ minimum_date }}"
-            {% endif %}
-            {% if read_only is defined and read_only %} readonly="readonly"{% endif %}
-            {% if disabled %} disabled="disabled"{% endif %}
-            {% if required %} required="required"{% endif %}
-          >
-          <a class="input-group-addon btn btn-primary js-input-focus" data-toggle="#{{ id }}">
-            {{ <i class="fa fa-{{ widget_addon_icon }}"></i> }}
-            <span class="hidden">{{ 'datepicker.pickDate'|trans }}</span>
-          </a>
-        </div>
-      {% else %}
-        {{ block('form_widget_simple') }}
-      {% endif %}
-    {% else %}
-      {% if dont_render_row is not defined or not dont_render_row %}
-        <div class="row date-widget">
-      {% endif %}
-      {% set attr = attr|merge({'class': attr.class|default('inline')}) %}
-      {% set year_widget = form_widget(form.year, {'attr': {'class': attr.widget_class|default('') ~ 'year',}, 'horizontal_input_wrapper_class': horizontal_input_wrapper_class|default('col-sm-3')}) %}
-      {% set month_widget = form_widget(form.month, {'attr': {'class': attr.widget_class|default('') ~ 'month'}, 'horizontal_input_wrapper_class': horizontal_input_wrapper_class|default('col-sm-3')}) %}
-      {% set day_widget = form_widget(form.day, {'attr': {'class': attr.widget_class|default('') ~ 'day'}, 'horizontal_input_wrapper_class': horizontal_input_wrapper_class|default('col-sm-3')}) %}
-      <div class="col-md-2">{{ day_widget|raw }}</div>
-      <span class="pull-left date-separator">{{ devider }}</span>
-      <div class="col-md-2">{{ month_widget|raw }}</div>
-      <span class="pull-left date-separator">{{ devider }}</span>
-      <div class="col-md-2">{{ year_widget|raw }}</div>
-      {% if dont_render_row is not defined or not dont_render_row %}
-        </div>
-      {% endif %}
-    {% endif %}
-  {% endspaceless %}
-{% endblock date_widget %}
-
-{% block time_widget %}
-  {% spaceless %}
-    {% if widget == 'single_text' %}
-      {% if timepicker is defined %}
-        {% set widget_addon_icon = widget_addon_append.icon is defined ? widget_addon_append.icon : 'time' %}
-        <div data-provider="date" class="input-group date" data-date="{{ value }}" data-link-field="{{ id }}"
-          data-link-format="hh:ii">
-          <input class="form-control"
-            type="text" {% if read_only %} readonly="readonly"{% endif %}{% if disabled %} disabled="disabled"{% endif %}{% if required %} required="required"{% endif %}{% if 'placeholder' in attr|keys %} placeholder="{{ attr['placeholder'] }}"{% endif %}>
-          <input type="hidden" value="{{ value }}" {{ block('widget_attributes') }}>
-          <span class="input-group-addon">{{ <i class="fa fa-{{ widget_addon_icon }}"></i> }}</span>
-        </div>
-      {% else %}
-        {{ block('form_widget_simple') }}
-      {% endif %}
-    {% else %}
-      {% set attr = attr|merge({'class': attr.class|default('')}) %}
-      {% spaceless %}
-        {% if dont_render_row is not defined or not dont_render_row %}
-          <div class="row time-widget">
-        {% endif %}
-        <div class="col-md-2">
-          {{ form_widget(form.hour, { 'attr': {  'size': '1'}, 'horizontal_input_wrapper_class': horizontal_input_wrapper_class|default('col-sm-2')}) }}
-        </div>
-        <span class='pull-left date-separator'>:</span>
-        <div class="col-md-2">
-          {{ form_widget(form.minute, { 'attr': { 'size': '1' }, 'horizontal_input_wrapper_class': horizontal_input_wrapper_class|default('col-sm-2')}) }}
-        </div>
-        {% if with_seconds %}
-          <span class='pull-left date-separator'>:</span>
-          <div class="col-md-2">
-            {{ form_widget(form.second, { 'attr': { 'size': '1' }, 'horizontal_input_wrapper_class': horizontal_input_wrapper_class|default('col-sm-2') }) }}
-          </div>
-        {% endif %}
-        {% if dont_render_row is not defined or not dont_render_row %}
-          </div>
-        {% endif %}
-      {% endspaceless %}
-    {% endif %}
-  {% endspaceless %}
-{% endblock time_widget %}
-
-{% block datetime_widget %}
-  {% spaceless %}
-    {% if widget == 'single_text' %}
-      {% if datetimepicker is defined %}
-        {% set widget_addon_icon = widget_addon_append.icon is defined ? widget_addon_append.icon : 'th' %}
-        <div class="input-group">
-          <input type="text"
-            {% if widget_form_control_class is not same as(false) %}
-              class="{{ widget_form_control_class }}"
-            {% endif %}
-            data-role="datepicker"
-            data-format="{{ format }}"
-            value="{{ value }}"
-            {{ block('widget_attributes') }}
-            {% if maximum_date is not null %}
-              data-date-end-date="{{ maximum_date }}"
-            {% endif %}
-            {% if minimum_date is not null %}
-              data-date-start-date="{{ minimum_date }}"
-            {% endif %}
-            {% if read_only is defined and read_only %} readonly="readonly"{% endif %}
-            {% if disabled %} disabled="disabled"{% endif %}
-            {% if required %} required="required"{% endif %}
-          >
-          <a class="input-group-addon btn btn-primary js-input-focus" data-toggle="#{{ id }}">
-            {{ <i class="fa fa-{{ widget_addon_icon }}"></i> }}
-            <span class="hidden">{{ 'datepicker.pickDate'|trans }}</span>
-          </a>
-        </div>
-      {% else %}
-        {{ block('form_widget_simple') }}
-      {% endif %}
-    {% else %}
-      {% set attr = attr|merge({'class': attr.class|default('row datetime-widget')}) %}
-      <div {{ block('widget_container_attributes') }}>
-        {{ form_errors(form.date) }}
-        {{ form_errors(form.time) }}
-        {{ form_widget(form.date, {'dont_render_row': true, 'attr': {'class': attr.widget_class|default('')}, 'horizontal_input_wrapper_class': horizontal_input_wrapper_class|default('col-sm-3')}) }}
-        {{ form_widget(form.time, {'dont_render_row': true, 'attr': {'class': attr.widget_class|default('')}, 'horizontal_input_wrapper_class': horizontal_input_wrapper_class|default('col-sm-2')}) }}
-      </div>
-    {% endif %}
-  {% endspaceless %}
-{% endblock datetime_widget %}
-
 {% block collection_widget %}
   {% spaceless %}
     {% if prototype is defined %}
-      {% set prototype_markup = form_row(prototype) %}
-      {% set data_prototype_name = form.vars.form.vars.prototype.vars.name|default('__name__') %}
-      {% set data_prototype_label = form.vars.form.vars.prototype.vars.label|default('__name__label__') %}
-      {% set widget_form_group_attr = widget_form_group_attr|merge({
-        'data-prototype': prototype_markup,
-        'data-prototype-name': data_prototype_name,
-        'data-prototype-label': data_prototype_label
-      })|merge(attr) %}
+      {% set attr = attr|merge({'data-prototype': form_row(prototype)}) %}
+      {% set attr = attr|merge({'data-prototype-name': prototype.vars.name}) %}
+      {% set attr = attr|merge({'data-prototype-label': prototype.vars.label}) %}
     {% endif %}
-    {# Add row by default use attr.class to change#}
-    {% if 'collection' in form.vars.block_prefixes and attr.class is defined %}
-      {% set widget_form_group_attr = widget_form_group_attr|merge({'class': widget_form_group_attr.class|default('row') ~ ' ' ~ attr.class}) %}
-    {% endif %}
-    {# collection item adds class {form_id}_form-group  too #}
-    {% set widget_form_group_attr = widget_form_group_attr|merge({'id': 'collection' ~ id ~ '_form_group', 'class': 'collection-items ' ~ id ~ '_form_group'}) %}
 
-    <div {% for attrname,attrvalue in widget_form_group_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
-    {# Add initial prototype form #}
-    {% if form.vars.value|length == 0 and prototype is defined %}
-      {% for name in prototype_names %}
-        {{ prototype_markup|replace({'__name__': name})|raw }}
-      {% endfor %}
-    {% endif %}
+    {% set attr = attr|merge({'data-allow-add': allow_add ? 1 : 0}) %}
+    {% set attr = attr|merge({'data-allow-remove': allow_delete ? 1 : 0 }) %}
+    {% set attr = attr|merge({'data-name-prefix': full_name}) %}
+    {% set attr = attr|merge({'data-role': 'collection'}) %}
+
     {{ block('form_widget') }}
-    </div>
+    {{ block('form_errors') }}
 
-    {% if 'collection' in form.vars.block_prefixes and widget_add_btn|default(null) and form.vars.allow_add == true %}
+    <div style="display: none;" data-role="collection-template-button-container" data-target="{{ form.vars.id }}">
       {{ block('form_widget_add_btn') }}
-    {% endif %}
-
+      {{ block('form_widget_remove_btn') }}
+      {{ block('form_widget_up_btn') }}
+      {{ block('form_widget_down_btn') }}
+    </div>
   {% endspaceless %}
 {% endblock collection_widget %}
 
+{% block form_widget_add_btn %}
+  <button type="button" class="btn btn-default" data-role="collection-template-button" data-action="add" data-toggle="tooltip" title="{{ 'forms.buttons.addItem'|trans|capitalize }}">
+    <i class="fas fa-plus"></i>
+  </button>
+{% endblock %}
+
 {% block form_widget_remove_btn %}
-  {% spaceless %}
-    {% if widget_remove_btn.wrapper_div.class is defined and widget_remove_btn.wrapper_div.class is not same as(false) %}
-      <div class="{{ widget_remove_btn.wrapper_div.class }}">
-    {% endif %}
-    {% if widget_remove_btn.horizontal_wrapper_div.class is defined and widget_remove_btn.horizontal_wrapper_div.class is not same as(false) %}
-    <div class="{{ widget_remove_btn.horizontal_wrapper_div.class }}">
-    {% endif %}
-    {% if widget_remove_btn|default(null) %}
-      {% set button_type = 'remove' %}
-      {% set button_values = widget_remove_btn %}
+  <button type="button" class="btn btn-default" data-role="collection-template-button" data-action="remove" data-toggle="tooltip" title="{{ 'forms.buttons.removeItem'|trans|capitalize }}">
+    <i class="fas fa-trash"></i>
+  </button>
+{% endblock %}
 
-      <a {% for attrname,attrvalue in button_values.attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %} data-collection-{{ button_type }}-btn=".{{ form.vars['id'] }}_form_group"
-      {% if button_values.attr.title is not defined and button_values.label is defined %}
-        title="{{ button_values.label|trans({}, translation_domain) }}"
-      {% endif %}
-      >
-      {% if button_values.icon is not null %}
-        {{ <i class="fa fa-{{ button_values.icon }}"></i> }}
-      {% endif %}
-      {% if button_values.label is defined %}
-        <span class="hide">
-             {{ button_values.label|trans({}, translation_domain) }}
-           </span>
-      {% endif %}
-      </a>
-    {% endif %}
-    {% if widget_remove_btn.horizontal_wrapper_div.class is defined and widget_remove_btn.horizontal_wrapper_div.class is not same as(false) %}
-    </div>
-    {% endif %}
-    {% if widget_remove_btn.wrapper_div.class is defined and widget_remove_btn.wrapper_div.class is not same as(false) %}
-      </div>
-    {% endif %}
-  {% endspaceless %}
-{% endblock form_widget_remove_btn %}
+{% block form_widget_up_btn %}
+  <button type="button" class="btn btn-default" data-role="collection-template-button" data-action="up" data-toggle="tooltip" title="{{ 'forms.buttons.moveUp'|trans|capitalize }}">
+    <i class="fas fa-angle-up"></i>
+  </button>
+{% endblock %}
 
-{% block form_row %}
-  {% spaceless %}
-    {% if 'tab' in form.vars.block_prefixes %}
-      {{ block('form_tab') }}
-    {% elseif embed_form is same as(true) %}
-      {% if widget_prefix is not empty %}{{ widget_prefix|trans({}, translation_domain)|raw }}{% endif %} {{ form_widget(form, _context) }} {% if widget_suffix is not empty %}{{ widget_suffix|trans({}, translation_domain)|raw }}{% endif %}
-    {% else %}
-      {{ block('widget_form_group_start') }}
-
-      {% if horizontal and not label_render %}
-        {% set horizontal_input_wrapper_class = horizontal_input_wrapper_class ~ ' ' ~ horizontal_label_offset_class %}
-      {% endif %}
-
-      {% if horizontal %}
-        <div class="{{ horizontal_input_wrapper_class }}">
-      {% endif %}
-
-      {% if widget_prefix is not empty %}{{ widget_prefix|trans({}, translation_domain)|raw }}{% endif %} {{ form_widget(form, _context) }} {% if widget_suffix is not empty %}{{ widget_suffix|trans({}, translation_domain)|raw }}{% endif %}
-
-      {% set type = type|default('text') %}
-      {% if type != 'hidden' %}
-        {{ block('form_message') }}
-      {% endif %}
-
-      {% if horizontal %}
-        </div>
-      {% endif %}
-
-      {% if form.parent is not null and 'collection' in form.parent.vars.block_prefixes and widget_remove_btn|default(null) and form.parent.vars.allow_delete|default(false) %}
-        {{ block('form_widget_remove_btn') }}
-      {% endif -%}
-      {{ block('widget_form_group_end') }}
-    {% endif %}
-  {% endspaceless %}
-{% endblock form_row %}
-
-{% block button_widget -%}
-  {% set attr = attr|merge({class: (attr.class|default('') ~ ' btn')|trim}) %}
-  {% if label is empty -%}
-    {%- if label_format is not empty -%}
-      {% set label = label_format|replace({
-        '%name%': name,
-        '%id%': id,
-      }) %}
-    {%- else -%}
-      {% set label = name|humanize %}
-    {%- endif -%}
-  {%- endif -%}
-  {% if icon|default %}
-    {% set iconHtml = '<i class="' ~ icon ~ '"></i> ' %}
-  {% else %}
-    {% set iconHtml = '' %}
-  {% endif %}
-  <button
-    type="{{ type|default('button') }}" {{ block('button_attributes') }}>{{ iconHtml|raw }}{{ label|trans({}, translation_domain) }}</button>
-{%- endblock button_widget %}
-
-{% block fieldset_row %}
-  {% if open_row is defined and open_row %}
-    <div class="row">
-  {% endif %}
-  <fieldset{% if fieldset_class is defined and fieldset_class is not empty %} class="{{ fieldset_class }}"{% endif %}>
-    {% if legend is defined and legend is not empty %}
-      <legend{% if legend_class is defined and legend_class is not empty %} class="{{ legend_class }}"{% endif %}>{{ legend|trans({}, translation_domain)|capitalize }}</legend>
-    {% endif %}
-    {{ block('form_widget') }}
-
-  </fieldset>
-  {% if close_row  is defined and close_row %}
-    </div>
-  {% endif %}
+{% block form_widget_down_btn %}
+  <button type="button" class="btn btn-default" data-role="collection-template-button" data-action="down" data-toggle="tooltip" title="{{ 'forms.buttons.moveDown'|trans|capitalize }}">
+    <i class="fas fa-angle-down"></i>
+  </button>
 {% endblock %}
 
 {%- block form_errors -%}
   {% if form.parent is null %}
     {% if not form.vars.valid %}
-      <div class="alert alert-danger">
+      <div class="alert alert-danger" role="alert">
         <ul class="list-unstyled">
           {% for child in form.children %}
             {% set label = child.vars.label %}
@@ -383,10 +105,10 @@
     {% endif %}
   {% else %}
     {% if errors|length > 0 -%}
-      {% if form.parent %}<span class="help-block">{% else %}<div class="alert alert-danger">{% endif %}
+      {% if form.parent %}<span class="help-block">{% else %}<div class="alert alert-danger" role="alert">{% endif %}
       <ul class="list-unstyled">
         {%- for error in errors -%}
-          <li><span class="fa fa-exclamation-triangle"></span> {{ error.message }}</li>
+          <li><span class="fas fa-exclamation-triangle"></span> {{ error.message }}</li>
         {%- endfor -%}
       </ul>
       {% if form.parent %}</span>{% else %}</div>{% endif %}
@@ -426,7 +148,7 @@
       <div class="form-group">
         {% if show_preview and preview_url %}
           <a href="{{ preview_url }}" class="btn btn-xs btn-default" target="_blank">
-            <span class="fa fa-eye" aria-hidden="true"></span>
+            <span class="fas fa-eye" aria-hidden="true"></span>
             {{ preview_label|trans|capitalize }}
           </a>
         {% endif %}
@@ -437,14 +159,3 @@
     {% endif %}
   {% endspaceless %}
 {% endblock %}
-
-{% block collection_button %}
-  <a {% for attrname,attrvalue in button_values.attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %} data-collection-{{ button_type }}-btn=".{{ form.vars['id'] }}_form_group">
-  {% if button_values.icon is not null %}
-    {{ <i class="fa fa-{{ button_values.icon }}"></i> }}
-  {% endif %}
-  {% if button_values.label is defined %}
-    {{ button_values.label|trans({}, button_values.translation_domain|default(translation_domain))|capitalize }}
-  {% endif %}
-  </a>
-{% endblock collection_button %}

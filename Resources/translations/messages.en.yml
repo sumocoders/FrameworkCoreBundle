@@ -109,6 +109,8 @@ forms:
         update: save
         addItem: add
         removeItem: remove
+        moveUp: move up
+        moveDown: move down
 
 header:
     navigation:

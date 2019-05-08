@@ -1,3 +1,5 @@
+{% import _self as formMacros %}
+
 {% block form_label %}
   {% if 'checkbox' not in block_prefixes or widget_checkbox_label in ['label', 'both'] %}
     {% if label is not same as(false) %}
@@ -28,9 +30,10 @@
 {%- endblock label_asterisk -%}
 
 {% block collection_widget %}
+  {% import _self as formMacros %}
+
   {% spaceless %}
     {% if prototype is defined %}
-      {% set attr = attr|merge({'data-prototype': form_row(prototype)}) %}
       {% set attr = attr|merge({'data-prototype-name': prototype.vars.name}) %}
       {% set attr = attr|merge({'data-prototype-label': prototype.vars.label}) %}
     {% endif %}
@@ -40,7 +43,10 @@
     {% set attr = attr|merge({'data-name-prefix': full_name}) %}
     {% set attr = attr|merge({'data-role': 'collection'}) %}
 
-    {{ block('form_widget') }}
+    <div {{ block('widget_container_attributes') }} data-prototype="{{ formMacros.renderCollectionItem(prototype)|e('html_attr') }}">
+      {{ block('collection_rows') }}
+      {{ form_rest(form) }}
+    </div>
     {{ block('form_errors') }}
 
     <div style="display: none;" data-role="collection-template-button-container" data-target="{{ form.vars.id }}">
@@ -51,6 +57,15 @@
     </div>
   {% endspaceless %}
 {% endblock collection_widget %}
+
+{% block collection_rows %}
+  {% spaceless %}
+    {{ form_errors(form) }}
+    {% for child in form %}
+      {{ formMacros.renderCollectionItem(child) }}
+    {% endfor %}
+  {% endspaceless %}
+{% endblock collection_rows %}
 
 {% block form_widget_add_btn %}
   <button type="button" class="btn btn-default" data-role="collection-template-button" data-action="add" data-toggle="tooltip" title="{{ 'forms.buttons.addItem'|trans|capitalize }}">
@@ -160,3 +175,11 @@
     {% endif %}
   {% endspaceless %}
 {% endblock %}
+
+{% macro renderCollectionItem(item) %}
+  <div class="card">
+    <div class="card-body">
+      {{ form_row(item, {'attr':{'class':'collection-item'}}) }}
+    </div>
+  </div>
+{% endmacro %}

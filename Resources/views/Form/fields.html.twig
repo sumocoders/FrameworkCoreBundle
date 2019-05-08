@@ -80,6 +80,7 @@
   {% if form.parent is null %}
     {% if not form.vars.valid %}
       <div class="alert alert-danger" role="alert">
+        {{ 'forms.message.hasErrors'|trans|capitalize }}:
         <ul class="list-unstyled">
           {% for child in form.children %}
             {% set label = child.vars.label %}

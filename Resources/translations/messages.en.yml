@@ -112,6 +112,9 @@ forms:
         moveUp: move up
         moveDown: move down
 
+    message:
+        hasErrors: Your form contains invalid information
+
 header:
     navigation:
         actions:

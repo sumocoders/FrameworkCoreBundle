@@ -112,6 +112,9 @@ forms:
         moveUp: naar boven verplaatsen
         moveDown: naar beneden verplaatsen
 
+    message:
+      hasErrors: Uw formulier bevat ongeldige informatie
+
 header:
     navigation:
         actions:

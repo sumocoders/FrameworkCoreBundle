@@ -177,9 +177,9 @@
 {% endblock %}
 
 {% macro renderCollectionItem(item) %}
-  <div class="card">
+  <div class="card collection-item">
     <div class="card-body">
-      {{ form_row(item, {'attr':{'class':'collection-item'}}) }}
+      {{ form_row(item) }}
     </div>
   </div>
 {% endmacro %}

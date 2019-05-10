@@ -43,53 +43,59 @@
     {% set attr = attr|merge({'data-name-prefix': full_name}) %}
     {% set attr = attr|merge({'data-role': 'collection'}) %}
 
-    <div {{ block('widget_container_attributes') }} data-prototype="{{ formMacros.renderCollectionItem(prototype)|e('html_attr') }}">
-      {{ block('collection_rows') }}
-      {{ form_rest(form) }}
+    <div
+        {{ block('widget_container_attributes') }}
+        data-prototype="{{ formMacros.renderCollectionItem(prototype)|e('html_attr') }}"
+        class="card bg-light">
+      <div class="card-body">
+        {{ block('collection_rows') }}
+        {{ form_rest(form) }}
+      </div>
     </div>
     {{ block('form_errors') }}
-
-    <div style="display: none;" data-role="collection-template-button-container" data-target="{{ form.vars.id }}">
-      {{ block('form_widget_add_btn') }}
-      {{ block('form_widget_remove_btn') }}
-      {{ block('form_widget_up_btn') }}
-      {{ block('form_widget_down_btn') }}
-    </div>
   {% endspaceless %}
 {% endblock collection_widget %}
 
 {% block collection_rows %}
   {% spaceless %}
     {{ form_errors(form) }}
+
+    <div class="d-flex justify-content-end">
+      <button type="button" class="btn btn-outline-success btn-sm mb-2" data-role="collection-add-button">
+        <i class="fas fa-plus"></i> {{ 'forms.buttons.addItem'|trans|capitalize }}
+      </button>
+    </div>
+
     {% for child in form %}
-      {{ formMacros.renderCollectionItem(child) }}
+      <ul data-role="collection-item-container" class="list-unstyled">
+        {{ formMacros.renderCollectionItem(child) }}
+      </ul>
     {% endfor %}
+
+    <div class="d-flex justify-content-end">
+      <button type="button" class="btn btn-outline-success btn-sm" data-role="collection-add-button" hidden>
+        <i class="fas fa-plus"></i> {{ 'forms.buttons.addItem'|trans|capitalize }}
+      </button>
+    </div>
   {% endspaceless %}
 {% endblock collection_rows %}
 
-{% block form_widget_add_btn %}
-  <button type="button" class="btn btn-success" data-role="collection-template-button" data-action="add" data-toggle="tooltip" title="{{ 'forms.buttons.addItem'|trans|capitalize }}">
-    <i class="fas fa-plus"></i>
-  </button>
-{% endblock %}
-
-{% block form_widget_remove_btn %}
-  <button type="button" class="btn btn-danger" data-role="collection-template-button" data-action="remove" data-toggle="tooltip" title="{{ 'forms.buttons.removeItem'|trans|capitalize }}">
-    <i class="fas fa-trash"></i>
-  </button>
-{% endblock %}
-
-{% block form_widget_up_btn %}
-  <button type="button" class="btn btn-default" data-role="collection-template-button" data-action="up" data-toggle="tooltip" title="{{ 'forms.buttons.moveUp'|trans|capitalize }}">
-    <i class="fas fa-angle-up"></i>
-  </button>
-{% endblock %}
-
-{% block form_widget_down_btn %}
-  <button type="button" class="btn btn-default" data-role="collection-template-button" data-action="down" data-toggle="tooltip" title="{{ 'forms.buttons.moveDown'|trans|capitalize }}">
-    <i class="fas fa-angle-down"></i>
-  </button>
-{% endblock %}
+{% macro renderCollectionItem(item) %}
+  <li>
+    <div class="card mb-3 ml-4 pl-4 collection-item" data-role="collection-item">
+      <div class="card-body">
+        <div class="d-flex justify-content-end">
+          <button type="button" class="btn btn-outline-danger btn-sm"
+                  data-role="collection-remove-button" title="{{ 'forms.buttons.removeItem'|trans|capitalize }}">
+            <i class="fas fa-trash"></i> <span class="sr-only">{{ 'forms.buttons.removeItem'|trans|capitalize }}</span>
+          </button>
+        </div>
+        <i class="fas fa-bars btn btn-default collection-item-drag-and-drop" title="{{ 'forms.buttons.changeOrder'|trans|capitalize }}" data-role="collection-item-change-order"></i>
+        {{ form_row(item) }}
+      </div>
+    </div>
+  </li>
+{% endmacro %}
 
 {%- block form_errors -%}
   {% if form.parent is null %}
@@ -175,11 +181,3 @@
     {% endif %}
   {% endspaceless %}
 {% endblock %}
-
-{% macro renderCollectionItem(item) %}
-  <div class="card collection-item">
-    <div class="card-body">
-      {{ form_row(item) }}
-    </div>
-  </div>
-{% endmacro %}

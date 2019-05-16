@@ -43,6 +43,16 @@ services:
     tags:
       - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\DateType }
 
+  framework.time_type_extension:
+    class: SumoCoders\FrameworkCoreBundle\Form\Extension\TimeTypeExtension
+    tags:
+      - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\TimeType }
+
+  framework.date_time_type_extension:
+    class: SumoCoders\FrameworkCoreBundle\Form\Extension\DateTimeTypeExtension
+    tags:
+      - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\DateTimeType }
+
   framework.birthday_type_extension:
     class: SumoCoders\FrameworkCoreBundle\Form\Extension\BirthdayTypeExtension
     tags:
@@ -75,6 +85,11 @@ services:
       - [setDefaultSender, ["%mailer.default_sender_email%", "%mailer.default_sender_name%"]]
       - [setDefaultReplyTo, ["%mailer.default_reply_to_email%", "%mailer.default_reply_to_name%"]]
       - [setDefaultTo, ["%mailer.default_to_email%", "%mailer.default_to_name%"]]
+
+  sumocoders_form_type_date:
+    class: SumoCoders\FrameworkCoreBundle\Form\Type\DateType
+    tags:
+      - { name: form.type, alias: sumoDate }
 
   sumocoders_form_type_fieldset:
     class: SumoCoders\FrameworkCoreBundle\Form\Type\FieldsetType

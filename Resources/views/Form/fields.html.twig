@@ -181,3 +181,141 @@
     {% endif %}
   {% endspaceless %}
 {% endblock %}
+
+{% block date_widget %}
+  {% spaceless %}
+    {% if widget == 'single_text' %}
+      {% if datepicker %}
+        <div class="input-group date" id="{{ form.vars.id }}" data-target-input="nearest" data-role="date-picker">
+          <input
+              type="text"
+              class="form-control {{ attr.class|default('')|join(' ') }} datetimepicker-input"
+              data-target="#{{ form.vars.id }}"
+              data-toggle="datetimepicker"
+              value="{{ value }}"
+              {% if minimum_date %}data-min-date="{{ minimum_date }}"{% endif %}
+              {% if maximum_date %}data-max-date="{{ maximum_date }}"{% endif %}
+              {{ block('widget_attributes') }}
+              {% if read_only is defined and read_only %} readonly="readonly"{% endif %}
+              {% if disabled %} disabled="disabled"{% endif %}
+              {% if required %} required="required"{% endif %}
+          >
+          <div class="input-group-append" data-target="#{{ form.vars.id }}" data-toggle="datetimepicker">
+            <div class="input-group-text">
+              <i class="fas fa-calendar"></i>
+            </div>
+          </div>
+        </div>
+      {% else %}
+        {{ block('form_widget_simple') }}
+      {% endif %}
+    {% else %}
+      {% if dont_render_row is not defined or not dont_render_row %}
+        <div class="row date-widget">
+      {% endif %}
+      {% set attr = attr|merge({'class': attr.class|default('inline')}) %}
+      {% set year_widget = form_widget(form.year, {'attr': {'class': attr.widget_class|default('') ~ 'year',}, 'horizontal_input_wrapper_class': horizontal_input_wrapper_class|default('col-sm-3')}) %}
+      {% set month_widget = form_widget(form.month, {'attr': {'class': attr.widget_class|default('') ~ 'month'}, 'horizontal_input_wrapper_class': horizontal_input_wrapper_class|default('col-sm-3')}) %}
+      {% set day_widget = form_widget(form.day, {'attr': {'class': attr.widget_class|default('') ~ 'day'}, 'horizontal_input_wrapper_class': horizontal_input_wrapper_class|default('col-sm-3')}) %}
+      <div class="col-md-2">{{ day_widget|raw }}</div>
+      <span class="pull-left date-separator">{{ divider }}</span>
+      <div class="col-md-2">{{ month_widget|raw }}</div>
+      <span class="pull-left date-separator">{{ divider }}</span>
+      <div class="col-md-2">{{ year_widget|raw }}</div>
+      {% if dont_render_row is not defined or not dont_render_row %}
+        </div>
+      {% endif %}
+    {% endif %}
+  {% endspaceless %}
+{% endblock date_widget %}
+
+{% block time_widget %}
+  {% spaceless %}
+    {% if widget == 'single_text' %}
+      {% if timepicker is defined %}
+        <div class="input-group date" id="{{ form.vars.id }}" data-target-input="nearest" data-role="time-picker">
+          <input
+              type="text"
+              class="form-control {{ attr.class|default('')|join(' ') }} datetimepicker-input"
+              data-target="#{{ form.vars.id }}"
+              data-toggle="datetimepicker"
+              value="{{ value }}"
+              {{ block('widget_attributes') }}
+              {% if read_only is defined and read_only %} readonly="readonly"{% endif %}
+              {% if disabled %} disabled="disabled"{% endif %}
+              {% if required %} required="required"{% endif %}
+          >
+          <div class="input-group-append" data-target="#{{ form.vars.id }}" data-toggle="datetimepicker">
+            <div class="input-group-text">
+              <i class="fas fa-clock"></i>
+            </div>
+          </div>
+        </div>
+      {% else %}
+        {{ block('form_widget_simple') }}
+      {% endif %}
+    {% else %}
+      {% set attr = attr|merge({'class': attr.class|default('')}) %}
+      {% spaceless %}
+        {% if dont_render_row is not defined or not dont_render_row %}
+          <div class="row time-widget">
+        {% endif %}
+        <div class="col-md-2">
+          {{ form_widget(form.hour, { 'attr': {  'size': '1'}, 'horizontal_input_wrapper_class': horizontal_input_wrapper_class|default('col-sm-2')}) }}
+        </div>
+        <span class='pull-left date-separator'>:</span>
+        <div class="col-md-2">
+          {{ form_widget(form.minute, { 'attr': { 'size': '1' }, 'horizontal_input_wrapper_class': horizontal_input_wrapper_class|default('col-sm-2')}) }}
+        </div>
+        {% if with_seconds %}
+          <span class='pull-left date-separator'>:</span>
+          <div class="col-md-2">
+            {{ form_widget(form.second, { 'attr': { 'size': '1' }, 'horizontal_input_wrapper_class': horizontal_input_wrapper_class|default('col-sm-2') }) }}
+          </div>
+        {% endif %}
+        {% if dont_render_row is not defined or not dont_render_row %}
+          </div>
+        {% endif %}
+      {% endspaceless %}
+    {% endif %}
+  {% endspaceless %}
+{% endblock time_widget %}
+
+{% block datetime_widget %}
+  {% spaceless %}
+    {% if widget == 'single_text' %}
+      {% if datetimepicker is defined %}
+        <div class="input-group date" id="{{ form.vars.id }}" data-target-input="nearest" data-role="date-time-picker">
+          <input
+              type="text"
+              class="form-control {{ attr.class|default('')|join(' ') }} datetimepicker-input"
+              data-target="#{{ form.vars.id }}"
+              data-toggle="datetimepicker"
+              value="{{ value }}"
+              {% if minimum_date %}data-min-date="{{ minimum_date }}"{% endif %}
+              {% if maximum_date %}data-max-date="{{ maximum_date }}"{% endif %}
+              {{ block('widget_attributes') }}
+              {% if read_only is defined and read_only %} readonly="readonly"{% endif %}
+              {% if disabled %} disabled="disabled"{% endif %}
+              {% if required %} required="required"{% endif %}
+          >
+          <div class="input-group-append" data-target="#{{ form.vars.id }}" data-toggle="datetimepicker">
+            <div class="input-group-text">
+              <i class="fas fa-calendar"></i>
+            </div>
+          </div>
+        </div>
+      {% else %}
+        {{ block('form_widget_simple') }}
+      {% endif %}
+    {% else %}
+      {% set attr = attr|merge({'class': attr.class|default('row datetime-widget')}) %}
+      <div {{ block('widget_container_attributes') }}>
+        {{ form_errors(form.date) }}
+        {{ form_errors(form.time) }}
+        {{ form_widget(form.date, {'dont_render_row': true, 'attr': {'class': attr.widget_class|default('')}, 'horizontal_input_wrapper_class': horizontal_input_wrapper_class|default('col-sm-3')}) }}
+        {{ form_widget(form.time, {'dont_render_row': true, 'attr': {'class': attr.widget_class|default('')}, 'horizontal_input_wrapper_class': horizontal_input_wrapper_class|default('col-sm-2')}) }}
+      </div>
+    {% endif %}
+  {% endspaceless %}
+{% endblock datetime_widget %}

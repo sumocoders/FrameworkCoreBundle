@@ -5,15 +5,16 @@ namespace SumoCoders\FrameworkCoreBundle\Form\Extension;
 use IntlDateFormatter;
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-final class DateTypeExtension extends AbstractTypeExtension
+final class TimeTypeExtension extends AbstractTypeExtension
 {
     public function getExtendedType()
     {
-        return DateType::class;
+        return TimeType::class;
     }
 
     /**
@@ -23,11 +24,9 @@ final class DateTypeExtension extends AbstractTypeExtension
     {
         $resolver->setDefaults(
             [
-                'format' => DateType::HTML5_FORMAT,
-                'datepicker' => true,
+                'format' => 'HH:mm',
+                'timepicker' => true,
                 'widget' => 'single_text',
-                'maximum_date' => null,
-                'minimum_date' => null,
             ]
         );
 
@@ -45,10 +44,8 @@ final class DateTypeExtension extends AbstractTypeExtension
      */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
-        $view->vars['maximum_date'] = $options['maximum_date'] ? IntlDateFormatter::formatObject($options['maximum_date'], $options['format']) : null;
-        $view->vars['minimum_date'] = $options['minimum_date'] ? IntlDateFormatter::formatObject($options['minimum_date'], $options['format']) : null;
         $view->vars['format'] = $options['format'];
         $view->vars['divider'] = (strpos($options['format'], '-') !== false) ? '-' : '/';
-        $view->vars['datepicker'] = $options['datepicker'] ?? false;
+        $view->vars['timepicker'] = $options['timepicker'] ?? false;
     }
 }

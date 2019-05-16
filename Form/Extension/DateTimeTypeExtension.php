@@ -4,16 +4,17 @@ namespace SumoCoders\FrameworkCoreBundle\Form\Extension;
 
 use IntlDateFormatter;
 use Symfony\Component\Form\AbstractTypeExtension;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-final class DateTypeExtension extends AbstractTypeExtension
+final class DateTimeTypeExtension extends AbstractTypeExtension
 {
     public function getExtendedType()
     {
-        return DateType::class;
+        return DateTimeType::class;
     }
 
     /**
@@ -24,7 +25,7 @@ final class DateTypeExtension extends AbstractTypeExtension
         $resolver->setDefaults(
             [
                 'format' => DateType::HTML5_FORMAT,
-                'datepicker' => true,
+                'datetimepicker' => true,
                 'widget' => 'single_text',
                 'maximum_date' => null,
                 'minimum_date' => null,
@@ -49,6 +50,6 @@ final class DateTypeExtension extends AbstractTypeExtension
         $view->vars['minimum_date'] = $options['minimum_date'] ? IntlDateFormatter::formatObject($options['minimum_date'], $options['format']) : null;
         $view->vars['format'] = $options['format'];
         $view->vars['divider'] = (strpos($options['format'], '-') !== false) ? '-' : '/';
-        $view->vars['datepicker'] = $options['datepicker'] ?? false;
+        $view->vars['datetimepicker'] = $options['datetimepicker'] ?? false;
     }
 }

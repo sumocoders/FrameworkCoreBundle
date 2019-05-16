@@ -22,7 +22,12 @@
     <![endif]-->
 
     {% block stylesheets %}
-      <link rel="stylesheet" href="{{ asset('build/css/app.css') }}" />
+    {% endblock %}
+
+    {# Fontawesome #}
+    {% block css_icons %}
+      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/solid.css" integrity="sha384-ioUrHig76ITq4aEJ67dHzTvqjsAP/7IzgwE7lgJcg2r7BRNGYSK0LwSmROzYtgzs" crossorigin="anonymous">
+      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/fontawesome.css" integrity="sha384-sri+NftO+0hcisDKgr287Y/1LVnInHJ1l+XC7+FOabmTTIK0HnE2ID+xxvJ21c5J" crossorigin="anonymous">
     {% endblock %}
 
     {% block head_javascripts %}
@@ -66,7 +71,7 @@
                     <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                       <i class="fas fa-user-circle"></i>
                       <span class="hidden-xs hidden-sm">{{ app.user.username }}</span>
-                      <span class="fa fa-chevron-right hidden-xs hidden-sm"></span>
+                      <span class="fas fa-chevron-right hidden-xs hidden-sm"></span>
                     </button>
                     <ul class="dropdown-menu" role="menu">
                       {% block userNavigation %}
@@ -115,7 +120,7 @@
       {% block footer %}
         <div class="container-fluid">
           <div class="row hidden-md hidden-lg">
-            <a href="#main-wrapper" class="pull-right back-to-top"><i class="fa fa-chevron-circle-up"></i> {{ 'core.interface.backToTop'|trans|capitalize }}</a>
+            <a href="#main-wrapper" class="pull-right back-to-top"><i class="fas fa-chevron-circle-up"></i> {{ 'core.interface.backToTop'|trans|capitalize }}</a>
           </div>
         </div>
       {% endblock %}
@@ -126,9 +131,5 @@
 
   {% block javascripts %}
   {% endblock %}
-
-  {% if app.environment == 'dev' %}
-    <script src="//localhost:35729/livereload.js"></script>
-  {% endif %}
   </body>
 </html>

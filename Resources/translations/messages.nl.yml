@@ -107,6 +107,13 @@ forms:
     buttons:
         new: toevoegen
         update: opslaan
+        addItem: toevoegen
+        removeItem: verwijderen
+        moveUp: naar boven verplaatsen
+        moveDown: naar beneden verplaatsen
+
+    message:
+      hasErrors: Uw formulier bevat ongeldige informatie
 
 header:
     navigation:

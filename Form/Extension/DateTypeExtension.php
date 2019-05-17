@@ -5,6 +5,9 @@ namespace SumoCoders\FrameworkCoreBundle\Form\Extension;
 use IntlDateFormatter;
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -14,6 +17,20 @@ final class DateTypeExtension extends AbstractTypeExtension
     public function getExtendedType()
     {
         return DateType::class;
+    }
+
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        if ($options['widget'] === 'single_text' && $options['datepicker'] === true) {
+            $builder->addEventListener(
+                FormEvents::PRE_SUBMIT,
+                function (FormEvent $event) {
+                    $data = $event->getData();
+                    $date = \DateTime::createFromFormat('d/m/Y', $data);
+                    $event->setData($date->format('Y-m-d'));
+                }
+            );
+        }
     }
 
     /**

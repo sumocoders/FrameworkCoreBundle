@@ -4,6 +4,7 @@ namespace SumoCoders\FrameworkCoreBundle\Form\Extension;
 
 use IntlDateFormatter;
 use Symfony\Component\Form\AbstractTypeExtension;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -12,27 +13,26 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-final class DateTypeExtension extends AbstractTypeExtension
+final class DateTimeTypeExtension extends AbstractTypeExtension
 {
     public function getExtendedType()
     {
-        return DateType::class;
+        return DateTimeType::class;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        if ($options['widget'] === 'single_text' && $options['datepicker'] === true) {
+        if ($options['widget'] === 'single_text' && $options['datetimepicker'] === true) {
             $builder->addEventListener(
                 FormEvents::PRE_SUBMIT,
                 function (FormEvent $event) {
                     $data = $event->getData();
-                    $date = \DateTime::createFromFormat('d/m/Y', $data);
-                    $event->setData($date->format('Y-m-d'));
+                    $date = \DateTime::createFromFormat('d/m/Y H:i', $data);
+                    $event->setData($date->format('Y-m-d H:i:s'));
                 }
             );
         }
     }
-
     /**
      * {@inheritdoc}
      */
@@ -40,8 +40,8 @@ final class DateTypeExtension extends AbstractTypeExtension
     {
         $resolver->setDefaults(
             [
-                'format' => DateType::HTML5_FORMAT,
-                'datepicker' => true,
+                'format' => DateType::HTML5_FORMAT . ' HH:mm:ss',
+                'datetimepicker' => true,
                 'widget' => 'single_text',
                 'maximum_date' => null,
                 'minimum_date' => null,
@@ -68,6 +68,6 @@ final class DateTypeExtension extends AbstractTypeExtension
             IntlDateFormatter::formatObject($options['minimum_date'], $options['format']) : null;
         $view->vars['format'] = $options['format'];
         $view->vars['divider'] = (strpos($options['format'], '-') !== false) ? '-' : '/';
-        $view->vars['datepicker'] = $options['datepicker'] ?? false;
+        $view->vars['datetimepicker'] = $options['datetimepicker'] ?? false;
     }
 }

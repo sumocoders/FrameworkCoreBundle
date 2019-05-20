@@ -1,10 +1,7 @@
 # SumoCoders FrameworkCoreBundle
 
 The FrameworkCoreBundle will add some functionality which will enable you build
-application in a short timespan. Below all functionality is listed:
-
-* Error handling
-* Integrates Twitter Bootstrap
+application in a short timespan.
 
 ## Documentation
 

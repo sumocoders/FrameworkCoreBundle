@@ -226,6 +226,9 @@
         </div>
       {% endif %}
     {% endif %}
+    {% if helper_text %}
+      {{ block('helper_text') }}
+    {% endif %}
   {% endspaceless %}
 {% endblock date_widget %}
 
@@ -278,6 +281,9 @@
         {% endif %}
       {% endspaceless %}
     {% endif %}
+    {% if helper_text %}
+      {{ block('helper_text') }}
+    {% endif %}
   {% endspaceless %}
 {% endblock time_widget %}
 
@@ -317,5 +323,14 @@
         <div class="col">{{ form_widget(form.time, {'dont_render_row': true, 'attr': {'class': attr.widget_class|default('')}, 'horizontal_input_wrapper_class': horizontal_input_wrapper_class|default('col-sm-2')}) }}</div>
       </div>
     {% endif %}
+    {% if helper_text %}
+      {{ block('helper_text') }}
+    {% endif %}
   {% endspaceless %}
 {% endblock datetime_widget %}
+
+{% block helper_text -%}
+  <small class="form-text text-muted">
+    {{ helper_text }}
+  </small>
+{%- endblock %}

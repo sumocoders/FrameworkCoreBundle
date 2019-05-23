@@ -37,6 +37,8 @@ final class TimeTypeExtension extends AbstractTypeExtension
             'choice',
             ]
         );
+
+        $resolver->setDefined(['helper_text']);
     }
 
     /**
@@ -47,5 +49,6 @@ final class TimeTypeExtension extends AbstractTypeExtension
         $view->vars['format'] = $options['format'];
         $view->vars['divider'] = (strpos($options['format'], '-') !== false) ? '-' : '/';
         $view->vars['timepicker'] = $options['timepicker'] ?? false;
+        $view->vars['helper_text'] = $options['helper_text'] ?? null;
     }
 }

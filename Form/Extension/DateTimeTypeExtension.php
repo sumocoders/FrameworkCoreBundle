@@ -47,6 +47,7 @@ final class DateTimeTypeExtension extends AbstractTypeExtension
             ]
         );
 
+        $resolver->setDefined(['helper_text']);
     }
 
     /**
@@ -61,5 +62,6 @@ final class DateTimeTypeExtension extends AbstractTypeExtension
         $view->vars['format'] = $options['format'];
         $view->vars['divider'] = (strpos($options['format'], '-') !== false) ? '-' : '/';
         $view->vars['datetimepicker'] = $options['datetimepicker'] ?? false;
+        $view->vars['helper_text'] = $options['helper_text'] ?? null;
     }
 }

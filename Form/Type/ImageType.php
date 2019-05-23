@@ -124,7 +124,7 @@ class ImageType extends AbstractType
                         }
                     };
                 },
-                'preview_class' => 'img-responsive',
+                'preview_class' => 'img-thumbnail img-responsive',
                 'show_preview' => true,
                 'show_remove_image' => true,
                 'remove_image_label' => 'forms.labels.removeImage',

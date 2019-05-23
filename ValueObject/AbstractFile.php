@@ -70,7 +70,7 @@ abstract class AbstractFile
     protected function getUploadRootDir(): string
     {
         // the absolute directory path where uploaded documents should be saved
-        return __DIR__ . '/../../../../web/files/' . $this->getTrimmedUploadDir();
+        return 'files/' . $this->getTrimmedUploadDir();
     }
 
     protected function getTrimmedUploadDir(): string
@@ -79,8 +79,8 @@ abstract class AbstractFile
     }
 
     /**
-     * The dir in the web folder where the file needs to be uploaded.
-     * The base directory is always the web/files directory
+     * The dir in the public folder where the file needs to be uploaded.
+     * The base directory is always the public/files directory
      *
      * @return string
      */

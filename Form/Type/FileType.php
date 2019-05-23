@@ -127,7 +127,6 @@ class FileType extends AbstractType
                         }
                     };
                 },
-                'compound' => true,
                 'show_preview' => true,
                 'show_remove_file' => true,
                 'required_file_error' => 'forms.not_blank',
@@ -141,15 +140,6 @@ class FileType extends AbstractType
     public function getBlockPrefix(): string
     {
         return 'sumoFile';
-    }
-
-    public function getParent(): string
-    {
-        if (!$this instanceof self) {
-            return self::class;
-        }
-
-        return SymfonyFileType::class;
     }
 
     public function buildView(FormView $view, FormInterface $form, array $options): void

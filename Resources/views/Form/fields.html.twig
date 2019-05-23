@@ -313,8 +313,8 @@
       <div {{ block('widget_container_attributes') }}>
         {{ form_errors(form.date) }}
         {{ form_errors(form.time) }}
-        {{ form_widget(form.date, {'dont_render_row': true, 'attr': {'class': attr.widget_class|default('')}, 'horizontal_input_wrapper_class': horizontal_input_wrapper_class|default('col-sm-3')}) }}
-        {{ form_widget(form.time, {'dont_render_row': true, 'attr': {'class': attr.widget_class|default('')}, 'horizontal_input_wrapper_class': horizontal_input_wrapper_class|default('col-sm-2')}) }}
+        <div class="col">{{ form_widget(form.date, {'dont_render_row': true, 'attr': {'class': attr.widget_class|default('')}, 'horizontal_input_wrapper_class': horizontal_input_wrapper_class|default('col-sm-3')}) }}</div>
+        <div class="col">{{ form_widget(form.time, {'dont_render_row': true, 'attr': {'class': attr.widget_class|default('')}, 'horizontal_input_wrapper_class': horizontal_input_wrapper_class|default('col-sm-2')}) }}</div>
       </div>
     {% endif %}
   {% endspaceless %}

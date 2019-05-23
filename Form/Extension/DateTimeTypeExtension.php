@@ -40,21 +40,13 @@ final class DateTimeTypeExtension extends AbstractTypeExtension
     {
         $resolver->setDefaults(
             [
-                'format' => DateType::HTML5_FORMAT . ' HH:mm:ss',
+                'format' => 'dd/MM/yyyy HH:mm:ss',
                 'datetimepicker' => true,
-                'widget' => 'single_text',
                 'maximum_date' => null,
                 'minimum_date' => null,
             ]
         );
 
-        $resolver->setAllowedValues(
-            'widget',
-            [
-            'single_text',
-            'choice',
-            ]
-        );
     }
 
     /**

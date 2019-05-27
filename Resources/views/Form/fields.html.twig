@@ -66,11 +66,11 @@
       </button>
     </div>
 
+    <ul data-role="collection-item-container" class="list-unstyled">
     {% for child in form %}
-      <ul data-role="collection-item-container" class="list-unstyled">
-        {{ formMacros.renderCollectionItem(child) }}
-      </ul>
+      {{ formMacros.renderCollectionItem(child) }}
     {% endfor %}
+    </ul>
 
     <div class="d-flex justify-content-end">
       <button type="button" class="btn btn-outline-success btn-sm" data-role="collection-add-button" hidden>

@@ -23,9 +23,6 @@
 {%- block label_asterisk -%}
   {% if required %}
     <abbr title="{{ 'forms.labels.required'|trans({}, translation_domain) }}">*</abbr>
-  {% else %}
-    {%- if render_optional_text %}
-      <small class="text-muted">{{ 'forms.labels.optional'|trans({}, translation_domain) }}</small>{% endif -%}
   {% endif %}
 {%- endblock label_asterisk -%}
 

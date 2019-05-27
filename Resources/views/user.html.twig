@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="{{ app.request.locale }}">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+  <meta charset="UTF-8" />
+  <title>
+    {% block title %}
+      {{ fallbacks.get('site_title') }}
+    {% endblock %}
+  </title>
+
+  {% block meta %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="author" content="SumoCoders">
+  {% endblock %}
+
+  <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  {% block stylesheets %}
+    {{ encore_entry_link_tags('app') }}
+  {% endblock %}
+
+  {% block head_javascripts %}
+    <script type="text/javascript">
+      var jsData = {{ jsData|raw }};
+    </script>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+  {% endblock %}
+
+  {% block icons %}
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
+    <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
+    <link rel="image_src" href="{{ asset('image_src.png') }}" />
+  {% endblock %}
+</head>
+
+<body class="user">
+<!--[if lt IE 8 ]>
+<div id="ie6" class="alert alert-block" role="alert">
+  <a href="#" class="close" data-dismiss="alert" title="{{ 'dialogs.close'|trans|capitalize }}">x</a>
+  {{ 'core.warnings.oldBrowser'|trans|raw }}
+</div>
+<![endif]-->
+
+{{ include('@SumoCodersFrameworkCore/notifications.html.twig') }}
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-xl-5">
+      <div class="text-center">
+        <img class="empty-logo my-1" src="{{ asset('build/images/logo-application.svg') }}" alt="{{ fallbacks.get('site_title') }}">
+      </div>
+
+      {% block main %}
+      {% endblock %}
+
+    </div>
+  </div>
+</div>
+
+{% block javascripts %}
+  {{ encore_entry_script_tags('app') }}
+{% endblock %}
+</body>
+</html>

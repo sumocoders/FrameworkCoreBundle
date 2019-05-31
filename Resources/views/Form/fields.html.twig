@@ -42,7 +42,9 @@
 
     <div
         {{ block('widget_container_attributes') }}
-        data-prototype="{{ formMacros.renderCollectionItem(prototype)|e('html_attr') }}"
+        {% if prototype is defined %}
+          data-prototype="{{ formMacros.renderCollectionItem(prototype)|e('html_attr') }}"
+        {% endif %}
         class="card bg-light">
       <div class="card-body">
         {{ block('collection_rows') }}
@@ -57,11 +59,13 @@
   {% spaceless %}
     {{ form_errors(form) }}
 
+    {% if allow_add %}
     <div class="d-flex justify-content-end">
       <button type="button" class="btn btn-outline-success btn-sm mb-2" data-role="collection-add-button">
         <i class="fas fa-plus"></i> {{ 'forms.buttons.addItem'|trans|capitalize }}
       </button>
     </div>
+    {% endif %}
 
     <ul data-role="collection-item-container" class="list-unstyled">
     {% for child in form %}
@@ -69,11 +73,13 @@
     {% endfor %}
     </ul>
 
+    {% if allow_add %}
     <div class="d-flex justify-content-end">
       <button type="button" class="btn btn-outline-success btn-sm" data-role="collection-add-button" hidden>
         <i class="fas fa-plus"></i> {{ 'forms.buttons.addItem'|trans|capitalize }}
       </button>
     </div>
+    {% endif %}
   {% endspaceless %}
 {% endblock collection_rows %}
 

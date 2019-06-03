@@ -192,6 +192,10 @@
   {% spaceless %}
     {% if widget == 'single_text' %}
       {% if datepicker %}
+        {%- if help is not empty -%}
+          {%- set widget_attr = {attr: {'aria-describedby': id ~"_help"}} -%}
+        {%- endif -%}
+
         <div class="input-group date" id="{{ form.vars.id }}" data-target-input="nearest" data-role="date-picker">
           <input
               type="text"
@@ -212,6 +216,7 @@
             </div>
           </div>
         </div>
+        {{- form_help(form) -}}
       {% else %}
         {{ block('form_widget_simple') }}
       {% endif %}
@@ -239,6 +244,9 @@
   {% spaceless %}
     {% if widget == 'single_text' %}
       {% if timepicker is defined %}
+        {%- if help is not empty -%}
+          {%- set widget_attr = {attr: {'aria-describedby': id ~"_help"}} -%}
+        {%- endif -%}
         <div class="input-group date" id="{{ form.vars.id }}" data-target-input="nearest" data-role="time-picker">
           <input
               type="text"
@@ -257,6 +265,7 @@
             </div>
           </div>
         </div>
+        {{- form_help(form) -}}
       {% else %}
         {{ block('form_widget_simple') }}
       {% endif %}
@@ -291,6 +300,9 @@
   {% spaceless %}
     {% if widget == 'single_text' %}
       {% if datetimepicker is defined %}
+        {%- if help is not empty -%}
+          {%- set widget_attr = {attr: {'aria-describedby': id ~"_help"}} -%}
+        {%- endif -%}
         <div class="input-group date" id="{{ form.vars.id }}" data-target-input="nearest" data-role="date-time-picker">
           <input
               type="text"
@@ -311,6 +323,7 @@
             </div>
           </div>
         </div>
+        {{- form_help(form) -}}
       {% else %}
         {{ block('form_widget_simple') }}
       {% endif %}

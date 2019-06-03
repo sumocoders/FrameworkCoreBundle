@@ -88,12 +88,14 @@
   <li>
     <div class="card mb-3 ml-4 pl-4 collection-item" data-role="collection-item">
       <div class="card-body">
-        <div class="d-flex justify-content-end">
-          <button type="button" class="btn btn-outline-danger btn-sm"
-                  data-role="collection-remove-button" title="{{ 'forms.buttons.removeItem'|trans|capitalize }}">
-            <i class="fas fa-trash"></i> <span class="sr-only">{{ 'forms.buttons.removeItem'|trans|capitalize }}</span>
-          </button>
-        </div>
+        {% if allow_delete %}
+          <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-outline-danger btn-sm"
+                    data-role="collection-remove-button" title="{{ 'forms.buttons.removeItem'|trans|capitalize }}">
+              <i class="fas fa-trash"></i> <span class="sr-only">{{ 'forms.buttons.removeItem'|trans|capitalize }}</span>
+            </button>
+          </div>
+        {% endif %}
         <i class="fas fa-bars btn btn-default collection-item-drag-and-drop" title="{{ 'forms.buttons.changeOrder'|trans|capitalize }}" data-role="collection-item-change-order"></i>
         {{ form_row(item) }}
       </div>

@@ -152,15 +152,17 @@
     </div>
     {% set show_preview = show_preview and data is not null and data.fileName is not empty %}
     {% if show_preview or show_remove_image %}
-      <div class="form-group">
-        {% if show_preview and preview_url %}
-          <img class="{% if preview_class is defined and preview_class is not empty %}{{ preview_class }}{% endif %}"
-              data-framework-role="image-preview" data-id="{{ form.file.vars.id }}"
-              src="{{ preview_url }}">
-        {% endif %}
-        {% if show_remove_image %}
-          {{ form_widget(form.remove) }}
-        {% endif %}
+      <div class="form-group row">
+        <div class="col-lg-4">
+          {% if show_preview and preview_url %}
+            <img class="{% if preview_class is defined and preview_class is not empty %}{{ preview_class }}{% endif %}"
+                data-framework-role="image-preview" data-id="{{ form.file.vars.id }}"
+                src="{{ preview_url }}">
+          {% endif %}
+          {% if show_remove_image %}
+            {{ form_widget(form.remove) }}
+          {% endif %}
+        </div>
       </div>
     {% endif %}
   {% endspaceless %}

@@ -27,7 +27,17 @@ final class DateTimeTypeExtension extends AbstractTypeExtension
                 FormEvents::PRE_SUBMIT,
                 function (FormEvent $event) {
                     $data = $event->getData();
+
+                    if ($data === null || $data === '') {
+                        return;
+                    }
+
                     $date = \DateTime::createFromFormat('d/m/Y H:i', $data);
+
+                    if ($date === false) {
+                        return;
+                    }
+
                     $event->setData($date->format('Y-m-d H:i:s'));
                 }
             );

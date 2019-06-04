@@ -216,6 +216,7 @@
             </div>
           </div>
         </div>
+        {{- form_errors(form) -}}
         {{- form_help(form) -}}
       {% else %}
         {{ block('form_widget_simple') }}
@@ -265,6 +266,7 @@
             </div>
           </div>
         </div>
+        {{- form_errors(form) -}}
         {{- form_help(form) -}}
       {% else %}
         {{ block('form_widget_simple') }}
@@ -323,6 +325,7 @@
             </div>
           </div>
         </div>
+        {{- form_errors(form) -}}
         {{- form_help(form) -}}
       {% else %}
         {{ block('form_widget_simple') }}

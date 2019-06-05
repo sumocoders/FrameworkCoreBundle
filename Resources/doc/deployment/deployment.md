@@ -1,133 +1,96 @@
 # Using deployment
 
-We use Capifony as a base, but we extended it with our own specific
-configuration for usage with the framework.
+## Install deployer
 
-All configuration for the specific stage (staging, production) is done in the
-`deployments/stages/`-folder, wherein each stage has its own file.
+To use the deployer we need to have a local installation of the deployer.
+Run the following commands in the terminal:
 
-General configuration is done in the Capfile.
+```
+curl -LO https://deployer.org/deployer.phar
+mv deployer.phar /usr/local/bin/dep
+chmod +x /usr/local/bin/dep
+```
+
+The deploy settings can be found in the deploy.php file.
 
 ## Configuration
 
-### Capfile
-
-When you create a project you will need to fill in 3 variables:
+You will need to fill in 4 variables:
 
 * `:client`, the `xxx` should be replaced with the name of the client.
 * `:project`, the `xxx` should be replaced with the name of the project.
 * `:repository`, the `xxx` should be replaced with the url of the git-repo.
+* `:production_url`, the `xxx` should be replaced with the production url.
 
 Remark: when choosing a name for the project, please don't use generic names
 as: site, app, ... as it makes no sense when there are multiple projects for
 that client.
 
-### deployments/stages/staging.rb
+### Define staging server
 
-In the is file you can configure which branch should be deployed on the
-staging-server. By default this is the staging-branch
+Define the staging server in the deploy file and adjust the variables if needed.
 
-* `:branch`, if needed you can replace `staging` with your branch.
+```
+host({{ host }})
+    ->user({{ username }})
+    ->stage('staging')
+    ->set('deploy_path', '~/apps/{{client}}/{{project}}')
+    ->set('branch', 'staging')
+    ->set('bin/php', 'php7.2')
+    ->set('cachetool', '/var/run/php_71_fpm_sites.sock')
+    ->set('document_root', '~/php72/{{client}}/{{project}}');
+```
 
-Remark: when you change this, make sure you notify other people, as when they
-deploy and are not working on your branch your changes will be lost. Also make
-sure that you change it back before creating a Pull Request.
+### Define production server
 
-### deployments/stages/production.rb
+We can use the same approach to deploy to production.
+Change the stage to production and adjust settings where needed.
 
-In the is file you can configure production specific items. In most cases the
-server-layout will be different from the staging-server, so there is somewhat
-more to configure.
+```
+host({{ host }})
+    ->user({{ username }})
+    ->stage('production')
+    ->set('deploy_path', '~/apps/{{client}}/{{project}}')
+    ->set('branch', 'staging')
+    ->set('bin/php', 'php7.2')
+    ->set('cachetool', '/var/run/php_71_fpm_sites.sock')
+    ->set('document_root', '~/php72/{{client}}/{{project}}');
+```
 
-The default production.rb is inspired on the Hostbots-server-layout.
+## Deploy commands
 
-* `set :host`, replace `xxx` with the hostname/ip of the server.
-* `set :user`, replace `xxx` with the ssh-username.
-* `set :domain`, replace `xxx` with the final domain of the application,
-    without http(s)://.
-* `set :deploy_to`, you can alter this if you need to deploy the application in
-    a specific directory.
-* `set :document_root`, this should reflect the document_root.
+List all possible deploy commands
 
-## Putting the site in maintenance
+    dep list
 
-Sometimes it can be usefull to set the site into maintenance mode.
-
-Disable the site:
-
-    cap <stage> deploy:web:disable
-
-You can specify a reason for the downtime by setting a REASON:
-
-    cap <stage> deploy:web:disable REASON="the reason"
-
-You can specify when the site will be back online by setting a DEADLINE:
-
-    cap <stage> deploy:web:disable DEADLINE="at 20 june 2015 14:00"
-
-Enable the site:
-
-    cap <stage> deploy:web:disable
-
-## Deploying the site for the first time
+## Deploying for the first time
 
 First of all you need to create the database. If you are deploying to the
 SumoCoders-staging server you can use the following command:
 
-    cap staging sumo:db:create
+    dep sumo:db:create staging
 
-Deploy for the first time:
+You have two options: creating an empty database, or putting
+your local database online by using following command.
 
-    cap <stage> deploy
+    dep sumo:db:put <stage>
 
-A lot of questions will be asked, this will generate the `parameters.yml`-file.
-Answer the questions with sane things.
+Deploy:
 
-Depending on the environment you should give other answers:
+    dep deploy staging
 
-### Staging
+When using an empty database it is important to migrate the "empty" database to the latest migration
+to keep the database up to date and avoid errors.
 
-* debug_email:  null
-* database.driver: pdo_mysql
-* database.host: 127.0.0.1
-* database.port: null
-* database.name: the name of the database you created
-* database.user: the user for the database you created
-* database.password: the password for the database you created
-* mailer.transport: mail
-* locales: enter an array with the languages that should be available
-* locale: enter the default locale
-* secret: this should be a random string
-* sentry.dsn: null
+    dep database:migrate <stage>
 
-### Production
+When deploying to staging for the first time the database credentials will need to be set in the .env.local file
+located in the shared folder.
 
-* debug_email:  bugs@sumocoders.be
-* database.driver: pdo_mysql
-* database.host: the host for the database
-* database.port: null, unless the database is running on a non-default port
-* database.name: the name of the database you created
-* database.user: the user for the database you created
-* database.password: the password for the database you created
-* mailer.transport: mail
-* locales: enter an array with the languages that should be available
-* locale: enter the default locale
-* secret: this should be a random string
-* sentry.dsn: the sentry api key you have created for this project, see [Sentry](https://sentry.io)
+    DATABASE_URL=mysql://db_user:db_password@127.0.0.1:3306/db_name
 
-When this is done you have two options: creating an empty database, or putting
-your local database online.
+Official documentation to connect to the database can be found [here](https://symfony.com/doc/current/doctrine.html)
 
-The second one is the one which requires the least amount of work:
+## Deploy
 
-    cap database:copy:to_remote
-
-The first options requires some extra steps. First of all you should create the
-schema. As we use migrations this is best done by migrating the "empty"
-database to the latest migration:
-
-    cap <stage> symfony:doctrine:migrations:migrate
-
-When this is done you will need to create a user:
-
-    cap <stage> framework:setup:create_user
+    dep deploy <stage>

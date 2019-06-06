@@ -2,7 +2,10 @@
   <div class="navbar navbar-light bg-light p-0 navbar-expand-sm flex-column">
     <div class="wrapper-brand">
       <a href="/" rel="home" class="logo">
-        <img class="img-responsive" src="{{ asset('build/assets/images/logo-application.svg') }}" alt="{{ fallbacks.get('site_title') }}">
+        {% block logo_image %}
+          <img class="img-responsive" src="{{ asset('build/assets/images/logo-application.svg') }}"
+               alt="{{ fallbacks.get('site_title') }}">
+        {% endblock %}
       </a>
     </div>
     <div class="navbar-header d-sm-none d-flex">

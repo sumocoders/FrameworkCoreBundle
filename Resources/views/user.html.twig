@@ -60,7 +60,9 @@
   <div class="row justify-content-center">
     <div class="col-md-6 col-xl-5">
       <div class="text-center">
-        <img class="empty-logo my-1" src="{{ asset('build/images/logo-application.svg') }}" alt="{{ fallbacks.get('site_title') }}">
+        {% block logo_image %}
+          <img class="empty-logo my-1" src="{{ asset('build/images/logo-application.svg') }}" alt="{{ fallbacks.get('site_title') }}">
+        {% endblock %}
       </div>
 
       {% block main %}

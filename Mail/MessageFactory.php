@@ -2,8 +2,8 @@
 
 namespace SumoCoders\FrameworkCoreBundle\Mail;
 
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
+use Twig\Environment;
 
 final class MessageFactory
 {
@@ -23,7 +23,7 @@ final class MessageFactory
     private $to = [];
 
     /**
-     * @var EngineInterface
+     * @var Environment
      */
     private $template;
 
@@ -40,11 +40,11 @@ final class MessageFactory
     /**
      * MessageFactory constructor.
      *
-     * @param EngineInterface $template
+     * @param Environment $template
      * @param string          $templatePath
      * @param string          $cssPath
      */
-    public function __construct(EngineInterface $template, $templatePath, $cssPath)
+    public function __construct(Environment $template, $templatePath, $cssPath)
     {
         $this->template = $template;
         $this->templatePath = $templatePath;

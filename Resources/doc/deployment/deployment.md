@@ -2,7 +2,7 @@
 
 ## Install deployer
 
-To use the deployer we need to have a local installation of the deployer.
+To use the deployer we need to have a local installation of [Deployer](https://deployer.org/).
 Run the following commands in the terminal:
 
 ```
@@ -26,7 +26,7 @@ Remark: when choosing a name for the project, please don't use generic names
 as: site, app, ... as it makes no sense when there are multiple projects for
 that client.
 
-### Define staging server
+### The staging server
 
 Define the staging server in the deploy file and adjust the variables if needed.
 
@@ -41,7 +41,7 @@ host({{ host }})
     ->set('document_root', '~/php72/{{client}}/{{project}}');
 ```
 
-### Define production server
+### The production server
 
 We can use the same approach to deploy to production.
 Change the stage to production and adjust settings where needed.

@@ -28,7 +28,8 @@
   },
   "require-dev": {
     "roave/security-advisories": "dev-master",
-    "symfony/phpunit-bridge": "^4.3"
+    "symfony/phpunit-bridge": "^4.3",
+    "swiftmailer/swiftmailer": "^5"
   },
   "autoload": {
     "psr-0": { "SumoCoders\\FrameworkCoreBundle": "" }

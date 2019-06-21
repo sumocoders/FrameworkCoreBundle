@@ -10,4 +10,4 @@ before_script:
   - COMPOSER_MEMORY_LIMIT=-1 travis_retry composer install --no-interaction --prefer-source
 
 script:
-  - ./vendor/bin/simple-phpunit --coverage-text
+  - SYMFONY_DEPRECATIONS_HELPER=weak ./vendor/bin/simple-phpunit --coverage-text

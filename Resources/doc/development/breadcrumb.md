@@ -6,12 +6,12 @@ automated, but it can be manipulated.
 
 There are several ways to manipulate the breadcrumb:
 
-* overrule it completely
 * start from the breadcrumb from another route
+* overrule it completely
 
 ## Overrule it completely
 
-In your controller you should use the code below:
+In your controller you can implement the BreadCrumbBuilder interface and use the code below:
 
 ```php
 // ...
@@ -26,33 +26,52 @@ $factory = $this->get('knp_menu.factory');
 $item = (new MenuItem('foo.bar', $factory))
     ->setlabel('First!')
     ->setUri(
-        $this->generateUrl('some_route')
+        $router->generate('some_route')
     );
 $breadCrumbBuilder->addItem($item);
-
-// add item with only a label
-$breadCrumbBuilder->addSimpleItem('Second');
-
-// add an item with a label and url, this is the same as building it ourself, 
-// but with less code
-$breadCrumbBuilder->addSimpleItem(
-    'Third',
-    $this->generateUrl('some_route')
-);
 ```
 
 ## Start from the breadcrumb from another route
 
-In your controller you should use the code below:
+In your controller you can implement the BreadCrumbBuilder interface and use the code below:
 
 ```php
-$this->get('framework.breadcrumb_builder')
+
+/** @var /SumoCoders\FrameworkCoreBundle\BreadCrumb\BreadCrumbBuilder $breadCrumbBuilder */
+
+$breadCrumbBuilder
     ->extractItemsBasedOnUri(
-        $this->generateUrl('some_route'),
+        $router->generate('some_route'),
         $request->getLocale()
     )
     ->addSimpleItem(
         'some.translation',
-        $this->generateUrl('the_curent_route')
+        $router->generate('the_curent_route')
     );
+```
+
+## Extra breadcrumb usage information
+
+To use breadcrumbs without a locale we can set an empty string instead.
+
+```php
+->extractItemsBasedOnUri(
+        $router->generate('some_route'),
+        ''
+    );
+```
+
+Add an item with only a label
+
+```php
+$breadCrumbBuilder->addSimpleItem('some.translation');
+```
+
+Add an item with a label and url, this is the same as building it yourself but with less code.
+
+```php
+$breadCrumbBuilder->addSimpleItem(
+    'some.translation',
+    $router->generate('some_route')
+);
 ```

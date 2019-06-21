@@ -6,6 +6,13 @@ extended the functionality a bit.
 When passing the `datepicker`-option as true, a nice date picker will be shown 
 in the form.
 
+We can choose between following extensions
+
+* DateType
+* TimeType
+* DateTimeType
+* BirthdayType
+
 ```php
 <?php
 // ...
@@ -21,12 +28,12 @@ $form = $this->createFormBuilder()
                     'minimum_date' => DateTime::createFromFormat('Y/m/d', '2017/08/14'),
                     'maximum_date' => DateTime::createFromFormat('Y/m/d', '2017/08/30'),
                 ]
-            )
+            );
 // ...
 ```
 
 As you will see this will only work when the `widget`-option has the value 
-`single_text`.
+`single_text` or `choice`.
 
 ## Date range
 

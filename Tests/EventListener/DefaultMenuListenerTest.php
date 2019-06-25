@@ -2,11 +2,12 @@
 
 namespace SumoCoders\FrameworkCoreBundle\Tests\EventListener;
 
+use PHPUnit\Framework\TestCase;
 use SumoCoders\FrameworkCoreBundle\EventListener\DefaultMenuListener;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
-class DefaultMenuListenerTest extends \PHPUnit_Framework_TestCase
+class DefaultMenuListenerTest extends TestCase
 {
     /**
      * @var DefaultMenuListener

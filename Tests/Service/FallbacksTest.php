@@ -2,9 +2,10 @@
 
 namespace SumoCoders\FrameworkCoreBundle\Tests\Service;
 
+use PHPUnit\Framework\TestCase;
 use SumoCoders\FrameworkCoreBundle\Service\Fallbacks;
 
-class FallbacksTest extends \PHPUnit_Framework_TestCase
+class FallbacksTest extends TestCase
 {
     /**
      * @var Fallbacks

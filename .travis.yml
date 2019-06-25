@@ -1,0 +1,13 @@
+language: php
+
+php:
+  - '7.1'
+  - '7.2'
+  - '7.3'
+
+before_script:
+  - travis_retry composer self-update
+  - COMPOSER_MEMORY_LIMIT=-1 travis_retry composer install --no-interaction --prefer-source
+
+script:
+  - SYMFONY_DEPRECATIONS_HELPER=weak ./vendor/bin/simple-phpunit --coverage-text

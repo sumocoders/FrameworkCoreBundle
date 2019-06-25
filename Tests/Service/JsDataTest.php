@@ -2,11 +2,12 @@
 
 namespace SumoCoders\FrameworkCoreBundle\Tests\Service;
 
+use PHPUnit\Framework\TestCase;
 use SumoCoders\FrameworkCoreBundle\Service\JsData;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-class JsDataTest extends \PHPUnit_Framework_TestCase
+class JsDataTest extends TestCase
 {
     /**
      * @var JsData

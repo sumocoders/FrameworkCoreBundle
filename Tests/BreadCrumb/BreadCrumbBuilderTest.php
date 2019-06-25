@@ -4,12 +4,15 @@ namespace SumoCoders\FrameworkCoreBundle\Tests\BreadCrumb;
 
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\MenuItem;
+use PHPUnit\Framework\MockObject\MockBuilder;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 use SumoCoders\FrameworkCoreBundle\BreadCrumb\BreadCrumbBuilder;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-class BreadCrumbBuilderTest extends \PHPUnit_Framework_TestCase
+class BreadCrumbBuilderTest extends TestCase
 {
     /**
      * @var BreadCrumbBuilder
@@ -29,16 +32,16 @@ class BreadCrumbBuilderTest extends \PHPUnit_Framework_TestCase
      */
     protected function getEventDispatcher()
     {
-        return $this->getMockBuilder(EventDispatcherInterface::class)->getMock();
+        return $this->createMock(EventDispatcherInterface::class);
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return MockObject
      */
     protected function getFactory($item)
     {
-        /** @var \PHPUnit_Framework_MockObject_MockBuilder $factory */
-        $factory = $this->getMockBuilder(FactoryInterface::class)->getMock();
+        /** @var MockBuilder $factory */
+        $factory = $this->createMock(FactoryInterface::class);
         $factory->method('createItem')
             ->will(
                 $this->returnValue(
@@ -53,7 +56,7 @@ class BreadCrumbBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $item = new MenuItem(
             'root',
-            $this->getMockBuilder(FactoryInterface::class)->getMock()
+            $this->createMock(FactoryInterface::class)
         );
         $factory = $this->getFactory($item);
 
@@ -67,11 +70,10 @@ class BreadCrumbBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $this->createSimpleBreadCrumb();
 
-        $requestStack = $this->getMockBuilder(RequestStack::class)
-            ->getMock();
+        $requestStack = $this->createMock(RequestStack::class);
         $requestStack->method('getCurrentRequest')
             ->willReturn(
-                $this->getMockBuilder(Request::class)->getMock()
+                $this->createMock(Request::class)
             );
 
         $breadCrumb = $this->breadCrumbBuilder->createBreadCrumb($requestStack);
@@ -83,11 +85,10 @@ class BreadCrumbBuilderTest extends \PHPUnit_Framework_TestCase
     public function testIfLastItemDoesNotHaveAnUri()
     {
         $this->createSimpleBreadCrumb();
-        $requestStack = $this->getMockBuilder(RequestStack::class)
-            ->getMock();
+        $requestStack = $this->createMock(RequestStack::class);
         $requestStack->method('getCurrentRequest')
             ->willReturn(
-                $this->getMockBuilder(Request::class)->getMock()
+                $this->createMock(Request::class)
             );
 
         $breadCrumb = $this->breadCrumbBuilder->createBreadCrumb($requestStack);
@@ -101,11 +102,10 @@ class BreadCrumbBuilderTest extends \PHPUnit_Framework_TestCase
         $this->createSimpleBreadCrumb();
         $this->breadCrumbBuilder->dontExtractFromTheRequest();
 
-        $requestStack = $this->getMockBuilder(RequestStack::class)
-            ->getMock();
+        $requestStack = $this->createMock(RequestStack::class);
         $requestStack->method('getCurrentRequest')
             ->willReturn(
-                $this->getMockBuilder(Request::class)->getMock()
+                $this->createMock(Request::class)
             );
 
         $breadCrumb = $this->breadCrumbBuilder->createBreadCrumb($requestStack);
@@ -116,11 +116,10 @@ class BreadCrumbBuilderTest extends \PHPUnit_Framework_TestCase
     public function testIfSimpleItemIsAdded()
     {
         $this->createSimpleBreadCrumb();
-        $requestStack = $this->getMockBuilder(RequestStack::class)
-            ->getMock();
+        $requestStack = $this->createMock(RequestStack::class);
         $requestStack->method('getCurrentRequest')
             ->willReturn(
-                $this->getMockBuilder(Request::class)->getMock()
+                $this->createMock(Request::class)
             );
 
 
@@ -145,11 +144,10 @@ class BreadCrumbBuilderTest extends \PHPUnit_Framework_TestCase
         $this->breadCrumbBuilder->addSimpleItem('first', 'http://www.example.org');
         $this->breadCrumbBuilder->overwriteItems([]);
 
-        $requestStack = $this->getMockBuilder(RequestStack::class)
-            ->getMock();
+        $requestStack = $this->createMock(RequestStack::class);
         $requestStack->method('getCurrentRequest')
             ->willReturn(
-                $this->getMockBuilder(Request::class)->getMock()
+                $this->createMock(Request::class)
             );
 
         $breadCrumb = $this->breadCrumbBuilder->createBreadCrumb($requestStack);
@@ -160,11 +158,10 @@ class BreadCrumbBuilderTest extends \PHPUnit_Framework_TestCase
     public function testIfItemIsAdded()
     {
         $this->createSimpleBreadCrumb();
-        $requestStack = $this->getMockBuilder(RequestStack::class)
-            ->getMock();
+        $requestStack = $this->createMock(RequestStack::class);
         $requestStack->method('getCurrentRequest')
             ->willReturn(
-                $this->getMockBuilder(Request::class)->getMock()
+                $this->createMock(Request::class)
             );
 
 

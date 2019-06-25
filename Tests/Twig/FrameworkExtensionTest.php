@@ -2,10 +2,11 @@
 
 namespace SumoCoders\FrameworkCoreBundle\Tests\Twig;
 
+use PHPUnit\Framework\TestCase;
 use SumoCoders\FrameworkCoreBundle\Twig\FrameworkExtension;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class FrameworkExtensionTest extends \PHPUnit_Framework_TestCase
+class FrameworkExtensionTest extends TestCase
 {
     /**
      * @var FrameworkExtension

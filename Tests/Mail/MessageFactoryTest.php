@@ -2,10 +2,13 @@
 
 namespace SumoCoders\FrameworkCoreBundle\Tests\Mail;
 
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 use SumoCoders\FrameworkCoreBundle\Mail\MessageFactory;
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
+use Swift_Message;
+use Twig\Environment;
 
-class MessageFactoryTest extends \PHPUnit_Framework_TestCase
+class MessageFactoryTest extends TestCase
 {
     /**
      * @var MessageFactory
@@ -31,11 +34,11 @@ class MessageFactoryTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return MockObject
      */
     protected function getTemplatingMock()
     {
-        $templating = $this->getMockBuilder(EngineInterface::class)->getMock();
+        $templating = $this->createMock(Environment::class);
         $templating
             ->method('render')
             ->willReturn('<html><head></head><body><p>And I, le content</p></body></html>');
@@ -47,7 +50,7 @@ class MessageFactoryTest extends \PHPUnit_Framework_TestCase
     {
         $message = $this->messageFactory->createDefaultMessage();
 
-        $this->assertInstanceOf('\Swift_Message', $message);
+        $this->assertInstanceOf(Swift_Message::class, $message);
 
         $this->assertEmpty($message->getFrom());
         $this->assertNull($message->getReplyTo());

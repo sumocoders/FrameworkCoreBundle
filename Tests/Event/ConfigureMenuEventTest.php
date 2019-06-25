@@ -4,9 +4,10 @@ namespace SumoCoders\FrameworkCoreBundle\Tests\Event;
 
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
+use PHPUnit\Framework\TestCase;
 use SumoCoders\FrameworkCoreBundle\Event\ConfigureMenuEvent;
 
-class ConfigureMenuEventTest extends \PHPUnit_Framework_TestCase
+class ConfigureMenuEventTest extends TestCase
 {
     /**
      * @var ConfigureMenuEvent

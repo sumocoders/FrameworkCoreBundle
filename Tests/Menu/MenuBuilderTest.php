@@ -4,10 +4,11 @@ namespace SumoCoders\FrameworkCoreBundle\Tests\Menu;
 
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
+use PHPUnit\Framework\TestCase;
 use SumoCoders\FrameworkCoreBundle\Menu\MenuBuilder;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-class MenuBuilderTest extends \PHPUnit_Framework_TestCase
+class MenuBuilderTest extends TestCase
 {
     /**
      * @var MenuBuilder

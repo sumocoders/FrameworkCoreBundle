@@ -109,6 +109,10 @@
       <div class="alert alert-danger" role="alert">
         {{ 'forms.message.hasErrors'|trans|capitalize }}:
         <ul class="list-unstyled">
+          {% for error in form.vars.errors %}
+            {{ error.message|nl2br }}
+          {% endfor %}
+
           {% for child in form.children %}
             {% set label = child.vars.label %}
             {% if label is not same as(false) %}

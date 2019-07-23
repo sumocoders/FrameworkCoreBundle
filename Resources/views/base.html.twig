@@ -83,8 +83,6 @@
                 </button>
                 <ul class="dropdown-menu" role="menu">
                   {% block userNavigation %}
-                  {% endblock %}
-                  {% block profilePage %}
                   <li><a href="{{ path('profile', { 'user': msgphp_user.current.id }) }}">{{ 'account'|trans|capitalize }}</a></li>
                   {% endblock %}
                   {% if is_granted('ROLE_PREVIOUS_ADMIN') %}

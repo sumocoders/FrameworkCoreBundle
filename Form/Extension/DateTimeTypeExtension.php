@@ -20,29 +20,6 @@ final class DateTimeTypeExtension extends AbstractTypeExtension
         return DateTimeType::class;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-        if ($options['widget'] === 'single_text' && $options['datetimepicker'] === true) {
-            $builder->addEventListener(
-                FormEvents::PRE_SUBMIT,
-                function (FormEvent $event) {
-                    $data = $event->getData();
-
-                    if ($data === null || $data === '') {
-                        return;
-                    }
-
-                    $date = \DateTime::createFromFormat('d/m/Y H:i', $data);
-
-                    if ($date === false) {
-                        return;
-                    }
-
-                    $event->setData($date->format('Y-m-d H:i:s'));
-                }
-            );
-        }
-    }
     /**
      * {@inheritdoc}
      */
@@ -50,7 +27,7 @@ final class DateTimeTypeExtension extends AbstractTypeExtension
     {
         $resolver->setDefaults(
             [
-                'format' => DateType::HTML5_FORMAT . ' HH:mm:ss',
+                'format' => 'dd/MM/yyyy HH:mm:ss',
                 'datetimepicker' => true,
                 'widget' => 'single_text',
                 'maximum_date' => null,

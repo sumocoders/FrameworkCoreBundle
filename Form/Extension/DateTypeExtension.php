@@ -19,30 +19,6 @@ final class DateTypeExtension extends AbstractTypeExtension
         return DateType::class;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-        if ($options['widget'] === 'single_text' && $options['datepicker'] === true) {
-            $builder->addEventListener(
-                FormEvents::PRE_SUBMIT,
-                function (FormEvent $event) {
-                    $data = $event->getData();
-
-                    if ($data === null || $data === '') {
-                        return;
-                    }
-
-                    $date = \DateTime::createFromFormat('d/m/Y', $data);
-
-                    if ($date === false) {
-                        return;
-                    }
-
-                    $event->setData($date->format('Y-m-d'));
-                }
-            );
-        }
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -50,7 +26,7 @@ final class DateTypeExtension extends AbstractTypeExtension
     {
         $resolver->setDefaults(
             [
-                'format' => DateType::HTML5_FORMAT,
+                'format' => 'dd/MM/yyyy',
                 'datepicker' => true,
                 'widget' => 'single_text',
                 'maximum_date' => null,

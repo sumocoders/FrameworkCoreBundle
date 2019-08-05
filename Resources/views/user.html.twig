@@ -54,8 +54,6 @@
 </div>
 <![endif]-->
 
-{{ include('@SumoCodersFrameworkCore/notifications.html.twig') }}
-
 <div class="container">
   <div class="row justify-content-center">
     <div class="col-md-6 col-xl-5">
@@ -64,6 +62,8 @@
           <img class="empty-logo my-1" src="{{ asset('build/images/logo-application.svg') }}" alt="{{ fallbacks.get('site_title') }}">
         {% endblock %}
       </div>
+
+      {{ include('@SumoCodersFrameworkCore/notifications.html.twig') }}
 
       {% block main %}
       {% endblock %}

@@ -362,3 +362,27 @@
     {{ helper_text }}
   </small>
 {%- endblock %}
+
+{% block form_row -%}
+  {%- if compound is defined and compound -%}
+    {%- set element = 'fieldset' -%}
+  {%- endif -%}
+  {%- set widget_attr = {} -%}
+  {%- if help is not empty -%}
+    {%- set widget_attr = {attr: {'aria-describedby': id ~"_help"}} -%}
+  {%- endif -%}
+  <{{ element|default('div') }} class="form-group">
+  {{- form_label(form) -}}
+  {{- form_widget(form, widget_attr) -}}
+  {{- form_help(form) -}}
+  {{ form_errors(form) }}
+  </{{ element|default('div') }}>
+{%- endblock form_row %}
+
+{% block form_errors -%}
+  {%- if errors|length > 0 -%}
+    {%- for error in errors -%}
+      <div class="invalid-feedback">{{ error.message }}</div>
+    {%- endfor -%}
+  {%- endif %}
+{%- endblock form_errors %}

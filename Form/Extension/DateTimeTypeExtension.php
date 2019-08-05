@@ -29,19 +29,12 @@ final class DateTimeTypeExtension extends AbstractTypeExtension
             [
                 'format' => 'dd/MM/yyyy HH:mm:ss',
                 'datetimepicker' => true,
-                'widget' => 'single_text',
                 'maximum_date' => null,
                 'minimum_date' => null,
             ]
         );
 
-        $resolver->setAllowedValues(
-            'widget',
-            [
-            'single_text',
-            'choice',
-            ]
-        );
+        $resolver->setDefined(['helper_text']);
     }
 
     /**
@@ -56,5 +49,6 @@ final class DateTimeTypeExtension extends AbstractTypeExtension
         $view->vars['format'] = $options['format'];
         $view->vars['divider'] = (strpos($options['format'], '-') !== false) ? '-' : '/';
         $view->vars['datetimepicker'] = $options['datetimepicker'] ?? false;
+        $view->vars['helper_text'] = $options['helper_text'] ?? null;
     }
 }

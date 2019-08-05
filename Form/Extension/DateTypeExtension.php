@@ -41,6 +41,8 @@ final class DateTypeExtension extends AbstractTypeExtension
             'choice',
             ]
         );
+
+        $resolver->setDefined(['helper_text']);
     }
 
     /**
@@ -55,5 +57,6 @@ final class DateTypeExtension extends AbstractTypeExtension
         $view->vars['format'] = $options['format'];
         $view->vars['divider'] = (strpos($options['format'], '-') !== false) ? '-' : '/';
         $view->vars['datepicker'] = $options['datepicker'] ?? false;
+        $view->vars['helper_text'] = $options['helper_text'] ?? null;
     }
 }

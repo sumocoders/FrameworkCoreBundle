@@ -21,9 +21,11 @@
 {% endblock form_label %}
 
 {%- block label_asterisk -%}
-  {% if required %}
-    <abbr title="{{ 'forms.labels.required'|trans({}, translation_domain) }}">*</abbr>
-  {% endif %}
+  {% spaceless %}
+    {% if required %}
+      <abbr title="{{ 'forms.labels.required'|trans({}, translation_domain) }}">*</abbr>
+    {% endif %}
+  {% endspaceless %}
 {%- endblock label_asterisk -%}
 
 {% block collection_widget %}

@@ -27,6 +27,8 @@ services:
   framework.breadcrumb_builder:
     class: SumoCoders\FrameworkCoreBundle\BreadCrumb\BreadCrumbBuilder
     arguments:
+      - "%jms_i18n_routing.strategy%"
+      - "@request_stack"
       - "@knp_menu.factory"
       - "@event_dispatcher"
 

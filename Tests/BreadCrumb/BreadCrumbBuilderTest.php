@@ -36,7 +36,7 @@ class BreadCrumbBuilderTest extends TestCase
         $request->method('getDefaultLocale')
             ->willReturn('en');
         $requestStack = $this->createMock(RequestStack::class);
-        $requestStack->method('getCurrentRequest')
+        $requestStack->method('getMasterRequest')
             ->willReturn(
                 $request
             );

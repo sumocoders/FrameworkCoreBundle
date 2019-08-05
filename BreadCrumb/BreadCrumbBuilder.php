@@ -204,7 +204,7 @@ final class BreadCrumbBuilder
         }
 
         // If the current locale is the default locale, don't parse it
-        if ($this->requestStack->getCurrentRequest()->getDefaultLocale() === $locale) {
+        if ($this->requestStack->getMasterRequest()->getDefaultLocale() === $locale) {
             return false;
         }
 
@@ -276,8 +276,8 @@ final class BreadCrumbBuilder
         }
 
         $this->extractItemsBasedOnUri(
-            $requestStack->getCurrentRequest()->getPathInfo(),
-            $requestStack->getCurrentRequest()->getLocale()
+            $requestStack->getMasterRequest()->getPathInfo(),
+            $requestStack->getMasterRequest()->getLocale()
         );
     }
 }

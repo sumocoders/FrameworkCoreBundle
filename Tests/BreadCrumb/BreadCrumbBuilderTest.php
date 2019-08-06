@@ -2,6 +2,7 @@
 
 namespace SumoCoders\FrameworkCoreBundle\Tests\BreadCrumb;
 
+use JMS\I18nRoutingBundle\Router\DefaultPatternGenerationStrategy;
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\MenuItem;
 use PHPUnit\Framework\MockObject\MockBuilder;
@@ -25,6 +26,22 @@ class BreadCrumbBuilderTest extends TestCase
     protected function tearDown()
     {
         $this->breadCrumbBuilder = null;
+    }
+
+    protected function getRequestStack(): RequestStack
+    {
+        $request = $this->createMock(Request::class);
+        $request->method('getLocale')
+            ->willReturn('en');
+        $request->method('getDefaultLocale')
+            ->willReturn('en');
+        $requestStack = $this->createMock(RequestStack::class);
+        $requestStack->method('getMasterRequest')
+            ->willReturn(
+                $request
+            );
+
+        return $requestStack;
     }
 
     /**
@@ -61,6 +78,8 @@ class BreadCrumbBuilderTest extends TestCase
         $factory = $this->getFactory($item);
 
         $this->breadCrumbBuilder = new BreadCrumbBuilder(
+            DefaultPatternGenerationStrategy::STRATEGY_PREFIX,
+            $this->getRequestStack(),
             $factory,
             $this->getEventDispatcher()
         );
@@ -70,13 +89,7 @@ class BreadCrumbBuilderTest extends TestCase
     {
         $this->createSimpleBreadCrumb();
 
-        $requestStack = $this->createMock(RequestStack::class);
-        $requestStack->method('getCurrentRequest')
-            ->willReturn(
-                $this->createMock(Request::class)
-            );
-
-        $breadCrumb = $this->breadCrumbBuilder->createBreadCrumb($requestStack);
+        $breadCrumb = $this->breadCrumbBuilder->createBreadCrumb($this->getRequestStack());
 
         $this->assertTrue($breadCrumb->hasChildren());
         $this->assertEquals(1, count($breadCrumb->getChildren()));
@@ -85,13 +98,8 @@ class BreadCrumbBuilderTest extends TestCase
     public function testIfLastItemDoesNotHaveAnUri()
     {
         $this->createSimpleBreadCrumb();
-        $requestStack = $this->createMock(RequestStack::class);
-        $requestStack->method('getCurrentRequest')
-            ->willReturn(
-                $this->createMock(Request::class)
-            );
 
-        $breadCrumb = $this->breadCrumbBuilder->createBreadCrumb($requestStack);
+        $breadCrumb = $this->breadCrumbBuilder->createBreadCrumb($this->getRequestStack());
 
         $lastChild = $breadCrumb->getLastChild();
         $this->assertNull($lastChild->getUri());
@@ -102,13 +110,7 @@ class BreadCrumbBuilderTest extends TestCase
         $this->createSimpleBreadCrumb();
         $this->breadCrumbBuilder->dontExtractFromTheRequest();
 
-        $requestStack = $this->createMock(RequestStack::class);
-        $requestStack->method('getCurrentRequest')
-            ->willReturn(
-                $this->createMock(Request::class)
-            );
-
-        $breadCrumb = $this->breadCrumbBuilder->createBreadCrumb($requestStack);
+        $breadCrumb = $this->breadCrumbBuilder->createBreadCrumb($this->getRequestStack());
 
         $this->assertFalse($breadCrumb->hasChildren());
     }
@@ -116,18 +118,12 @@ class BreadCrumbBuilderTest extends TestCase
     public function testIfSimpleItemIsAdded()
     {
         $this->createSimpleBreadCrumb();
-        $requestStack = $this->createMock(RequestStack::class);
-        $requestStack->method('getCurrentRequest')
-            ->willReturn(
-                $this->createMock(Request::class)
-            );
-
 
         $this->breadCrumbBuilder->dontExtractFromTheRequest();
         $this->breadCrumbBuilder->addSimpleItem('first', 'http://www.example.org');
         $this->breadCrumbBuilder->addSimpleItem('last', 'http://www.example.org');
 
-        $breadCrumb = $this->breadCrumbBuilder->createBreadCrumb($requestStack);
+        $breadCrumb = $this->breadCrumbBuilder->createBreadCrumb($this->getRequestStack());
 
         $this->assertEquals(2, count($breadCrumb->getChildren()));
 
@@ -144,13 +140,7 @@ class BreadCrumbBuilderTest extends TestCase
         $this->breadCrumbBuilder->addSimpleItem('first', 'http://www.example.org');
         $this->breadCrumbBuilder->overwriteItems([]);
 
-        $requestStack = $this->createMock(RequestStack::class);
-        $requestStack->method('getCurrentRequest')
-            ->willReturn(
-                $this->createMock(Request::class)
-            );
-
-        $breadCrumb = $this->breadCrumbBuilder->createBreadCrumb($requestStack);
+        $breadCrumb = $this->breadCrumbBuilder->createBreadCrumb($this->getRequestStack());
 
         $this->assertEquals(1, count($breadCrumb->getChildren()));
     }
@@ -158,12 +148,6 @@ class BreadCrumbBuilderTest extends TestCase
     public function testIfItemIsAdded()
     {
         $this->createSimpleBreadCrumb();
-        $requestStack = $this->createMock(RequestStack::class);
-        $requestStack->method('getCurrentRequest')
-            ->willReturn(
-                $this->createMock(Request::class)
-            );
-
 
         $first = new MenuItem('first', $this->getFactory(null));
         $first->setUri('http://www.example.org');
@@ -173,7 +157,7 @@ class BreadCrumbBuilderTest extends TestCase
         $this->breadCrumbBuilder->addItem($last);
 
         $this->breadCrumbBuilder->dontExtractFromTheRequest();
-        $breadCrumb = $this->breadCrumbBuilder->createBreadCrumb($requestStack);
+        $breadCrumb = $this->breadCrumbBuilder->createBreadCrumb($this->getRequestStack());
 
         $this->assertEquals(2, count($breadCrumb->getChildren()));
 

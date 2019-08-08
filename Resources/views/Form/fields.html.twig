@@ -110,7 +110,7 @@
     {% if not form.vars.valid %}
       <div class="alert alert-danger" role="alert">
         {{ 'forms.message.hasErrors'|trans|capitalize }}:
-        <ul class="list-unstyled">
+        <ul class="error-list">
           {% for error in form.vars.errors %}
             {{ error.message|nl2br }}
           {% endfor %}
@@ -126,7 +126,7 @@
             {% endif %}
             {% if not child.vars.valid %}
               {% for error in child.vars.errors %}
-                <li>
+                <li class="error-list-item">
                   <a href="#{{ child.vars.id }}">
                     {% if label is not same as(false) %}{{ label|trans|capitalize }}: {% endif %}{{ error.message }}
                   </a>
@@ -139,13 +139,9 @@
     {% endif %}
   {% else %}
     {% if errors|length > 0 -%}
-      {% if form.parent %}<span class="help-block">{% else %}<div class="alert alert-danger" role="alert">{% endif %}
-      <ul class="list-unstyled">
-        {%- for error in errors -%}
-          <li><span class="fas fa-exclamation-triangle"></span> {{ error.message }}</li>
-        {%- endfor -%}
-      </ul>
-      {% if form.parent %}</span>{% else %}</div>{% endif %}
+      {%- for error in errors -%}
+        <div class="invalid-feedback">{{ error.message }}</div>
+      {%- endfor -%}
     {%- endif %}
   {% endif %}
 {%- endblock form_errors -%}
@@ -194,10 +190,27 @@
   {% endspaceless %}
 {% endblock %}
 
+{% block date_row -%}
+  {%- if compound is defined and compound -%}
+    {%- set element = 'fieldset' -%}
+  {%- endif -%}
+  {%- set widget_attr = {} -%}
+  {%- if help is not empty -%}
+    {%- set widget_attr = {attr: {'aria-describedby': id ~"_help"}} -%}
+  {%- endif -%}
+  <{{ element|default('div') }} class="form-group">
+    {{- form_label(form) -}}
+    {{- form_widget(form, widget_attr) -}}
+  </{{ element|default('div') }}>
+{%- endblock date_row %}
+
 {% block date_widget %}
   {% spaceless %}
     {% if widget == 'single_text' %}
       {% if datepicker %}
+        {%- if not valid -%}
+          {% set attr = attr|merge({class: (attr.class|default('') ~ ' is-invalid')|trim}) -%}
+        {%- endif -%}
         {%- if help is not empty -%}
           {%- set widget_attr = {attr: {'aria-describedby': id ~"_help"}} -%}
         {%- endif -%}
@@ -221,9 +234,9 @@
               <i class="fas fa-calendar"></i>
             </div>
           </div>
+          {{- form_errors(form) -}}
+          {{- form_help(form) -}}
         </div>
-        {{- form_errors(form) -}}
-        {{- form_help(form) -}}
       {% else %}
         {{ block('form_widget_simple') }}
       {% endif %}
@@ -250,10 +263,27 @@
   {% endspaceless %}
 {% endblock date_widget %}
 
+{% block time_row -%}
+  {%- if compound is defined and compound -%}
+    {%- set element = 'fieldset' -%}
+  {%- endif -%}
+  {%- set widget_attr = {} -%}
+  {%- if help is not empty -%}
+    {%- set widget_attr = {attr: {'aria-describedby': id ~"_help"}} -%}
+  {%- endif -%}
+  <{{ element|default('div') }} class="form-group">
+    {{- form_label(form) -}}
+    {{- form_widget(form, widget_attr) -}}
+  </{{ element|default('div') }}>
+{%- endblock time_row %}
+
 {% block time_widget %}
   {% spaceless %}
     {% if widget == 'single_text' %}
       {% if timepicker is defined %}
+        {%- if not valid -%}
+          {% set attr = attr|merge({class: (attr.class|default('') ~ ' is-invalid')|trim}) -%}
+        {%- endif -%}
         {%- if help is not empty -%}
           {%- set widget_attr = {attr: {'aria-describedby': id ~"_help"}} -%}
         {%- endif -%}
@@ -274,9 +304,9 @@
               <i class="fas fa-clock"></i>
             </div>
           </div>
+          {{- form_errors(form) -}}
+          {{- form_help(form) -}}
         </div>
-        {{- form_errors(form) -}}
-        {{- form_help(form) -}}
       {% else %}
         {{ block('form_widget_simple') }}
       {% endif %}
@@ -310,10 +340,27 @@
   {% endspaceless %}
 {% endblock time_widget %}
 
+{% block datetime_row -%}
+  {%- if compound is defined and compound -%}
+    {%- set element = 'fieldset' -%}
+  {%- endif -%}
+  {%- set widget_attr = {} -%}
+  {%- if help is not empty -%}
+    {%- set widget_attr = {attr: {'aria-describedby': id ~"_help"}} -%}
+  {%- endif -%}
+  <{{ element|default('div') }} class="form-group">
+    {{- form_label(form) -}}
+    {{- form_widget(form, widget_attr) -}}
+  </{{ element|default('div') }}>
+{%- endblock datetime_row %}
+
 {% block datetime_widget %}
   {% spaceless %}
     {% if widget == 'single_text' %}
       {% if datetimepicker is defined %}
+        {%- if not valid -%}
+          {% set attr = attr|merge({class: (attr.class|default('') ~ ' is-invalid')|trim}) -%}
+        {%- endif -%}
         {%- if help is not empty -%}
           {%- set widget_attr = {attr: {'aria-describedby': id ~"_help"}} -%}
         {%- endif -%}
@@ -336,9 +383,9 @@
               <i class="fas fa-calendar"></i>
             </div>
           </div>
+          {{- form_errors(form) -}}
+          {{- form_help(form) -}}
         </div>
-        {{- form_errors(form) -}}
-        {{- form_help(form) -}}
       {% else %}
         {{ block('form_widget_simple') }}
       {% endif %}
@@ -372,17 +419,39 @@
     {%- set widget_attr = {attr: {'aria-describedby': id ~"_help"}} -%}
   {%- endif -%}
   <{{ element|default('div') }} class="form-group">
-  {{- form_label(form) -}}
-  {{- form_widget(form, widget_attr) -}}
-  {{- form_help(form) -}}
-  {{ form_errors(form) }}
+    {{- form_label(form) -}}
+    {{- form_widget(form, widget_attr) -}}
+    {{- form_errors(form) -}}
+    {{- form_help(form) -}}
   </{{ element|default('div') }}>
 {%- endblock form_row %}
 
-{% block form_errors -%}
-  {%- if errors|length > 0 -%}
+{% block select_2_errors %}
+  {% if errors|length > 0 -%}
     {%- for error in errors -%}
-      <div class="invalid-feedback">{{ error.message }}</div>
+      <div class="invalid-feedback d-block">{{ error.message }}</div>
     {%- endfor -%}
   {%- endif %}
-{%- endblock form_errors %}
+{% endblock select_2_errors %}
+
+{% block select_2_widget %}
+  <select
+    name="{{ full_name }}"
+    id="{{ id }}"
+    {% set attr = attr|merge({'class': attr.class|default('select2')}) %}
+    {{ form.vars.multiple ? 'multiple' : '' }}
+    {{ block('widget_attributes') }}
+  >
+    {% if value is not empty %}
+
+      {% if select2_value is iterable %}
+        {% for key, value in select2_value %}
+          <option value="{{ key }}" selected="selected">{{ value }}</option>
+        {% endfor %}
+      {% else %}
+        <option value="{{ value }}" selected="selected">{{ select2_value }}</option>
+      {% endif %}
+
+    {% endif %}
+  </select>
+{% endblock %}

@@ -10,12 +10,15 @@
     </div>
     <div class="navbar-header d-sm-none d-flex">
       <a class="navbar-brand" href="#">Menu</a>
-      <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbar-collapse-1" aria-controls="navbar-collapse-1" aria-expanded="false" aria-label="Toggle navigation">
+      <button class="navbar-toggler ml-auto collapsed" type="button" data-toggle="collapse" data-target="#navbar-collapse-1" aria-controls="navbar-collapse-1" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
     </div>
     <div class="collapse navbar-collapse" id="navbar-collapse-1">
       {{ knp_menu_render('side_menu', {'template': '@SumoCodersFrameworkCore/menu/menu.html.twig', 'ancestorClass': 'open active'}) }}
+      <div class="d-md-none">
+        {{ include('@SumoCodersFrameworkCore/usermenu.html.twig') }}
+      </div>
     </div>
   </div>
 </div>

@@ -62,60 +62,40 @@
   </div>
   <div id="content-wrapper">
     <div class="main-header">
-      <div class="sub-nav row">
-        <div class="col col-alternative">
+      <div class="sub-nav d-flex">
+        <div class="header-title">
+          {% block header_title %}
+
+          {% endblock %}
+        </div>
+        <div class="d-none d-sm-block ml-auto">
+          {{ include('@SumoCodersFrameworkCore/usermenu.html.twig') }}
+        </div>
+      </div>
+    </div>
+
+    <section id="main" role="main">
+      <div class="header-subbar">
+        {{ include('@SumoCodersFrameworkCore/notifications.html.twig') }}
+        <div class="header-title-bar d-flex justify-content-md-between align-items-md-center flex-column flex-md-row">
           <nav aria-label="breadcrumb">
             {{ knp_menu_render('breadcrumb', {'template': '@SumoCodersFrameworkCore/BreadCrumb/breadCrumb.html.twig'}) }}
           </nav>
-        </div>
-        <div class="ml-auto">
-          <div class="user-nav d-flex h-100">
-            {% if app.user is not null %}
-              <div class="btn-group dropdown">
-                <button class="btn btn-default dropdown-toggle d-flex align-items-center" data-toggle="dropdown" aria-expanded="false">
-                  {% if is_granted('ROLE_PREVIOUS_ADMIN') %}
-                    <i class="fas fa-exchange-alt"></i>
-                  {% else %}
-                    <i class="fas fa-user-circle mr-md-1"></i>
-                  {% endif %}
-                  <span class="d-none d-md-block mr-md-1">{{ msgphp_user.current.name }}</span>
-                  <span class="fas fa-chevron-right fa-w-16 d-none d-md-block"></span>
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                  {% block userNavigation %}
-                  <li><a href="{{ path('profile', { 'user': msgphp_user.current.id }) }}">{{ 'account'|trans|capitalize }}</a></li>
-                  {% endblock %}
-                  {% if is_granted('ROLE_PREVIOUS_ADMIN') %}
-                    <li><a href="{{ path('index', {'_switch_user': '_exit'}) }}">{{ 'user.actions.switchBack'|trans|capitalize }}</a></li>
-                  {% endif %}
-                  <li><a href="{{ path('logout') }}">{{ 'user.actions.logout'|trans|capitalize }}</a></li>
-                </ul>
+          <div>
+            {% if block('header_navigation') is defined %}
+              <div class="action-buttons mt-3 mt-md-0">
+                {{ block('header_navigation') }}
               </div>
             {% endif %}
           </div>
         </div>
       </div>
-    </div>
-    <div class="header-title">
-      {{ include('@SumoCodersFrameworkCore/notifications.html.twig') }}
-      <div class="header-title-bar">
-        {% block header_title %}
-
-        {% endblock %}
-      </div>
-    </div>
-    {% if block('header_navigation') is defined %}
-      <div class="actions clearfix">
-        <div class="action-buttons">
-          {{ block('header_navigation') }}
-        </div>
-      </div>
-    {% endif %}
-    <section id="main" class="main-content" role="main">
       <div class="container-fluid">
-        {% block main %}
+        <div class="main-content">
+          {% block main %}
 
-        {% endblock %}
+          {% endblock %}
+        </div>
       </div>
     </section>
   </div>

@@ -21,7 +21,7 @@
     {% set item = item.setAttributes({ 'class': 'nav-item' }) %}
     {% set item = item.setLinkAttributes({ 'class': 'nav-link d-flex flex-row align-items-center' }) %}
   {% elseif item.parent.name != 'root' and not item.hasChildren %}
-    {% set item = item.setLinkAttributes({ 'class': 'dropdown-item' }) %}
+    {% set item = item.setLinkAttributes({ 'class': 'dropdown-item d-flex flex-row align-items-center' }) %}
   {% endif %}
   {{ parent() }}
 {% endblock %}

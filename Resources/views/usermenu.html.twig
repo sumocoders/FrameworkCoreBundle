@@ -1,23 +1,23 @@
 <div class="user-nav d-flex h-100">
   {% if app.user is not null %}
-    <div class="btn-group dropdown">
+    <div class="user btn-group dropdown w-100 d-flex flex-column">
       <button class="btn btn-default dropdown-toggle d-flex align-items-center" data-toggle="dropdown" aria-expanded="false">
         {% if is_granted('ROLE_PREVIOUS_ADMIN') %}
           <i class="fas fa-exchange-alt"></i>
         {% else %}
-          <i class="fas fa-user-circle mr-1 mr-sm-0 mr-md-1"></i>
+          <i class="fas fa-user-circle mr-3 mr-sm-0 mr-md-3"></i>
         {% endif %}
         <span class="d-sm-none d-md-block">{{ msgphp_user.current.name }}</span>
-        <span class="fas fa-chevron-right fa-w-16 d-none d-md-block"></span>
+        <span class="fas fa-chevron-down fa-w-16"></span>
       </button>
       <ul class="dropdown-menu" role="menu">
         {% block userNavigation %}
-          <li><a href="{{ path('profile', { 'user': msgphp_user.current.id }) }}">{{ 'account'|trans|capitalize }}</a></li>
+          <li><a href="{{ path('profile', { 'user': msgphp_user.current.id }) }}" class="dropdown-item">{{ 'account'|trans|capitalize }}</a></li>
         {% endblock %}
         {% if is_granted('ROLE_PREVIOUS_ADMIN') %}
-          <li><a href="{{ path('index', {'_switch_user': '_exit'}) }}">{{ 'user.actions.switchBack'|trans|capitalize }}</a></li>
+          <li><a href="{{ path('index', {'_switch_user': '_exit'}) }}" class="dropdown-item">{{ 'user.actions.switchBack'|trans|capitalize }}</a></li>
         {% endif %}
-        <li><a href="{{ path('logout') }}">{{ 'user.actions.logout'|trans|capitalize }}</a></li>
+        <li><a href="{{ path('logout') }}" class="dropdown-item">{{ 'user.actions.logout'|trans|capitalize }}</a></li>
       </ul>
     </div>
   {% endif %}

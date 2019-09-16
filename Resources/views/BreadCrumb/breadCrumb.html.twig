@@ -3,6 +3,9 @@
 {% block list %}
   {% if item.hasChildren and options.depth is not same as(0) and item.displayChildren %}
       <ol class="breadcrumb">
+        <li data-button="back" class="breadcrumb-item back">
+          <i class="fas fa-chevron-left fa-sm mr-2"></i>{{ 'previous'|trans|capitalize }}
+        </li>
         {{ block('children') }}
       </ol>
   {% endif %}

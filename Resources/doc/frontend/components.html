@@ -52,3 +52,28 @@
 <!-- BADGES -->
 <!-- Use badge-pill for rounded badges -->
 <span class="badge badge-pill badge-primary">Primary</span>
+
+<!-- PAGINATION -->
+<nav aria-label="Page navigation example">
+  <ul class="pagination justify-content-center">
+    <li class="page-item disabled"> <!-- class disabled when not clickable -->
+      <a class="page-link" href="#" aria-label="Previous">
+        <span aria-hidden="true"><i class="fas fa-chevron-left"></i></span>
+        <span class="sr-only">Previous</span>
+      </a>
+    </li>
+
+    <li class="page-item active"> <!-- class active for active page -->
+      <a class="page-link" href="#">1</a>
+    </li>
+
+    ...
+
+    <li class="page-item">
+      <a class="page-link" href="#" aria-label="Next">
+        <span aria-hidden="true"><i class="fas fa-chevron-right"></i></span>
+        <span class="sr-only">Next</span>
+      </a>
+    </li>
+  </ul>
+</nav>

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="{{ app.request.locale }}">
+<html lang="{{ app.request.locale }}" class="h-100">
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -46,7 +46,7 @@
   {% endblock %}
 </head>
 
-<body class="user">
+<body class="user h-100">
 <!--[if lt IE 8 ]>
 <div id="ie6" class="alert alert-block" role="alert">
   <a href="#" class="close" data-dismiss="alert" title="{{ 'dialogs.close'|trans|capitalize }}">x</a>
@@ -57,17 +57,19 @@
 <div class="container">
   <div class="row justify-content-center">
     <div class="col-md-6 col-xl-5">
-      <div class="text-center">
-        {% block logo_image %}
-          <img class="empty-logo my-1" src="{{ asset('build/images/logo-application.svg') }}" alt="{{ fallbacks.get('site_title') }}">
+      <div class="card p-4 mt-5">
+        <div class="text-center mb-3">
+          {% block logo_image %}
+            <img class="empty-logo" src="{{ asset('build/images/logo-application.svg') }}" alt="{{ fallbacks.get('site_title') }}">
+          {% endblock %}
+        </div>
+
+        {{ include('@SumoCodersFrameworkCore/notifications.html.twig') }}
+
+        {% block main %}
         {% endblock %}
+
       </div>
-
-      {{ include('@SumoCodersFrameworkCore/notifications.html.twig') }}
-
-      {% block main %}
-      {% endblock %}
-
     </div>
   </div>
 </div>

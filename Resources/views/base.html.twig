@@ -77,6 +77,11 @@
       </div>
     </div>
 
+    <div class="loading-indicator d-none" data-role="ajax-indicator">
+      <p class="text-center">{{ 'core.interface.loading'|trans|capitalize }}...</p>
+      <div class="loading-bar"></div>
+    </div>
+
     <section id="main" role="main">
       <div class="header-subbar">
         {{ include('@SumoCodersFrameworkCore/notifications.html.twig') }}
@@ -105,8 +110,8 @@
   <footer class="footer">
     {% block footer %}
       <div class="container-fluid">
-        <div class="row hidden-md hidden-lg">
-            <a href="#main-wrapper" class="pull-right back-to-top"><i class="fas fa-chevron-circle-up"></i> {{ 'core.interface.backToTop'|trans|capitalize }}</a>
+        <div class="hidden-md hidden-lg">
+          <a href="#main-wrapper" class="back-to-top"><i class="fas fa-chevron-up mr-2"></i> {{ 'core.interface.backToTop'|trans|capitalize }}</a>
         </div>
       </div>
     {% endblock %}

@@ -1,6 +1,7 @@
 core:
     interface:
         backToTop: terug naar boven
+        loading: aan het laden
 
     menu:
         home: home

@@ -30,6 +30,36 @@
   </li>
   <!-- ... -->
 </ul>
+<!-- what used to be panels, or for the not-so-old people, just regular cards -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">
+      <h2>Lorem ipsum</h2>
+    </div>
+  </div>
+  <div class="card-body">
+    <p>Lorem ipsum dolor sit amet</p>
+    <!-- fill it with useful content, par example: -->
+    <!-- description list: items below description -->
+    <dl>
+      <dt>...</dt>
+      <dd>...</dd>
+      <dt>...</dt>
+      <dd>...</dd>
+    </dl>
+    <!-- striped table: add class 'table-striped-bg-white' to have the striped effect on a white background -->
+    <table class="table table-striped table-striped-bg-white">
+      <tr>
+        <th>...</th>
+        <td>...</td>
+      </tr>
+      <tr>
+        <th>...</th>
+        <td>...</td>
+      </tr>
+    </table>
+  </div>
+</div>
 
 <!-- TYPE -->
 <!-- Your page-title is always h1, the only h1 on the page (in {% block header_title %}). -->
@@ -37,6 +67,7 @@
 
 <!-- TABLES -->
 <div class="table-responsive"> <!-- Make the table scrollable on mobile -->
+  <!-- if you want a striped table on a white background: use classes 'table-striped table-striped-bg-white' -->
   <table class="table table-striped table-hover">
     <thead>
       <tr>

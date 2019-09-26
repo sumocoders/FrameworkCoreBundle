@@ -1,25 +1,25 @@
 <div id="main-menu-inner">
-  <div class="navbar navbar-white bg-white p-0 navbar-expand-sm flex-row flex-sm-column">
-    <a href="/" rel="home" class="navbar-brand d-flex justify-content-sm-center">
+  <div class="navbar navbar-white bg-white p-0 navbar-expand-md flex-row flex-md-column">
+    <a href="/" rel="home" class="navbar-brand d-flex justify-content-md-center">
       {% block logo_image %}
         <img class="img-responsive" src="{{ asset('build/assets/images/logo-application.svg') }}" alt="{{ fallbacks.get('site_title') }}">
       {% endblock %}
     </a>
-    <div class="navbar-header d-sm-none d-flex">
+    <div class="navbar-header d-md-none d-flex">
       <button class="navbar-toggler navbar-toggler-right ml-auto collapsed" type="button" data-toggle="collapse" data-target="#navbar-collapse-1" aria-controls="navbar-collapse-1" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
     </div>
     <div class="collapse navbar-collapse" id="navbar-collapse-1">
       {{ knp_menu_render('side_menu', {'template': '@SumoCodersFrameworkCore/menu/menu.html.twig', 'ancestorClass': 'open active'}) }}
-      <div class="d-none d-sm-block toggle-menu-visibility" data-sidebar="toggler">
+      <div class="d-none d-md-block toggle-menu-visibility" data-sidebar="toggler">
         <div class="nav-item">
           <div class="nav-link d-flex flex-row align-items-center">
             <i class="fas fa-arrow-left mr-3"></i> <div class="nav-link-text">{{ 'collapse'|trans|capitalize }}</div>
           </div>
         </div>
       </div>
-      <div class="d-sm-none">
+      <div class="d-md-none">
         {{ include('@SumoCodersFrameworkCore/usermenu.html.twig') }}
       </div>
     </div>

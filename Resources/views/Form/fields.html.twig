@@ -45,7 +45,7 @@
     <div
         {{ block('widget_container_attributes') }}
         {% if prototype is defined %}
-          data-prototype="{{ formMacros.renderCollectionItem(prototype)|e('html_attr') }}"
+          data-prototype="{{ formMacros.renderCollectionItem(prototype, allow_delete)|e('html_attr') }}"
         {% endif %}
         class="card bg-light">
       <div class="card-body">
@@ -72,7 +72,7 @@
 
     <ul data-role="collection-item-container" class="list-unstyled">
       {% for child in form %}
-        {{ formMacros.renderCollectionItem(child) }}
+        {{ formMacros.renderCollectionItem(child, allow_delete) }}
       {% endfor %}
     </ul>
 
@@ -86,7 +86,7 @@
   {% endspaceless %}
 {% endblock collection_rows %}
 
-{% macro renderCollectionItem(item) %}
+{% macro renderCollectionItem(item, allow_delete) %}
   <li>
     <div class="card mb-3 ml-4 pl-4 collection-item" data-role="collection-item">
       <div class="card-body">

@@ -124,7 +124,7 @@
                 {% set label = label|trans({}, child.vars.translation_domain)|capitalize %}
               {% endif %}
             {% endif %}
-            {% if not child.vars.valid %}
+            {% if child.vars.valid is defined and child.vars.valid == false %}
               {% for error in child.vars.errors %}
                 <li class="error-list-item">
                   <a href="#{{ child.vars.id }}">

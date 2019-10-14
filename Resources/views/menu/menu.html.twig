@@ -9,7 +9,7 @@
   {% endif %}
   <span>{{ item.label|trans(item.getExtra('translation_params', {}), item.getExtra('translation_domain', 'messages'))|capitalize }}</span>
   {% if item.attributes.pill is defined %}
-    <span class="badge badge-pill badge-danger">{{ item.attributes.pill }}</span>
+    <span class="badge badge-pill badge-primary">{{ item.attributes.pill }}</span>
   {% endif %}
 {% endblock %}
 

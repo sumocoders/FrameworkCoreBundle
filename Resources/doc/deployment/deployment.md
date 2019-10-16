@@ -94,3 +94,20 @@ Official documentation to connect to the database can be found [here](https://sy
 ## Deploy
 
     dep deploy <stage>
+
+## Deploy images and files
+
+In the deploy.php script we can set the shared directory.
+This is how the local and remote server will be able to download or upload the correct directory.
+
+    Example: add('shared_dirs', ['public/files']);
+
+Please keep in mind that when executing the get or put files command that the files are being replaced.
+
+Get all files from remote server to local
+
+    dep sumo:files:get <stage>
+
+Put all files from local to remote server
+
+    dep sumo:files:put <stage>

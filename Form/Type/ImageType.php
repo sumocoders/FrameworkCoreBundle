@@ -46,7 +46,7 @@ class ImageType extends AbstractType
                         'required' => $required,
                         'attr' => [
                             'accept' => $options['accept'],
-                            'data-framework-role' => 'image-field',
+                            'data-role' => 'image-field',
                         ],
                     ];
                     if ($required) {

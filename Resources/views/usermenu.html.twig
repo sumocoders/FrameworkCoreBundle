@@ -10,7 +10,7 @@
         <span>{{ msgphp_user.current.name }}</span>
         <span class="fas fa-chevron-down fa-w-16"></span>
       </button>
-      <ul class="dropdown-menu" role="menu">
+      <ul class="dropdown-menu dropdown-menu-right" role="menu">
         {% block userNavigation %}
           <li><a href="{{ path('profile', { 'user': msgphp_user.current.id }) }}" class="dropdown-item">{{ 'account'|trans|capitalize }}</a></li>
         {% endblock %}

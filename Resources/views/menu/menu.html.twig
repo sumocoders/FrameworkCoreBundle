@@ -1,8 +1,8 @@
 {% extends 'knp_menu.html.twig' %}
 
 {% block label %}
-  {% if item.attributes.icon is defined %}
-    <i class="{{ item.attributes.icon }} mr-3"></i>
+    {% if item.labelAttributes.icon is defined %}
+    <i class="{{ item.labelAttributes.icon }} mr-3"></i>
     {% else %}
       <i class="fas fa-circle mr-3"></i>
   {% endif %}

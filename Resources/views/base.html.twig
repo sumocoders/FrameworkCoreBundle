@@ -84,7 +84,9 @@
 
     <section id="main" role="main">
       <div class="header-subbar">
-        {{ include('@SumoCodersFrameworkCore/notifications.html.twig') }}
+        <div class="notifications-wrapper">
+          {{ include('@SumoCodersFrameworkCore/notifications.html.twig') }}
+        </div>
         <div class="header-title-bar d-flex justify-content-md-between align-items-md-center flex-column flex-md-row">
           <nav aria-label="breadcrumb">
             {{ knp_menu_render('breadcrumb', {'template': '@SumoCodersFrameworkCore/BreadCrumb/breadCrumb.html.twig'}) }}

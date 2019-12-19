@@ -90,7 +90,7 @@
   <li>
     <div class="card mb-3 ml-4 pl-4 collection-item" data-role="collection-item">
       <div class="card-body">
-        {% if allow_delete %}
+        {% if allow_delete is defined and allow_delete %}
           <div class="d-flex justify-content-end">
             <button type="button" class="btn btn-outline-danger btn-sm"
                     data-role="collection-remove-button" title="{{ 'forms.buttons.removeItem'|trans|capitalize }}">

@@ -87,11 +87,11 @@
         <div class="notifications-wrapper">
           {{ include('@SumoCodersFrameworkCore/notifications.html.twig') }}
         </div>
-        <div class="header-title-bar d-flex justify-content-md-between align-items-md-center flex-column flex-md-row">
-          <nav aria-label="breadcrumb">
+        <div class="header-title-bar d-flex justify-content-md-between align-items-md-center flex-column flex-md-row flex-wrap">
+          <nav aria-label="breadcrumb" class="my-2">
             {{ knp_menu_render('breadcrumb', {'template': '@SumoCodersFrameworkCore/BreadCrumb/breadCrumb.html.twig'}) }}
           </nav>
-          <div>
+          <div class="ml-md-auto">
             {% if block('header_navigation') is defined %}
               <div class="action-buttons mt-3 mt-md-0">
                 {{ block('header_navigation') }}

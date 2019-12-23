@@ -13,20 +13,18 @@
       {% endif %}
       {% set label_attr_class = '' %}
       {% set label_attr = label_attr|merge({'class': label_attr.class|default('') ~ " " ~ label_attr_class ~ (required ? ' required' : ' optional') }) %}
-      <label{% for attrname,attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
-      {{ label|trans|capitalize }}{{- block('label_asterisk') }}
-      </label>
+      <label {% for attrname,attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>{{ label|trans|capitalize }}&#32;{{- block('label_optional') }}</label>
     {% endif %}
   {% endif %}
 {% endblock form_label %}
 
-{%- block label_asterisk -%}
+{%- block label_optional -%}
   {% spaceless %}
-    {% if required %}
-      <abbr title="{{ 'forms.labels.required'|trans({}, translation_domain) }}">*</abbr>
+    {% if not required %}
+      <small class="label-optional">{{ 'forms.labels.optional'|trans({}, translation_domain) }}</small>
     {% endif %}
   {% endspaceless %}
-{%- endblock label_asterisk -%}
+{%- endblock label_optional -%}
 
 {% block collection_widget %}
   {% import _self as formMacros %}

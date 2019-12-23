@@ -61,20 +61,45 @@
 
 <div id="main-wrapper" class="main-wrapper" data-sidebar-wrapper>
   <div id="main-menu" class="main-menu" role="navigation">
-    {{ include('@SumoCodersFrameworkCore/navigation.html.twig') }}
+    {% if block('header_navigation') is defined %}
+      {% set parameters = { header_navigation: block('header_navigation') } %}
+    {% else %}
+      {% set parameters = {} %}
+    {% endif %}
+    {% with parameters %}
+      {{ include('@SumoCodersFrameworkCore/navigation.html.twig') }}
+    {% endwith %}
   </div>
   <div id="content-wrapper">
     <div class="main-header">
+      <div class="d-md-none breadcrumb-mobile">
+        <nav aria-label="breadcrumb" class="my-2">
+          {{ knp_menu_render('breadcrumb', {'template': '@SumoCodersFrameworkCore/BreadCrumb/breadCrumb.html.twig'}) }}
+        </nav>
+      </div>
       <div class="sub-nav d-flex">
-        <div class="header-title">
+        <div class="header-title d-flex flex-row justify-content-between w-100 align-items-center">
           {% block header_title %}
-
           {% endblock %}
+          <div class="d-md-none">
+            {% if block('header_navigation') is defined %}
+              <button type="button" class="navbar-toggler h-100 collapse-actions-toggle"  data-toggle="collapse" data-target="#action-buttons-collapse" aria-expanded="false" aria-controls="action-buttons-collapse">
+                <i class="fas fa-ellipsis-v"></i>
+              </button>
+            {% endif %}
+          </div>
         </div>
         <div class="d-none d-md-block ml-auto">
           {{ include('@SumoCodersFrameworkCore/usermenu.html.twig') }}
         </div>
       </div>
+      {% if block('header_navigation') is defined %}
+        <div class="collapse collapse-actions" id="action-buttons-collapse">
+          <div class="action-buttons action-buttons-mobile">
+            {{ block('header_navigation') }}
+          </div>
+        </div>
+      {% endif %}
     </div>
 
     <div class="loading-indicator d-none" data-role="ajax-indicator">
@@ -87,13 +112,13 @@
         <div class="notifications-wrapper">
           {{ include('@SumoCodersFrameworkCore/notifications.html.twig') }}
         </div>
-        <div class="header-title-bar d-flex justify-content-md-between align-items-md-center flex-column flex-md-row flex-wrap">
+        <div class="header-title-bar d-none d-md-flex justify-content-md-between align-items-md-center flex-column flex-md-row flex-wrap">
           <nav aria-label="breadcrumb" class="my-2">
             {{ knp_menu_render('breadcrumb', {'template': '@SumoCodersFrameworkCore/BreadCrumb/breadCrumb.html.twig'}) }}
           </nav>
           <div class="ml-md-auto">
             {% if block('header_navigation') is defined %}
-              <div class="action-buttons mt-3 mt-md-0">
+              <div class="action-buttons">
                 {{ block('header_navigation') }}
               </div>
             {% endif %}

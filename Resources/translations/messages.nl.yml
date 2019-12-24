@@ -2,6 +2,7 @@ core:
     interface:
         backToTop: terug naar boven
         loading: aan het laden
+        collapse: verberg menu
 
     menu:
         home: home

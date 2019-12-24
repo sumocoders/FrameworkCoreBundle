@@ -82,7 +82,7 @@
           {% block header_title %}
           {% endblock %}
           <div class="d-md-none">
-            {% if block('header_navigation') is defined %}
+            {% if block('header_navigation') is defined and block('header_navigation') is not empty %}
               <button type="button" class="navbar-toggler h-100 collapse-actions-toggle"  data-toggle="collapse" data-target="#action-buttons-collapse" aria-expanded="false" aria-controls="action-buttons-collapse">
                 <i class="fas fa-ellipsis-v"></i>
               </button>
@@ -93,7 +93,7 @@
           {{ include('@SumoCodersFrameworkCore/usermenu.html.twig') }}
         </div>
       </div>
-      {% if block('header_navigation') is defined %}
+      {% if block('header_navigation') is defined and block('header_navigation') is not empty %}
         <div class="collapse collapse-actions" id="action-buttons-collapse">
           <div class="action-buttons action-buttons-mobile">
             {{ block('header_navigation') }}
@@ -117,7 +117,7 @@
             {{ knp_menu_render('breadcrumb', {'template': '@SumoCodersFrameworkCore/BreadCrumb/breadCrumb.html.twig'}) }}
           </nav>
           <div class="ml-md-auto">
-            {% if block('header_navigation') is defined %}
+            {% if block('header_navigation') is defined and block('header_navigation') is not empty %}
               <div class="action-buttons">
                 {{ block('header_navigation') }}
               </div>

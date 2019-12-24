@@ -4,7 +4,7 @@
   {% if item.hasChildren and options.depth is not same as(0) and item.displayChildren %}
       <ol class="breadcrumb" itemscope itemtype="https://schema.org/breadcrumb">
         <li class="breadcrumb-item">
-          <a href="/" data-button-previous="back" class="breadcrumb-item-back"><i class="fas fa-chevron-left fa-sm mr-2"></i>{{ 'previous'|trans|capitalize }}</a>
+          <a href="/" data-button-previous="back" class="breadcrumb-item-back"><i class="fas fa-chevron-left fa-sm mr-2"></i><span class="sr-only d-md-none">{{ 'previous'|trans|capitalize }}</span><span class="d-none d-md-inline-block">{{ 'previous'|trans|capitalize }}</span></a>
         </li>
         {{ block('children') }}
       </ol>

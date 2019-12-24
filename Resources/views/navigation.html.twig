@@ -1,6 +1,6 @@
 <div id="main-menu-inner">
   <div class="navbar navbar-white bg-white p-0 navbar-expand-md flex-row flex-md-column">
-    <a href="/" rel="home" class="navbar-brand d-block d-md-flex">
+    <a href="/" rel="home" class="navbar-brand d-block d-md-flex justify-content-md-center">
       {% block logo_image %}
         <img class="img-responsive" src="{{ asset('build/assets/images/logo-application.svg') }}" alt="{{ fallbacks.get('site_title') }}">
       {% endblock %}
@@ -10,7 +10,7 @@
         <span class="navbar-toggler-icon"></span>
       </button>
     </div>
-    <div class="collapse navbar-collapse" id="navbar-collapse-1">
+    <div class="collapse navbar-collapse" id="navbar-collapse-1" data-role="navbar-collapse">
       {{ knp_menu_render('side_menu', {'template': '@SumoCodersFrameworkCore/menu/menu.html.twig', 'ancestorClass': 'open active'}) }}
       <div class="d-none d-md-block toggle-menu-visibility" data-sidebar-toggler>
         <div class="nav-item">

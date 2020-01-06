@@ -81,7 +81,7 @@ services:
     arguments:
       - "@templating"
       - "mails/default_email.html.twig"
-      - "%kernel.root_dir%/../web/assets/css/mail.css"
+      - "%kernel.project_dir%/web/assets/css/mail.css"
     calls:
       - [setDefaultSender, ["%mailer.default_sender_email%", "%mailer.default_sender_name%"]]
       - [setDefaultReplyTo, ["%mailer.default_reply_to_email%", "%mailer.default_reply_to_name%"]]

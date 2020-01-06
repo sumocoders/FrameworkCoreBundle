@@ -9,12 +9,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class BirthdayTypeExtension extends AbstractTypeExtension
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getExtendedType()
+    public static function getExtendedTypes(): iterable
     {
-        return BirthdayType::class;
+        return [BirthdayType::class];
     }
 
     /**

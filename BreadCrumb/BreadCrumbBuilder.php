@@ -2,7 +2,6 @@
 
 namespace SumoCoders\FrameworkCoreBundle\BreadCrumb;
 
-use JMS\I18nRoutingBundle\Router\DefaultPatternGenerationStrategy;
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\MenuItem;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -15,11 +14,6 @@ final class BreadCrumbBuilder
      * @var bool
      */
     private $extractFromRoute = true;
-
-    /**
-     * @var string
-     */
-    private $routingStrategy;
 
     /**
      * @var RequestStack
@@ -42,12 +36,10 @@ final class BreadCrumbBuilder
     private $items = [];
 
     public function __construct(
-        string $routingStrategy,
         RequestStack $requestStack,
         FactoryInterface $factory,
         EventDispatcherInterface $eventDispatcher
     ) {
-        $this->routingStrategy = $routingStrategy;
         $this->requestStack = $requestStack;
         $this->factory = $factory;
         $this->eventDispatcher = $eventDispatcher;
@@ -197,12 +189,6 @@ final class BreadCrumbBuilder
 
     private function localeShouldBeParsed(string $locale): bool
     {
-        // A custom or prefix routing strategy should always contain the locale
-        if ($this->routingStrategy === DefaultPatternGenerationStrategy::STRATEGY_CUSTOM
-            || $this->routingStrategy === DefaultPatternGenerationStrategy::STRATEGY_PREFIX) {
-            return true;
-        }
-
         // If the current locale is the default locale, don't parse it
         if ($this->requestStack->getMasterRequest()->getDefaultLocale() === $locale) {
             return false;

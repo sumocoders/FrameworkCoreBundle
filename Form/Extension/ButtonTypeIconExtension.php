@@ -7,6 +7,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 
 class ButtonTypeIconExtension extends AbstractTypeExtension
 {
@@ -39,13 +40,8 @@ class ButtonTypeIconExtension extends AbstractTypeExtension
         ]);
     }
 
-    /**
-     * Extend the button field type
-     *
-     * @return string The name of the type being extended
-     */
-    public function getExtendedType()
+    public static function getExtendedTypes(): iterable
     {
-        return 'Symfony\Component\Form\Extension\Core\Type\ButtonType';
+        return [ButtonType::class];
     }
 }

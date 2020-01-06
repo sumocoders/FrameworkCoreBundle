@@ -15,9 +15,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class DateTimeTypeExtension extends AbstractTypeExtension
 {
-    public function getExtendedType()
+    public static function getExtendedTypes(): iterable
     {
-        return DateTimeType::class;
+        return [DateTimeType::class];
     }
 
     /**

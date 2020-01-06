@@ -12,9 +12,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class TimeTypeExtension extends AbstractTypeExtension
 {
-    public function getExtendedType()
+    public static function getExtendedTypes(): iterable
     {
-        return TimeType::class;
+        return [TimeType::class];
     }
 
     /**

@@ -21,9 +21,9 @@
     "gedmo/doctrine-extensions": "^2.4",
     "friendsofsymfony/jsrouting-bundle": "^2",
     "ramsey/uuid": "^3.7",
-    "knplabs/knp-menu-bundle": "^2.2",
     "tijsverkoyen/css-to-inline-styles": "^2.2",
-    "babdev/pagerfanta-bundle": "^2.0"
+    "babdev/pagerfanta-bundle": "^2.0",
+    "knplabs/knp-menu-bundle": "^3.0"
   },
   "require-dev": {
     "roave/security-advisories": "dev-master",

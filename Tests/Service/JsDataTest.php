@@ -17,7 +17,7 @@ class JsDataTest extends TestCase
     /**
      * @inherit
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->jsData = new JsData($this->getRequestStack());
     }
@@ -25,7 +25,7 @@ class JsDataTest extends TestCase
     /**
      * @inherit
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->jsData = null;
     }

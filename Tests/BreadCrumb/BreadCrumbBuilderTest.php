@@ -23,7 +23,7 @@ class BreadCrumbBuilderTest extends TestCase
     /**
      * @inherit
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->breadCrumbBuilder = null;
     }

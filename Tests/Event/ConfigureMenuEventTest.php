@@ -17,7 +17,7 @@ class ConfigureMenuEventTest extends TestCase
     /**
      * @inherit
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->configureMenuEvent = new ConfigureMenuEvent(
             $this->getFactory(),
@@ -48,7 +48,7 @@ class ConfigureMenuEventTest extends TestCase
     /**
      * @inherit
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->configureMenuEvent = null;
     }

@@ -18,7 +18,7 @@ class MenuBuilderTest extends TestCase
     /**
      * @inherit
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->menuBuilder = new MenuBuilder();
     }
@@ -26,7 +26,7 @@ class MenuBuilderTest extends TestCase
     /**
      * @inherit
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->menuBuilder = null;
     }

@@ -13,6 +13,10 @@
   {% if item.attributes.pill is defined and item.attributes.pill %}
     <span class="badge badge-pill badge-white ml-2"><span class="badge-content">{{ item.attributes.pill }}</span></span>
   {% endif %}
+  <span>{{ item.label|trans(item.getExtra('translation_params', {}), item.getExtra('translation_domain', 'messages'))|capitalize }}</span>
+  {% if item.attributes.pill is defined %}
+    <span class="badge badge-pill badge-primary">{{ item.attributes.pill }}</span>
+  {% endif %}
 {% endblock %}
 
 {% block item %}

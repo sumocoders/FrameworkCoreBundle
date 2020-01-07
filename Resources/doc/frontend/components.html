@@ -1,0 +1,150 @@
+<!-- Most of this stuff is just Bootstrap, so check the documentation for more info -->
+
+<!-- LINKS AND BUTTONS -->
+<!-- Button -->
+<!-- Always add mr-2 to icon classes -->
+<button class="btn btn-primary"><i class="fas fa-ice-cream mr-2"></i>Button text</button>
+<!-- Outline button -->
+<button class="btn btn-outline-primary"><i class="fas fa-ice-cream mr-2"></i>Button text</button>
+<!-- Loading button -- disabled -->
+<button class="btn btn-primary" disabled><i class="fas fa-spinner fa-spin mr-2"></i>Button text</button>
+<!-- Button with icon at the end -->
+<button class="btn btn-primary">Button text<i class="fas fa-ice-cream ml-2"></i></button>
+
+<!-- Icon -->
+<!-- Use a tooltip for icon-only links -->
+<a href="" data-toggle="tooltip" data-placement="top" title="Tooltip message">
+  <i class="fas fa-exchange-alt"></i>
+</a>
+
+<!-- CARDS -->
+<!-- Dashboard cards: anchor is only on the text, but the whole card is clickable -->
+<ul class="row list-unstyled">
+  <li class="col-6 col-md-4 col-lg-3">
+    <div class="card card-dashboard text-center">
+      <div class="card-body">
+        <i class="fas fa-ice-cream"></i>
+        <div class="card-text">
+          <h2><a href="">Ice-cream</a></h2>
+        </div>
+      </div>
+    </div>
+  </li>
+  <!-- ... -->
+</ul>
+<!-- what used to be panels, or for the not-so-old people, just regular cards -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">
+      <h2>Lorem ipsum</h2>
+    </div>
+  </div>
+  <div class="card-body">
+    <p>Lorem ipsum dolor sit amet</p>
+    <!-- fill it with useful content, par example: -->
+    <!-- description list: items below description -->
+    <dl>
+      <dt>...</dt>
+      <dd>...</dd>
+      <dt>...</dt>
+      <dd>...</dd>
+    </dl>
+    <!-- striped table: add class 'table-striped-bg-white' to have the striped effect on a white background -->
+    <table class="table table-striped table-striped-bg-white">
+      <tr>
+        <th>...</th>
+        <td>...</td>
+      </tr>
+      <tr>
+        <th>...</th>
+        <td>...</td>
+      </tr>
+    </table>
+  </div>
+</div>
+<!-- cards as lists -->
+<ul class="list-unstyled row">
+  <li class="col-sm-6 col-md-4 col-lg-3">
+    <div class="card">
+      <div class="card-body">
+        <!-- fill it with useful content, par example: -->
+        <!-- description list: items below description -->
+        <dl>
+          <dt>...</dt>
+          <dd>...</dd>
+          <dt>...</dt>
+          <dd>...</dd>
+        </dl>
+      </div>
+      <div class="card-footer">
+        <a href="/" class="btn btn-outline-primary btn-sm mb-1"><i class="fas fa-exchange-alt mr-2"></i>Inloggen als</a>
+        <a href="/" class="btn btn-primary btn-sm mb-1"><i class="fas fa-pencil-alt mr-2"></i>Aanpassen</a>
+      </div>
+    </div>
+  </li>
+</ul>
+
+<!-- TYPE -->
+<!-- Your page-title is always h1, the only h1 on the page (in {% block header_title %}). -->
+<!-- The other titles are logically, h2 for the the highest title in the main content and so on. -->
+
+<!-- TABLES -->
+<div class="table-responsive"> <!-- Make the table scrollable when table is wider than the screen -->
+  <!-- if you want a striped table on a white background: use classes 'table-striped table-striped-bg-white' -->
+  <table class="table table-striped table-hover">
+    <thead>
+      <tr>
+        <th> ... </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td> ... </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- EMPTY STATE -->
+<!-- If there are no items in a table / on a page, there should be a note for it, in stead of just an empty page. You can you the following code -->
+<div class="row">
+  <div class="col-sm-6 col-lg-5 mx-auto">
+    <div class="text-center mt-5">
+      <span class="fa-stack no-items-icons">
+        <i class="fas fa-circle fa-stack-2x"></i>
+        <i class="fas fa-satellite fa-stack-1x fa-inverse"></i> <!-- Change this to a better icon, p.ex. enveloppe for no messages -->
+      </span>
+      <h3 class="mt-3 mt-lg-5">Geen planning gevonden</h3>
+      <p><a href="...">Voeg een taak toe</a></p> <!-- Add a *call to action* -->
+    </div>
+  </div>
+</div>
+
+<!-- BADGES -->
+<!-- Use badge-pill for rounded badges -->
+<span class="badge badge-pill badge-primary">Primary</span>
+
+<!-- PAGINATION -->
+<nav aria-label="Page navigation example">
+  <ul class="pagination justify-content-center">
+    <li class="page-item disabled"> <!-- class disabled when not clickable -->
+      <a class="page-link" href="#" aria-label="Previous">
+        <span aria-hidden="true"><i class="fas fa-chevron-left"></i></span>
+        <span class="sr-only">Previous</span>
+      </a>
+    </li>
+
+    <li class="page-item active"> <!-- class active for active page -->
+      <a class="page-link" href="#">1</a>
+    </li>
+
+    ...
+
+    <li class="page-item">
+      <a class="page-link" href="#" aria-label="Next">
+        <span aria-hidden="true"><i class="fas fa-chevron-right"></i></span>
+        <span class="sr-only">Next</span>
+      </a>
+    </li>
+  </ul>
+</nav>

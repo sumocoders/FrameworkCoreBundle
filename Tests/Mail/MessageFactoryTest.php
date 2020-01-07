@@ -15,7 +15,7 @@ class MessageFactoryTest extends TestCase
      */
     protected $messageFactory;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $temp = tempnam(sys_get_temp_dir(), 'message_factory_test');
         $this->messageFactory = new MessageFactory(
@@ -28,7 +28,7 @@ class MessageFactoryTest extends TestCase
     /**
      * @inherit
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->messageFactory = null;
     }

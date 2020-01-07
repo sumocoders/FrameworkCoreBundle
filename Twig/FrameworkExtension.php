@@ -3,8 +3,10 @@
 namespace SumoCoders\FrameworkCoreBundle\Twig;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
-class FrameworkExtension extends \Twig_Extension
+class FrameworkExtension extends AbstractExtension
 {
     /**
      * @var \Symfony\Component\DependencyInjection\ContainerInterface
@@ -27,11 +29,11 @@ class FrameworkExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'bundleExists',
                 [$this, 'bundleExists']
             ),
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'toTranslation',
                 [$this, 'convertToTranslation']
             ),

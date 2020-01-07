@@ -209,11 +209,11 @@ final class BreadCrumbBuilder
         $menu = $this->factory->createItem('root');
 
         $this->eventDispatcher->dispatch(
-            ConfigureMenuEvent::EVENT_NAME,
             new ConfigureMenuEvent(
                 $this->factory,
                 $menu
-            )
+            ),
+            ConfigureMenuEvent::EVENT_NAME
         );
 
         return $menu;

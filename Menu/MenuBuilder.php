@@ -60,11 +60,11 @@ class MenuBuilder
         $menu->setChildrenAttribute('class', 'nav navbar-nav');
 
         $this->eventDispatcher->dispatch(
-            ConfigureMenuEvent::EVENT_NAME,
             new ConfigureMenuEvent(
                 $this->getFactory(),
                 $menu
-            )
+            ),
+            ConfigureMenuEvent::EVENT_NAME
         );
 
         $this->reorderMenuItems($menu);

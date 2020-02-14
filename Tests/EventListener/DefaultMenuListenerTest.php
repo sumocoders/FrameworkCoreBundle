@@ -17,7 +17,7 @@ class DefaultMenuListenerTest extends TestCase
     /**
      * @inherit
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->defaultMenuListener = new DefaultMenuListener(
             $this->getSecurityAuthorizationChecker(),
@@ -48,7 +48,7 @@ class DefaultMenuListenerTest extends TestCase
     /**
      * @inherit
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->defaultMenuListener = null;
     }

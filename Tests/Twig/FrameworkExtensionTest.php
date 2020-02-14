@@ -16,7 +16,7 @@ class FrameworkExtensionTest extends TestCase
     /**
      * @inherit
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->frameworkExtension = new FrameworkExtension(
             $this->getContainer()
@@ -44,7 +44,7 @@ class FrameworkExtensionTest extends TestCase
     /**
      * @inherit
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->frameworkExtension = null;
     }

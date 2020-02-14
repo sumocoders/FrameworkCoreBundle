@@ -74,3 +74,30 @@ services:
 
 You can use normal numbers such as 1, 2, 3. But I would advice that you use
 hundreds, as it will allow you to insert items in between in a later stage.
+
+## Adding pills to menu items
+
+To add a pill to a menu item a pill attribute needs to be set on a menu item
+
+```php
+$unreadMessages = $this->messageRepository->countUnreadMessages(
+    $user
+);
+
+// Create the conversation menu
+$conversationMenuItem = $event->getFactory()->createItem(
+    'berichten',
+    [
+        'route' => 'conversation_overview',
+    ]
+);
+
+if ($unreadMessages > 0) {
+    $conversationMenuItem->setAttribute(
+        'pill',
+        $this->messageRepository->countUnreadMessages(
+            $user
+        )
+    );
+}
+```

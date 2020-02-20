@@ -25,6 +25,11 @@
         {% if is_granted('ROLE_PREVIOUS_ADMIN') %}
           <li><a href="{{ path('index', {'_switch_user': '_exit'}) }}" class="dropdown-item">{{ 'user.actions.switchBack'|trans|capitalize }}</a></li>
         {% endif %}
+        <div class="dropdown-divider"></div>
+        <li><a href="" class="dropdown-item disabled font-weight-bold">Themes</a></li>
+        <li><a href="" class="dropdown-item" data-theme-toggler="light">Light</a></li>
+        <li><a href="" class="dropdown-item" data-theme-toggler="dark">Dark</a></li>
+        <div class="dropdown-divider"></div>
         <li><a href="{{ path('logout') }}" class="dropdown-item">{{ 'user.actions.logout'|trans|capitalize }}</a></li>
       </ul>
     </div>

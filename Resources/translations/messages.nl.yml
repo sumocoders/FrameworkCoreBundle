@@ -4,6 +4,11 @@ core:
         loading: aan het laden
         collapse: verberg menu
 
+    themes:
+        themes: modus
+        dark: donker
+        light: licht
+
     menu:
         home: home
 

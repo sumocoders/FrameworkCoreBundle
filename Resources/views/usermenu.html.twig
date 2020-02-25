@@ -26,9 +26,10 @@
           <li><a href="{{ path('index', {'_switch_user': '_exit'}) }}" class="dropdown-item">{{ 'user.actions.switchBack'|trans|capitalize }}</a></li>
         {% endif %}
         <div class="dropdown-divider"></div>
-        <li><a href="" class="dropdown-item disabled font-weight-bold">Themes</a></li>
-        <li><a href="" class="dropdown-item" data-theme-toggler="light">Light</a></li>
-        <li><a href="" class="dropdown-item" data-theme-toggler="dark">Dark</a></li>
+        {# @todo tekst in vertalingen steken #}
+        <li><p class="dropdown-header disabled font-weight-bold">{{ 'core.themes.themes'|trans|capitalize }}</p></li>
+        <li><button type="button" class="dropdown-item" data-theme-toggler="light">{{ 'core.themes.light'|trans|capitalize }}</button></li>
+        <li><button type="button" class="dropdown-item" data-theme-toggler="dark">{{ 'core.themes.dark'|trans|capitalize }}</button></li>
         <div class="dropdown-divider"></div>
         <li><a href="{{ path('logout') }}" class="dropdown-item">{{ 'user.actions.logout'|trans|capitalize }}</a></li>
       </ul>

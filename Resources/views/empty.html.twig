@@ -1,23 +1,11 @@
 {{ include('@SumoCodersFrameworkCore/head.html.twig') }}
 <body class="body-empty">
-
-{{ include('@SumoCodersFrameworkCore/notifications.html.twig') }}
-
-<div class="container">
-  <div class="row justify-content-center">
-    <div class="col-lg-6">
-      <div class="text-center">
-        <img class="empty-logo mb-2" src="{{ asset('build/images/logo-application-color.svg') }}" alt="{{ fallbacks.get('site_title') }}">
-      </div>
-      {% block main %}
-
-      {% endblock %}
+    {{ include('@SumoCodersFrameworkCore/notifications.html.twig') }}
+    <div class="container">
+      {% block main %}{% endblock %}
     </div>
-  </div>
-</div>
-
-{% block javascripts %}
-  {{ encore_entry_script_tags('app') }}
-{% endblock %}
+    {% block javascripts %}
+      {{ encore_entry_script_tags('app') }}
+    {% endblock %}
 </body>
 </html>

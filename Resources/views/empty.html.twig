@@ -1,45 +1,4 @@
-<!doctype html>
-<html lang="{{ app.request.locale }}">
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-
-  <meta charset="UTF-8" />
-  <title>
-    {% block title %}
-      {{ fallbacks.get('site_title') }}
-    {% endblock %}
-  </title>
-
-  {% block meta %}
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <meta name="author" content="SumoCoders">
-  {% endblock %}
-
-  <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-  <!--[if lt IE 9]>
-  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-  <![endif]-->
-
-  {% block stylesheets %}
-    {{ encore_entry_link_tags('app') }}
-  {% endblock %}
-
-  {% block head_javascripts %}
-    <script type="text/javascript">
-      var jsData = {{ jsData|raw }};
-    </script>
-
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
-  {% endblock %}
-
-  {% block icons %}
-    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
-    <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
-    <link rel="image_src" href="{{ asset('image_src.png') }}" />
-  {% endblock %}
-</head>
-
+{{ include('@SumoCodersFrameworkCore/head.html.twig') }}
 <body class="body-empty">
 
 {{ include('@SumoCodersFrameworkCore/notifications.html.twig') }}
@@ -50,10 +9,9 @@
       <div class="text-center">
         <img class="empty-logo mb-2" src="{{ asset('build/images/logo-application-color.svg') }}" alt="{{ fallbacks.get('site_title') }}">
       </div>
-
       {% block main %}
-      {% endblock %}
 
+      {% endblock %}
     </div>
   </div>
 </div>

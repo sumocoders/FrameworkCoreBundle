@@ -1,128 +1,86 @@
-<!doctype html>
-<html lang="{{ app.request.locale }}">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <title>
-    {% block title %}
-      {{ fallbacks.get('site_title') }}
-    {% endblock %}
-  </title>
-
-  {% block meta %}
-    <meta name="author" content="SumoCoders">
-  {% endblock %}
-
-  {% block stylesheets %}
-  {# 'app' must match the first argument to addEntry() in webpack.config.js #}
-  {{ encore_entry_link_tags('app') }}
-
-  <!-- Renders a link tag (if your module requires any CSS)
-  <link rel="stylesheet" href="/build/app.css"> -->
-  {% endblock %}
-
-  {# Google Fonts #}
-  {% block base_font %}
-    <link href="https://fonts.googleapis.com/css?family=Lato:300,300i,400,400i,700,700i,900,900i&amp;display=swap" rel="stylesheet">
-  {% endblock %}
-
-  {% block head_javascripts %}
-    <script type="text/javascript">
-      var jsData = {{ jsData|raw }};
-    </script>
-  {% endblock %}
-
-  {% block icons %}
-    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
-    <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
-    <link rel="image_src" href="{{ asset('image_src.png') }}" />
-  {% endblock %}
-</head>
-
+{{ include('@SumoCodersFrameworkCore/head.html.twig') }}
 <body class="body-base">
-
-<div id="main-wrapper" class="main-wrapper" data-sidebar-wrapper>
-  <div id="main-menu" class="main-menu" role="navigation">
-    {% if block('header_navigation') is defined %}
-      {% set parameters = { header_navigation: block('header_navigation') } %}
-    {% else %}
-      {% set parameters = {} %}
-    {% endif %}
-    {% with parameters %}
-      {{ include('@SumoCodersFrameworkCore/navigation.html.twig') }}
-    {% endwith %}
-  </div>
-  <div id="content-wrapper">
-    <div class="main-header">
-      <div class="d-md-none breadcrumb-mobile">
-        <nav aria-label="breadcrumb" class="my-2">
-          {{ knp_menu_render('breadcrumb', {'template': '@SumoCodersFrameworkCore/BreadCrumb/breadCrumb.html.twig'}) }}
-        </nav>
-      </div>
-      <div class="sub-nav d-flex">
-        <div class="header-title d-flex flex-row justify-content-between w-100 align-items-center">
-          {% block header_title %}
-          {% endblock %}
-          <div class="d-md-none">
-            {% if block('header_navigation') is defined and block('header_navigation') is not empty %}
-              <button type="button" class="navbar-toggler h-100 collapse-actions-toggle"  data-toggle="collapse" data-target="#action-buttons-collapse" aria-expanded="false" aria-controls="action-buttons-collapse">
-                <i class="fas fa-ellipsis-v"></i>
-              </button>
-            {% endif %}
-          </div>
-        </div>
-        <div class="d-none d-md-block ml-auto">
-          {{ include('@SumoCodersFrameworkCore/usermenu.html.twig') }}
-        </div>
-      </div>
-      {% if block('header_navigation') is defined and block('header_navigation') is not empty %}
-        <div class="collapse collapse-actions" id="action-buttons-collapse">
-          <div class="action-buttons action-buttons-mobile">
-            {{ block('header_navigation') }}
-          </div>
-        </div>
+  <div id="main-wrapper" class="main-wrapper" data-sidebar-wrapper>
+    <div id="main-menu" class="main-menu" role="navigation">
+      {% if block('header_navigation') is defined %}
+        {% set parameters = { header_navigation: block('header_navigation') } %}
+      {% else %}
+        {% set parameters = {} %}
       {% endif %}
+      {% with parameters %}
+        {{ include('@SumoCodersFrameworkCore/navigation.html.twig') }}
+      {% endwith %}
     </div>
-
-    <div class="loading-indicator d-none" data-role="ajax-indicator">
-      <p class="text-center">{{ 'core.interface.loading'|trans|capitalize }}...</p>
-      <div class="loading-bar"></div>
-    </div>
-
-    <section id="main" role="main">
-      <div class="header-subbar">
-        <div class="notifications-wrapper">
-          {{ include('@SumoCodersFrameworkCore/notifications.html.twig') }}
-        </div>
-        <div class="header-title-bar d-none d-md-flex justify-content-md-between align-items-md-center flex-column flex-md-row flex-wrap">
+    <div id="content-wrapper">
+      <div class="main-header">
+        <div class="d-md-none breadcrumb-mobile">
           <nav aria-label="breadcrumb" class="my-2">
             {{ knp_menu_render('breadcrumb', {'template': '@SumoCodersFrameworkCore/BreadCrumb/breadCrumb.html.twig'}) }}
           </nav>
-          <div class="ml-md-auto">
-            {% if block('header_navigation') is defined and block('header_navigation') is not empty %}
-              <div class="action-buttons">
-                {{ block('header_navigation') }}
-              </div>
-            {% endif %}
+        </div>
+        <div class="sub-nav d-flex">
+          <div class="header-title d-flex flex-row justify-content-between w-100 align-items-center">
+            {% block header_title %}
+            {% endblock %}
+            <div class="d-md-none">
+              {% if block('header_navigation') is defined and block('header_navigation') is not empty %}
+                <button type="button" class="navbar-toggler h-100 collapse-actions-toggle"  data-toggle="collapse" data-target="#action-buttons-collapse" aria-expanded="false" aria-controls="action-buttons-collapse">
+                  <i class="fas fa-ellipsis-v"></i>
+                </button>
+              {% endif %}
+            </div>
+          </div>
+          <div class="d-none d-md-block ml-auto">
+            {{ include('@SumoCodersFrameworkCore/usermenu.html.twig') }}
           </div>
         </div>
+        {% if block('header_navigation') is defined and block('header_navigation') is not empty %}
+          <div class="collapse collapse-actions" id="action-buttons-collapse">
+            <div class="action-buttons action-buttons-mobile">
+              {{ block('header_navigation') }}
+            </div>
+          </div>
+        {% endif %}
       </div>
-      <div class="container-fluid">
-        <div class="main-content">
-          {% block main %}
 
-          {% endblock %}
-        </div>
+      <div class="loading-indicator d-none" data-role="ajax-indicator">
+        <p class="text-center">{{ 'core.interface.loading'|trans|capitalize }}...</p>
+        <div class="loading-bar"></div>
       </div>
-    </section>
+
+      <section id="main" role="main">
+        <div class="header-subbar">
+          <div class="notifications-wrapper">
+            {{ include('@SumoCodersFrameworkCore/notifications.html.twig') }}
+          </div>
+          <div class="header-title-bar d-none d-md-flex justify-content-md-between align-items-md-center flex-column flex-md-row flex-wrap">
+            <nav aria-label="breadcrumb" class="my-2">
+              {{ knp_menu_render('breadcrumb', {'template': '@SumoCodersFrameworkCore/BreadCrumb/breadCrumb.html.twig'}) }}
+            </nav>
+            <div class="ml-md-auto">
+              {% if block('header_navigation') is defined and block('header_navigation') is not empty %}
+                <div class="action-buttons">
+                  {{ block('header_navigation') }}
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        <div class="container-fluid">
+          <div class="main-content">
+            {% block main %}
+
+            {% endblock %}
+          </div>
+        </div>
+      </section>
+    </div>
+    <footer class="footer">
+      {% block footer %}
+        <a href="#main-wrapper" class="back-to-top d-none" data-role="back-to-top"><i class="fas fa-chevron-up mr-3"></i> {{ 'core.interface.backToTop'|trans|capitalize }}</a>
+      {% endblock %}
+    </footer>
   </div>
-  <footer class="footer">
-    {% block footer %}
-      <a href="#main-wrapper" class="back-to-top d-none" data-role="back-to-top"><i class="fas fa-chevron-up mr-3"></i> {{ 'core.interface.backToTop'|trans|capitalize }}</a>
-    {% endblock %}
-  </footer>
-</div>
 
 {{ include('@SumoCodersFrameworkCore/dialogs.html.twig') }}
 

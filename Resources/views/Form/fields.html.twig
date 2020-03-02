@@ -19,17 +19,17 @@
 {% endblock form_label %}
 
 {%- block label_asterisk -%}
-  {% spaceless %}
+  {% apply spaceless %}
     {% if required %}
       <abbr title="{{ 'forms.labels.required'|trans({}, translation_domain) }}">*</abbr>
     {% endif %}
-  {% endspaceless %}
+  {% endapply %}
 {%- endblock label_asterisk -%}
 
 {% block collection_widget %}
   {% import _self as formMacros %}
 
-  {% spaceless %}
+  {% apply spaceless %}
     {% if prototype is defined %}
       {% set attr = attr|merge({'data-prototype-name': prototype.vars.name}) %}
       {% set attr = attr|merge({'data-prototype-label': prototype.vars.label}) %}
@@ -52,11 +52,11 @@
       </div>
     </div>
     {{ block('form_errors') }}
-  {% endspaceless %}
+  {% endapply %}
 {% endblock collection_widget %}
 
 {% block collection_rows %}
-  {% spaceless %}
+  {% apply spaceless %}
     {% import _self as formMacros %}
     {{ form_errors(form) }}
 
@@ -81,7 +81,7 @@
         </button>
       </div>
     {% endif %}
-  {% endspaceless %}
+  {% endapply %}
 {% endblock collection_rows %}
 
 {% macro renderCollectionItem(item, allow_delete) %}
@@ -145,7 +145,7 @@
 {%- endblock form_errors -%}
 
 {% block image_widget %}
-  {% spaceless %}
+  {% apply spaceless %}
     <div class="form-group">
       {{ form_widget(form.file) }}
       {{ form_errors(form.file) }}
@@ -162,11 +162,11 @@
         {% endif %}
       </div>
     {% endif %}
-  {% endspaceless %}
+  {% endapply %}
 {% endblock %}
 
 {% block sumoFile_widget %}
-  {% spaceless %}
+  {% apply spaceless %}
     <div class="form-group">
       {{ form_widget(form.file) }}
       {{ form_errors(form.file) }}
@@ -185,7 +185,7 @@
         {% endif %}
       </div>
     {% endif %}
-  {% endspaceless %}
+  {% endapply %}
 {% endblock %}
 
 {% block date_row -%}
@@ -203,7 +203,7 @@
 {%- endblock date_row %}
 
 {% block date_widget %}
-  {% spaceless %}
+  {% apply spaceless %}
     {% if widget == 'single_text' %}
       {% if datepicker %}
         {%- if not valid -%}
@@ -258,7 +258,7 @@
     {% if helper_text %}
       {{ block('helper_text') }}
     {% endif %}
-  {% endspaceless %}
+  {% endapply %}
 {% endblock date_widget %}
 
 {% block time_row -%}
@@ -276,7 +276,7 @@
 {%- endblock time_row %}
 
 {% block time_widget %}
-  {% spaceless %}
+  {% apply spaceless %}
     {% if widget == 'single_text' %}
       {% if timepicker is defined %}
         {%- if not valid -%}
@@ -310,7 +310,7 @@
       {% endif %}
     {% else %}
       {% set attr = attr|merge({'class': attr.class|default('')}) %}
-      {% spaceless %}
+      {% apply spaceless %}
         {% if dont_render_row is not defined or not dont_render_row %}
           <div class="row time-widget">
         {% endif %}
@@ -330,12 +330,12 @@
         {% if dont_render_row is not defined or not dont_render_row %}
           </div>
         {% endif %}
-      {% endspaceless %}
+      {% endapply %}
     {% endif %}
     {% if helper_text %}
       {{ block('helper_text') }}
     {% endif %}
-  {% endspaceless %}
+  {% endapply %}
 {% endblock time_widget %}
 
 {% block datetime_row -%}
@@ -353,7 +353,7 @@
 {%- endblock datetime_row %}
 
 {% block datetime_widget %}
-  {% spaceless %}
+  {% apply spaceless %}
     {% if widget == 'single_text' %}
       {% if datetimepicker is defined %}
         {%- if not valid -%}
@@ -399,7 +399,7 @@
     {% if helper_text %}
       {{ block('helper_text') }}
     {% endif %}
-  {% endspaceless %}
+  {% endapply %}
 {% endblock datetime_widget %}
 
 {% block helper_text -%}

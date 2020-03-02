@@ -6,8 +6,8 @@ core:
 
     themes:
         themes: modus
-        dark: donker
-        light: licht
+        dark: donkere
+        light: lichte
 
     menu:
         home: home
@@ -137,3 +137,7 @@ navigation:
 
 previous: vorige
 next: volgende
+
+user:
+    actions:
+        logout: afmelden

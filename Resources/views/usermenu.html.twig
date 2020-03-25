@@ -7,20 +7,12 @@
         {% else %}
           <i class="fas fa-user-circle mr-3"></i>
         {% endif %}
-        {% if msgphp_user is defined %}
-          <span>{{ msgphp_user.current.name }}</span>
-        {% else %}
-          <span>{{ app.user }}</span>
-        {% endif %}
+        <span>{{ app.user.originUsername }}</span>
         <span class="fas fa-chevron-down fa-w-16"></span>
       </button>
       <ul class="dropdown-menu dropdown-menu-right" role="menu">
         {% block userNavigation %}
-          {% if msgphp_user is defined %}
-            <li><a href="{{ path('profile', { 'user': msgphp_user.current.id }) }}" class="dropdown-item">{{ 'account'|trans|capitalize }}</a></li>
-          {% else %}
-            <li><a href="{{ path('profile', { 'user': app.user.id }) }}" class="dropdown-item">{{ 'account'|trans|capitalize }}</a></li>
-          {% endif %}
+          <li><a href="{{ path('profile') }}" class="dropdown-item">{{ 'account'|trans|capitalize }}</a></li>
         {% endblock %}
         {% if is_granted('ROLE_PREVIOUS_ADMIN') %}
           <li><a href="{{ path('index', {'_switch_user': '_exit'}) }}" class="dropdown-item">{{ 'user.actions.switchBack'|trans|capitalize }}</a></li>

@@ -2,193 +2,120 @@
 
 namespace SumoCoders\FrameworkCoreBundle\Mail;
 
+use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Email;
 use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 use Twig\Environment;
 
 final class MessageFactory
 {
-    /**
-     * @var array|string
-     */
-    private $sender = [];
+    private ?Address $sender;
 
-    /**
-     * @var array|string
-     */
-    private $replyTo = [];
+    private ?Address $replyTo;
 
-    /**
-     * @var array|string
-     */
-    private $to = [];
+    private ?Address $to;
 
-    /**
-     * @var Environment
-     */
-    private $template;
+    private Environment $template;
 
-    /**
-     * @var string
-     */
-    private $templatePath;
+    private string $templatePath;
 
-    /**
-     * @var string
-     */
-    private $cssPath;
+    private string $cssPath;
 
-    /**
-     * MessageFactory constructor.
-     *
-     * @param Environment $template
-     * @param string          $templatePath
-     * @param string          $cssPath
-     */
-    public function __construct(Environment $template, $templatePath, $cssPath)
+    public function __construct(Environment $template, string $templatePath, string $cssPath)
     {
         $this->template = $template;
         $this->templatePath = $templatePath;
         $this->cssPath = $cssPath;
     }
 
-    /**
-     * Set the default sender
-     *
-     * @param string      $email
-     * @param string|null $name
-     */
-    public function setDefaultSender($email, $name = null)
+    public function setDefaultSender(string $email, string $name = null): void
     {
         if ($name !== null) {
-            $this->sender = [$email => $name];
-        } else {
-            $this->sender = $email;
+            $this->sender = new Address($email, $name);
+
+            return;
         }
+
+        $this->sender = new Address($email);
     }
 
-    /**
-     * Set the default reply-to
-     *
-     * @param string      $email
-     * @param string|null $name
-     */
-    public function setDefaultReplyTo($email, $name = null)
+    public function setDefaultReplyTo(string $email, string $name = null): void
     {
         if ($name !== null) {
-            $this->replyTo = [$email => $name];
-        } else {
-            $this->replyTo = $email;
+            $this->replyTo = new Address($email, $name);
+
+            return;
         }
+
+        $this->replyTo = new Address($email);
     }
 
-    /**
-     * Set the default to
-     *
-     * @param string      $email
-     * @param string|null $name
-     */
-    public function setDefaultTo($email, $name = null)
+    public function setDefaultTo(string $email, string $name = null): void
     {
         if ($name !== null) {
-            $this->to = [$email => $name];
-        } else {
-            $this->to = $email;
+            $this->to = new Address($email, $name);
+
+            return;
         }
+
+        $this->to = new Address($email);
     }
 
-    /**
-     * Create a message
-     *
-     * @param string|null $subject
-     * @param string|null $html
-     * @param string|null $alternative
-     * @return \Swift_Message
-     */
-    private function createMessage($subject = null, $html = null, $alternative = null)
+    private function createMessage(string $subject = null, string $html = null, string $alternative = null): Email
     {
         $message = $this->createDefaultMessage();
 
-        if ($subject != '') {
-            $message->setSubject($subject);
+        if ($subject !== '') {
+            $message->subject($subject);
         }
 
         // only plain text
-        if ($html == '' && $alternative != '') {
-            $message->setBody($alternative, 'text/plain');
+        if ((!is_string($html) || $html === '') && (is_string($alternative) && $alternative !== '')) {
+            $message->text($alternative);
 
             return $message;
         }
 
-        // html mail
-        if ($alternative === null) {
+        if (!is_string($alternative) || $alternative === '') {
             $alternative = $this->convertToPlainText($html);
         }
-        $message->setBody(
-            $this->wrapInTemplate($html),
-            'text/html'
-        );
-        $message->addPart($alternative, 'text/plain');
+
+        $message->html($this->wrapInTemplate($html));
+        $message->text($alternative);
 
         return $message;
     }
 
-    /**
-     * Create a HTML message
-     *
-     * If no alternative is provided it will be generated automatically.
-     * This is just an alias for createMessage
-     *
-     * @param string|null $subject
-     * @param string|null $html
-     * @param string|null $plainText
-     * @return \Swift_Message
-     */
-    public function createHtmlMessage($subject = null, $html = null, $plainText = null)
+    public function createHtmlMessage(string $subject = null, string $html = null, string $plainText = null): Email
     {
         return $this->createMessage($subject, $html, $plainText);
     }
 
-    /**
-     * Create a plain text message
-     *
-     * @param string|null $subject
-     * @param string|null $body
-     * @return \Swift_Message
-     */
-    public function createPlainTextMessage($subject = null, $body = null)
+    public function createPlainTextMessage(string $subject = null, string $body = null): Email
     {
         return $this->createMessage($subject, null, $body);
     }
 
-    /**
-     * @return \Swift_Message
-     */
-    public function createDefaultMessage()
+    public function createDefaultMessage(): Email
     {
-        $message = \Swift_Message::newInstance();
+        $message = new Email();
 
         if (!empty($this->sender)) {
-            $message->setFrom($this->sender);
+            $message->from($this->sender);
         }
 
         if (!empty($this->replyTo)) {
-            $message->setReplyTo($this->replyTo);
+            $message->replyTo($this->replyTo);
         }
 
         if (!empty($this->to)) {
-            $message->setTo($this->to);
+            $message->to($this->to);
         }
 
         return $message;
     }
 
-    /**
-     * Wrap the given content in a nice default email template
-     *
-     * @param string $content
-     * @return string
-     */
-    public function wrapInTemplate($content)
+    public function wrapInTemplate(string $content): string
     {
         $css = file_get_contents($this->cssPath);
         $html = $this->template->render(
@@ -207,13 +134,7 @@ final class MessageFactory
         );
     }
 
-    /**
-     * Convert the given content from HTML to Plain text
-     *
-     * @param string $content
-     * @return string
-     */
-    public function convertToPlainText($content)
+    public function convertToPlainText(string $content): string
     {
         $content = preg_replace('/\r\n/', PHP_EOL, $content);
         $content = preg_replace('/\r/', PHP_EOL, $content);

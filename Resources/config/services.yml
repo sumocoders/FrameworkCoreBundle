@@ -1,4 +1,9 @@
 services:
+  # default configuration for services in *this* file
+  _defaults:
+    autowire: true      # Automatically injects dependencies in your services.
+    autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
   framework.fallbacks:
     class:  SumoCoders\FrameworkCoreBundle\Service\Fallbacks
     arguments: ["%fallbacks%"]
@@ -76,12 +81,11 @@ services:
     tags:
        - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
 
-  framework.message_factory:
-    class: SumoCoders\FrameworkCoreBundle\Mail\MessageFactory
+  SumoCoders\FrameworkCoreBundle\Mail\MessageFactory:
     arguments:
-      - "@templating"
-      - "mails/default_email.html.twig"
-      - "%kernel.project_dir%/web/assets/css/mail.css"
+      - "@twig"
+      - "%mailer.template%"
+      - "%mailer.css_path%"
     calls:
       - [setDefaultSender, ["%mailer.default_sender_email%", "%mailer.default_sender_name%"]]
       - [setDefaultReplyTo, ["%mailer.default_reply_to_email%", "%mailer.default_reply_to_name%"]]

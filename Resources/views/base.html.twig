@@ -2,14 +2,9 @@
 <body class="body-base">
   <div id="main-wrapper" class="main-wrapper" data-sidebar-wrapper>
     <div id="main-menu" class="main-menu" role="navigation">
-      {% if block('header_navigation') is defined %}
-        {% set parameters = { header_navigation: block('header_navigation') } %}
-      {% else %}
-        {% set parameters = {} %}
-      {% endif %}
-      {% with parameters %}
+      {% block include_navigation %}
         {{ include('@SumoCodersFrameworkCore/navigation.html.twig') }}
-      {% endwith %}
+      {% endblock %}
     </div>
     <div id="content-wrapper">
       <div class="main-header">

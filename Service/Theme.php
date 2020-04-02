@@ -17,7 +17,7 @@ class Theme
 
     public function current(): string
     {
-        if ($this->request->cookies->has('theme')) {
+        if (!$this->request->cookies->has('theme')) {
             return 'theme-light';
         }
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Service;
+namespace SumoCoders\FrameworkCoreBundle\Service;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;

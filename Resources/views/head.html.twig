@@ -17,6 +17,9 @@
     {% block stylesheets %}
         {# 'app' must match the first argument to addEntry() in webpack.config.js #}
         {{ encore_entry_link_tags('style') }}
+        {% if theme.current == 'theme-dark' %}
+          {{ encore_entry_link_tags('style-dark') }}
+        {% endif %}
 
         <!-- Renders a link tag (if your module requires any CSS)
         <link rel="stylesheet" href="/build/app.css"> -->

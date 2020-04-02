@@ -1,6 +1,6 @@
 {{ include('@SumoCodersFrameworkCore/head.html.twig') }}
 
-<body class="body-base">
+<body class="body-base {{ theme.current }}">
   <div id="main-wrapper" class="main-wrapper" data-sidebar-wrapper>
     <div id="main-menu" class="main-menu" role="navigation">
       {% if block('header_navigation') is defined %}

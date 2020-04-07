@@ -4,7 +4,7 @@
   {% if item.labelAttributes.icon is defined %}
     <i class="{{ item.labelAttributes.icon }} fa-fw menu-item-icon"></i>
   {% else %}
-    <i class="fas fa-circle fa-fw mr-3"></i>
+    <i class="fas fa-circle fa-fw menu-item-icon"></i>
   {% endif %}
   {% if item.parent.name == 'root' and item.hasChildren %}
     <i class="fas fa-chevron-down"></i>

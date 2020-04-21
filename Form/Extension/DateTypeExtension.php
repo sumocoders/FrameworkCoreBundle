@@ -31,6 +31,7 @@ final class DateTypeExtension extends AbstractTypeExtension
                 'widget' => 'single_text',
                 'maximum_date' => null,
                 'minimum_date' => null,
+                'html5' => false,
             ]
         );
 

@@ -30,8 +30,8 @@
         <li>
           <div class="dropdown-item">
             <div class="custom-control custom-switch dark-mode-switch" data-theme-toggler-wrapper>
-              <input type="checkbox" class="custom-control-input" id="dark-mode" data-theme-toggler{% if theme.current == 'theme-dark' %} checked="checked"{% endif %}>
-              <label class="custom-control-label" for="dark-mode">{{ 'core.themes.dark'|trans|capitalize }} {{ 'core.themes.themes'|trans }}</label>
+              <input type="checkbox" class="custom-control-input" id="dark-mode{% if mobile %}-mobile{% endif %}" data-theme-toggler{% if theme.current == 'theme-dark' %} checked="checked"{% endif %}>
+              <label class="custom-control-label" for="dark-mode{% if mobile %}-mobile{% endif %}">{{ 'core.themes.dark'|trans|capitalize }} {{ 'core.themes.themes'|trans }}</label>
             </div>
           </div>
         </li>

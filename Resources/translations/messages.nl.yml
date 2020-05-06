@@ -4,6 +4,11 @@ core:
         loading: aan het laden
         collapse: verberg menu
 
+    themes:
+        themes: modus
+        dark: donkere
+        light: lichte
+
     menu:
         home: home
 
@@ -132,3 +137,7 @@ navigation:
 
 previous: vorige
 next: volgende
+
+user:
+    actions:
+        logout: afmelden

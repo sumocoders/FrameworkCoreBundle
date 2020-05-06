@@ -13,6 +13,11 @@ services:
     arguments:
       - "@request_stack"
 
+  framework.theme:
+    class: SumoCoders\FrameworkCoreBundle\Service\Theme
+    arguments:
+      - "@request_stack"
+
   framework.menu_builder:
     class: SumoCoders\FrameworkCoreBundle\Menu\MenuBuilder
     calls:

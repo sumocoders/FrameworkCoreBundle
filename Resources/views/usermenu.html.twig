@@ -1,7 +1,7 @@
 <div class="user-nav d-flex h-100">
   {% if app.user is not null %}
-    <div class="user btn-group dropdown w-100 d-flex flex-column">
-      <button class="btn btn-default dropdown-toggle d-flex align-items-center" data-toggle="dropdown" aria-expanded="false">
+    <div class="user btn-group dropdown w-100 d-flex flex-column" data-dropdown-user-wrapper>
+      <button class="btn btn-default dropdown-toggle d-flex align-items-center" data-toggle="dropdown" aria-expanded="false" data-dropdown-user-toggle>
         {% if is_granted('ROLE_PREVIOUS_ADMIN') %}
           <i class="fas fa-exchange-alt mr-3"></i>
         {% else %}
@@ -10,13 +10,25 @@
         <span>{{ app.user.originUsername }}</span>
         <span class="fas fa-chevron-down fa-w-16"></span>
       </button>
-      <ul class="dropdown-menu dropdown-menu-right" role="menu">
+      <ul class="dropdown-menu dropdown-menu-right dropdown-menu-user" role="menu" data-dropdown-user>
         {% block userNavigation %}
           <li><a href="{{ path('profile') }}" class="dropdown-item">{{ 'account'|trans|capitalize }}</a></li>
         {% endblock %}
         {% if is_granted('ROLE_PREVIOUS_ADMIN') %}
           <li><a href="{{ path('index', {'_switch_user': '_exit'}) }}" class="dropdown-item">{{ 'user.actions.switchBack'|trans|capitalize }}</a></li>
         {% endif %}
+        <div class="dropdown-divider"></div>
+
+        <li>
+          <div class="dropdown-item">
+            <div class="custom-control custom-switch dark-mode-switch" data-theme-toggler-wrapper>
+              <input type="checkbox" class="custom-control-input" id="dark-mode{% if mobile %}-mobile{% endif %}" data-theme-toggler{% if theme.current == 'theme-dark' %} checked="checked"{% endif %}>
+              <label class="custom-control-label" for="dark-mode{% if mobile %}-mobile{% endif %}">{{ 'core.themes.dark'|trans|capitalize }} {{ 'core.themes.themes'|trans }}</label>
+            </div>
+          </div>
+        </li>
+
+        <div class="dropdown-divider"></div>
         <li><a href="{{ path('logout') }}" class="dropdown-item">{{ 'user.actions.logout'|trans|capitalize }}</a></li>
       </ul>
     </div>

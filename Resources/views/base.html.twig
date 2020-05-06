@@ -1,12 +1,18 @@
 {% block head %}
   {{ include('@SumoCodersFrameworkCore/head.html.twig') }}
 {% endblock %}
+
 <body class="body-base">
   <div id="main-wrapper" class="main-wrapper" data-sidebar-wrapper>
     <div id="main-menu" class="main-menu" role="navigation">
-      {% block include_navigation %}
+      {% if block('header_navigation') is defined %}
+        {% set parameters = { header_navigation: block('header_navigation') } %}
+      {% else %}
+        {% set parameters = {} %}
+      {% endif %}
+      {% with parameters %}
         {{ include('@SumoCodersFrameworkCore/navigation.html.twig') }}
-      {% endblock %}
+      {% endwith %}
     </div>
     <div id="content-wrapper">
       <div class="main-header">
@@ -28,7 +34,7 @@
             </div>
           </div>
           <div class="d-none d-md-block ml-auto">
-            {{ include('@SumoCodersFrameworkCore/usermenu.html.twig') }}
+            {% include '@SumoCodersFrameworkCore/usermenu.html.twig' with {'mobile': false} %}
           </div>
         </div>
         {% if block('header_navigation') is defined and block('header_navigation') is not empty %}

@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="{{ app.request.locale }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>
+        {% block title %}
+            {{ fallbacks.get('site_title') }}
+        {% endblock %}
+    </title>
+
+    {% block meta %}
+        <meta name="author" content="SumoCoders">
+    {% endblock %}
+
+    {% block stylesheets %}
+        {# 'app' must match the first argument to addEntry() in webpack.config.js #}
+        {{ encore_entry_link_tags('style') }}
+        {% if theme.current == 'theme-dark' %}
+            {{ encore_entry_link_tags('style-dark') }}
+        {% endif %}
+
+        <!-- Renders a link tag (if your module requires any CSS)
+        <link rel="stylesheet" href="/build/app.css"> -->
+    {% endblock %}
+
+    {# Google Fonts #}
+    {% block base_font %}
+        <link href="https://fonts.googleapis.com/css?family=Lato:300,300i,400,400i,700,700i,900,900i&amp;display=swap" rel="stylesheet">
+    {% endblock %}
+
+    {% block head_javascripts %}
+        <script type="text/javascript">
+            var jsData = {{ jsData|raw }};
+        </script>
+    {% endblock %}
+
+    {% block icons %}
+        <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
+        <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
+        <link rel="image_src" href="{{ asset('image_src.png') }}" />
+    {% endblock %}
+</head>

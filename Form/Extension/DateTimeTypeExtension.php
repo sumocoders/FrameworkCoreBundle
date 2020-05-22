@@ -31,6 +31,7 @@ final class DateTimeTypeExtension extends AbstractTypeExtension
                 'datetimepicker' => true,
                 'maximum_date' => null,
                 'minimum_date' => null,
+                'html5' => false,
             ]
         );
 

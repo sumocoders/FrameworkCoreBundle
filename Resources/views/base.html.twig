@@ -51,9 +51,9 @@
 
       <section id="main" role="main">
         <div class="header-subbar">
-          <div class="toasts-wrapper" aria-live="polite" aria-atomic="true">
-          {{ include('@SumoCodersFrameworkCore/notifications.html.twig') }}
-        </div>
+          <div class="toasts-wrapper">
+            {{ include('@SumoCodersFrameworkCore/notifications.html.twig') }}
+          </div>
           <div class="header-title-bar d-none d-md-flex justify-content-md-between align-items-md-center flex-column flex-md-row flex-wrap">
             <nav aria-label="breadcrumb" class="my-2">
               {{ knp_menu_render('breadcrumb', {'template': '@SumoCodersFrameworkCore/BreadCrumb/breadCrumb.html.twig'}) }}

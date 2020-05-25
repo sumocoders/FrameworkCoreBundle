@@ -1,55 +1,17 @@
+{% import '@SumoCodersFrameworkCore/macros.html.twig' as macros %}
+
 {% for flashMessage in app.session.flashbag.get('success') %}
-  <div class="toast toast-success" role="alert" aria-live="assertive" aria-atomic="true" data-delay="5000">
-    <div class="toast-body">
-      <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="{{ 'dialogs.close'|trans|capitalize }}">
-        <span aria-hidden="true">&times;</span>
-      </button>
-      <div class="d-flex flex-row">
-        <i class="fas fa-check mr-3 mt-1 toast-icon"></i>
-        {{ flashMessage }}
-      </div>
-    </div>
-  </div>
+  {{ macros.toast(flashMessage, 'success') }}
 {% endfor %}
 
 {% for flashMessage in app.session.flashbag.get('report') %}
-  <div class="toast toast-info" role="alert" aria-live="assertive" aria-atomic="true" data-delay="5000">
-    <div class="toast-body">
-      <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="{{ 'dialogs.close'|trans|capitalize }}">
-        <span aria-hidden="true">&times;</span>
-      </button>
-      <div class="d-flex flex-row">
-        <i class="fas fa-info-circle mr-3 mt-1 toast-icon"></i>
-        {{ flashMessage }}
-      </div>
-    </div>
-  </div>
+  {{ macros.toast(flashMessage, 'info') }}
 {% endfor %}
 
 {% for flashMessage in app.session.flashbag.get('warning') %}
-  <div class="toast toast-warning" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false">
-    <div class="toast-body">
-      <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="{{ 'dialogs.close'|trans|capitalize }}">
-        <span aria-hidden="true">&times;</span>
-      </button>
-      <div class="d-flex flex-row">
-        <i class="fas fa-exclamation mr-3 mt-1 toast-icon"></i>
-        {{ flashMessage }}
-      </div>
-    </div>
-  </div>
+  {{ macros.toast(flashMessage, 'warning') }}
 {% endfor %}
 
 {% for flashMessage in app.session.flashbag.get('error') %}
-  <div class="toast toast-danger" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false">
-    <div class="toast-body">
-      <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="{{ 'dialogs.close'|trans|capitalize }}">
-        <span aria-hidden="true">&times;</span>
-      </button>
-      <div class="d-flex flex-row">
-        <i class="fas fa-exclamation-triangle mr-3 mt-1 toast-icon"></i>
-        {{ flashMessage }}
-      </div>
-    </div>
-  </div>
+  {{ macros.toast(flashMessage, 'danger') }}
 {% endfor %}

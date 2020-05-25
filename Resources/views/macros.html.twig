@@ -1,0 +1,45 @@
+{% macro toast(message,type,role = 'status',live = 'polite',delay = 10000, autohide) %}
+
+  {% set icon = 'check' %}
+  {% if type == 'success' %}
+    {% if autohide is null or autohide is not defined %}
+      {% set autohide = true %}
+    {% endif %}
+  {% endif %}
+  {% if type == 'info' %}
+    {% set icon = 'info-circle' %}
+    {% if autohide is null or autohide is not defined %}
+      {% set autohide = true %}
+    {% endif %}
+  {% endif %}
+  {% if type == 'warning' %}
+    {% set icon = 'exclamation' %}
+    {% if autohide is null or autohide is not defined %}
+      {% set autohide = false %}
+    {% endif %}
+  {% endif %}
+  {% if type == 'danger' %}
+    {% set icon = 'exclamation-triangle' %}
+    {% if autohide is null or autohide is not defined %}
+      {% set autohide = false %}
+    {% endif %}
+  {% endif %}
+
+  {% if autohide == false %}
+    {% set autohideMessage = 'data-autohide=false' %}
+    {% else %}
+      {% set autohideMessage = '' %}
+  {% endif %}
+
+  <div class="toast toast-{{ type }}" role={{ role }} aria-live={{ live }} data-animation="true" aria-atomic="true" data-delay={{ delay }} {{ autohideMessage }}>
+    <div class="toast-body">
+      <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="{{ 'dialogs.close'|trans|capitalize }}">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <div class="d-flex flex-row">
+        <i class="fas fa-{{ icon }} mr-3 mt-1 toast-icon"></i>
+        {{ message }}
+      </div>
+    </div>
+  </div>
+{% endmacro %}

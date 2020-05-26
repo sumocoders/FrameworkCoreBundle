@@ -1,35 +1,17 @@
+{% import '@SumoCodersFrameworkCore/macros.html.twig' as macros %}
+
 {% for flashMessage in app.session.flashbag.get('success') %}
-    <div class="alert alert-success alert-dismissible notification fade show" role="status">
-      {{ flashMessage }}
-        <button type="button" class="close" data-dismiss="alert" aria-label="{{ 'dialogs.close'|trans|capitalize }}">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
+  {{ macros.toast(flashMessage, 'success') }}
 {% endfor %}
 
 {% for flashMessage in app.session.flashbag.get('report') %}
-    <div class="alert alert-success alert-dismissible notification fade show" role="status">
-      {{ flashMessage }}
-        <button type="button" class="close" data-dismiss="alert" aria-label="{{ 'dialogs.close'|trans|capitalize }}">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
+  {{ macros.toast(flashMessage, 'info') }}
 {% endfor %}
 
 {% for flashMessage in app.session.flashbag.get('warning') %}
-    <div class="alert alert-warning alert-dismissible notification fade show" role="alert">
-      {{ flashMessage }}
-        <button type="button" class="close" data-dismiss="alert" aria-label="{{ 'dialogs.close'|trans|capitalize }}">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
+  {{ macros.toast(flashMessage, 'warning') }}
 {% endfor %}
 
 {% for flashMessage in app.session.flashbag.get('error') %}
-    <div class="alert alert-danger alert-dismissible notification fade show" role="alert">
-      {{ flashMessage }}
-        <button type="button" class="close" data-dismiss="alert" aria-label="{{ 'dialogs.close'|trans|capitalize }}">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
+  {{ macros.toast(flashMessage, 'danger') }}
 {% endfor %}

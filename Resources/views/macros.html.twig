@@ -29,13 +29,7 @@
     {% endif %}
   {% endif %}
 
-  {% if autohide == false %}
-    {% set autohideMessage = 'data-autohide=false' %}
-    {% else %}
-      {% set autohideMessage = '' %}
-  {% endif %}
-
-  <div class="toast toast-{{ type }}" role={{ role }} aria-live={{ live }} data-animation="true" aria-atomic="true" data-delay={{ delay }} data-autohide={{ autohide }}>
+  <div class="toast toast-{{ type }}" role="{{ role }}" aria-live="{{ live }}" data-animation="true" aria-atomic="true" data-delay="{{ delay }}" data-autohide="{% if autohide %}true{% else %}false{% endif %}">
     <div class="toast-body">
       <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="{{ 'dialogs.close'|trans|capitalize }}">
         <span aria-hidden="true">&times;</span>

@@ -17,6 +17,8 @@ services:
     class: SumoCoders\FrameworkCoreBundle\Service\Theme
     arguments:
       - "@request_stack"
+      - "@framework.jsdata"
+      - "@assets.packages"
 
   framework.menu_builder:
     class: SumoCoders\FrameworkCoreBundle\Menu\MenuBuilder

@@ -17,6 +17,8 @@ services:
     class: SumoCoders\FrameworkCoreBundle\Service\Theme
     arguments:
       - "@request_stack"
+      - "@framework.jsdata"
+      - "@assets.packages"
 
   framework.menu_builder:
     class: SumoCoders\FrameworkCoreBundle\Menu\MenuBuilder
@@ -72,7 +74,7 @@ services:
   framework.button_type_icon_extension:
     class: SumoCoders\FrameworkCoreBundle\Form\Extension\ButtonTypeIconExtension
     tags:
-        - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\ButtonType }
+      - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\ButtonType }
 
   twig.framework_extension:
     class: SumoCoders\FrameworkCoreBundle\Twig\FrameworkExtension
@@ -84,7 +86,7 @@ services:
   framework.response_securer:
     class: SumoCoders\FrameworkCoreBundle\EventListener\ResponseSecurer
     tags:
-       - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
+      - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
 
   SumoCoders\FrameworkCoreBundle\Mail\MessageFactory:
     arguments:
@@ -105,7 +107,7 @@ services:
     class: SumoCoders\FrameworkCoreBundle\Form\Type\FieldsetType
     arguments: []
     tags:
-        - { name: form.type, alias: fieldset }
+      - { name: form.type, alias: fieldset }
 
   sumocoders_form_type_image:
     class: SumoCoders\FrameworkCoreBundle\Form\Type\ImageType

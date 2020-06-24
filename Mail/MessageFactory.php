@@ -2,6 +2,7 @@
 
 namespace SumoCoders\FrameworkCoreBundle\Mail;
 
+use Symfony\Component\Asset\Package;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
@@ -17,13 +18,24 @@ final class MessageFactory
 
     private Environment $template;
 
+    private Package $package;
+
+    private string $publicFolderPath;
+
     private string $templatePath;
 
     private string $cssPath;
 
-    public function __construct(Environment $template, string $templatePath, string $cssPath)
-    {
+    public function __construct(
+        Environment $template,
+        Package $package,
+        string $publicFolderPath,
+        string $templatePath,
+        string $cssPath
+    ) {
         $this->template = $template;
+        $this->package = $package;
+        $this->publicFolderPath = $publicFolderPath;
         $this->templatePath = $templatePath;
         $this->cssPath = $cssPath;
     }
@@ -117,7 +129,9 @@ final class MessageFactory
 
     public function wrapInTemplate(string $content): string
     {
-        $css = file_get_contents($this->cssPath);
+        $css = file_get_contents(
+            $this->publicFolderPath . $this->package->getUrl($this->cssPath)
+        );
         $html = $this->template->render(
             $this->templatePath,
             [

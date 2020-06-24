@@ -91,6 +91,8 @@ services:
   SumoCoders\FrameworkCoreBundle\Mail\MessageFactory:
     arguments:
       - "@twig"
+      - "@assets._default_package"
+      - "%kernel.project_dir%/public"
       - "%mailer.template%"
       - "%mailer.css_path%"
     calls:

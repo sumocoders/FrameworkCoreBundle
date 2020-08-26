@@ -3,6 +3,8 @@
 namespace SumoCoders\FrameworkCoreBundle\Mail;
 
 use Symfony\Component\Asset\Package;
+use Symfony\Component\Asset\PathPackage;
+use Symfony\Component\Asset\VersionStrategy\JsonManifestVersionStrategy;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
@@ -11,33 +13,26 @@ use Twig\Environment;
 final class MessageFactory
 {
     private ?Address $sender;
-
     private ?Address $replyTo;
-
     private ?Address $to;
-
     private Environment $template;
-
-    private Package $package;
-
-    private string $publicFolderPath;
-
     private string $templatePath;
-
     private string $cssPath;
+    private string $jsonManifestPath;
+    private string $basePath;
 
     public function __construct(
         Environment $template,
-        Package $package,
-        string $publicFolderPath,
         string $templatePath,
-        string $cssPath
+        string $cssPath,
+        string $jsonManifestPath,
+        string $basePath
     ) {
         $this->template = $template;
-        $this->package = $package;
-        $this->publicFolderPath = $publicFolderPath;
         $this->templatePath = $templatePath;
         $this->cssPath = $cssPath;
+        $this->jsonManifestPath = $jsonManifestPath;
+        $this->basePath = $basePath;
     }
 
     public function setDefaultSender(string $email, string $name = null): void
@@ -129,9 +124,8 @@ final class MessageFactory
 
     public function wrapInTemplate(string $content): string
     {
-        $css = file_get_contents(
-            $this->publicFolderPath . $this->package->getUrl($this->cssPath)
-        );
+        $package = new PathPackage($this->basePath, new JsonManifestVersionStrategy($this->jsonManifestPath));
+        $css = file_get_contents($this->basePath . $package->getUrl($this->cssPath));
         $html = $this->template->render(
             $this->templatePath,
             [

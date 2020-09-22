@@ -1,4 +1,9 @@
 services:
+  # default configuration for services in *this* file
+  _defaults:
+    autowire: true      # Automatically injects dependencies in your services.
+    autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
   framework.fallbacks:
     class:  SumoCoders\FrameworkCoreBundle\Service\Fallbacks
     arguments: ["%fallbacks%"]
@@ -12,6 +17,8 @@ services:
     class: SumoCoders\FrameworkCoreBundle\Service\Theme
     arguments:
       - "@request_stack"
+      - "@framework.jsdata"
+      - "@assets.packages"
 
   framework.menu_builder:
     class: SumoCoders\FrameworkCoreBundle\Menu\MenuBuilder
@@ -32,7 +39,6 @@ services:
   framework.breadcrumb_builder:
     class: SumoCoders\FrameworkCoreBundle\BreadCrumb\BreadCrumbBuilder
     arguments:
-      - "%jms_i18n_routing.strategy%"
       - "@request_stack"
       - "@knp_menu.factory"
       - "@event_dispatcher"
@@ -68,7 +74,7 @@ services:
   framework.button_type_icon_extension:
     class: SumoCoders\FrameworkCoreBundle\Form\Extension\ButtonTypeIconExtension
     tags:
-        - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\ButtonType }
+      - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\ButtonType }
 
   twig.framework_extension:
     class: SumoCoders\FrameworkCoreBundle\Twig\FrameworkExtension
@@ -80,14 +86,15 @@ services:
   framework.response_securer:
     class: SumoCoders\FrameworkCoreBundle\EventListener\ResponseSecurer
     tags:
-       - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
+      - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
 
-  framework.message_factory:
-    class: SumoCoders\FrameworkCoreBundle\Mail\MessageFactory
+  SumoCoders\FrameworkCoreBundle\Mail\MessageFactory:
     arguments:
-      - "@templating"
-      - "mails/default_email.html.twig"
-      - "%kernel.root_dir%/../web/assets/css/mail.css"
+      - "@twig"
+      - "%mailer.template%"
+      - "%mailer.css_path%"
+      - '%json_manifest_path%'
+      - "%kernel.project_dir%/public"
     calls:
       - [setDefaultSender, ["%mailer.default_sender_email%", "%mailer.default_sender_name%"]]
       - [setDefaultReplyTo, ["%mailer.default_reply_to_email%", "%mailer.default_reply_to_name%"]]
@@ -102,7 +109,7 @@ services:
     class: SumoCoders\FrameworkCoreBundle\Form\Type\FieldsetType
     arguments: []
     tags:
-        - { name: form.type, alias: fieldset }
+      - { name: form.type, alias: fieldset }
 
   sumocoders_form_type_image:
     class: SumoCoders\FrameworkCoreBundle\Form\Type\ImageType

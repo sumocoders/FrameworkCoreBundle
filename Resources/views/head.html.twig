@@ -37,8 +37,31 @@
     {% endblock %}
 
     {% block icons %}
-        <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
-        <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
-        <link rel="image_src" href="{{ asset('image_src.png') }}" />
+        <link rel="apple-touch-icon" href="{{ asset('build/images/apple-touch-icon.png') }}">
+        <link rel="image_src" href="{{ asset('build/images/image_src.png') }}" />
+        <link rel="shortcut icon" sizes="196x196" href="{{ asset('build/images/android-icon.png') }}">
+    {% endblock %}
+
+    {% block favicon %}
+        <link rel="icon" sizes="96x96" href="{{ asset('build/images/favicon.png') }}">
+        <link rel="shortcut icon" href="{{ asset('build/images/favicon.ico') }}">
+    {% endblock %}
+
+    {% block windows_tile %}
+        {# Windows 8 tile #}
+        <meta name="application-name" content="{{ fallbacks.get('site_title') }}" />
+        <meta name="msapplication-TileColor" content="#3380aa" />
+        <meta name="msapplication-TileImage" content="{{ asset('build/images/metro-tile.png') }}" />
+    {% endblock %}
+
+    {% block og %}
+        <meta property="og:image" content="{{ asset('build/images/image_src.png') }}" />
+    {% endblock %}
+
+    {% block twitter %}
+        {# Twitter #}
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="{{ fallbacks.get('site_title') }}">
+        <meta name="twitter:image" content="{{ asset('build/images/image_src.png') }}" />
     {% endblock %}
 </head>

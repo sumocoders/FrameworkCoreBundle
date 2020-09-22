@@ -5,6 +5,7 @@ namespace SumoCoders\FrameworkCoreBundle\EventListener;
 use Gedmo\Blameable\BlameableListener;
 use Gedmo\Loggable\LoggableListener;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
@@ -34,7 +35,7 @@ class DoctrineExtensionListener
         $this->blameableListener = $blameableListener;
     }
 
-    public function onKernelRequest(GetResponseEvent $event)
+    public function onKernelRequest(RequestEvent $event)
     {
         if ($this->tokenStorage->getToken() !== null && $this->authorizationChecker->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
             $user = $this->tokenStorage->getToken()->getUser();

@@ -60,14 +60,6 @@
     {% import _self as formMacros %}
     {{ form_errors(form) }}
 
-    {% if allow_add %}
-      <div class="d-flex justify-content-end">
-        <button type="button" class="btn btn-outline-success btn-sm mb-2" data-role="collection-add-button">
-          <i class="fas fa-plus"></i> {{ 'forms.buttons.addItem'|trans|capitalize }}
-        </button>
-      </div>
-    {% endif %}
-
     <ul data-role="collection-item-container" class="list-unstyled">
       {% for child in form %}
         {{ formMacros.renderCollectionItem(child, allow_delete) }}

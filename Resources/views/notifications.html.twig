@@ -1,17 +1,15 @@
-{% import '@SumoCodersFrameworkCore/macros.html.twig' as macros %}
-
 {% for flashMessage in app.session.flashbag.get('success') %}
-  {{ macros.toast(flashMessage, 'success') }}
+  <toast type="success" message="{{ flashMessage }}"></toast>
 {% endfor %}
 
 {% for flashMessage in app.session.flashbag.get('report') %}
-  {{ macros.toast(flashMessage, 'info') }}
+  <toast type="info" message="{{ flashMessage }}"></toast>
 {% endfor %}
 
 {% for flashMessage in app.session.flashbag.get('warning') %}
-  {{ macros.toast(flashMessage, 'warning') }}
+  <toast type="warning" message="{{ flashMessage }}"></toast>
 {% endfor %}
 
 {% for flashMessage in app.session.flashbag.get('error') %}
-  {{ macros.toast(flashMessage, 'danger') }}
+  <toast type="danger" message="{{ flashMessage }}"></toast>
 {% endfor %}

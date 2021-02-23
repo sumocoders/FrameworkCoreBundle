@@ -32,6 +32,9 @@ final class DateTypeExtension extends AbstractTypeExtension
                 'maximum_date' => null,
                 'minimum_date' => null,
                 'html5' => false,
+                'attr' => [
+                    'data-format' => 'DD/MM/yyyy',
+                ],
             ]
         );
 

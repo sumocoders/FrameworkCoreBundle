@@ -37,6 +37,10 @@ class FrameworkExtension extends AbstractExtension
                 'toTranslation',
                 [$this, 'convertToTranslation']
             ),
+            new TwigFunction(
+                'ucfirst',
+                [$this, 'ucfirst']
+            ),
         ];
     }
 
@@ -85,5 +89,16 @@ class FrameworkExtension extends AbstractExtension
         $stringToConvert = preg_replace('/\.+/', '.', $stringToConvert);
 
         return trim($stringToConvert, '.');
+    }
+
+    /**
+     * Capitalize the first letter in a word/sentence
+     *
+     * @param string $word
+     * @return bool
+     */
+    public function ucfirst($word)
+    {
+        return ucfirst($word);
     }
 }

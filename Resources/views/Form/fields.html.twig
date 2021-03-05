@@ -4,16 +4,16 @@
   {% if 'checkbox' not in block_prefixes or widget_checkbox_label in ['label', 'both'] %}
     {% if label is not same as(false) %}
       {% if label is empty %}
-        {% set label = toTranslation(id)|trans({}, translation_domain)|capitalize %}
+        {% set label = toTranslation(id)|trans({}, translation_domain)|ucfirst %}
       {% else %}
-        {% set label = label|trans({}, translation_domain)|capitalize %}
+        {% set label = label|trans({}, translation_domain)|ucfirst %}
       {% endif %}
       {% if not compound %}
         {% set label_attr = label_attr|merge({'for': id}) %}
       {% endif %}
       {% set label_attr_class = '' %}
       {% set label_attr = label_attr|merge({'class': label_attr.class|default('') ~ " " ~ label_attr_class ~ (required ? ' required' : ' optional') }) %}
-      <label {% for attrname,attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>{{ label|trans|capitalize }}&#32;{{- block('label_asterisk') }}</label>
+      <label {% for attrname,attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>{{ label|trans|ucfirst }}&#32;{{- block('label_asterisk') }}</label>
     {% endif %}
   {% endif %}
 {% endblock form_label %}
@@ -69,7 +69,7 @@
     {% if allow_add %}
       <div class="d-flex justify-content-end">
         <button type="button" class="btn btn-outline-success btn-sm" data-role="collection-add-button" hidden>
-          <i class="fas fa-plus"></i> {{ 'forms.buttons.addItem'|trans|capitalize }}
+          <i class="fas fa-plus"></i> {{ 'forms.buttons.addItem'|trans|ucfirst }}
         </button>
       </div>
     {% endif %}
@@ -83,12 +83,12 @@
         {% if allow_delete is defined and allow_delete %}
           <div class="d-flex justify-content-end">
             <button type="button" class="btn btn-outline-danger btn-sm"
-                    data-role="collection-remove-button" title="{{ 'forms.buttons.removeItem'|trans|capitalize }}">
-              <i class="fas fa-trash"></i> <span class="sr-only">{{ 'forms.buttons.removeItem'|trans|capitalize }}</span>
+                    data-role="collection-remove-button" title="{{ 'forms.buttons.removeItem'|trans|ucfirst }}">
+              <i class="fas fa-trash"></i> <span class="sr-only">{{ 'forms.buttons.removeItem'|trans|ucfirst }}</span>
             </button>
           </div>
         {% endif %}
-        <i class="fas fa-bars btn btn-default collection-item-drag-and-drop" title="{{ 'forms.buttons.changeOrder'|trans|capitalize }}" data-role="collection-item-change-order"></i>
+        <i class="fas fa-bars btn btn-default collection-item-drag-and-drop" title="{{ 'forms.buttons.changeOrder'|trans|ucfirst }}" data-role="collection-item-change-order"></i>
         {{ form_row(item) }}
       </div>
     </div>
@@ -99,7 +99,7 @@
   {% if form.parent is null %}
     {% if not form.vars.valid %}
       <div class="alert alert-danger" role="alert">
-        {{ 'forms.message.hasErrors'|trans|capitalize }}:
+        {{ 'forms.message.hasErrors'|trans|ucfirst }}:
         <ul class="error-list">
           {% for error in form.vars.errors %}
             {{ error.message|nl2br }}
@@ -109,16 +109,16 @@
             {% set label = child.vars.label %}
             {% if label is not same as(false) %}
               {% if label is empty %}
-                {% set label = toTranslation(child.vars.id)|trans({}, child.vars.translation_domain)|capitalize %}
+                {% set label = toTranslation(child.vars.id)|trans({}, child.vars.translation_domain)|ucfirst %}
               {% else %}
-                {% set label = label|trans({}, child.vars.translation_domain)|capitalize %}
+                {% set label = label|trans({}, child.vars.translation_domain)|ucfirst %}
               {% endif %}
             {% endif %}
             {% if child.vars.valid is defined and child.vars.valid == false %}
               {% for error in child.vars.errors %}
                 <li class="error-list-item">
                   <a href="#{{ child.vars.id }}">
-                    {% if label is not same as(false) %}{{ label|trans|capitalize }}: {% endif %}{{ error.message }}
+                    {% if label is not same as(false) %}{{ label|trans|ucfirst }}: {% endif %}{{ error.message }}
                   </a>
                 </li>
               {% endfor %}
@@ -169,7 +169,7 @@
         {% if show_preview and preview_url %}
           <a href="{{ preview_url }}" class="btn btn-xs btn-default" target="_blank">
             <span class="fas fa-eye" aria-hidden="true"></span>
-            {{ preview_label|trans|capitalize }}
+            {{ preview_label|trans|ucfirst }}
           </a>
         {% endif %}
         {% if show_remove_file %}

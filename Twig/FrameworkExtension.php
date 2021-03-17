@@ -37,6 +37,10 @@ class FrameworkExtension extends AbstractExtension
                 'toTranslation',
                 [$this, 'convertToTranslation']
             ),
+            new TwigFunction(
+                'ucfirst',
+                'ucfirst'
+            ),
         ];
     }
 

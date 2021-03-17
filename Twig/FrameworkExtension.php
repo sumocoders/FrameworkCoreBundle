@@ -91,13 +91,7 @@ class FrameworkExtension extends AbstractExtension
         return trim($stringToConvert, '.');
     }
 
-    /**
-     * Capitalize the first letter in a word/sentence
-     *
-     * @param string $word
-     * @return bool
-     */
-    public function ucfirst($word)
+    public function ucfirst(string $word): string
     {
         return ucfirst($word);
     }

@@ -39,7 +39,7 @@ class FrameworkExtension extends AbstractExtension
             ),
             new TwigFunction(
                 'ucfirst',
-                [$this, 'ucfirst']
+                'ucfirst'
             ),
         ];
     }
@@ -89,10 +89,5 @@ class FrameworkExtension extends AbstractExtension
         $stringToConvert = preg_replace('/\.+/', '.', $stringToConvert);
 
         return trim($stringToConvert, '.');
-    }
-
-    public function ucfirst(string $word): string
-    {
-        return ucfirst($word);
     }
 }

@@ -126,6 +126,7 @@ services:
     public: false
     tags: [{ name: pagerfanta.view, alias: sumocoders }]
 
+  SumoCoders\FrameworkCoreBundle\Service\BreadcrumbTrail:
   SumoCoders\FrameworkCoreBundle\EventListener\BreadcrumbListener:
     tags:
       - { name: kernel.event_listener, event: kernel.controller, method: onKernelController, priority: -1 }

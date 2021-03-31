@@ -66,6 +66,6 @@ class BreadcrumbTrail implements Iterator, Countable
 
     public function rewind()
     {
-        // TODO: Implement rewind() method.
+        $this->index = 0;
     }
 }

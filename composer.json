@@ -17,7 +17,7 @@
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require": {
-    "php": "^7.1",
+    "php": "^7.4",
     "gedmo/doctrine-extensions": "^2.4",
     "friendsofsymfony/jsrouting-bundle": "^2",
     "ramsey/uuid": "^3.7",

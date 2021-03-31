@@ -10,13 +10,11 @@ class BreadcrumbTrail implements Iterator, Countable
 {
     private int $index;
     private array $breadcrumbs;
-    private string $template;
 
-    public function __construct(string $template)
+    public function __construct()
     {
         $this->index = 0;
         $this->breadcrumbs = [];
-        $this->template = $template;
     }
 
     public function reset(): void
@@ -32,11 +30,6 @@ class BreadcrumbTrail implements Iterator, Countable
     public function getBreadcrumbs(): array
     {
         return $this->breadcrumbs;
-    }
-
-    public function getTemplate(): string
-    {
-        return $this->template;
     }
 
     public function count()

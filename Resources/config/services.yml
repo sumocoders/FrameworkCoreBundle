@@ -125,3 +125,7 @@ services:
     class: SumoCoders\FrameworkCoreBundle\Twig\TwitterBootstrap3View
     public: false
     tags: [{ name: pagerfanta.view, alias: sumocoders }]
+
+  SumoCoders\FrameworkCoreBundle\EventListener\BreadcrumbListener:
+    tags:
+      - { name: kernel.event_listener, event: kernel.controller, method: onKernelController, priority: -1 }

@@ -32,7 +32,8 @@ class BreadcrumbListener
 
     public function onKernelController(KernelEvent $event): void
     {
-        if (!\is_array($controller = $event->getController())) {
+        $controller = $event->getController();
+        if (!\is_array($controller)) {
             return;
         }
 

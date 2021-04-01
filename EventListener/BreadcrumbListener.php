@@ -6,9 +6,11 @@ use Doctrine\Common\Annotations\Reader;
 use SumoCoders\FrameworkCoreBundle\Annotation\Breadcrumb;
 use SumoCoders\FrameworkCoreBundle\Service\BreadcrumbTrail;
 use SumoCoders\FrameworkCoreBundle\ValueObject\Breadcrumb as BreadcrumbValueObject;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\KernelEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Routing\CompiledRoute;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -125,23 +127,158 @@ class BreadcrumbListener
                         $parentParameters
                     );
                 }
-                $title = $annotation->getTitle();
 
-                $url = null;
-                if ($routeName !== '' && $routeName !== null) {
-                    $url = $this->router->generate(
-                        $routeName ?? $annotation->getRouteName(),
-                        $parameters ?? $annotation->getRouteParameters()
-                    );
-                }
                 $this->breadcrumbTrail->add(
-                    new BreadcrumbValueObject(
-                        $title,
-                        $url
-                    )
+                    $this->generateBreadcrumb($event->getRequest(), $annotation)
                 );
             }
         }
+    }
+
+    private function generateBreadcrumb(
+        Request $request,
+        Breadcrumb $breadcrumb,
+        ?string $routeName = null,
+        ?array $parameters = null
+    ): BreadcrumbValueObject  {
+        $title = $breadcrumb->getTitle();
+        $routeParameters = $parameters ?? $breadcrumb->getRouteParameters();
+
+        preg_match_all(
+            '#\{(?P<variable>\w+).?(?P<function>([\w\.])*):?(?P<parameters>(\w|,| )*)\}#',
+            $title,
+            $matches,
+            PREG_OFFSET_CAPTURE | PREG_SET_ORDER
+        );
+
+        foreach ($matches as $match) {
+            $varName    = $match['variable'][0];
+            $functions  = $match['function'][0] ? explode('.', $match['function'][0]) : array();
+            $parameters = $match['parameters'][0] ? explode(',', $match['parameters'][0]) : array();
+            $nbCalls    = count($functions);
+
+            if($request->attributes->has($varName)) {
+                $object = $request->attributes->get($varName);
+
+                if(empty($functions)) {
+                    $objectValue = (string) $object;
+                }
+                else {
+                    foreach ($functions AS $f => $function) {
+                        # While this is not the last function, call the chain
+                        if ($f < $nbCalls - 1) {
+                            if(is_callable(array($object, $fullFunctionName = 'get'.$function))
+                                || is_callable(array($object, $fullFunctionName = 'has'.$function))
+                                || is_callable(array($object, $fullFunctionName = 'is'.$function))) {
+                                $object = call_user_func(array($object, $fullFunctionName));
+                            }
+                            else {
+                                throw new \RuntimeException(
+                                    sprintf(
+                                        '"%s" is not callable.',
+                                        join('.',array_merge([$varName], $functions))
+                                    )
+                                );
+                            }
+                        }
+                        # End of the chain: call the method
+                        else {
+                            if(is_callable(array($object, $fullFunctionName = 'get'.$function))
+                                || is_callable(array($object, $fullFunctionName = 'has'.$function))
+                                || is_callable(array($object, $fullFunctionName = 'is'.$function))) {
+                                $objectValue = call_user_func_array(array($object, $fullFunctionName),$parameters);
+                            }
+                            else {
+                                throw new \RuntimeException(
+                                    sprintf(
+                                        '"%s" is not callable.',
+                                        join('.', array_merge([$varName], $functions))
+                                    )
+                                );
+                            }
+                        }
+                    }
+                }
+
+                $title = str_replace($match[0][0], $objectValue, $title);
+            }
+        }
+        foreach ($routeParameters as $key => $value) {
+            if (is_numeric($key)) {
+                $routeParameters[$value] = $request->get($value);
+                unset($routeParameters[$key]);
+            } else {
+                if (preg_match_all(
+                    '#\{(?P<variable>\w+).?(?P<function>([\w\.])*):?(?P<parameters>(\w|,| )*)\}#',
+                    $value,
+                    $matches,
+                    PREG_OFFSET_CAPTURE | PREG_SET_ORDER
+                )) {
+                    foreach ($matches AS $match) {
+                        $varName    = $match['variable'][0];
+                        $functions  = $match['function'][0] ? explode('.', $match['function'][0]) : [];
+                        $parameters = $match['parameters'][0] ? explode(',', $match['parameters'][0]) : [];
+                        $nbCalls    = count($functions);
+
+                        if ($request->attributes->has($varName)) {
+                            $object = $request->attributes->get($varName);
+                            if (empty($functions)) {
+                                $objectValue = (string) $object;
+                            }
+                            else {
+                                foreach ($functions AS $f => $function) {
+                                    # While this is not the last function, call the chain
+                                    if ($f < $nbCalls - 1) {
+                                        if (is_callable(array($object, $fullFunctionName = 'get' . $function))
+                                            || is_callable(array($object, $fullFunctionName  = 'has' . $function))
+                                            || is_callable(array($object, $fullFunctionName  = 'is' . $function))
+                                        ) {
+                                            $object = call_user_func(array($object, $fullFunctionName));
+                                        }
+                                        else {
+                                            throw new \RuntimeException(sprintf('"%s" is not callable.', join('.', array_merge([$varName], $functions))));
+                                        }
+                                    }
+                                    # End of the chain: call the method
+                                    else {
+
+                                        if (is_callable(array($object, $fullFunctionName = 'get' . $function))
+                                            || is_callable(array($object, $fullFunctionName  = 'has' . $function))
+                                            || is_callable(array($object, $fullFunctionName  = 'is' . $function))
+                                        ) {
+                                            $objectValue = call_user_func_array(array($object, $fullFunctionName), $parameters);
+                                        }
+                                        else {
+                                            throw new \RuntimeException(
+                                                sprintf(
+                                                    '"%s" is not callable.',
+                                                    join('.', array_merge([$varName], $functions))
+                                                )
+                                            );
+                                        }
+                                    }
+                                }
+                            }
+
+                            $routeParameter = str_replace($match[0][0], $objectValue, $value);
+                            $routeParameters[$key] = $routeParameter;
+                        }
+                    }
+                } elseif (preg_match('#^\{(?P<parameter>\w+)\}$#', $value, $matches)) {
+                    $routeParameters[$key] = $request->get($matches['parameter']);
+                }
+            }
+        }
+
+        $url = null;
+        if (!is_null($routeName)) {
+            $url = $this->router->generate($routeName, $routeParameters, UrlGeneratorInterface::ABSOLUTE_URL);
+        }
+
+        return new BreadcrumbValueObject(
+            $title,
+            $url
+        );
     }
 
     private function getControllerFromName(string $name): array

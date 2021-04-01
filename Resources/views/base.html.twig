@@ -13,7 +13,9 @@
       <div class="main-header">
         <div class="d-md-none breadcrumb-mobile">
           <nav aria-label="breadcrumb" class="my-2">
-            {{ knp_menu_render('breadcrumb', {'template': '@SumoCodersFrameworkCore/BreadCrumb/breadCrumb.html.twig'}) }}
+            {% block breadcrumb %}
+              {{ include('@SumoCodersFrameworkCore/BreadCrumb/breadCrumb.html.twig') }}
+            {% endblock %}
           </nav>
         </div>
         <div class="sub-nav d-flex">

@@ -6,7 +6,7 @@
     {% for breadcrumb in breadcrumbs %}
       {% set class = (loop.first ? 'first' : (loop.last ? 'last' : '')) %}
       <li class="breadcrumb-item {{ class }}" itemprop="itemListElement">
-        {% if loop.last || breadcrumb.url is null %}
+        {% if loop.last or breadcrumb.url is null %}
           {{ breadcrumb.title|trans }}
         {% else %}
           <a href="{{ breadcrumb.url }}">{{ breadcrumb.title|trans }}</a>

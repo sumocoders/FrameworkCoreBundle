@@ -157,57 +157,7 @@ class BreadcrumbListener
 
                 // Chain the method calls so we can get the correct value
                 // Example book.author.name should call getAuthor().getName() on the given book object
-                foreach ($functions as $f => $function) {
-                    // While this is not the last function, call the chain
-                    if ($f < $nbCalls - 1) {
-                        $fullFunctionName = 'get' . $function;
-                        if (is_callable([$object, $fullFunctionName])) {
-                            $object = call_user_func([$object, $fullFunctionName]);
-
-                            continue;
-                        }
-
-                        $fullFunctionName = 'has' . $function;
-                        if (is_callable([$object, $fullFunctionName])) {
-                            $object = call_user_func([$object, $fullFunctionName]);
-
-                            continue;
-                        }
-
-                        $fullFunctionName = 'is' . $function;
-                        if (is_callable([$object, $fullFunctionName])) {
-                            $object = call_user_func([$object, $fullFunctionName]);
-
-                            continue;
-                        }
-
-                        throw new RuntimeException(sprintf('"%s" is not callable.', implode('.', array_merge([$varName], $functions))));
-                    }
-
-                    // End of the chain: call the method
-                    $fullFunctionName = 'get' . $function;
-                    if (is_callable([$object, $fullFunctionName])) {
-                        $objectValue = call_user_func_array([$object, $fullFunctionName], $parameters);
-
-                        continue;
-                    }
-
-                    $fullFunctionName = 'has' . $function;
-                    if (is_callable([$object, $fullFunctionName])) {
-                        $objectValue = call_user_func_array([$object, $fullFunctionName], $parameters);
-
-                        continue;
-                    }
-
-                    $fullFunctionName = 'is' . $function;
-                    if (is_callable([$object, $fullFunctionName])) {
-                        $objectValue = call_user_func_array([$object, $fullFunctionName], $parameters);
-
-                        continue;
-                    }
-
-                    throw new RuntimeException(sprintf('"%s" is not callable.', implode('.', array_merge([$varName], $functions))));
-                }
+                $objectValue = $this->processFunctionChain($functions, $nbCalls, $object, $varName, $parameters);
 
                 $title = str_replace($match[0][0], $objectValue, $title);
             }
@@ -256,66 +206,7 @@ class BreadcrumbListener
 
                     // Chain the method calls so we can get the correct value
                     // Example book.author.name should call getAuthor().getName() on the given book object
-                    foreach ($functions as $f => $function) {
-                        // While this is not the last function, call the chain
-                        if ($f < $nbCalls - 1) {
-                            $fullFunctionName = 'get' . $function;
-                            if (is_callable([$object, $fullFunctionName])) {
-                                $object = call_user_func([$object, $fullFunctionName]);
-
-                                continue;
-                            }
-
-                            $fullFunctionName = 'has' . $function;
-                            if (is_callable([$object, $fullFunctionName])) {
-                                $object = call_user_func([$object, $fullFunctionName]);
-
-                                continue;
-                            }
-
-                            $fullFunctionName = 'is' . $function;
-                            if (is_callable([$object, $fullFunctionName])) {
-                                $object = call_user_func([$object, $fullFunctionName]);
-
-                                continue;
-                            }
-
-                            throw new RuntimeException(
-                                sprintf(
-                                    '"%s" is not callable.',
-                                    implode('.', array_merge([$varName], $functions))
-                                )
-                            );
-                        }
-                        // End of the chain: call the method
-                        $fullFunctionName = 'get' . $function;
-                        if (is_callable([$object, $fullFunctionName])) {
-                            $objectValue = call_user_func_array([$object, $fullFunctionName], $parameters);
-
-                            continue;
-                        }
-
-                        $fullFunctionName = 'has' . $function;
-                        if (is_callable([$object, $fullFunctionName])) {
-                            $objectValue = call_user_func_array([$object, $fullFunctionName], $parameters);
-
-                            continue;
-                        }
-
-                        $fullFunctionName = 'is' . $function;
-                        if (is_callable([$object, $fullFunctionName])) {
-                            $objectValue = call_user_func_array([$object, $fullFunctionName], $parameters);
-
-                            continue;
-                        }
-
-                        throw new RuntimeException(
-                            sprintf(
-                                '"%s" is not callable.',
-                                implode('.', array_merge([$varName], $functions))
-                            )
-                        );
-                    }
+                    $objectValue = $this->processFunctionChain($functions, $nbCalls, $object, $varName, $parameters);
 
                     $routeParameter = str_replace($match[0][0], $objectValue, $value);
                     $routeParameters[$key] = $routeParameter;
@@ -398,5 +289,49 @@ class BreadcrumbListener
             $annotation->getParentRouteName(),
             $parentParameters
         );
+    }
+
+    private function processFunctionChain(
+        array $functions,
+        int $nbCalls,
+        $object,
+        string $varName,
+        array $parameters
+    ): string {
+        foreach ($functions as $f => $function) {
+            $fullFunctionNames = [
+                'get'.$function,
+                'has'.$function,
+                'is'.$function,
+            ];
+
+            // While this is not the last function, call the chain
+            if ($f < $nbCalls - 1) {
+                foreach ($fullFunctionNames as $fullFunctionName) {
+                    if (is_callable([$object, $fullFunctionName])) {
+                        $object = call_user_func([$object, $fullFunctionName]);
+
+                        continue 2;
+                    }
+                }
+
+                throw new RuntimeException(sprintf('"%s" is not callable.',
+                    implode('.', array_merge([$varName], $functions))));
+            }
+
+            // End of the chain: call the method
+            foreach ($fullFunctionNames as $fullFunctionName) {
+                if (is_callable([$object, $fullFunctionName])) {
+                    $objectValue = call_user_func_array([$object, $fullFunctionName], $parameters);
+
+                    continue 2;
+                }
+            }
+
+            throw new RuntimeException(sprintf('"%s" is not callable.',
+                implode('.', array_merge([$varName], $functions))));
+        }
+
+        return $objectValue;
     }
 }

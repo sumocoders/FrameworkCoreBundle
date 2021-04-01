@@ -10,8 +10,8 @@ class Breadcrumb
     private ?string $title = null;
     private ?string $routeName = null;
     private ?string $parentRouteName = null;
-    private array $routeParameters = array();
-    private array $parentRouteParameters = array();
+    private array $routeParameters = [];
+    private array $parentRouteParameters = [];
 
     public function __construct(array $data)
     {
@@ -24,27 +24,27 @@ class Breadcrumb
         }
 
         if (isset($data['route'])) {
-            if (is_array($data['route']) && isset($data['route']['name'])) {
+            if (\is_array($data['route']) && isset($data['route']['name'])) {
                 $this->routeName = $data['route']['name'];
             }
-            if (is_array($data['route']) && isset($data['route']['parameters'])) {
+            if (\is_array($data['route']) && isset($data['route']['parameters'])) {
                 $this->routeParameters = $data['route']['parameters'];
             }
 
-            if (is_string($data['route'])) {
+            if (\is_string($data['route'])) {
                 $this->routeName = $data['route'];
             }
         }
 
         if (isset($data['parent'])) {
-            if (is_array($data['parent']) && isset($data['parent']['name'])) {
+            if (\is_array($data['parent']) && isset($data['parent']['name'])) {
                 $this->parentRouteName = $data['parent']['name'];
             }
-            if (is_array($data['parent']) && isset($data['parent']['parameters'])) {
+            if (\is_array($data['parent']) && isset($data['parent']['parameters'])) {
                 $this->parentRouteParameters = $data['parent']['parameters'];
             }
 
-            if (is_string($data['parent'])) {
+            if (\is_string($data['parent'])) {
                 $this->parentRouteName = $data['parent'];
             }
         }

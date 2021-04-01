@@ -32,7 +32,7 @@ class BreadcrumbListener
 
     public function onKernelController(KernelEvent $event): void
     {
-        if (!is_array($controller = $event->getController())) {
+        if (!\is_array($controller = $event->getController())) {
             return;
         }
 
@@ -47,9 +47,7 @@ class BreadcrumbListener
     {
         $class = new \ReflectionClass($controller[0]);
         if ($class->isAbstract()) {
-            throw new \InvalidArgumentException(
-                sprintf('Annotations from class "%s" cannot be read as it is abstract.', $class)
-            );
+            throw new \InvalidArgumentException(sprintf('Annotations from class "%s" cannot be read as it is abstract.', $class));
         }
 
         $method = $class->getMethod($controller[1]);
@@ -78,7 +76,6 @@ class BreadcrumbListener
         }
     }
 
-
     private function addBreadcrumbsFromMethod(
         KernelEvent $event,
         array $annotations,
@@ -102,7 +99,7 @@ class BreadcrumbListener
         foreach ($annotations as $annotation) {
             if ($annotation instanceof Breadcrumb) {
                 if ($annotation->getParentRouteName()) {
-                    $controller =  $this->getControllerFromName(
+                    $controller = $this->getControllerFromName(
                         $annotation->getParentRouteName()
                     );
 
@@ -116,7 +113,7 @@ class BreadcrumbListener
                             $event->getRequest()->attributes->all()[$requiredParameter] ?? '';
                     }
 
-                    if (count($annotation->getParentRouteParameters()) > 0) {
+                    if (\count($annotation->getParentRouteParameters()) > 0) {
                         $parentParameters = $annotation->getParentRouteParameters();
                     }
 
@@ -145,7 +142,7 @@ class BreadcrumbListener
         Breadcrumb $breadcrumb,
         ?string $route = null,
         ?array $parameters = null
-    ): BreadcrumbValueObject  {
+    ): BreadcrumbValueObject {
         $title = $breadcrumb->getTitle();
         $routeParameters = $parameters ?? $breadcrumb->getRouteParameters();
         $routeName = $route ?? $breadcrumb->getRouteName();
@@ -157,49 +154,35 @@ class BreadcrumbListener
         );
 
         foreach ($matches as $match) {
-            $varName    = $match['variable'][0];
-            $functions  = $match['function'][0] ? explode('.', $match['function'][0]) : array();
-            $parameters = $match['parameters'][0] ? explode(',', $match['parameters'][0]) : array();
-            $nbCalls    = count($functions);
+            $varName = $match['variable'][0];
+            $functions = $match['function'][0] ? explode('.', $match['function'][0]) : [];
+            $parameters = $match['parameters'][0] ? explode(',', $match['parameters'][0]) : [];
+            $nbCalls = \count($functions);
 
-            if($request->attributes->has($varName)) {
+            if ($request->attributes->has($varName)) {
                 $object = $request->attributes->get($varName);
-
-                if(empty($functions)) {
+                if (empty($functions)) {
                     $objectValue = (string) $object;
-                }
-                else {
-                    foreach ($functions AS $f => $function) {
-                        # While this is not the last function, call the chain
+                } else {
+                    foreach ($functions as $f => $function) {
+                        // While this is not the last function, call the chain
                         if ($f < $nbCalls - 1) {
-                            if(is_callable(array($object, $fullFunctionName = 'get'.$function))
-                                || is_callable(array($object, $fullFunctionName = 'has'.$function))
-                                || is_callable(array($object, $fullFunctionName = 'is'.$function))) {
-                                $object = call_user_func(array($object, $fullFunctionName));
-                            }
-                            else {
-                                throw new \RuntimeException(
-                                    sprintf(
-                                        '"%s" is not callable.',
-                                        join('.',array_merge([$varName], $functions))
-                                    )
-                                );
+                            if (\is_callable([$object, $fullFunctionName = 'get' . $function])
+                                || \is_callable([$object, $fullFunctionName = 'has' . $function])
+                                || \is_callable([$object, $fullFunctionName = 'is' . $function])) {
+                                $object = \call_user_func([$object, $fullFunctionName]);
+                            } else {
+                                throw new \RuntimeException(sprintf('"%s" is not callable.', implode('.', array_merge([$varName], $functions))));
                             }
                         }
-                        # End of the chain: call the method
+                        // End of the chain: call the method
                         else {
-                            if(is_callable(array($object, $fullFunctionName = 'get'.$function))
-                                || is_callable(array($object, $fullFunctionName = 'has'.$function))
-                                || is_callable(array($object, $fullFunctionName = 'is'.$function))) {
-                                $objectValue = call_user_func_array(array($object, $fullFunctionName),$parameters);
-                            }
-                            else {
-                                throw new \RuntimeException(
-                                    sprintf(
-                                        '"%s" is not callable.',
-                                        join('.', array_merge([$varName], $functions))
-                                    )
-                                );
+                            if (\is_callable([$object, $fullFunctionName = 'get' . $function])
+                                || \is_callable([$object, $fullFunctionName = 'has' . $function])
+                                || \is_callable([$object, $fullFunctionName = 'is' . $function])) {
+                                $objectValue = \call_user_func_array([$object, $fullFunctionName], $parameters);
+                            } else {
+                                throw new \RuntimeException(sprintf('"%s" is not callable.', implode('.', array_merge([$varName], $functions))));
                             }
                         }
                     }
@@ -219,47 +202,38 @@ class BreadcrumbListener
                     $matches,
                     PREG_OFFSET_CAPTURE | PREG_SET_ORDER
                 )) {
-                    foreach ($matches AS $match) {
-                        $varName    = $match['variable'][0];
-                        $functions  = $match['function'][0] ? explode('.', $match['function'][0]) : [];
+                    foreach ($matches as $match) {
+                        $varName = $match['variable'][0];
+                        $functions = $match['function'][0] ? explode('.', $match['function'][0]) : [];
                         $parameters = $match['parameters'][0] ? explode(',', $match['parameters'][0]) : [];
-                        $nbCalls    = count($functions);
+                        $nbCalls = \count($functions);
 
                         if ($request->attributes->has($varName)) {
                             $object = $request->attributes->get($varName);
                             if (empty($functions)) {
                                 $objectValue = (string) $object;
-                            }
-                            else {
-                                foreach ($functions AS $f => $function) {
-                                    # While this is not the last function, call the chain
+                            } else {
+                                foreach ($functions as $f => $function) {
+                                    // While this is not the last function, call the chain
                                     if ($f < $nbCalls - 1) {
-                                        if (is_callable(array($object, $fullFunctionName = 'get' . $function))
-                                            || is_callable(array($object, $fullFunctionName  = 'has' . $function))
-                                            || is_callable(array($object, $fullFunctionName  = 'is' . $function))
+                                        if (\is_callable([$object, $fullFunctionName = 'get' . $function])
+                                            || \is_callable([$object, $fullFunctionName = 'has' . $function])
+                                            || \is_callable([$object, $fullFunctionName = 'is' . $function])
                                         ) {
-                                            $object = call_user_func(array($object, $fullFunctionName));
-                                        }
-                                        else {
-                                            throw new \RuntimeException(sprintf('"%s" is not callable.', join('.', array_merge([$varName], $functions))));
+                                            $object = \call_user_func([$object, $fullFunctionName]);
+                                        } else {
+                                            throw new \RuntimeException(sprintf('"%s" is not callable.', implode('.', array_merge([$varName], $functions))));
                                         }
                                     }
-                                    # End of the chain: call the method
+                                    // End of the chain: call the method
                                     else {
-
-                                        if (is_callable(array($object, $fullFunctionName = 'get' . $function))
-                                            || is_callable(array($object, $fullFunctionName  = 'has' . $function))
-                                            || is_callable(array($object, $fullFunctionName  = 'is' . $function))
+                                        if (\is_callable([$object, $fullFunctionName = 'get' . $function])
+                                            || \is_callable([$object, $fullFunctionName = 'has' . $function])
+                                            || \is_callable([$object, $fullFunctionName = 'is' . $function])
                                         ) {
-                                            $objectValue = call_user_func_array(array($object, $fullFunctionName), $parameters);
-                                        }
-                                        else {
-                                            throw new \RuntimeException(
-                                                sprintf(
-                                                    '"%s" is not callable.',
-                                                    join('.', array_merge([$varName], $functions))
-                                                )
-                                            );
+                                            $objectValue = \call_user_func_array([$object, $fullFunctionName], $parameters);
+                                        } else {
+                                            throw new \RuntimeException(sprintf('"%s" is not callable.', implode('.', array_merge([$varName], $functions))));
                                         }
                                     }
                                 }
@@ -276,7 +250,7 @@ class BreadcrumbListener
         }
 
         $url = null;
-        if (!is_null($routeName)) {
+        if ($routeName !== null) {
             $url = $this->router->generate($routeName, $routeParameters, UrlGeneratorInterface::ABSOLUTE_URL);
         }
 

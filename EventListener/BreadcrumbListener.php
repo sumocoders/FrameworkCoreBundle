@@ -37,7 +37,7 @@ class BreadcrumbListener
             return;
         }
 
-        if ($event->getRequestType() == HttpKernelInterface::MASTER_REQUEST) {
+        if (HttpKernelInterface::MASTER_REQUEST == $event->getRequestType()) {
             $this->breadcrumbTrail->reset();
         }
 
@@ -52,7 +52,7 @@ class BreadcrumbListener
         }
 
         $method = $class->getMethod($controller[1]);
-        if ($event->getRequestType() == HttpKernelInterface::MASTER_REQUEST) {
+        if (HttpKernelInterface::MASTER_REQUEST == $event->getRequestType()) {
             $this->addBreadcrumbsFromClass($event, $this->reader->getClassAnnotations($class));
             $this->addBreadcrumbsFromMethod($event, $this->reader->getMethodAnnotations($method));
         }
@@ -67,7 +67,7 @@ class BreadcrumbListener
         $class = new \ReflectionClass($controller[0]);
         $method = $class->getMethod($controller[1]);
 
-        if ($event->getRequestType() == HttpKernelInterface::MASTER_REQUEST) {
+        if (HttpKernelInterface::MASTER_REQUEST == $event->getRequestType()) {
             $this->addBreadcrumbsFromMethod(
                 $event,
                 $this->reader->getMethodAnnotations($method),

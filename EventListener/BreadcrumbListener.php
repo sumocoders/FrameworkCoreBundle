@@ -156,98 +156,189 @@ class BreadcrumbListener
             PREG_OFFSET_CAPTURE | PREG_SET_ORDER
         );
 
+        // Convert the breadcrumb title to the correct value
         foreach ($matches as $match) {
             $varName = $match['variable'][0];
+            // Get the methods that need to be called on the route parameter
             $functions = $match['function'][0] ? explode('.', $match['function'][0]) : [];
             $parameters = $match['parameters'][0] ? explode(',', $match['parameters'][0]) : [];
-            $nbCalls = \count($functions);
+            $nbCalls = count($functions);
 
             if ($request->attributes->has($varName)) {
                 $object = $request->attributes->get($varName);
+
+                // If no functions need to be called use the title as given
                 if (empty($functions)) {
                     $objectValue = (string) $object;
-                } else {
-                    foreach ($functions as $f => $function) {
-                        // While this is not the last function, call the chain
-                        if ($f < $nbCalls - 1) {
-                            if (\is_callable([$object, $fullFunctionName = 'get' . $function])
-                                || \is_callable([$object, $fullFunctionName = 'has' . $function])
-                                || \is_callable([$object, $fullFunctionName = 'is' . $function])) {
-                                $object = \call_user_func([$object, $fullFunctionName]);
-                            } else {
-                                throw new \RuntimeException(sprintf('"%s" is not callable.', implode('.', array_merge([$varName], $functions))));
-                            }
+                    $title = str_replace($match[0][0], $objectValue, $title);
+
+                    continue;
+                }
+
+                // Chain the method calls so we can get the correct value
+                // Example book.author.name should call getAuthor().getName() on the given book object
+                foreach ($functions as $f => $function) {
+                    // While this is not the last function, call the chain
+                    if ($f < $nbCalls - 1) {
+                        $fullFunctionName = 'get' . $function;
+                        if (is_callable([$object, $fullFunctionName])) {
+                            $object = \call_user_func([$object, $fullFunctionName]);
+
+                            continue;
                         }
-                        // End of the chain: call the method
-                        else {
-                            if (\is_callable([$object, $fullFunctionName = 'get' . $function])
-                                || \is_callable([$object, $fullFunctionName = 'has' . $function])
-                                || \is_callable([$object, $fullFunctionName = 'is' . $function])) {
-                                $objectValue = \call_user_func_array([$object, $fullFunctionName], $parameters);
-                            } else {
-                                throw new \RuntimeException(sprintf('"%s" is not callable.', implode('.', array_merge([$varName], $functions))));
-                            }
+
+                        $fullFunctionName = 'has' . $function;
+                        if (is_callable([$object, $fullFunctionName])) {
+                            $object = \call_user_func([$object, $fullFunctionName]);
+
+                            continue;
                         }
+
+                        $fullFunctionName = 'is' . $function;
+                        if (is_callable([$object, $fullFunctionName])) {
+                            $object = \call_user_func([$object, $fullFunctionName]);
+
+                            continue;
+                        }
+
+                        throw new \RuntimeException(sprintf('"%s" is not callable.', implode('.', array_merge([$varName], $functions))));
                     }
+
+                    // End of the chain: call the method
+                    $fullFunctionName = 'get' . $function;
+                    if (is_callable([$object, $fullFunctionName])) {
+                        $objectValue = \call_user_func_array([$object, $fullFunctionName], $parameters);
+
+                        continue;
+                    }
+
+                    $fullFunctionName = 'has' . $function;
+                    if (is_callable([$object, $fullFunctionName])) {
+                        $objectValue = \call_user_func_array([$object, $fullFunctionName], $parameters);
+
+                        continue;
+                    }
+
+                    $fullFunctionName = 'is' . $function;
+                    if (is_callable([$object, $fullFunctionName])) {
+                        $objectValue = \call_user_func_array([$object, $fullFunctionName], $parameters);
+
+                        continue;
+                    }
+
+                    throw new \RuntimeException(sprintf('"%s" is not callable.', implode('.', array_merge([$varName], $functions))));
                 }
 
                 $title = str_replace($match[0][0], $objectValue, $title);
             }
         }
+
+        // Convert the route parameters to a usable format
         foreach ($routeParameters as $key => $value) {
             if (is_numeric($key)) {
                 $routeParameters[$value] = $request->get($value);
                 unset($routeParameters[$key]);
-            } else {
-                if (preg_match_all(
-                    '#\{(?P<variable>\w+).?(?P<function>([\w\.])*):?(?P<parameters>(\w|,| )*)\}#',
-                    $value,
-                    $matches,
-                    PREG_OFFSET_CAPTURE | PREG_SET_ORDER
-                )) {
-                    foreach ($matches as $match) {
-                        $varName = $match['variable'][0];
-                        $functions = $match['function'][0] ? explode('.', $match['function'][0]) : [];
-                        $parameters = $match['parameters'][0] ? explode(',', $match['parameters'][0]) : [];
-                        $nbCalls = \count($functions);
 
-                        if ($request->attributes->has($varName)) {
-                            $object = $request->attributes->get($varName);
-                            if (empty($functions)) {
-                                $objectValue = (string) $object;
-                            } else {
-                                foreach ($functions as $f => $function) {
-                                    // While this is not the last function, call the chain
-                                    if ($f < $nbCalls - 1) {
-                                        if (\is_callable([$object, $fullFunctionName = 'get' . $function])
-                                            || \is_callable([$object, $fullFunctionName = 'has' . $function])
-                                            || \is_callable([$object, $fullFunctionName = 'is' . $function])
-                                        ) {
-                                            $object = \call_user_func([$object, $fullFunctionName]);
-                                        } else {
-                                            throw new \RuntimeException(sprintf('"%s" is not callable.', implode('.', array_merge([$varName], $functions))));
-                                        }
-                                    }
-                                    // End of the chain: call the method
-                                    else {
-                                        if (\is_callable([$object, $fullFunctionName = 'get' . $function])
-                                            || \is_callable([$object, $fullFunctionName = 'has' . $function])
-                                            || \is_callable([$object, $fullFunctionName = 'is' . $function])
-                                        ) {
-                                            $objectValue = \call_user_func_array([$object, $fullFunctionName], $parameters);
-                                        } else {
-                                            throw new \RuntimeException(sprintf('"%s" is not callable.', implode('.', array_merge([$varName], $functions))));
-                                        }
-                                    }
-                                }
+                continue;
+            }
+
+            if (preg_match('#^\{(?P<parameter>\w+)\}$#', $value, $matches)) {
+                $routeParameters[$key] = $request->get($matches['parameter']);
+
+                continue;
+            }
+
+            if (preg_match_all(
+                '#\{(?P<variable>\w+).?(?P<function>([\w\.])*):?(?P<parameters>(\w|,| )*)\}#',
+                $value,
+                $matches,
+                PREG_OFFSET_CAPTURE | PREG_SET_ORDER
+            )) {
+                foreach ($matches as $match) {
+                    $varName = $match['variable'][0];
+                    // Get the methods that need to be called on the route parameter
+                    $functions = $match['function'][0] ? explode('.', $match['function'][0]) : [];
+                    $parameters = $match['parameters'][0] ? explode(',', $match['parameters'][0]) : [];
+                    $nbCalls = \count($functions);
+
+                    if (!$request->attributes->has($varName)) {
+                      continue;
+                    }
+
+                    $object = $request->attributes->get($varName);
+                    if (empty($functions)) {
+                        $objectValue = (string) $object;
+                        $routeParameter = str_replace($match[0][0], $objectValue, $value);
+                        $routeParameters[$key] = $routeParameter;
+
+                        continue;
+                    }
+
+                    // Chain the method calls so we can get the correct value
+                    // Example book.author.name should call getAuthor().getName() on the given book object
+                    foreach ($functions as $f => $function) {
+                        // While this is not the last function, call the chain
+                        if ($f < $nbCalls - 1) {
+                            $fullFunctionName = 'get' . $function;
+                            if (is_callable([$object, $fullFunctionName])) {
+                                $object = \call_user_func([$object, $fullFunctionName]);
+
+                                continue;
                             }
 
-                            $routeParameter = str_replace($match[0][0], $objectValue, $value);
-                            $routeParameters[$key] = $routeParameter;
+                            $fullFunctionName = 'has' . $function;
+                            if (is_callable([$object, $fullFunctionName])) {
+                                $object = \call_user_func([$object, $fullFunctionName]);
+
+                                continue;
+                            }
+
+                            $fullFunctionName = 'is' . $function;
+                            if (is_callable([$object, $fullFunctionName])) {
+                                $object = \call_user_func([$object, $fullFunctionName]);
+
+                                continue;
+                            }
+
+                            throw new \RuntimeException(
+                                sprintf(
+                                    '"%s" is not callable.',
+                                    implode('.', array_merge([$varName], $functions))
+                                )
+                            );
                         }
+                        // End of the chain: call the method
+                        $fullFunctionName = 'get' . $function;
+                        if (is_callable([$object, $fullFunctionName])) {
+                            $objectValue = \call_user_func_array([$object, $fullFunctionName], $parameters);
+
+                            continue;
+                        }
+
+                        $fullFunctionName = 'has' . $function;
+                        if (is_callable([$object, $fullFunctionName])) {
+                            $objectValue = \call_user_func_array([$object, $fullFunctionName], $parameters);
+
+                            continue;
+                        }
+
+                        $fullFunctionName = 'is' . $function;
+                        if (is_callable([$object, $fullFunctionName])) {
+                            $objectValue = \call_user_func_array([$object, $fullFunctionName], $parameters);
+
+                            continue;
+                        }
+
+                        throw new \RuntimeException(
+                            sprintf(
+                                '"%s" is not callable.',
+                                implode('.', array_merge([$varName], $functions))
+                            )
+                        );
                     }
-                } elseif (preg_match('#^\{(?P<parameter>\w+)\}$#', $value, $matches)) {
-                    $routeParameters[$key] = $request->get($matches['parameter']);
+
+                    $routeParameter = str_replace($match[0][0], $objectValue, $value);
+                    $routeParameters[$key] = $routeParameter;
                 }
             }
         }

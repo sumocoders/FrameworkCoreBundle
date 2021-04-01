@@ -27,7 +27,7 @@ class BreadcrumbTrail implements Iterator, Countable
         $this->breadcrumbs[] = $breadcrumb;
     }
 
-    public function getBreadcrumbs(): array
+    public function all(): array
     {
         return $this->breadcrumbs;
     }

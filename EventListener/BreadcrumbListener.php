@@ -106,30 +106,7 @@ class BreadcrumbListener
             }
 
             if ($annotation->getParentRouteName()) {
-                $controller = $this->getControllerFromName(
-                    $annotation->getParentRouteName()
-                );
-
-                $requiredParameters = $this->getRouteParametersFromName(
-                    $annotation->getParentRouteName()
-                );
-
-                $parentParameters = [];
-                foreach ($requiredParameters as $requiredParameter) {
-                    $parentParameters[$requiredParameter] =
-                        $event->getRequest()->attributes->all()[$requiredParameter] ?? '';
-                }
-
-                if (count($annotation->getParentRouteParameters()) > 0) {
-                    $parentParameters = $annotation->getParentRouteParameters();
-                }
-
-                $this->processParentAnnotations(
-                    $event,
-                    $controller,
-                    $annotation->getParentRouteName(),
-                    $parentParameters
-                );
+                $this->addBreadcrumbsForParent($annotation, $event);
             }
 
             $this->breadcrumbTrail->add(
@@ -393,5 +370,33 @@ class BreadcrumbListener
 
             return $compiledRoute->getVariables();
         }
+    }
+
+    private function addBreadcrumbsForParent(Breadcrumb $annotation, KernelEvent $event): void
+    {
+        $controller = $this->getControllerFromName(
+            $annotation->getParentRouteName()
+        );
+
+        $requiredParameters = $this->getRouteParametersFromName(
+            $annotation->getParentRouteName()
+        );
+
+        $parentParameters = [];
+        foreach ($requiredParameters as $requiredParameter) {
+            $parentParameters[$requiredParameter] =
+                $event->getRequest()->attributes->all()[$requiredParameter] ?? '';
+        }
+
+        if (count($annotation->getParentRouteParameters()) > 0) {
+            $parentParameters = $annotation->getParentRouteParameters();
+        }
+
+        $this->processParentAnnotations(
+            $event,
+            $controller,
+            $annotation->getParentRouteName(),
+            $parentParameters
+        );
     }
 }

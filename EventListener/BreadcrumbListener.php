@@ -98,43 +98,45 @@ class BreadcrumbListener
         ?array $parameters = null
     ) {
         foreach ($annotations as $annotation) {
-            if ($annotation instanceof Breadcrumb) {
-                if ($annotation->getParentRouteName()) {
-                    $controller = $this->getControllerFromName(
-                        $annotation->getParentRouteName()
-                    );
+            if (!$annotation instanceof Breadcrumb) {
+                continue;
+            }
 
-                    $requiredParameters = $this->getRouteParametersFromName(
-                        $annotation->getParentRouteName()
-                    );
+            if ($annotation->getParentRouteName()) {
+                $controller = $this->getControllerFromName(
+                    $annotation->getParentRouteName()
+                );
 
-                    $parentParameters = [];
-                    foreach ($requiredParameters as $requiredParameter) {
-                        $parentParameters[$requiredParameter] =
-                            $event->getRequest()->attributes->all()[$requiredParameter] ?? '';
-                    }
+                $requiredParameters = $this->getRouteParametersFromName(
+                    $annotation->getParentRouteName()
+                );
 
-                    if (\count($annotation->getParentRouteParameters()) > 0) {
-                        $parentParameters = $annotation->getParentRouteParameters();
-                    }
-
-                    $this->processParentAnnotations(
-                        $event,
-                        $controller,
-                        $annotation->getParentRouteName(),
-                        $parentParameters
-                    );
+                $parentParameters = [];
+                foreach ($requiredParameters as $requiredParameter) {
+                    $parentParameters[$requiredParameter] =
+                        $event->getRequest()->attributes->all()[$requiredParameter] ?? '';
                 }
 
-                $this->breadcrumbTrail->add(
-                    $this->generateBreadcrumb(
-                        $event->getRequest(),
-                        $annotation,
-                        $routeName,
-                        $parameters
-                    )
+                if (\count($annotation->getParentRouteParameters()) > 0) {
+                    $parentParameters = $annotation->getParentRouteParameters();
+                }
+
+                $this->processParentAnnotations(
+                    $event,
+                    $controller,
+                    $annotation->getParentRouteName(),
+                    $parentParameters
                 );
             }
+
+            $this->breadcrumbTrail->add(
+                $this->generateBreadcrumb(
+                    $event->getRequest(),
+                    $annotation,
+                    $routeName,
+                    $parameters
+                )
+            );
         }
     }
 

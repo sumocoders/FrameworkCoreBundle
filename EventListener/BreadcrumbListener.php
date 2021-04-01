@@ -129,7 +129,12 @@ class BreadcrumbListener
                 }
 
                 $this->breadcrumbTrail->add(
-                    $this->generateBreadcrumb($event->getRequest(), $annotation)
+                    $this->generateBreadcrumb(
+                        $event->getRequest(),
+                        $annotation,
+                        $routeName,
+                        $parameters
+                    )
                 );
             }
         }
@@ -138,12 +143,12 @@ class BreadcrumbListener
     private function generateBreadcrumb(
         Request $request,
         Breadcrumb $breadcrumb,
-        ?string $routeName = null,
+        ?string $route = null,
         ?array $parameters = null
     ): BreadcrumbValueObject  {
         $title = $breadcrumb->getTitle();
         $routeParameters = $parameters ?? $breadcrumb->getRouteParameters();
-
+        $routeName = $route ?? $breadcrumb->getRouteName();
         preg_match_all(
             '#\{(?P<variable>\w+).?(?P<function>([\w\.])*):?(?P<parameters>(\w|,| )*)\}#',
             $title,

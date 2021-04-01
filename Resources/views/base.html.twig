@@ -13,7 +13,7 @@
       <div class="main-header">
         <div class="d-md-none breadcrumb-mobile">
           <nav aria-label="breadcrumb" class="my-2">
-            {% block breadcrumb %}
+            {% block breadcrumb_mobile %}
               {{ include('@SumoCodersFrameworkCore/BreadCrumb/breadCrumb.html.twig') }}
             {% endblock %}
           </nav>
@@ -55,7 +55,9 @@
           </div>
           <div class="header-title-bar d-none d-md-flex justify-content-md-between align-items-md-center flex-column flex-md-row flex-wrap">
             <nav aria-label="breadcrumb" class="my-2">
-              {{ knp_menu_render('breadcrumb', {'template': '@SumoCodersFrameworkCore/BreadCrumb/breadCrumb.html.twig'}) }}
+              {% block breadcrumb %}
+                {{ include('@SumoCodersFrameworkCore/BreadCrumb/breadCrumb.html.twig') }}
+              {% endblock %}
             </nav>
             <div class="ml-md-auto">
               {% if block('header_navigation') is defined and block('header_navigation') is not empty %}

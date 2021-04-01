@@ -6,12 +6,11 @@ use Doctrine\Common\Annotations\Reader;
 use InvalidArgumentException;
 use ReflectionClass;
 use RuntimeException;
-use SumoCoders\FrameworkCoreBundle\Annotation\Breadcrumb;
+use SumoCoders\FrameworkCoreBundle\Annotation\Breadcrumb as BreadcrumbAnnotation;
 use SumoCoders\FrameworkCoreBundle\Service\BreadcrumbTrail;
-use SumoCoders\FrameworkCoreBundle\ValueObject\Breadcrumb as BreadcrumbValueObject;
+use SumoCoders\FrameworkCoreBundle\ValueObject\Breadcrumb;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\KernelEvent;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Routing\CompiledRoute;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Route;
@@ -101,7 +100,7 @@ class BreadcrumbListener
         ?array $parameters = null
     ) {
         foreach ($annotations as $annotation) {
-            if (!$annotation instanceof Breadcrumb) {
+            if (!$annotation instanceof BreadcrumbAnnotation) {
                 continue;
             }
 
@@ -122,10 +121,10 @@ class BreadcrumbListener
 
     private function generateBreadcrumb(
         Request $request,
-        Breadcrumb $breadcrumb,
+        BreadcrumbAnnotation $breadcrumb,
         ?string $route = null,
         ?array $parameters = null
-    ): BreadcrumbValueObject {
+    ): Breadcrumb {
         $title = $breadcrumb->getTitle();
         $routeParameters = $parameters ?? $breadcrumb->getRouteParameters();
         $routeName = $route ?? $breadcrumb->getRouteName();
@@ -219,7 +218,7 @@ class BreadcrumbListener
             $url = $this->router->generate($routeName, $routeParameters, UrlGeneratorInterface::ABSOLUTE_URL);
         }
 
-        return new BreadcrumbValueObject(
+        return new Breadcrumb(
             $title,
             $url
         );
@@ -263,7 +262,7 @@ class BreadcrumbListener
         }
     }
 
-    private function addBreadcrumbsForParent(Breadcrumb $annotation, KernelEvent $event): void
+    private function addBreadcrumbsForParent(BreadcrumbAnnotation $annotation, KernelEvent $event): void
     {
         $controller = $this->getControllerFromName(
             $annotation->getParentRouteName()

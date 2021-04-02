@@ -1,7 +1,7 @@
 # Using the breadcrumb
 
 The breadcrumb is a nice way to indicate where a user is in the application. 
-But it shouldn't be a hassle to use it from a code-point. .
+But it shouldn't be a hassle to use it from a code-point.
 
 ## Manual breadcrumbs
 Adding a breadcrumb is as simple as adding a `@Breadcrumb` annotation.
@@ -90,6 +90,36 @@ public function book(Author $author): Response
  * @Breadcrumb("{book.title}", parent={"name"="author", "parameters"={"author"="{author.id}"}})
  */
 public function bookTo(Author $author, Book $book): Response
+{
+}
+```
+
+## Translations
+It's possible to use translations as these get translated in the template.
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="nl" target-language="nl" datatype="plaintext" original="file.ext">
+    <header>
+      <tool tool-id="symfony" tool-name="Symfony"/>
+    </header>
+    <body>
+      <trans-unit id="1Ehb6Tp" resname="breadcrumb.authors">
+        <source>breadcrumb.authors</source>
+        <target>Authors</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
+```
+
+```php
+/**
+ * @Route("/authors", name="authors")
+ * @Breadcrumb("breadcrumb.authors")
+ */
+public function book(Author $author): Response
 {
 }
 ```

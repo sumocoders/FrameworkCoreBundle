@@ -187,7 +187,7 @@
   {%- endif -%}
   {%- set widget_attr = {} -%}
   {%- if help is not empty -%}
-    {%- set widget_attr = {attr: {'aria-describedby': id ~"_help"}} -%}
+    {%- set widget_attr = {attr: {'aria-describedby': id ~ "_help"}} -%}
   {%- endif -%}
   <{{ element|default('div') }} class="form-group">
   {{- form_label(form) -}}
@@ -203,7 +203,7 @@
           {% set attr = attr|merge({class: (attr.class|default('') ~ ' is-invalid')|trim}) -%}
         {%- endif -%}
         {%- if help is not empty -%}
-          {%- set widget_attr = {attr: {'aria-describedby': id ~"_help"}} -%}
+          {%- set widget_attr = {attr: {'aria-describedby': id ~ "_help"}} -%}
         {%- endif -%}
 
         <div class="input-group date" id="{{ form.vars.id }}" data-target-input="nearest" data-role="date-picker">
@@ -260,7 +260,7 @@
   {%- endif -%}
   {%- set widget_attr = {} -%}
   {%- if help is not empty -%}
-    {%- set widget_attr = {attr: {'aria-describedby': id ~"_help"}} -%}
+    {%- set widget_attr = {attr: {'aria-describedby': id ~ "_help"}} -%}
   {%- endif -%}
   <{{ element|default('div') }} class="form-group">
   {{- form_label(form) -}}
@@ -276,7 +276,7 @@
           {% set attr = attr|merge({class: (attr.class|default('') ~ ' is-invalid')|trim}) -%}
         {%- endif -%}
         {%- if help is not empty -%}
-          {%- set widget_attr = {attr: {'aria-describedby': id ~"_help"}} -%}
+          {%- set widget_attr = {attr: {'aria-describedby': id ~ "_help"}} -%}
         {%- endif -%}
         <div class="input-group date" id="{{ form.vars.id }}" data-target-input="nearest" data-role="time-picker">
           <input
@@ -337,7 +337,7 @@
   {%- endif -%}
   {%- set widget_attr = {} -%}
   {%- if help is not empty -%}
-    {%- set widget_attr = {attr: {'aria-describedby': id ~"_help"}} -%}
+    {%- set widget_attr = {attr: {'aria-describedby': id ~ "_help"}} -%}
   {%- endif -%}
   <{{ element|default('div') }} class="form-group">
   {{- form_label(form) -}}
@@ -353,7 +353,7 @@
           {% set attr = attr|merge({class: (attr.class|default('') ~ ' is-invalid')|trim}) -%}
         {%- endif -%}
         {%- if help is not empty -%}
-          {%- set widget_attr = {attr: {'aria-describedby': id ~"_help"}} -%}
+          {%- set widget_attr = {attr: {'aria-describedby': id ~ "_help"}} -%}
         {%- endif -%}
         <div class="input-group date" id="{{ form.vars.id }}" data-target-input="nearest" data-role="date-time-picker">
           <input
@@ -409,7 +409,7 @@
   {%- endif -%}
   {%- set widget_attr = {} -%}
   {%- if help is not empty -%}
-    {%- set widget_attr = {attr: {'aria-describedby': id ~"_help"}} -%}
+    {%- set widget_attr = {attr: {'aria-describedby': id ~ "_help"}} -%}
   {%- endif -%}
   <{{ element|default('div') }} class="form-group">
   {{- form_label(form) -}}

@@ -1,7 +1,5 @@
-{% extends 'knp_menu.html.twig' %}
-
-{% block list %}
-  {% if item.hasChildren and options.depth is not same as(0) and item.displayChildren %}
+{% block breadcrumb %}
+  {% if breadcrumbs.count %}
     <ol class="breadcrumb" itemscope itemtype="https://schema.org/breadcrumb">
       <li class="breadcrumb-item breadcrumb-item-back">
         <a href="/" data-button-previous="back" class="breadcrumb-link-back"><i
@@ -9,17 +7,16 @@
             class="sr-only d-md-none">{{ 'previous'|trans|ucfirst }}</span><span
             class="d-none d-md-inline-block">{{ 'previous'|trans|ucfirst }}</span></a>
       </li>
-      {{ block('children') }}
+      {% for breadcrumb in breadcrumbs %}
+        {% set class = (loop.first ? 'first' : (loop.last ? 'last' : '')) %}
+        <li class="breadcrumb-item {{ class }}" itemprop="itemListElement">
+          {% if loop.last or breadcrumb.url is null %}
+            {{ breadcrumb.title|trans }}
+          {% else %}
+            <a href="{{ breadcrumb.url }}">{{ breadcrumb.title|trans }}</a>
+          {% endif %}
+        </li>
+      {% endfor %}
     </ol>
   {% endif %}
 {% endblock %}
-
-{% block item %}
-  {% set item = item.setAttributes({'class': 'breadcrumb-item','itemprop': 'itemListElement'}) %}
-  {{ parent() }}
-{% endblock %}
-
-{% block label %}
-  {{ item.label|trans(item.getExtra('translation_params', {}), item.getExtra('translation_domain', 'messages'))|ucfirst }}
-{% endblock %}
-

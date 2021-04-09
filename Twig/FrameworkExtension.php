@@ -5,6 +5,7 @@ namespace SumoCoders\FrameworkCoreBundle\Twig;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
+use Twig\TwigFilter;
 
 class FrameworkExtension extends AbstractExtension
 {
@@ -21,6 +22,17 @@ class FrameworkExtension extends AbstractExtension
         $this->container = $container;
     }
 
+    public function getFilters()
+    {
+        return [
+            new TwigFilter(
+                'ucfirst',
+                'ucfirst'
+            ),
+        ];
+    }
+
+
     /**
      * Get the registered functions
      *
@@ -36,10 +48,6 @@ class FrameworkExtension extends AbstractExtension
             new TwigFunction(
                 'toTranslation',
                 [$this, 'convertToTranslation']
-            ),
-            new TwigFunction(
-                'ucfirst',
-                'ucfirst'
             ),
         ];
     }

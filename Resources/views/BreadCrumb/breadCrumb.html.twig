@@ -2,10 +2,11 @@
   {% if breadcrumbs.count %}
     <ol class="breadcrumb" itemscope itemtype="https://schema.org/breadcrumb">
       <li class="breadcrumb-item breadcrumb-item-back">
-        <a href="/" data-button-previous="back" class="breadcrumb-link-back"><i
-            class="fas fa-chevron-left fa-sm mr-2"></i><span
-            class="sr-only d-md-none">{{ 'previous'|trans|ucfirst }}</span><span
-            class="d-none d-md-inline-block">{{ 'previous'|trans|ucfirst }}</span></a>
+        <a href="/" data-button-previous="back" class="breadcrumb-link-back">
+          <i class="fas fa-chevron-left fa-sm mr-2"></i>
+          <span class="sr-only d-md-none">{{ 'previous'|trans|ucfirst }}</span>
+          <span class="d-none d-md-inline-block">{{ 'previous'|trans|ucfirst }}</span>
+        </a>
       </li>
       {% for breadcrumb in breadcrumbs %}
         {% set class = (loop.first ? 'first' : (loop.last ? 'last' : '')) %}

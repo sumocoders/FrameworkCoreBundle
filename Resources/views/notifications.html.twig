@@ -1,15 +1,15 @@
-{% for flashMessage in app.session.flashbag.get('success') %}
-  <toast type="success" message="{{ flashMessage }}"></toast>
+{% for flash_message in app.session.flashbag.get('success') %}
+  <toast type="success" message="{{ flash_message }}"></toast>
 {% endfor %}
 
-{% for flashMessage in app.session.flashbag.get('report') %}
-  <toast type="info" message="{{ flashMessage }}"></toast>
+{% for flash_message in app.session.flashbag.get('report') %}
+  <toast type="info" message="{{ flash_message }}"></toast>
 {% endfor %}
 
-{% for flashMessage in app.session.flashbag.get('warning') %}
-  <toast type="warning" message="{{ flashMessage }}"></toast>
+{% for flash_message in app.session.flashbag.get('warning') %}
+  <toast type="warning" message="{{ flash_message }}"></toast>
 {% endfor %}
 
-{% for flashMessage in app.session.flashbag.get('error') %}
-  <toast type="danger" message="{{ flashMessage }}"></toast>
+{% for flash_message in app.session.flashbag.get('error') %}
+  <toast type="danger" message="{{ flash_message }}"></toast>
 {% endfor %}

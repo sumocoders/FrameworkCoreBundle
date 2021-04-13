@@ -1,5 +1,5 @@
 {% block breadcrumb %}
-  {% if breadcrumbs.count %}
+  {% if breadcrumbs is defined and breadcrumbs.count %}
     <ol class="breadcrumb" itemscope itemtype="https://schema.org/breadcrumb">
       <li class="breadcrumb-item breadcrumb-item-back">
         <a href="/" data-button-previous="back" class="breadcrumb-link-back">

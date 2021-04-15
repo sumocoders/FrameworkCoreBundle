@@ -48,9 +48,7 @@
 
       <section id="main" role="main">
         <div class="header-subbar">
-          <div class="toasts-wrapper" id="toast-wrapper">
-            {{ include('@SumoCodersFrameworkCore/notifications.html.twig') }}
-          </div>
+          {{ include('@SumoCodersFrameworkCore/notifications.html.twig') }}
           <div class="header-title-bar d-none d-md-flex justify-content-md-between align-items-md-center flex-column flex-md-row flex-wrap">
             <nav aria-label="breadcrumb" class="my-2">
               {{ block('breadcrumb', '@SumoCodersFrameworkCore/BreadCrumb/breadCrumb.html.twig') }}

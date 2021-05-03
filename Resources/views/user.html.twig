@@ -4,6 +4,13 @@
 
 <body class="user h-100">
 
+<div class="d-flex justify-content-end mt-3 mr-3">
+  <div class="custom-control custom-switch dark-mode-switch" data-theme-toggler-wrapper>
+    <input type="checkbox" class="custom-control-input" id="dark-mode" data-theme-toggler{% if theme.current == 'theme-dark' %} checked="checked"{% endif %}>
+    <label class="custom-control-label" for="dark-mode">{{ 'core.themes.dark'|trans|ucfirst }} {{ 'core.themes.themes'|trans }}</label>
+  </div>
+</div>
+
 <div class="container">
   <div class="row justify-content-center">
     <div class="col-md-7 col-lg-6 col-xl-4">

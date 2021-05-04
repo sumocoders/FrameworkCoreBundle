@@ -25,7 +25,8 @@
     "babdev/pagerfanta-bundle": "^2.0",
     "knplabs/knp-menu-bundle": "^3.0",
     "sensio/framework-extra-bundle": "^6.1",
-    "symfony/form": "^5.2"
+    "symfony/form": "^5.2",
+    "symfony/console": "^5.2"
   },
   "require-dev": {
     "roave/security-advisories": "dev-master",

@@ -15,7 +15,7 @@
           <li><a href="{{ path('profile') }}" class="dropdown-item">{{ 'account'|trans|ucfirst }}</a></li>
         {% endblock %}
         {% if is_granted('IS_IMPERSONATOR') %}
-          <li><a href="{{ path('index', {'_switch_user': '_exit'}) }}" class="dropdown-item">{{ 'user.actions.switchBack'|trans|ucfirst }}</a></li>
+          <li><a href="{{ path('user_overview', {'_switch_user': '_exit'}) }}" class="dropdown-item">{{ 'Switch back'|trans|ucfirst }}</a></li>
         {% endif %}
         <div class="dropdown-divider"></div>
         <li>

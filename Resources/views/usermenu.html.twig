@@ -2,7 +2,7 @@
   {% if app.user is not null %}
     <div class="user btn-group dropdown w-100 d-flex flex-column" data-dropdown-user-wrapper>
       <button class="btn btn-default dropdown-toggle d-flex align-items-center" data-toggle="dropdown" aria-expanded="false" data-dropdown-user-toggle>
-        {% if is_granted('ROLE_PREVIOUS_ADMIN') %}
+        {% if is_granted('IS_IMPERSONATOR') %}
           <i class="fas fa-exchange-alt mr-3"></i>
         {% else %}
           <i class="fas fa-user-circle mr-3"></i>
@@ -14,7 +14,7 @@
         {% block userNavigation %}
           <li><a href="{{ path('profile') }}" class="dropdown-item">{{ 'account'|trans|ucfirst }}</a></li>
         {% endblock %}
-        {% if is_granted('ROLE_PREVIOUS_ADMIN') %}
+        {% if is_granted('IS_IMPERSONATOR') %}
           <li><a href="{{ path('index', {'_switch_user': '_exit'}) }}" class="dropdown-item">{{ 'user.actions.switchBack'|trans|ucfirst }}</a></li>
         {% endif %}
         <div class="dropdown-divider"></div>

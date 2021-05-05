@@ -35,6 +35,17 @@ class BreadcrumbListener
     public function onKernelController(KernelEvent $event): void
     {
         $controller = $event->getController();
+
+        /*
+         * If a single controller action is defined using the __invoke
+         * magic method, we won't receive an array with the method name
+         * but only a single callable object. To ensure compatibility with
+         * the rest of the breadcrumb code, we wrap it in an array right here.
+         */
+        if (is_callable($controller)) {
+            $controller = [$controller, '__invoke'];
+        }
+
         if (!is_array($controller)) {
             return;
         }

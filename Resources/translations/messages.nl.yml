@@ -141,3 +141,4 @@ next: volgende
 user:
     actions:
         logout: afmelden
+        switchback: verlaat account

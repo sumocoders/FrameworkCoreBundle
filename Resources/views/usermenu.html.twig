@@ -7,7 +7,7 @@
         {% else %}
           <i class="fas fa-user-circle mr-3"></i>
         {% endif %}
-        <span>{{ app.user.originUsername }}</span>
+        <span>{{ app.user.username }}</span>
         <span class="fas fa-chevron-down fa-w-16"></span>
       </button>
       <ul class="dropdown-menu dropdown-menu-right dropdown-menu-user" role="menu" data-dropdown-user>
@@ -18,7 +18,6 @@
           <li><a href="{{ path('index', {'_switch_user': '_exit'}) }}" class="dropdown-item">{{ 'user.actions.switchBack'|trans|ucfirst }}</a></li>
         {% endif %}
         <div class="dropdown-divider"></div>
-
         <li>
           <div class="dropdown-item">
             <div class="custom-control custom-switch dark-mode-switch" data-theme-toggler-wrapper>
@@ -27,7 +26,6 @@
             </div>
           </div>
         </li>
-
         <div class="dropdown-divider"></div>
         <li><a href="{{ path('logout') }}" class="dropdown-item">{{ 'user.actions.logout'|trans|ucfirst }}</a></li>
       </ul>

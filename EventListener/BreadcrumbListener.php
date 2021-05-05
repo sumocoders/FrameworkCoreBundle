@@ -59,7 +59,18 @@ class BreadcrumbListener
 
     private function processAnnotations(KernelEvent $event, array $controller): void
     {
-        $class = new ReflectionClass($controller[0]);
+        try {
+            $class = new ReflectionClass($controller[0]);
+        } catch (\Exception $exception) {
+            /*
+             * Some controllers like the ProfilerController from the
+             * Symfony debug toolbar will trigger this kernel event
+             * but fail to construct a valid ReflectionClass.
+             * This try/catch skips those events.
+             */
+            return;
+        }
+
         if ($class->isAbstract()) {
             throw new InvalidArgumentException(sprintf('Annotations from class "%s" cannot be read as it is abstract.', $class));
         }

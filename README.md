@@ -1,23 +1,16 @@
 # SumoCoders FrameworkCoreBundle
+This bundle is created and maintained by [SumoCoders](https://github.com/sumocoders). It contains a set of basic tools that enable us to build an application in a shorter timespan. The bundle is intended to be used together with our [npm package](https://github.com/sumocoders/FrameworkStylePackage).
 
-The FrameworkCoreBundle will add some functionality which will enable you build
-application in a short timespan.
+## Installation
+```
+$ composer require sumocoders/framework-core-bundle
+```
 
 ## Documentation
-
-All documentation is located in the `Resources/doc/index.md`
-
-## License
-
-This bundle is under the MIT license. See the complete license in the bundle:
-
-    Resources/meta/LICENSE
-
-## About
-
-FrameworkCoreBundle is a bundle created by [SumoCoders](https://github.com/sumocoders)
-and is intended to be used with the Framework
+All documentation is located in the `docs/` subdirectory.
 
 ## Issues?
+Feel free to add an Issue on Github, or even better create a PR.
 
-Feel free to add an Issue on Github, or even better create a Pull Request.
+## License
+This software is published under the [MIT License](LICENSE.md)

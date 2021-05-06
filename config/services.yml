@@ -75,6 +75,7 @@ services:
       - "@twig"
       - "%mailer.template%"
       - "%mailer.css_path%"
+      - "%json_manifest_path%"
       - "%kernel.project_dir%/public"
     calls:
       - [setDefaultSender, ["%mailer.default_sender_email%", "%mailer.default_sender_name%"]]

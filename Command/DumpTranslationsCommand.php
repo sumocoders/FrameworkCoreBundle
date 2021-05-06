@@ -1,6 +1,6 @@
 <?php
 
-namespace Command;
+namespace SumoCoders\FrameworkCoreBundle\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;

@@ -42,7 +42,10 @@ class BreadcrumbListener
          * but only a single callable object. To ensure compatibility with
          * the rest of the breadcrumb code, we wrap it in an array right here.
          */
-        if (is_callable($controller)) {
+        if (!is_array($controller) &&
+            is_callable($controller) &&
+            method_exists($controller, '__invoke')
+        ) {
             $controller = [$controller, '__invoke'];
         }
 
@@ -59,17 +62,7 @@ class BreadcrumbListener
 
     private function processAnnotations(KernelEvent $event, array $controller): void
     {
-        try {
-            $class = new ReflectionClass($controller[0]);
-        } catch (\Exception $exception) {
-            /*
-             * Some controllers like the ProfilerController from the
-             * Symfony debug toolbar will trigger this kernel event
-             * but fail to construct a valid ReflectionClass.
-             * This try/catch skips those events.
-             */
-            return;
-        }
+        $class = new ReflectionClass($controller[0]);
 
         if ($class->isAbstract()) {
             throw new InvalidArgumentException(sprintf('Annotations from class "%s" cannot be read as it is abstract.', $class));

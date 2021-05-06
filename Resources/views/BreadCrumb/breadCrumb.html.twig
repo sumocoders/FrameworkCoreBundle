@@ -12,9 +12,9 @@
         {% set class = (loop.first ? 'first' : (loop.last ? 'last' : '')) %}
         <li class="breadcrumb-item {{ class }}" itemprop="itemListElement">
           {% if loop.last or breadcrumb.url is null %}
-            {{ breadcrumb.title|trans }}
+            {{ breadcrumb.title|trans|ucfirst }}
           {% else %}
-            <a href="{{ breadcrumb.url }}">{{ breadcrumb.title|trans }}</a>
+            <a href="{{ breadcrumb.url }}">{{ breadcrumb.title|trans|ucfirst }}</a>
           {% endif %}
         </li>
       {% endfor %}

@@ -35,6 +35,20 @@ class BreadcrumbListener
     public function onKernelController(KernelEvent $event): void
     {
         $controller = $event->getController();
+
+        /*
+         * If a single controller action is defined using the __invoke
+         * magic method, we won't receive an array with the method name
+         * but only a single callable object. To ensure compatibility with
+         * the rest of the breadcrumb code, we wrap it in an array right here.
+         */
+        if (!is_array($controller) &&
+            is_callable($controller) &&
+            method_exists($controller, '__invoke')
+        ) {
+            $controller = [$controller, '__invoke'];
+        }
+
         if (!is_array($controller)) {
             return;
         }
@@ -49,6 +63,7 @@ class BreadcrumbListener
     private function processAnnotations(KernelEvent $event, array $controller): void
     {
         $class = new ReflectionClass($controller[0]);
+
         if ($class->isAbstract()) {
             throw new InvalidArgumentException(sprintf('Annotations from class "%s" cannot be read as it is abstract.', $class));
         }

@@ -2,23 +2,19 @@
   {% if app.user is not null %}
     <div class="user btn-group dropdown w-100 d-flex flex-column" data-dropdown-user-wrapper>
       <button class="btn btn-default dropdown-toggle d-flex align-items-center" data-toggle="dropdown" aria-expanded="false" data-dropdown-user-toggle>
-        {% if is_granted('ROLE_PREVIOUS_ADMIN') %}
+        {% if is_granted('IS_IMPERSONATOR') %}
           <i class="fas fa-exchange-alt mr-3"></i>
         {% else %}
           <i class="fas fa-user-circle mr-3"></i>
         {% endif %}
-        <span>{{ app.user.originUsername }}</span>
+        <span>{{ app.user.username }}</span>
         <span class="fas fa-chevron-down fa-w-16"></span>
       </button>
       <ul class="dropdown-menu dropdown-menu-right dropdown-menu-user" role="menu" data-dropdown-user>
         {% block userNavigation %}
           <li><a href="{{ path('profile') }}" class="dropdown-item">{{ 'account'|trans|ucfirst }}</a></li>
         {% endblock %}
-        {% if is_granted('ROLE_PREVIOUS_ADMIN') %}
-          <li><a href="{{ path('index', {'_switch_user': '_exit'}) }}" class="dropdown-item">{{ 'user.actions.switchBack'|trans|ucfirst }}</a></li>
-        {% endif %}
         <div class="dropdown-divider"></div>
-
         <li>
           <div class="dropdown-item">
             <div class="custom-control custom-switch dark-mode-switch" data-theme-toggler-wrapper>
@@ -27,9 +23,12 @@
             </div>
           </div>
         </li>
-
         <div class="dropdown-divider"></div>
-        <li><a href="{{ path('logout') }}" class="dropdown-item">{{ 'user.actions.logout'|trans|ucfirst }}</a></li>
+          {% if is_granted('IS_IMPERSONATOR') %}
+              <li><a href="{{ path('user_overview', {'_switch_user': '_exit'}) }}" class="dropdown-item">{{ 'user.actions.switchback'|trans|ucfirst }}</a></li>
+          {% else %}
+              <li><a href="{{ path('logout') }}" class="dropdown-item">{{ 'user.actions.logout'|trans|ucfirst }}</a></li>
+          {% endif %}
       </ul>
     </div>
   {% endif %}

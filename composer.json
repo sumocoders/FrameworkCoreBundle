@@ -12,6 +12,10 @@
     {
       "name": "Bruno Vitorino",
       "email": "bruno@sumocoders.be"
+    },
+    {
+      "name": "Sander De la Marche",
+      "email": "sander@sumocoders.be"
     }
   ],
   "minimum-stability": "dev",
@@ -31,11 +35,12 @@
   "require-dev": {
     "roave/security-advisories": "dev-master",
     "symfony/phpunit-bridge": "^4.3",
-    "swiftmailer/swiftmailer": "^5",
-    "friendsoftwig/twigcs": "^5.0"
+    "friendsoftwig/twigcs": "^5.0",
+    "symfony/maker-bundle": "^1.31"
   },
   "autoload": {
-    "psr-0": { "SumoCoders\\FrameworkCoreBundle": "" }
-  },
-  "target-dir": "SumoCoders/FrameworkCoreBundle"
+    "psr-4": {
+      "SumoCoders\\FrameworkCoreBundle\\": "src/"
+    }
+  }
 }

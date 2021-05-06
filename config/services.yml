@@ -113,5 +113,5 @@ services:
       - { name: kernel.event_listener, event: kernel.controller, method: onKernelController, priority: -1 }
 
   SumoCoders\FrameworkCoreBundle\Command\:
-    resource: '../../Command/*'
+    resource: '../src/Command/*'
     tags: [ 'console.command' ]

@@ -42,5 +42,10 @@
     "psr-4": {
       "SumoCoders\\FrameworkCoreBundle\\": "src/"
     }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "SumoCoders\\FrameworkCoreBundle\\Tests\\": "tests/"
+    }
   }
 }

@@ -10,28 +10,11 @@
         <ini name="intl.default_locale" value="en"/>
         <ini name="intl.error_level" value="0"/>
         <ini name="memory_limit" value="-1"/>
-        <!-- the value is the FQCN of the application kernel -->
-        <env name="KERNEL_CLASS" value="AppKernel" />
     </php>
 
     <testsuites>
-        <testsuite name="FrameworkCoreBundle test suite">
-            <directory suffix="Test.php">./Tests</directory>
+        <testsuite name="Sumocoders FrameworkCoreBundle Test Suite">
+            <directory>tests/</directory>
         </testsuite>
     </testsuites>
-
-    <filter>
-        <whitelist>
-            <directory>./</directory>
-            <exclude>
-                <directory>./Resources</directory>
-                <directory>./Tests</directory>
-                <directory>./vendor</directory>
-            </exclude>
-        </whitelist>
-    </filter>
-
-    <logging>
-        <log type="coverage-clover" target="./coverage.xml"/>
-    </logging>
 </phpunit>

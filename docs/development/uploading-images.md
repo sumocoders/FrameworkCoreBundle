@@ -1,4 +1,4 @@
-`# Uploading images
+# Uploading images
 
 You can find a base value object that you can use to upload images.
 

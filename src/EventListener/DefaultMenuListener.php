@@ -45,44 +45,4 @@ class DefaultMenuListener
     {
         return $this->securityTokenStorage;
     }
-
-    /**
-     * @param MenuFactory $menuFactory
-     * @param string      $label
-     * @param int         $order
-     * @param array       $childs
-     * @return \Knp\Menu\MenuItem
-     */
-    public function createItemWithChilds(MenuFactory $menuFactory, $label, $order, array $childs)
-    {
-        $menuItem = $menuFactory->createItem(
-            $label,
-            [
-                'uri' => '#',
-                'label' => $label,
-            ]
-        );
-
-        $menuItem->setExtra('orderNumber', $order);
-
-        // add the childs
-        foreach ($childs as $key => $value) {
-            // if the value is a string we can expect this is a simple child
-            if (is_string($value)) {
-                $child = $menuFactory->createItem(
-                    $key,
-                    [
-                        'route' => $value,
-                        'label' => $key,
-                    ]
-                );
-            } else {
-                $child = $value;
-            }
-
-            $menuItem->addChild($child);
-        }
-
-        return $menuItem;
-    }
 }

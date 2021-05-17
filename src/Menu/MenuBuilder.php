@@ -23,11 +23,12 @@ class MenuBuilder
     public function createMainMenu(): ItemInterface
     {
         $menu = $this->factory->createItem('root');
+
         $menu->setChildrenAttribute('class', 'nav navbar-nav');
 
         $this->eventDispatcher->dispatch(
             new ConfigureMenuEvent(
-                $this->getFactory(),
+                $this->factory,
                 $menu
             ),
             ConfigureMenuEvent::EVENT_NAME

@@ -2,47 +2,29 @@
 
 namespace SumoCoders\FrameworkCoreBundle\EventListener;
 
-use Knp\Menu\MenuFactory;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Core\Security;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class DefaultMenuListener
 {
-    /**
-     * @var AuthorizationCheckerInterface
-     */
-    private $securityAuthorizationChecker;
+    private Security $security;
+    private TranslatorInterface $translator;
 
-    /**
-     * @var TokenStorageInterface
-     */
-    private $securityTokenStorage;
-
-    /**
-     * @param AuthorizationCheckerInterface $securityAuthorizationChecker
-     * @param TokenStorageInterface         $securityTokenStorage
-     */
     public function __construct(
-        AuthorizationCheckerInterface $securityAuthorizationChecker,
-        TokenStorageInterface $securityTokenStorage
+        Security $security,
+        TranslatorInterface $translator
     ) {
-        $this->securityAuthorizationChecker = $securityAuthorizationChecker;
-        $this->securityTokenStorage = $securityTokenStorage;
+        $this->security = $security;
+        $this->translator = $translator;
     }
 
-    /**
-     * @return AuthorizationCheckerInterface
-     */
-    public function getSecurityAuthorizationChecker()
+    public function getSecurity(): Security
     {
-        return $this->securityAuthorizationChecker;
+        return $this->security;
     }
 
-    /**
-     * @return TokenStorageInterface
-     */
-    public function getSecurityTokenStorage()
+    public function getTranslator(): TranslatorInterface
     {
-        return $this->securityTokenStorage;
+        return $this->translator;
     }
 }

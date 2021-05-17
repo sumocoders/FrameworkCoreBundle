@@ -75,6 +75,7 @@ services:
       - "@twig"
       - "%mailer.template%"
       - "%mailer.css_path%"
+      - "%json_manifest_path%"
       - "%kernel.project_dir%/public"
     calls:
       - [setDefaultSender, ["%mailer.default_sender_email%", "%mailer.default_sender_name%"]]
@@ -113,5 +114,5 @@ services:
       - { name: kernel.event_listener, event: kernel.controller, method: onKernelController, priority: -1 }
 
   SumoCoders\FrameworkCoreBundle\Command\:
-    resource: '../../Command/*'
+    resource: '../src/Command/*'
     tags: [ 'console.command' ]

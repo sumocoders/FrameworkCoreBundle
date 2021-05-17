@@ -9,52 +9,18 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class MenuBuilder
 {
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
+    private FactoryInterface $factory;
+    private EventDispatcherInterface $eventDispatcher;
 
-    /**
-     * @var FactoryInterface
-     */
-    private $factory;
-
-    /**
-     * @param EventDispatcherInterface $eventDispatcher
-     */
-    public function setEventDispatcher($eventDispatcher)
-    {
+    public function __construct(
+        FactoryInterface $factory,
+        EventDispatcherInterface $eventDispatcher
+    ) {
+        $this->factory = $factory;
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    /**
-     * @return EventDispatcherInterface
-     */
-    public function getEventDispatcher()
-    {
-        return $this->eventDispatcher;
-    }
-
-    /**
-     * @param FactoryInterface $factory
-     */
-    public function setFactory($factory)
-    {
-        $this->factory = $factory;
-    }
-
-    /**
-     * @return \Knp\Menu\FactoryInterface
-     */
-    public function getFactory()
-    {
-        return $this->factory;
-    }
-
-    /**
-     * @return ItemInterface
-     */
-    public function createMainMenu()
+    public function createMainMenu(): ItemInterface
     {
         $menu = $this->factory->createItem('root');
         $menu->setChildrenAttribute('class', 'nav navbar-nav');

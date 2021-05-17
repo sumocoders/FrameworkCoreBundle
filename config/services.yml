@@ -22,16 +22,9 @@ services:
 
   framework.menu_builder:
     class: SumoCoders\FrameworkCoreBundle\Menu\MenuBuilder
-    calls:
-      - [setFactory, ["@knp_menu.factory"]]
-      - [setEventDispatcher, ["@event_dispatcher"]]
-  framework.menu.main:
-    class: Kpn\Menu\MenuItem
-    factory: ["@framework.menu_builder", "createMainMenu"]
-    arguments:
-      - "@request_stack"
+    arguments: ["@knp_menu.factory", "@event_dispatcher"]
     tags:
-      - { name: knp_menu.menu, alias: side_menu }
+      - { name: knp_menu.menu_builder, method: createMainMenu, alias: side_menu }
 
   framework.date_type_extension:
     class: SumoCoders\FrameworkCoreBundle\Form\Extension\DateTypeExtension

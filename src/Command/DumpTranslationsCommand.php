@@ -29,7 +29,6 @@ class DumpTranslationsCommand extends Command
             'locale' => $locale,
             '--force' => true,
             '--output-format' => 'yaml',
-            '--clean' => true,
         ];
 
         $translationInput = new ArrayInput($arguments);

@@ -1,3 +1,0 @@
-parameters:
-  show_messages_for:
-    - Symfony\Component\HttpKernel\Exception\NotFoundHttpException

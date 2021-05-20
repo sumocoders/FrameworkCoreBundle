@@ -1,5 +1,0 @@
-sumo_coders_framework_core_tests:
-    resource: "@SumoCodersFrameworkCoreBundle/Controller/Tests"
-    type:     annotation
-    options: { i18n: false }
-

@@ -1,43 +1,47 @@
 # Sending mails
 
-Sending mails is a trivial part of an application, but is something that in 
-most cases costing a big amount of time.
+The framework provides a base template with proper CSS that you can use to quickly send good-looking emails to most email clients.
 
-We use the standard way of sending mails in Symfony, which uses SwiftMailer.
+Simply extend your email template from the `@SumoCodersFrameworkCore/Mail/base.html.twig` template and place your own content inside the `{%block content %}` block.
 
-In addition a `MessageFactory` has been added, which will enable you to create 
-messages that can be send with the `mailer`-service.
+The base template will place your content in a table-based layout, load and inline styles and return the end result.
 
-There a some public methods you can use:
-
-* `createHtmlMessage` which enables you to create an message that will contain HTML
-    If you don't provide a plainText alternative it will be generated from the provided HTML.
-    The content will be wrapped in the default template.
-    
-* `createPlainTextMessage`, which enables you to send just plain-text emails.
-
-There are some other public methods which are exposed and can help you:
-
-* `wrapInTemplate`, which will wrap the provided content in a nice looking mail-template.
+To send the mail, you can use the default Symfony package: `symfony/mailer`. See the example below. 
 
 ## Basic example
 
+template.html.twig
+```twig
+{% extends '@SumoCodersFrameworkCore/Mail/base.html.twig' %}
+
+{% block content %}
+    <p>Hello {{ customer_name }},</p>
+    
+    <p>Some hardcoded content</p>
+    
+    <p>{{ 'Some translated content'|trans }}</p>
+{% endblock %}
+```
+
 ```php
-// ...
-/** @var /SumoCoders\FrameworkCoreBundle\Mail\MessageFactory/MessageFactory $messageFactory */
-$messageFactory = $this->get('framework.message_factory');
+<?php
 
-// create a simple message
-$message = $messageFactory->createHtmlMessage(
-    'the subject',
-    '<p>foo bar</p>'
-);
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
 
-// set some extra properties, just like you would do with a normal \Swift_Message
-$message->setTo(
-    $this->getParameter('mailer.default_to_email')
-);
+public function __invoke(MailerInterface $mailer): void
+{
+    $email = (new TemplatedEmail())
+        ->from(Address::create('Your application <no-reply@your.app>'))
+        ->to(Address::create('John Doe <johndoe@gmail.com>'))
+        ->subject('Your subject')
+        ->htmlTemplate('template.html.twig')
+        ->context([
+            'customer_name' => 'John Doe'
+        ]);
 
-// send it
-$this->get('mailer')->send($message);
+    $mailer->send($email);
+}
+
 ```

@@ -63,18 +63,6 @@ services:
     tags:
       - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
 
-  SumoCoders\FrameworkCoreBundle\Mail\MessageFactory:
-    arguments:
-      - "@twig"
-      - "%mailer.template%"
-      - "%mailer.css_path%"
-      - "%json_manifest_path%"
-      - "%kernel.project_dir%/public"
-    calls:
-      - [setDefaultSender, ["%mailer.default_sender_email%", "%mailer.default_sender_name%"]]
-      - [setDefaultReplyTo, ["%mailer.default_reply_to_email%", "%mailer.default_reply_to_name%"]]
-      - [setDefaultTo, ["%mailer.default_to_email%", "%mailer.default_to_name%"]]
-
   sumocoders_form_type_date:
     class: SumoCoders\FrameworkCoreBundle\Form\Type\DateType
     tags:

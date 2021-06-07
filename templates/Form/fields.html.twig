@@ -45,7 +45,7 @@
       {% if prototype is defined %}
         data-prototype="{{ formMacros.renderCollectionItem(prototype, allow_delete, allow_drag_and_drop)|e('html_attr') }}"
       {% endif %}
-      class="card bg-light"
+      class="card card-collection"
     >
       <div class="card-body">
         {{ block('collection_rows') }}

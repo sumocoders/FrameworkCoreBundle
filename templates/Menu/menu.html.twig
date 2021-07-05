@@ -12,7 +12,7 @@
   <div
     class="nav-link-text">{{ item.label|trans(item.getExtra('translation_params', {}), item.getExtra('translation_domain', 'messages'))|ucfirst }}</div>
   {% if item.attributes.pill is defined and item.attributes.pill %}
-    <span class="badge badge-pill badge-white ml-2"><span class="badge-content">{{ item.attributes.pill }}</span></span>
+    <span class="badge badge-pill badge-white ms-2"><span class="badge-content">{{ item.attributes.pill }}</span></span>
   {% endif %}
 {% endblock %}
 

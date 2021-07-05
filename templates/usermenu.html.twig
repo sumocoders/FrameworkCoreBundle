@@ -3,9 +3,9 @@
     <div class="user btn-group dropdown w-100 d-flex flex-column" data-dropdown-user-wrapper>
       <button class="btn btn-default dropdown-toggle d-flex align-items-center" data-toggle="dropdown" aria-expanded="false" data-dropdown-user-toggle>
         {% if is_granted('IS_IMPERSONATOR') %}
-          <i class="fas fa-exchange-alt mr-3"></i>
+          <i class="fas fa-exchange-alt me-3"></i>
         {% else %}
-          <i class="fas fa-user-circle mr-3"></i>
+          <i class="fas fa-user-circle me-3"></i>
         {% endif %}
         <span>{{ app.user.username }}</span>
         <span class="fas fa-chevron-down fa-w-16"></span>

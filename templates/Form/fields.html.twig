@@ -1,22 +1,42 @@
 {% import _self as formMacros %}
 
-{% block form_label %}
-  {% if 'checkbox' not in block_prefixes or widget_checkbox_label in ['label', 'both'] %}
-    {% if label is not same as(false) %}
-      {% if label is empty %}
-        {% set label = toTranslation(id)|trans({}, translation_domain)|ucfirst %}
-      {% else %}
-        {% set label = label|trans({}, translation_domain)|ucfirst %}
-      {% endif %}
-      {% if not compound %}
-        {% set label_attr = label_attr|merge({'for': id}) %}
-      {% endif %}
-      {% set label_attr_class = '' %}
-      {% set label_attr = label_attr|merge({'class': label_attr.class|default('') ~ " " ~ label_attr_class ~ (required ? ' required' : ' optional')}) %}
-      <label {% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>{{ label|trans|ucfirst }}&#32;{{- block('label_asterisk') }}</label>
+{%- block form_label -%}
+  {% if label is not same as(false) -%}
+    {%- set parent_label_class = parent_label_class|default(label_attr.class|default('')) -%}
+    {% if label is empty %}
+      {% set label = toTranslation(id)|trans({}, translation_domain)|ucfirst %}
+    {% else %}
+      {% set label = label|trans({}, translation_domain)|ucfirst %}
     {% endif %}
-  {% endif %}
-{% endblock form_label %}
+    {%- if compound is defined and compound -%}
+      {%- set element = 'legend' -%}
+      {%- if 'col-form-label' not in parent_label_class -%}
+        {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' col-form-label' )|trim}) -%}
+      {%- endif -%}
+    {%- else -%}
+      {%- set row_class = row_class|default(row_attr.class|default('')) -%}
+      {%- set label_attr = label_attr|merge({for: id}) -%}
+      {%- if 'col-form-label' not in parent_label_class -%}
+        {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ('input-group' in row_class ? ' input-group-text' : ' form-label') )|trim}) -%}
+      {%- endif -%}
+    {%- endif -%}
+  {%- endif -%}
+  <{{ element|default('label') }}{% if label_attr %}{% with { attr: label_attr } %}{{ block('attributes') }}{% endwith %}{% endif %}>
+  {%- if translation_domain is same as(false) -%}
+    {%- if label_html is same as(false) -%}
+      {{- label -}}
+    {%- else -%}
+      {{- label|raw -}}
+    {%- endif -%}
+  {%- else -%}
+    {%- if label_html is same as(false) -%}
+      {{- label|trans(label_translation_parameters, translation_domain)|ucfirst -}}&#32;{{- block('label_asterisk') }}
+    {%- else -%}
+      {{- label|trans(label_translation_parameters, translation_domain)|raw|ucfirst -}}&#32;{{- block('label_asterisk') }}
+    {%- endif -%}
+  {%- endif -%}
+  </{{ element|default('label') }}>
+{%- endblock form_label %}
 
 {%- block label_asterisk -%}
   {% apply spaceless %}
@@ -25,6 +45,28 @@
     {% endif %}
   {% endapply %}
 {%- endblock label_asterisk -%}
+
+{%- block form_row -%}
+  {%- if compound is defined and compound -%}
+    {%- set element = 'fieldset' -%}
+  {%- endif -%}
+  {%- set widget_attr = {} -%}
+  {%- if help is not empty -%}
+    {%- set widget_attr = {attr: {'aria-describedby': id ~"_help"}} -%}
+  {%- endif -%}
+  {%- set row_class = row_class|default(row_attr.class|default('form-group')|trim) -%}
+  <{{ element|default('div') }}{% with {attr: row_attr|merge({class: row_class})} %}{{ block('attributes') }}{% endwith %}>
+  {%- if 'form-floating' in row_class -%}
+    {{- form_widget(form, widget_attr) -}}
+    {{- form_label(form) -}}
+  {%- else -%}
+    {{- form_label(form) -}}
+    {{- form_widget(form, widget_attr) -}}
+  {%- endif -%}
+  {{- form_help(form) -}}
+  {{- form_errors(form) -}}
+  </{{ element|default('div') }}>
+{%- endblock form_row %}
 
 {% block collection_widget %}
   {% import _self as formMacros %}
@@ -98,47 +140,6 @@
     </div>
   </li>
 {% endmacro %}
-
-{%- block form_errors -%}
-  {% if form.parent is null %}
-    {% if not form.vars.valid %}
-      <div class="alert alert-danger" role="alert">
-        {{ 'forms.message.hasErrors'|trans|ucfirst }}:
-        <ul class="error-list">
-          {% for error in form.vars.errors %}
-            {{ error.message|nl2br }}
-          {% endfor %}
-
-          {% for child in form.children %}
-            {% set label = child.vars.label %}
-            {% if label is not same as(false) %}
-              {% if label is empty %}
-                {% set label = toTranslation(child.vars.id)|trans({}, child.vars.translation_domain)|ucfirst %}
-              {% else %}
-                {% set label = label|trans({}, child.vars.translation_domain)|ucfirst %}
-              {% endif %}
-            {% endif %}
-            {% if child.vars.valid is defined and child.vars.valid == false %}
-              {% for error in child.vars.errors %}
-                <li class="error-list-item">
-                  <a href="#{{ child.vars.id }}">
-                    {% if label is not same as(false) %}{{ label|trans|ucfirst }}: {% endif %}{{ error.message }}
-                  </a>
-                </li>
-              {% endfor %}
-            {% endif %}
-          {% endfor %}
-        </ul>
-      </div>
-    {% endif %}
-  {% else %}
-    {% if errors|length > 0 -%}
-      {%- for error in errors -%}
-        <div class="invalid-feedback">{{ error.message }}</div>
-      {%- endfor -%}
-    {%- endif %}
-  {% endif %}
-{%- endblock form_errors -%}
 
 {% block image_widget %}
   {% apply spaceless %}
@@ -328,9 +329,7 @@
         {% endif %}
       {% endapply %}
     {% endif %}
-    {% if helper_text %}
-      {{ block('helper_text') }}
-    {% endif %}
+    {{- form_help(form) -}}
   {% endapply %}
 {% endblock time_widget %}
 
@@ -396,33 +395,9 @@
         </div>
       </div>
     {% endif %}
-    {% if helper_text %}
-      {{ block('helper_text') }}
-    {% endif %}
+    {{- form_help(form) -}}
   {% endapply %}
 {% endblock datetime_widget %}
-
-{% block helper_text -%}
-  <small class="form-text text-muted">
-    {{ helper_text }}
-  </small>
-{%- endblock %}
-
-{% block form_row -%}
-  {%- if compound is defined and compound -%}
-    {%- set element = 'fieldset' -%}
-  {%- endif -%}
-  {%- set widget_attr = {} -%}
-  {%- if help is not empty -%}
-    {%- set widget_attr = {attr: {'aria-describedby': id ~ "_help"}} -%}
-  {%- endif -%}
-  <{{ element|default('div') }} class="form-group">
-  {{- form_label(form) -}}
-  {{- form_widget(form, widget_attr) -}}
-  {{- form_errors(form) -}}
-  {{- form_help(form) -}}
-  </{{ element|default('div') }}>
-{%- endblock form_row %}
 
 {% block select_2_errors %}
   {% if errors|length > 0 -%}

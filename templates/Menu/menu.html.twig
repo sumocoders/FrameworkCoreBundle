@@ -18,7 +18,7 @@
 
 {% block item %}
   {% if item.parent.name == 'root' and item.hasChildren %}
-    {% set item = item.setLinkAttributes({'class': 'nav-link d-flex align-items-center dropdown-toggle', 'data-toggle': 'dropdown', 'role': 'button', 'aria-expended': false}) %}
+    {% set item = item.setLinkAttributes({'class': 'nav-link d-flex align-items-center dropdown-toggle', 'data-bs-toggle': 'dropdown', 'role': 'button', 'aria-expended': false}) %}
     {% set item = item.setAttributes({'class': 'dropdown nav-item', 'icon': item.attribute('icon'), 'pill': item.attribute('pill')}) %}
     {% set item = item.setChildrenAttributes({'class': 'dropdown-menu', 'role': 'menu'}) %}
   {% elseif item.parent.name == 'root' and not item.hasChildren %}

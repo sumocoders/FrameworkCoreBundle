@@ -1,7 +1,7 @@
 <div class="user-nav d-flex h-100">
   {% if app.user is not null %}
     <div class="user btn-group dropdown w-100 d-flex flex-column" data-dropdown-user-wrapper>
-      <button class="btn btn-default dropdown-toggle d-flex align-items-center" data-toggle="dropdown" aria-expanded="false" data-dropdown-user-toggle>
+      <button class="btn btn-default dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown" aria-expanded="false" data-dropdown-user-toggle>
         {% if is_granted('IS_IMPERSONATOR') %}
           <i class="fas fa-exchange-alt me-3"></i>
         {% else %}

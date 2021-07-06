@@ -27,7 +27,7 @@ final class DateTimeTypeExtension extends AbstractTypeExtension
     {
         $resolver->setDefaults(
             [
-                'format' => 'dd/MM/yyyy HH:mm:ss',
+                'format' => 'dd/MM/yyyy HH:mm',
                 'datetimepicker' => true,
                 'maximum_date' => null,
                 'minimum_date' => null,

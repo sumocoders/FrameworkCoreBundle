@@ -22,13 +22,13 @@
             {% endblock %}
             <div class="d-md-none">
               {% if block('header_navigation') is defined and block('header_navigation') is not empty %}
-                <button type="button" class="navbar-toggler h-100 collapse-actions-toggle"  data-toggle="collapse" data-target="#action-buttons-collapse" aria-expanded="false" aria-controls="action-buttons-collapse">
+                <button type="button" class="navbar-toggler h-100 collapse-actions-toggle"  data-bs-toggle="collapse" data-bs-target="#action-buttons-collapse" aria-expanded="false" aria-controls="action-buttons-collapse">
                   <i class="fas fa-ellipsis-v"></i>
                 </button>
               {% endif %}
             </div>
           </div>
-          <div class="d-none d-md-block ml-auto">
+          <div class="d-none d-md-block ms-auto">
             {% include '@SumoCodersFrameworkCore/usermenu.html.twig' with {'mobile': false} %}
           </div>
         </div>
@@ -53,7 +53,7 @@
             <nav aria-label="breadcrumb" class="my-2">
               {{ block('breadcrumb', '@SumoCodersFrameworkCore/BreadCrumb/breadCrumb.html.twig') }}
             </nav>
-            <div class="ml-md-auto">
+            <div class="ms-md-auto">
               {% if block('header_navigation') is defined and block('header_navigation') is not empty %}
                 <div class="action-buttons">
                   {{ block('header_navigation') }}
@@ -73,7 +73,7 @@
     </div>
     <footer class="footer">
       {% block footer %}
-        <a href="#main-wrapper" class="back-to-top d-none" data-role="back-to-top"><i class="fas fa-chevron-up mr-3"></i> {{ 'core.interface.backToTop'|trans|ucfirst }}</a>
+        <a href="#main-wrapper" class="back-to-top d-none" data-role="back-to-top"><i class="fas fa-chevron-up me-3"></i> {{ 'core.interface.backToTop'|trans|ucfirst }}</a>
       {% endblock %}
     </footer>
   </div>

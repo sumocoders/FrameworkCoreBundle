@@ -11,7 +11,7 @@
         <span class="fas fa-chevron-down fa-w-16"></span>
       </button>
       <ul class="dropdown-menu dropdown-menu-right dropdown-menu-user" role="menu" data-dropdown-user>
-        {% block userNavigation %}
+        {% block user_navigation %}
           <li><a href="{{ path('profile') }}" class="dropdown-item">{{ 'account'|trans|ucfirst }}</a></li>
         {% endblock %}
         <div class="dropdown-divider"></div>

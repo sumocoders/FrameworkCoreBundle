@@ -35,6 +35,7 @@
       {% set attr = attr|merge({'data-prototype-label': prototype.vars.label}) %}
     {% endif %}
 
+    {% set attr = attr|merge({'data-allow-drag-and-drop': allow_drag_and_drop ? 1 : 0}) %}
     {% set attr = attr|merge({'data-allow-add': allow_add ? 1 : 0}) %}
     {% set attr = attr|merge({'data-allow-remove': allow_delete ? 1 : 0}) %}
     {% set attr = attr|merge({'data-name-prefix': full_name}) %}
@@ -45,7 +46,7 @@
       {% if prototype is defined %}
         data-prototype="{{ formMacros.renderCollectionItem(prototype, allow_delete, allow_drag_and_drop)|e('html_attr') }}"
       {% endif %}
-      class="card bg-light"
+      class="card card-collection{% if allow_drag_and_drop is defined and allow_drag_and_drop %} card-collection-drag{% endif %}"
     >
       <div class="card-body">
         {{ block('collection_rows') }}
@@ -68,34 +69,31 @@
     </ul>
 
     {% if allow_add %}
-      <div class="d-flex justify-content-end">
-        <button type="button" class="btn btn-outline-success btn-sm" data-role="collection-add-button">
-          <i class="fas fa-plus"></i> {{ 'forms.buttons.addItem'|trans|ucfirst }}
-        </button>
-      </div>
+      <button type="button" class="btn btn-success btn-sm" data-role="collection-add-button">
+        <i class="fas fa-plus"></i> {{ 'forms.buttons.addItem'|trans|ucfirst }}
+      </button>
     {% endif %}
   {% endapply %}
 {% endblock collection_rows %}
 
 {% macro renderCollectionItem(item, allow_delete, allow_drag_and_drop) %}
   <li>
-    <div class="card mb-3 ml-4 pl-4 collection-item" data-role="collection-item">
+    <div class="card card-collection-item collection-item" data-role="collection-item">
       <div class="card-body">
-        {% if allow_delete is defined and allow_delete %}
-          <div class="d-flex justify-content-end">
-            <button type="button" class="btn btn-outline-danger btn-sm"
-                    data-role="collection-remove-button" title="{{ 'forms.buttons.removeItem'|trans|ucfirst }}">
-              <i class="fas fa-trash"></i> <span class="sr-only">{{ 'forms.buttons.removeItem'|trans|ucfirst }}</span>
-            </button>
-          </div>
-        {% endif %}
         {% if allow_drag_and_drop is defined and allow_drag_and_drop %}
-          <i class="fas fa-bars btn btn-default collection-item-drag-and-drop"
+          <span class="btn btn-secondary collection-item-drag-and-drop"
              title="{{ 'forms.buttons.changeOrder'|trans|ucfirst }}"
              data-role="collection-item-change-order"
-          ></i>
+          >
+            <i class="fas fa-ellipsis-v"></i>
+          </span>
         {% endif %}
         {{ form_row(item) }}
+        {% if allow_delete is defined and allow_delete %}
+          <button type="button" class="btn btn-danger collection-item-delete" data-role="collection-remove-button" title="{{ 'forms.buttons.removeItem'|trans|ucfirst }}">
+            <i class="fas fa-trash"></i> <span class="sr-only">{{ 'forms.buttons.removeItem'|trans|ucfirst }}</span>
+          </button>
+        {% endif %}
       </div>
     </div>
   </li>

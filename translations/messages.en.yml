@@ -5,7 +5,7 @@ core:
         collapse: collapse
 
     themes:
-        themes: themes
+        themes: mode
         dark: dark
         light: light
 

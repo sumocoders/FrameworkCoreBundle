@@ -1,0 +1,13 @@
+{% extends '@SumoCodersFrameworkCore/empty.html.twig' %}
+
+{% block main %}
+    <div class="wrapper">
+        <div class="header" role="alert">
+            {% block body %}
+                <h1>{{ status_code }}: {{ status_text }}</h1>
+            {% endblock %}
+        </div>
+        <a href="/" class="button"><span class="icon"></span>Home</a>
+        <div id="illustration"></div>
+    </div>
+{% endblock %}

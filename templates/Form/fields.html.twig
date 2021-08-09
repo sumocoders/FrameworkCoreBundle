@@ -200,64 +200,61 @@
   </{{ element|default('div') }}>
 {%- endblock date_row %}
 
-{% block date_widget %}
+{% block date_widget -%}
   {% apply spaceless %}
-    {% if widget == 'single_text' %}
-      {% if datepicker %}
-        {%- if not valid -%}
-          {% set attr = attr|merge({class: (attr.class|default('') ~ ' is-invalid')|trim}) -%}
-        {%- endif -%}
-        {%- if help is not empty -%}
-          {%- set widget_attr = {attr: {'aria-describedby': id ~ "_help"}} -%}
-        {%- endif -%}
+    {%- if widget == 'single_text' -%}
+      {% set attr = attr|merge({'data-role': 'date-picker'}) -%}
+      {%- if not valid -%}{% set attr = attr|merge({class: (attr.class|default('') ~ ' is-invalid')|trim}) -%}{%- endif -%}
+      {%- if help is not empty -%}{%- set widget_attr = {attr: {'aria-describedby': id ~ "_help"}} -%}{%- endif -%}
+      {# Its hardcoded for the symfony format because the patterns don't match #}
+      {% if format is defined and format == 'dd/MM/yyyy' %}{% set attr = attr|merge({'data-date-format': 'd/m/Y'}) -%}{% endif %}
+      {# The format needs to be defined before any min or max date #}
+      {% if minimum_date %}{% set attr = attr|merge({'data-min-date': minimum_date}) -%}{% endif %}
+      {% if maximum_date %}{% set attr = attr|merge({'data-max-date': maximum_date}) -%}{% endif %}
+      {% if read_only is defined and read_only %}{% set attr = attr|merge({'readonly': 'readonly'}) -%}{% endif %}
+      {% if disabled %}{% set attr = attr|merge({'disabled': 'disabled'}) -%}{% endif %}
+      {% if required %}{% set attr = attr|merge({'required': 'required'}) -%}{% endif %}
 
-        <div class="input-group date" id="{{ form.vars.id }}" data-target-input="nearest" data-role="date-picker">
-          <input
-            type="text"
-            class="form-control {{ attr.class|default('')|join(' ') }} datetimepicker-input"
-            data-target="#{{ form.vars.id }}"
-            data-toggle="datetimepicker"
-            value="{{ value }}"
-            {% if minimum_date %}data-min-date="{{ minimum_date }}"{% endif %}
-            {% if maximum_date %}data-max-date="{{ maximum_date }}"{% endif %}
-            {{ block('widget_attributes') }}
-            {% if read_only is defined and read_only %} readonly="readonly"{% endif %}
-            {% if disabled %} disabled="disabled"{% endif %}
-            {% if required %} required="required"{% endif %}
-          >
-          <div class="input-group-append" data-target="#{{ form.vars.id }}" data-toggle="datetimepicker">
-            <div class="input-group-text">
-              <i class="fas fa-calendar"></i>
-            </div>
+      <div class="input-group">
+        {{- block('form_widget_simple') -}}
+        <div class="input-group-append">
+          <div class="input-group-text">
+            <i class="fas fa-calendar"></i>
           </div>
-          {{- form_errors(form) -}}
         </div>
-        {{- form_help(form) -}}
-      {% else %}
-        {{ block('form_widget_simple') }}
-      {% endif %}
+      </div>
+
+      {{- form_errors(form) -}}
+      {{- form_help(form) -}}
     {% else %}
       {% if dont_render_row is not defined or not dont_render_row %}
-        <div class="row date-widget">
+        <div class="row align-items-center">
       {% endif %}
-      {% set attr = attr|merge({'class': attr.class|default('inline')}) %}
-      {% set year_widget = form_widget(form.year, {'attr': {'class': attr.widget_class|default('') ~ 'year',}, 'horizontal_input_wrapper_class': horizontal_input_wrapper_class|default('col-sm-3')}) %}
-      {% set month_widget = form_widget(form.month, {'attr': {'class': attr.widget_class|default('') ~ 'month'}, 'horizontal_input_wrapper_class': horizontal_input_wrapper_class|default('col-sm-3')}) %}
-      {% set day_widget = form_widget(form.day, {'attr': {'class': attr.widget_class|default('') ~ 'day'}, 'horizontal_input_wrapper_class': horizontal_input_wrapper_class|default('col-sm-3')}) %}
-      <div class="col-md-2">{{ day_widget|raw }}</div>
-      <span class="pull-left date-separator">{{ divider }}</span>
-      <div class="col-md-2">{{ month_widget|raw }}</div>
-      <span class="pull-left date-separator">{{ divider }}</span>
-      <div class="col-md-2">{{ year_widget|raw }}</div>
+
+      <div class="col-md-3">
+        {%- if label is not same as(false) -%}{{ form_label(form.day, null, { 'label_attr': {'class': 'sr-only'} }) }}{%- endif -%}
+        {{ form_widget(form.day) }}
+      </div>
+      <span>{{ divider }}</span>
+      <div class="col-md-3">
+        {%- if label is not same as(false) -%}{{ form_label(form.month, null, { 'label_attr': {'class': 'sr-only'} }) }}{%- endif -%}
+        {{ form_widget(form.month) }}
+      </div>
+      <span>{{ divider }}</span>
+      <div class="col-md-3">
+        {%- if label is not same as(false) -%}{{ form_label(form.year, null, { 'label_attr': {'class': 'sr-only'} }) }}{%- endif -%}
+        {{ form_widget(form.year) }}
+      </div>
+
       {% if dont_render_row is not defined or not dont_render_row %}
         </div>
       {% endif %}
-    {% endif %}
+    {%- endif -%}
     {% if helper_text %}
       {{ block('helper_text') }}
     {% endif %}
   {% endapply %}
-{% endblock date_widget %}
+{%- endblock date_widget %}
 
 {% block time_row -%}
   {%- if compound is defined and compound -%}
@@ -273,66 +270,59 @@
   </{{ element|default('div') }}>
 {%- endblock time_row %}
 
-{% block time_widget %}
+{% block time_widget -%}
   {% apply spaceless %}
     {% if widget == 'single_text' %}
-      {% if timepicker is defined %}
-        {%- if not valid -%}
-          {% set attr = attr|merge({class: (attr.class|default('') ~ ' is-invalid')|trim}) -%}
-        {%- endif -%}
-        {%- if help is not empty -%}
-          {%- set widget_attr = {attr: {'aria-describedby': id ~ "_help"}} -%}
-        {%- endif -%}
-        <div class="input-group date" id="{{ form.vars.id }}" data-target-input="nearest" data-role="time-picker">
-          <input
-            type="text"
-            class="form-control {{ attr.class|default('')|join(' ') }} datetimepicker-input"
-            data-target="#{{ form.vars.id }}"
-            data-toggle="datetimepicker"
-            value="{{ value }}"
-            {{ block('widget_attributes') }}
-            {% if read_only is defined and read_only %} readonly="readonly"{% endif %}
-            {% if disabled %} disabled="disabled"{% endif %}
-            {% if required %} required="required"{% endif %}
-          >
-          <div class="input-group-append" data-target="#{{ form.vars.id }}" data-toggle="datetimepicker">
-            <div class="input-group-text">
-              <i class="fas fa-clock"></i>
-            </div>
+      {% set attr = attr|merge({'data-role': 'time-picker'}) -%}
+      {% set attr = attr|merge({'data-time_24hr': 'true'}) -%}
+      {%- if not valid -%}{% set attr = attr|merge({class: (attr.class|default('') ~ ' is-invalid')|trim}) -%}{%- endif -%}
+      {%- if help is not empty -%}{%- set widget_attr = {attr: {'aria-describedby': id ~ "_help"}} -%}{%- endif -%}
+      {# Its hardcoded for the symfony format because the patterns don't match #}
+      {% if format is defined and format == 'HH:mm' %}{% set attr = attr|merge({'data-date-format': 'H:i'}) -%}{% endif %}
+      {% if read_only is defined and read_only %}{% set attr = attr|merge({'readonly': 'readonly'}) -%}{% endif %}
+      {% if disabled %}{% set attr = attr|merge({'disabled': 'disabled'}) -%}{% endif %}
+      {% if required %}{% set attr = attr|merge({'required': 'required'}) -%}{% endif %}
+
+      <div class="input-group">
+        {{- block('form_widget_simple') -}}
+        <div class="input-group-append">
+          <div class="input-group-text">
+            <i class="fas fa-clock"></i>
           </div>
-          {{- form_errors(form) -}}
         </div>
-        {{- form_help(form) -}}
-      {% else %}
-        {{ block('form_widget_simple') }}
-      {% endif %}
+      </div>
+
+      {{- form_errors(form) -}}
+      {{- form_help(form) -}}
     {% else %}
-      {% set attr = attr|merge({'class': attr.class|default('')}) %}
-      {% apply spaceless %}
-        {% if dont_render_row is not defined or not dont_render_row %}
-          <div class="row time-widget">
-        {% endif %}
-        <div class="col-md-2">
-          {{ form_widget(form.hour, {'attr': {'size': '1'}, 'horizontal_input_wrapper_class': horizontal_input_wrapper_class|default('col-sm-2')}) }}
+      {% if dont_render_row is not defined or not dont_render_row %}
+        <div class="row align-items-center">
+      {% endif %}
+
+      <div class="col-md-3">
+        {%- if label is not same as(false) -%}{{ form_label(form.hour, null, { 'label_attr': {'class': 'sr-only'} }) }}{%- endif -%}
+        {{ form_widget(form.hour) }}
+      </div>
+      <span>{{ divider }}</span>
+      <div class="col-md-3">
+        {%- if label is not same as(false) -%}{{ form_label(form.minute, null, { 'label_attr': {'class': 'sr-only'} }) }}{%- endif -%}
+        {{ form_widget(form.minute) }}
+      </div>
+      {% if with_seconds %}
+        <span>{{ divider }}</span>
+        <div class="col-md-3">
+          {%- if label is not same as(false) -%}{{ form_label(form.second, null, { 'label_attr': {'class': 'sr-only'} }) }}{%- endif -%}
+          {{ form_widget(form.second) }}
         </div>
-        <span class='pull-left date-separator'>:</span>
-        <div class="col-md-2">
-          {{ form_widget(form.minute, {'attr': {'size': '1'}, 'horizontal_input_wrapper_class': horizontal_input_wrapper_class|default('col-sm-2')}) }}
+      {% endif %}
+
+      {% if dont_render_row is not defined or not dont_render_row %}
         </div>
-        {% if with_seconds %}
-          <span class='pull-left date-separator'>:</span>
-          <div class="col-md-2">
-            {{ form_widget(form.second, {'attr': {'size': '1'}, 'horizontal_input_wrapper_class': horizontal_input_wrapper_class|default('col-sm-2')}) }}
-          </div>
-        {% endif %}
-        {% if dont_render_row is not defined or not dont_render_row %}
-          </div>
-        {% endif %}
-      {% endapply %}
+      {% endif %}
     {% endif %}
     {{- form_help(form) -}}
   {% endapply %}
-{% endblock time_widget %}
+{%- endblock time_widget %}
 
 {% block datetime_row -%}
   {%- if compound is defined and compound -%}
@@ -348,57 +338,55 @@
   </{{ element|default('div') }}>
 {%- endblock datetime_row %}
 
-{% block datetime_widget %}
+{% block datetime_widget -%}
   {% apply spaceless %}
     {% if widget == 'single_text' %}
-      {% if datetimepicker is defined %}
-        {%- if not valid -%}
-          {% set attr = attr|merge({class: (attr.class|default('') ~ ' is-invalid')|trim}) -%}
-        {%- endif -%}
-        {%- if help is not empty -%}
-          {%- set widget_attr = {attr: {'aria-describedby': id ~ "_help"}} -%}
-        {%- endif -%}
-        <div class="input-group date" id="{{ form.vars.id }}" data-target-input="nearest" data-role="date-time-picker">
-          <input
-            type="text"
-            class="form-control {{ attr.class|default('')|join(' ') }} datetimepicker-input"
-            data-target="#{{ form.vars.id }}"
-            data-toggle="datetimepicker"
-            value="{{ value }}"
-            {% if minimum_date %}data-min-date="{{ minimum_date }}"{% endif %}
-            {% if maximum_date %}data-max-date="{{ maximum_date }}"{% endif %}
-            {{ block('widget_attributes') }}
-            {% if read_only is defined and read_only %} readonly="readonly"{% endif %}
-            {% if disabled %} disabled="disabled"{% endif %}
-            {% if required %} required="required"{% endif %}
-          >
-          <div class="input-group-append" data-target="#{{ form.vars.id }}" data-toggle="datetimepicker">
-            <div class="input-group-text">
-              <i class="fas fa-calendar"></i>
-            </div>
+      {% set attr = attr|merge({'data-role': 'date-time-picker'}) -%}
+      {% set attr = attr|merge({'data-time_24hr': 'true'}) -%}
+      {%- if not valid -%}{% set attr = attr|merge({class: (attr.class|default('') ~ ' is-invalid')|trim}) -%}{%- endif -%}
+      {%- if help is not empty -%}{%- set widget_attr = {attr: {'aria-describedby': id ~ "_help"}} -%}{%- endif -%}
+      {# Its hardcoded for the symfony format because the patterns don't match #}
+      {% if format is defined and format == 'dd/MM/yyyy HH:mm' %}{% set attr = attr|merge({'data-date-format': 'd/m/Y H:i'}) -%}{% endif %}
+      {# The format needs to be defined before any min or max date #}
+      {% if minimum_date %}{% set attr = attr|merge({'data-min-date': minimum_date}) -%}{% endif %}
+      {% if maximum_date %}{% set attr = attr|merge({'data-max-date': maximum_date}) -%}{% endif %}
+      {% if read_only is defined and read_only %}{% set attr = attr|merge({'readonly': 'readonly'}) -%}{% endif %}
+      {% if disabled %}{% set attr = attr|merge({'disabled': 'disabled'}) -%}{% endif %}
+      {% if required %}{% set attr = attr|merge({'required': 'required'}) -%}{% endif %}
+
+      <div class="input-group">
+        {{- block('form_widget_simple') -}}
+        <div class="input-group-append">
+          <div class="input-group-text">
+            <i class="fas fa-calendar"></i>
           </div>
-          {{- form_errors(form) -}}
-        </div>
-        {{- form_help(form) -}}
-      {% else %}
-        {{ block('form_widget_simple') }}
-      {% endif %}
-    {% else %}
-      {% set attr = attr|merge({'class': attr.class|default('row datetime-widget')}) %}
-      <div {{ block('widget_container_attributes') }}>
-        {{ form_errors(form.date) }}
-        {{ form_errors(form.time) }}
-        <div class="col">
-          {{ form_widget(form.date, {'dont_render_row': true, 'attr': {'class': attr.widget_class|default('')}, 'horizontal_input_wrapper_class': horizontal_input_wrapper_class|default('col-sm-3')}) }}
-        </div>
-        <div class="col">
-          {{ form_widget(form.time, {'dont_render_row': true, 'attr': {'class': attr.widget_class|default('')}, 'horizontal_input_wrapper_class': horizontal_input_wrapper_class|default('col-sm-2')}) }}
         </div>
       </div>
+
+      {{- form_errors(form) -}}
+      {{- form_help(form) -}}
+    {% else %}
+      {% if dont_render_row is not defined or not dont_render_row %}
+        <div class="row align-items-center">
+      {% endif %}
+
+      <div class="col-md-3">
+        {%- if label is not same as(false) -%}{{ form_label(form.date, null, { 'label_attr': {'class': 'sr-only'} }) }}{%- endif -%}
+        {{ form_widget(form.date) }}
+      </div>
+      <span>{{ divider }}</span>
+      <div class="col-md-3">
+        {%- if label is not same as(false) -%}{{ form_label(form.time, null, { 'label_attr': {'class': 'sr-only'} }) }}{%- endif -%}
+        {{ form_widget(form.time) }}
+      </div>
+
+      {% if dont_render_row is not defined or not dont_render_row %}
+        </div>
+      {% endif %}
     {% endif %}
     {{- form_help(form) -}}
   {% endapply %}
-{% endblock datetime_widget %}
+{%- endblock datetime_widget %}
 
 {% block select_2_errors %}
   {% if errors|length > 0 -%}

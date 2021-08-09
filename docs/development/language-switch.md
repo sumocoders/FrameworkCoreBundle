@@ -6,7 +6,7 @@ You can add a language switch to navigation.html.twig by using the following sni
 <div class="navbar-header d-md-none d-flex align-items-center">
   <div class="dropdown btn-group d-flex flex-column mr-3">
     <a class="dropdown-toggle d-flex align-items-center" href="#" id="dropdown-language" role="button"
-      data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
       {{ app.request.locale|upper }}
       <span class="fas fa-chevron-down fa-w-16"></span>
     </a>
@@ -18,7 +18,7 @@ You can add a language switch to navigation.html.twig by using the following sni
       {% endfor %}
     </ul>
   </div>
-  <button class="navbar-toggler navbar-toggler-right ml-auto collapsed" type="button" data-toggle="collapse" data-target="#navbar-collapse-1" aria-controls="navbar-collapse-1" aria-expanded="false" aria-label="Toggle navigation">
+  <button class="navbar-toggler navbar-toggler-right ml-auto collapsed" type="button" data-bs-toggle="collapse" data-target="#navbar-collapse-1" aria-controls="navbar-collapse-1" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
 </div>

@@ -4,10 +4,10 @@
 
 <body class="user h-100">
 
-<div class="d-flex justify-content-end mt-3 mr-3">
-  <div class="custom-control custom-switch dark-mode-switch" data-theme-toggler-wrapper>
-    <input type="checkbox" class="custom-control-input" id="dark-mode" data-theme-toggler{% if theme.current == 'theme-dark' %} checked="checked"{% endif %}>
-    <label class="custom-control-label" for="dark-mode">{{ 'core.themes.dark'|trans|ucfirst }} {{ 'core.themes.themes'|trans }}</label>
+<div class="d-flex justify-content-end mt-3 me-3">
+  <div class="form-check dark-mode-switch" data-theme-toggler-wrapper>
+    <input type="checkbox" class="form-check-input" id="dark-mode" data-theme-toggler{% if theme.current == 'theme-dark' %} checked="checked"{% endif %}>
+    <label class="form-check-label" for="dark-mode">{{ 'core.themes.dark'|trans|ucfirst }} {{ 'core.themes.themes'|trans }}</label>
   </div>
 </div>
 

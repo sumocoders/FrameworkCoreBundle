@@ -1,11 +1,11 @@
 <div class="user-nav d-flex h-100">
   {% if app.user is not null %}
     <div class="user btn-group dropdown w-100 d-flex flex-column" data-dropdown-user-wrapper>
-      <button class="btn btn-default dropdown-toggle d-flex align-items-center" data-toggle="dropdown" aria-expanded="false" data-dropdown-user-toggle>
+      <button class="btn btn-default dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown" aria-expanded="false" data-dropdown-user-toggle>
         {% if is_granted('IS_IMPERSONATOR') %}
-          <i class="fas fa-exchange-alt mr-3"></i>
+          <i class="fas fa-exchange-alt me-3"></i>
         {% else %}
-          <i class="fas fa-user-circle mr-3"></i>
+          <i class="fas fa-user-circle me-3"></i>
         {% endif %}
         <span>{{ app.user.username }}</span>
         <span class="fas fa-chevron-down fa-w-16"></span>
@@ -17,9 +17,9 @@
         <div class="dropdown-divider"></div>
         <li>
           <div class="dropdown-item">
-            <div class="custom-control custom-switch dark-mode-switch" data-theme-toggler-wrapper>
-              <input type="checkbox" class="custom-control-input" id="dark-mode{% if mobile %}-mobile{% endif %}" data-theme-toggler{% if theme.current == 'theme-dark' %} checked="checked"{% endif %}>
-              <label class="custom-control-label" for="dark-mode{% if mobile %}-mobile{% endif %}">{{ 'core.themes.dark'|trans|ucfirst }} {{ 'core.themes.themes'|trans }}</label>
+            <div class="form-check dark-mode-switch" data-theme-toggler-wrapper>
+              <input type="checkbox" class="form-check-input" id="dark-mode{% if mobile %}-mobile{% endif %}" data-theme-toggler{% if theme.current == 'theme-dark' %} checked="checked"{% endif %}>
+              <label class="form-check-label" for="dark-mode{% if mobile %}-mobile{% endif %}">{{ 'core.themes.dark'|trans|ucfirst }} {{ 'core.themes.themes'|trans }}</label>
             </div>
           </div>
         </li>

@@ -5,7 +5,6 @@ namespace SumoCoders\FrameworkCoreBundle\Twig;
 use SumoCoders\FrameworkCoreBundle\Pagination\Paginator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Environment;
 use Twig\Extension\RuntimeExtensionInterface;
 

@@ -1,0 +1,56 @@
+<?php
+
+namespace SumoCoders\FrameworkCoreBundle\Twig;
+
+use SumoCoders\FrameworkCoreBundle\Pagination\Paginator;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Twig\Environment;
+use Twig\Extension\RuntimeExtensionInterface;
+
+class PaginatorRuntime implements RuntimeExtensionInterface
+{
+    private Environment $twig;
+    private RequestStack $requestStack;
+
+    public function __construct(Environment $twig, RequestStack $requestStack)
+    {
+        $this->twig = $twig;
+        $this->requestStack = $requestStack;
+    }
+
+    public function renderPagination(Paginator $paginator): string
+    {
+        $request = $this->getRequest();
+
+        if (null !== $this->requestStack->getParentRequest()) {
+            throw new \RuntimeException('The request aware route generator can not guess the route when used in a sub-request, pass the "routeName" option to use this generator.');
+        }
+
+        $route = $request->attributes->get('_route');
+
+        // Make sure we read the route parameters from the passed option array
+        $routeParams = array_merge($request->query->all(), $request->attributes->get('_route_params', []));
+
+        $paginator->calculateStartAndEndPage();
+
+        return $this->twig->load('Twig/pagination.html.twig')->renderBlock(
+            'pager',
+            [
+                'paginator' => $paginator,
+                'route' => $route,
+                'routeParams' => $routeParams,
+                'current_page' => $paginator->getCurrentPage(),
+                'start_page' => $paginator->getStartPage(),
+                'end_page' => $paginator->getEndPage(),
+                'page_count' => $paginator->getNumberOfPages(),
+            ]
+        );
+    }
+
+    private function getRequest(): ?Request
+    {
+        return $this->requestStack->getCurrentRequest();
+    }
+}

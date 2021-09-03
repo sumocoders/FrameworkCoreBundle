@@ -89,10 +89,10 @@ services:
     tags:
       - { name: form.type, alias: sumoFile }
 
-  pagerfanta.view.sumocoders:
-    class: SumoCoders\FrameworkCoreBundle\Twig\TwitterBootstrap3View
-    public: false
-    tags: [{ name: pagerfanta.view, alias: sumocoders }]
+  twig.paginator_extension:
+    class: SumoCoders\FrameworkCoreBundle\Twig\PaginatorExtension
+    tags:
+      - { name: twig.extension }
 
   SumoCoders\FrameworkCoreBundle\Service\BreadcrumbTrail:
   SumoCoders\FrameworkCoreBundle\EventListener\BreadcrumbListener:

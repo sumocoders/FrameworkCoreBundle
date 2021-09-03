@@ -34,7 +34,7 @@ class PaginatorRuntime implements RuntimeExtensionInterface
 
         $paginator->calculateStartAndEndPage();
 
-        return $this->twig->load('Twig/pagination.html.twig')->renderBlock(
+        return $this->twig->load('@SumoCodersFrameworkCore/Twig/pagination.html.twig')->renderBlock(
             'pager',
             [
                 'paginator' => $paginator,

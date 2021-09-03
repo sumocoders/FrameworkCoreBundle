@@ -6,7 +6,7 @@ Simply extend your email template from the `@SumoCodersFrameworkCore/Mail/base.h
 
 The base template will place your content in a table-based layout, load and inline styles and return the end result.
 
-To send the mail, you can use the default Symfony package: `symfony/mailer`. See the example below. 
+To send the mail, you can use the default Symfony package: `symfony/mailer`. See the example below.
 
 ## Basic example
 

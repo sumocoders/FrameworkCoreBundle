@@ -1,70 +1,77 @@
 # Using pagination
 
-Pagination is a nice way to handle large amounts of data over multiple pages.
+Pagination is a nice way to handle large amounts of data over multiple pages. The core bundle has a Paginator class (similar to Pagerfanta), that does most of the heavy lifting.
 
+## Usage
+Define the Paginator object in your repository, where you pass the QueryBuilder object straight to it.
+### Repository
+
+```php
+    use SumoCoders\FrameworkCoreBundle\Pagination\Paginator;
+    
+    public function getPaginatedItems(): Paginator
+    {
+        $queryBuilder = $this->createQueryBuilder('i')
+                ->where('i.name LIKE :term')
+                ->setParameter('term', 'foo')
+                ->orderBy('i.name');
+
+        return new Paginator($queryBuilder);
+    }
+```
 ## Controller
 
-In the controller the following code should be used. If necessary a custom adapter can be used.
+In your controller, use the `paginate` method on it to set the correct page. You can also extend this with sorting GET parameters that you pass to your method in the repository. Since the pagination works on a QueryBuilder object, al sorting must be done with orderBy's.
 
-```
+```php
 <?php
 
 namespace SumoCoders\FrameworkCoreBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use App\Repository\ItemRepository;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Pagerfanta\Pagerfanta;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
-use Pagerfanta\Exception\NotValidCurrentPageException;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
-class ExampleController extends Controller
+final class ItemController extends AbstractController
 {
-	/**
-	 * @Route("/example/{page}", requirements={"page" = "\d+"}, defaults={"page" = "1"})
-	 * @Template()
-	 * 
-	 * @param int $page
-	 */
-	public function exampleAction(int $page)
-	{
-		$repository = $this->getDoctrine()->getRepository('AcmeExampleBundle:Example');
-		
-		// returns \Doctrine\ORM\Query object
-		$query = $repository->getExampleQuery();
-		
-		$pagerfanta = new Pagerfanta(new DoctrineORMAdapter($query));
-		$pagerfanta->setMaxPerPage(45);
-		
-		try {
-			$pagerfanta->setCurrentPage($page);
-		} catch(NotValidCurrentPageException $e) {
-			throw new NotFoundHttpException();
-		}
-		
-		return ['my_pager' => $pagerfanta];
-	}
+    /**
+      * @Route("/items", name="item_index")
+      */
+     public function __invoke(
+        Request $request,
+        ItemRepository $itemRepository
+    ): Response {
+        $paginatedItems = $itemRepository->getPaginatedItems();
+
+        $paginatedItems->paginate($request->query->getInt('page', 1));
+
+        return $this->render('items/index.html.twig', [
+            'items' => $paginatedItems,
+        ]);
+    }
 }
 ```
 
-## View
+## Template
 
-In the view the following code can be used
+In your template, you have access to a Twig extension called `pagination` to render a clean pagination widget.
 
-```
-{% if pager.currentPageResults is not empty %}
-    {% for item in my_pager.currentPageResults %}
+The paginated object, in this case `items` is an iterator, so you can count it/loop over it to get the results of the query.
+
+```twig
+{% if items|length > 0 %}
+    {% for item in items %}
         <ul>
             <li>{{ item.id }}</li>
         </ul>
     {% endfor %}
 {% endif %}
 
-{% if pager.haveToPaginate %}
-    <div class="pagerfanta">
-        {{ pagerfanta(my_pager, 'sumocoders') }}
+{% if items.hasToPaginate %}
+    <div class="d-flex justify-content-center">
+        {{ pagination(items) }}
     </div>
 {% endif %}
 ```

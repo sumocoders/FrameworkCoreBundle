@@ -93,6 +93,10 @@ services:
     class: SumoCoders\FrameworkCoreBundle\Twig\PaginatorExtension
     tags: [ 'twig.extension' ]
 
+  twig.paginator_runtime:
+    class: SumoCoders\FrameworkCoreBundle\Twig\PaginatorRuntime
+    tags: [ 'twig.runtime' ]
+
   SumoCoders\FrameworkCoreBundle\Service\BreadcrumbTrail:
   SumoCoders\FrameworkCoreBundle\EventListener\BreadcrumbListener:
     tags:

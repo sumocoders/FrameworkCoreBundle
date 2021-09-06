@@ -9,7 +9,7 @@ use Traversable;
 
 class Paginator implements \Countable, \IteratorAggregate
 {
-    public const PAGE_SIZE = 10;
+    public const PAGE_SIZE = 30;
 
     private DoctrineQueryBuilder $queryBuilder;
     private int $currentPage;

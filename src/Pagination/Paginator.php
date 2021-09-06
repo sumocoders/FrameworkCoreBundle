@@ -5,9 +5,13 @@ namespace SumoCoders\FrameworkCoreBundle\Pagination;
 use Doctrine\ORM\QueryBuilder as DoctrineQueryBuilder;
 use Doctrine\ORM\Tools\Pagination\CountWalker;
 use Doctrine\ORM\Tools\Pagination\Paginator as DoctrinePaginator;
+use ArrayIterator;
+use IteratorAggregate;
 use Traversable;
+use Countable;
+use Iterator;
 
-class Paginator implements \Countable, \IteratorAggregate
+class Paginator implements Countable, IteratorAggregate
 {
     public const PAGE_SIZE = 30;
 
@@ -35,13 +39,13 @@ class Paginator implements \Countable, \IteratorAggregate
             ->setMaxResults($this->pageSize)
             ->getQuery();
 
-        if (0 === \count($this->queryBuilder->getDQLPart('join'))) {
+        if (0 === count($this->queryBuilder->getDQLPart('join'))) {
             $query->setHint(CountWalker::HINT_DISTINCT, false);
         }
 
         $paginator = new DoctrinePaginator($query, true);
 
-        $useOutputWalkers = \count($this->queryBuilder->getDQLPart('having') ?: []) > 0;
+        $useOutputWalkers = count($this->queryBuilder->getDQLPart('having') ?: []) > 0;
         $paginator->setUseOutputWalkers($useOutputWalkers);
 
         $this->results = $paginator->getIterator();
@@ -135,15 +139,15 @@ class Paginator implements \Countable, \IteratorAggregate
     {
         $results = $this->getResults();
 
-        if ($results instanceof \Iterator) {
+        if ($results instanceof Iterator) {
             return $results;
         }
 
-        if ($results instanceof \IteratorAggregate) {
+        if ($results instanceof IteratorAggregate) {
             return $results->getIterator();
         }
 
-        return new \ArrayIterator($results);
+        return new ArrayIterator($results);
     }
 
     public function calculateStartAndEndPage(): void

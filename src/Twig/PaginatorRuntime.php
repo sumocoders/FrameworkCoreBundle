@@ -24,7 +24,7 @@ class PaginatorRuntime implements RuntimeExtensionInterface
         $request = $this->getRequest();
 
         if (null !== $this->requestStack->getParentRequest()) {
-            throw new \RuntimeException('The request aware route generator can not guess the route when used in a sub-request, pass the "routeName" option to use this generator.');
+            throw new \RuntimeException('We can not guess the route when used in a sub-request');
         }
 
         $route = $request->attributes->get('_route');

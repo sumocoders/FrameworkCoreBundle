@@ -8,14 +8,14 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
-class DumpTranslationsCommand extends Command
+class TranslateCommand extends Command
 {
     private ParameterBagInterface $parameters;
 
     public function __construct(ParameterBagInterface $parameters)
     {
         parent::__construct();
-        $this->setName('sumo:dump:translations');
+        $this->setName('sumo:translate');
         $this->parameters = $parameters;
     }
 

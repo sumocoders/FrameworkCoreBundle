@@ -39,11 +39,6 @@ class MenuBuilder
         return $menu;
     }
 
-    /**
-     * Reorderd the items in the menu based on the extra data
-     *
-     * @param ItemInterface $menu
-     */
     protected function reorderMenuItems(ItemInterface $menu)
     {
         $menuOrderArray = [];

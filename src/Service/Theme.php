@@ -8,17 +8,15 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class Theme
 {
-    /** @var Request */
-    private $request;
+    private ?Request $request;
+    private JsData $jsData;
+    private Packages $packages;
 
-    /** @var JsData */
-    private $jsData;
-
-    /** @var Packages */
-    private $packages;
-
-    public function __construct(RequestStack $requestStack, JsData $jsData, Packages $packages)
-    {
+    public function __construct(
+        ?RequestStack $requestStack,
+        JsData $jsData,
+        Packages $packages
+    ) {
         $this->request = $requestStack->getCurrentRequest();
         $this->jsData = $jsData;
         $this->packages = $packages;

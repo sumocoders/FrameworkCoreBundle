@@ -24,7 +24,6 @@
     "php": "^7.4",
     "gedmo/doctrine-extensions": "^2.4",
     "friendsofsymfony/jsrouting-bundle": "^2",
-    "ramsey/uuid": "^3.7",
     "tijsverkoyen/css-to-inline-styles": "^2.2",
     "knplabs/knp-menu-bundle": "^3.0",
     "sensio/framework-extra-bundle": "^6.1",

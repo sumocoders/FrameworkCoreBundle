@@ -36,6 +36,9 @@ return static function (ContainerConfigurator $container): void {
         ->autowire()
         ->autoconfigure()
 
+        /*
+         * Services
+         */
         ->set('framework.fallbacks', Fallbacks::class)
             ->args([
                 param('fallbacks')
@@ -70,7 +73,7 @@ return static function (ContainerConfigurator $container): void {
             ->tag('form.type_extension', ['extended_type' => DateType::class])
 
         ->set('framework.time_type_extension', TimeTypeExtension::class)
-            ->tag('form.type_extension', ['extended_type' => TimeType::class]
+            ->tag('form.type_extension', ['extended_type' => TimeType::class])
 
         ->set('framework.date_time_type_extension', DateTimeTypeExtension::class)
             ->tag('form.type_extension', ['extended_type' => DateTimeType::class])
@@ -94,31 +97,28 @@ return static function (ContainerConfigurator $container): void {
          * Secure headers
          */
         ->set('framework.response_securer', ResponseSecurer::class)
-        ->args([
-            param('kernel.debug')
-        ])
-        ->tag('kernel.event_listener', ['event' => 'kernel.response', 'method' => 'onKernelResponse'])
+            ->args([
+                param('kernel.debug')
+            ])
+            ->tag('kernel.event_listener', ['event' => 'kernel.response', 'method' => 'onKernelResponse'])
 
         /*
          * Twig extensions
          */
-        ->set('twig.framework_extension', FrameworkExtension::class)
-        ->args([
-            service('service_container')
-        ])
-        ->tag('twig.extension', [])
-
-        ->set('twig.paginator_extension', PaginatorExtension::class)
+        ->set('framework.framework_extension', FrameworkExtension::class)
             ->tag('twig.extension')
 
-        ->set('twig.paginator_runtime', PaginatorRuntime::class)
+        ->set('framework.paginator_extension', PaginatorExtension::class)
+            ->tag('twig.extension')
+
+        ->set('framework.paginator_runtime', PaginatorRuntime::class)
             ->tag('twig.runtime')
 
         /*
          * Breadcrumbs
          */
-        ->set(BreadcrumbTrail::class)
-        ->set(BreadcrumbListener::class)
+        ->set('framework.breadcrumb_trail', BreadcrumbTrail::class)
+        ->set('framework.breadcrumb_listener', BreadcrumbListener::class)
             ->tag('kernel.event_listener', ['event' => 'kernel.controller', 'method' => 'onKernelController', 'priority' => -1])
 
         /*

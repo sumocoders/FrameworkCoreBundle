@@ -65,6 +65,8 @@ services:
 
   framework.response_securer:
     class: SumoCoders\FrameworkCoreBundle\EventListener\ResponseSecurer
+    arguments:
+      - "%kernel.debug%"
     tags:
       - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
 

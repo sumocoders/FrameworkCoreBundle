@@ -6,21 +6,35 @@ use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
 class ResponseSecurer
 {
+    private bool $isDebug;
+
+    public function __construct(bool $isDebug)
+    {
+        $this->isDebug = $isDebug;
+    }
+
     /**
      * Add some headers to the response to make our application more secure
-     * see https://www.owasp.org/index.php/List_of_useful_HTTP_headers
+     * see https://owasp.org/www-project-secure-headers
      *
      * @param ResponseEvent $event
      */
     public function onKernelResponse(ResponseEvent $event)
     {
-        // provides clickjacking protection
-        $event->getResponse()->headers->set('X-Frame-Options', 'deny');
+        /*
+         * We only send the security headers when we're not in dev mode
+         */
+        if (!$this->isDebug) {
+            $event->getResponse()->headers->set('Content-Security-Policy',
+                "default-src 'self';" . // Default rule: only allow content from our own domain
+                "style-src 'self' https://fonts.googleapis.com;" . // Allow Google Fonts
+                "font-src 'self' https://fonts.gstatic.com;" . // Allow Google Fonts
+                "frame-src 'none';" . // Block all iframes
+                "script-src 'self' 'nonce-FOR725'" // Allow our jsData inline script
+            );
 
-        // enables the XSS filter built into most recent browsers
-        $event->getResponse()->headers->set('X-XSS-Protection', '1; mode=block');
-
-        // prevents IE and Chrome from MIME-sniffing
-        $event->getResponse()->headers->set('X-Content-Type-Options', 'nosniff');
+            $event->getResponse()->headers->set('X-Frame-Options', 'deny');
+            $event->getResponse()->headers->set('X-Content-Type-Options', 'nosniff');
+        }
     }
 }

@@ -8,7 +8,6 @@ use SumoCoders\FrameworkCoreBundle\Service\Fallbacks;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use SumoCoders\FrameworkCoreBundle\Twig\PaginatorRuntime;
@@ -21,14 +20,14 @@ use SumoCoders\FrameworkCoreBundle\EventListener\BreadcrumbListener;
 use SumoCoders\FrameworkCoreBundle\Menu\MenuBuilder;
 use SumoCoders\FrameworkCoreBundle\Form\Type\ImageType;
 use SumoCoders\FrameworkCoreBundle\Form\Type\FileType;
-use SumoCoders\FrameworkCoreBundle\Form\Type\FieldsetType;
 use SumoCoders\FrameworkCoreBundle\Form\Extension\TimeTypeExtension;
 use SumoCoders\FrameworkCoreBundle\Form\Extension\DateTypeExtension;
 use SumoCoders\FrameworkCoreBundle\Form\Extension\DateTimeTypeExtension;
 use SumoCoders\FrameworkCoreBundle\Form\Extension\CollectionTypeExtension;
-use SumoCoders\FrameworkCoreBundle\Form\Extension\ButtonTypeIconExtension;
 use SumoCoders\FrameworkCoreBundle\Form\Extension\BirthdayTypeExtension;
 use SumoCoders\FrameworkCoreBundle\EventListener\ResponseSecurer;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\param;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
 return static function (ContainerConfigurator $container): void {
     $container->services()
@@ -81,16 +80,13 @@ return static function (ContainerConfigurator $container): void {
         ->set('framework.birthday_type_extension', BirthdayTypeExtension::class)
             ->tag('form.type_extension', ['extended_type' => BirthdayType::class])
 
-        ->set('framework.button_type_icon_extension', ButtonTypeIconExtension::class)
-            ->tag('form.type_extension', ['extended_type' => ButtonType::class])
-
         ->set('framework.collection_type_extension', CollectionTypeExtension::class)
             ->tag('form.type_extension', ['extended_type' => CollectionType::class])
 
-        ->set('sumocoders_form_type_image', ImageType::class)
+        ->set('framework.image_type', ImageType::class)
             ->tag('form.type', ['alias' => 'image'])
 
-        ->set('sumocoders_form_type_file', FileType::class)
+        ->set('framework.file_type', FileType::class)
             ->tag('form.type', ['alias' => 'sumoFile'])
 
         /*

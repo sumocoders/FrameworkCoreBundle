@@ -114,6 +114,8 @@ return static function (ContainerConfigurator $container): void {
          * Breadcrumbs
          */
         ->set('framework.breadcrumb_trail', BreadcrumbTrail::class)
+            ->alias(BreadcrumbTrail::class)
+
         ->set('framework.breadcrumb_listener', BreadcrumbListener::class)
             ->tag('kernel.event_listener', ['event' => 'kernel.controller', 'method' => 'onKernelController', 'priority' => -1])
 

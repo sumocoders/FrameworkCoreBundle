@@ -2,13 +2,9 @@
 
 namespace SumoCoders\FrameworkCoreBundle\Form\Extension;
 
-use IntlDateFormatter;
+use DateTime;
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -20,15 +16,11 @@ final class DateTimeTypeExtension extends AbstractTypeExtension
         return [DateTimeType::class];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(
             [
                 'format' => 'dd/MM/yyyy HH:mm',
-                'datetimepicker' => true,
                 'maximum_date' => null,
                 'minimum_date' => null,
                 'html5' => false,
@@ -38,18 +30,14 @@ final class DateTimeTypeExtension extends AbstractTypeExtension
         $resolver->setDefined(['helper_text']);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['maximum_date'] = $options['maximum_date'] ?
-            IntlDateFormatter::formatObject($options['maximum_date'], $options['format']) : null;
+            DateTime::createFromFormat($options['format'], $options['maximum_date']) : null;
         $view->vars['minimum_date'] = $options['minimum_date'] ?
-            IntlDateFormatter::formatObject($options['minimum_date'], $options['format']) : null;
+            DateTime::createFromFormat($options['format'], $options['minimum_date']) : null;
         $view->vars['format'] = $options['format'];
         $view->vars['divider'] = (strpos($options['format'], '-') !== false) ? '-' : '/';
-        $view->vars['datetimepicker'] = $options['datetimepicker'] ?? false;
         $view->vars['helper_text'] = $options['helper_text'] ?? null;
     }
 }

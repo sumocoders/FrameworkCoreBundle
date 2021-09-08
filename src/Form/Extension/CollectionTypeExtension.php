@@ -18,7 +18,7 @@ final class CollectionTypeExtension extends AbstractTypeExtension
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(
             [
@@ -27,7 +27,7 @@ final class CollectionTypeExtension extends AbstractTypeExtension
         );
     }
 
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['allow_drag_and_drop'] = $options['allow_drag_and_drop'];
     }

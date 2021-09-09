@@ -5,21 +5,10 @@ namespace SumoCoders\FrameworkCoreBundle\Service;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-/**
- * Class JsData
- *
- * @package SumoCoders\FrameworkCoreBundle\Service
- */
 class JsData extends ParameterBag
 {
-    /**
-     * @var \Symfony\Component\HttpFoundation\RequestStack
-     */
-    protected $requestStack;
+    protected RequestStack $requestStack;
 
-    /**
-     * @param RequestStack $requestStack
-     */
     public function __construct(RequestStack $requestStack)
     {
         parent::__construct();
@@ -27,10 +16,7 @@ class JsData extends ParameterBag
         $this->requestStack = $requestStack;
     }
 
-    /**
-     * Handle the request stack
-     */
-    protected function handleRequestStack()
+    protected function handleRequestStack(): void
     {
         $currentRequest = $this->requestStack->getCurrentRequest();
 
@@ -43,12 +29,7 @@ class JsData extends ParameterBag
         }
     }
 
-    /**
-     * Parse into string
-     *
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
         $this->handleRequestStack();
 

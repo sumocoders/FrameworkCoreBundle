@@ -14,10 +14,7 @@ final class BirthdayTypeExtension extends AbstractTypeExtension
         return [BirthdayType::class];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(
             [

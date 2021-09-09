@@ -4,7 +4,7 @@
   {% if label is not same as(false) -%}
     {%- set parent_label_class = parent_label_class|default(label_attr.class|default('')) -%}
     {% if label is empty %}
-      {% set label = toTranslation(id)|trans({}, translation_domain)|ucfirst %}
+      {% set label = name|humanize|trans({}, translation_domain)|ucfirst  %}
     {% else %}
       {% set label = label|trans({}, translation_domain)|ucfirst %}
     {% endif %}
@@ -20,22 +20,22 @@
         {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ('input-group' in row_class ? ' input-group-text' : ' form-label') )|trim}) -%}
       {%- endif -%}
     {%- endif -%}
-  {%- endif -%}
-  <{{ element|default('label') }}{% if label_attr %}{% with { attr: label_attr } %}{{ block('attributes') }}{% endwith %}{% endif %}>
-  {%- if translation_domain is same as(false) -%}
-    {%- if label_html is same as(false) -%}
-      {{- label -}}
+    <{{ element|default('label') }}{% if label_attr %}{% with { attr: label_attr } %}{{ block('attributes') }}{% endwith %}{% endif %}>
+    {%- if translation_domain is same as(false) -%}
+      {%- if label_html is same as(false) -%}
+        {{- label -}}
+      {%- else -%}
+        {{- label|raw -}}
+      {%- endif -%}
     {%- else -%}
-      {{- label|raw -}}
+      {%- if label_html is same as(false) -%}
+        {{- label|trans(label_translation_parameters, translation_domain)|ucfirst -}}&#32;{{- block('label_asterisk') }}
+      {%- else -%}
+        {{- label|trans(label_translation_parameters, translation_domain)|raw|ucfirst -}}&#32;{{- block('label_asterisk') }}
+      {%- endif -%}
     {%- endif -%}
-  {%- else -%}
-    {%- if label_html is same as(false) -%}
-      {{- label|trans(label_translation_parameters, translation_domain)|ucfirst -}}&#32;{{- block('label_asterisk') }}
-    {%- else -%}
-      {{- label|trans(label_translation_parameters, translation_domain)|raw|ucfirst -}}&#32;{{- block('label_asterisk') }}
-    {%- endif -%}
+    </{{ element|default('label') }}>
   {%- endif -%}
-  </{{ element|default('label') }}>
 {%- endblock form_label %}
 
 {%- block label_asterisk -%}

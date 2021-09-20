@@ -8,7 +8,7 @@ The base scss file is `style.scss` and is placed in `/assets/styles` in the Fram
 There is also `style-dark.scss` for the dark theme. The last file that is by default in this folder is `mail.scss`.
 All 3 of these files import the appropriate file from the [FrameworkStylepackage](https://github.com/sumocoders/frameworkStylePackage).
 
-The layout is based on Bootstrap, so don't create new components when there's
+The layout is based on [Bootstrap5](https://getbootstrap.com/docs/5.1/getting-started/introduction/), so don't create new components when there's
 already a Bootstrap component available. Also try to customize as much of the
 components as possible through the variables file. This makes the code easier to maintain.
 
@@ -35,3 +35,18 @@ but in this scenario it's overkill.
 You can just import your custom dark mode component file in `style-dark.scss` after the import of `_components.scss`.
 
 Example: `@import 'components-dark/component-name';`
+
+
+## Overview folder structure
+```$xslt
+- assets
+    - styles
+        - components
+            - _component-name.scss
+        - _variables.scss
+        - mail.scss
+        - style.scss
+        - style-dark.scss
+```
+
+You can always fall back on the folder structure or existing components in [FrameworkStylepackage](https://github.com/sumocoders/FrameworkStylePackage/tree/master/src/sass).

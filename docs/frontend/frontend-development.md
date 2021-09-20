@@ -1,20 +1,37 @@
 # Frontend development
 
-The base scss file is placed in the sass folder of the FrameworkCoreBundle. The
-layout is based on Bootstrap, so don't create new components when there's
+## Intro
+
+The styling of the FrameworkCoreBundle is base in a separated npm package, namely [FrameworkStylepackage](https://github.com/sumocoders/frameworkStylePackage).
+
+The base scss file is `style.scss` and is placed in `/assets/styles` in the FrameworkCoreBundle.
+There is also `style-dark.scss` for the dark theme. The last file that is by default in this folder is `mail.scss`.
+All 3 of these files import the appropriate file from the [FrameworkStylepackage](https://github.com/sumocoders/frameworkStylePackage).
+
+The layout is based on Bootstrap, so don't create new components when there's
 already a Bootstrap component available. Also try to customize as much of the
-components as possible through the bootstrap-variables file. This makes the code
-easier to maintain.
+components as possible through the variables file. This makes the code easier to maintain.
 
-If it's not possible to customize a Bootstrap component through the bootstrap
-variables, you can create a new file in the components folder where you override
-the necessary properties. This has already been done for many components to
-create our own layout. If you want to customize the layout you can edit the
-existing code in the sass folder, or you can create new components or layout
-styles by adding and importing new files.
+## Overwrite variables
+Make a file `_variables.scss` in the folder styles. In this file you can set all bootstrap variables you want to override.
+Import this file in `style.scss` and in `style-dark.scss`.
 
-All scss files from all bundles placed in the src directory will be put
-together, which means you can import styles from other bundles from within
-FrameworkCoreBundle. Bower components are also added to the import path, so you
-can easily import sass files from plugins when available. Try to use Bower as
-much as possible for frontend plugins to make upgrading and maintaining easier.
+### Differences in variables for dark mode
+Make an extra file `_variables-dark.scss` in the folder styles and import this file in `style-dark.scss`.
+
+## Custom components or extensions
+Create a folder `components` in the styles folder. Add your new component sass file in the new folder.
+To make it easy on yourself, make a `_components.scss` file in de styles folder. In this file you can import all your new components.
+Example: `@import 'components/component-name';`
+
+Now you can just easily import the `_conponents.scss` in your `style.scss` and `style-dark.scss`.
+So know in the future, you only need to add new component sass files in 1 file (`_components.scss`) instead of in 2 files.
+
+### Differences in custom component for dark mode
+Make a extra folder, for example `components-dark`, and add your `_your-component.scss` file with the same name in this folder.
+
+You can again make a collector file for all dark components and import that file in `style-dark.scss`, 
+but in this scenario it's overkill.
+You can just import your custom dark mode component file in `style-dark.scss` after the import of `_components.scss`.
+
+Example: `@import 'components-dark/component-name';`

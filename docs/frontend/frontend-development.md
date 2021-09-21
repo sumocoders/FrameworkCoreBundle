@@ -5,8 +5,8 @@
 The styling of the FrameworkCoreBundle is base in a separated npm package, namely [FrameworkStylepackage](https://github.com/sumocoders/frameworkStylePackage).
 
 The base scss file is `style.scss` and is placed in `/assets/styles` in the FrameworkCoreBundle.
-There is also `style-dark.scss` for the dark theme. The last file that is by default in this folder is `mail.scss`.
-All 3 of these files import the appropriate file from the [FrameworkStylepackage](https://github.com/sumocoders/frameworkStylePackage).
+There is also `style-dark.scss` for the dark theme. The last default file in this folder is `mail.scss`.
+These 3 files import the appropriate file from the [FrameworkStylepackage](https://github.com/sumocoders/frameworkStylePackage).
 
 The layout is based on [Bootstrap5](https://getbootstrap.com/docs/5.1/getting-started/introduction/), so don't create new components when there's
 already a Bootstrap component available. Also try to customize as much of the
@@ -25,7 +25,7 @@ To make it easy on yourself, make a `_components.scss` file in de styles folder.
 Example: `@import 'components/component-name';`
 
 Now you can just easily import the `_conponents.scss` in your `style.scss` and `style-dark.scss`.
-So know in the future, you only need to add new component sass files in 1 file (`_components.scss`) instead of in 2 files.
+In the future you can just add the new component into `_components.scss` instead of adding it in both `style.scss` and `style-dark.scss`.
 
 #### Differences in custom component for dark mode
 Make a extra folder, for example `components-dark`, and add your `_your-component.scss` file with the same name in this folder.
@@ -61,13 +61,13 @@ We use ES6 classes for each Javascript component. More info [here](https://devel
 
 ### Custom components or extensions
 Create a folder `components` in the js folder. Add your new component js file in the new folder.
-Build you ES6 class in a new file with as name the name of your component. Do not forgot to import you new component file in `app.js`.
+Build your ES6 class in a new file that has the same name as your component. Do not forgot to import you new component file in `app.js`.
 
 If you want to extend or change an existing ES6 class from the FrameworkStylepackage you can update the path to the import in `imports.js`
 to a new class you made yourself. The new class can be totally different of based on the class in de FrameworkStylepackage.
 
 
-## Separate Sass for frontend of application
+## Separate layout for frontend of application
 
 For a basic frontend layout of the application you can use a basic Bootstrap5 setup. 
 We do not need FrameworkStylepackage here.

@@ -1,6 +1,6 @@
 # Frontend development
 
-## Intro
+## Sass
 
 The styling of the FrameworkCoreBundle is base in a separated npm package, namely [FrameworkStylepackage](https://github.com/sumocoders/frameworkStylePackage).
 
@@ -12,14 +12,14 @@ The layout is based on [Bootstrap5](https://getbootstrap.com/docs/5.1/getting-st
 already a Bootstrap component available. Also try to customize as much of the
 components as possible through the variables file. This makes the code easier to maintain.
 
-## Overwrite variables
+### Overwrite variables
 Make a file `_variables.scss` in the folder styles. In this file you can set all bootstrap variables you want to override.
 Import this file in `style.scss` and in `style-dark.scss`.
 
-### Differences in variables for dark mode
+#### Differences in variables for dark mode
 Make an extra file `_variables-dark.scss` in the folder styles and import this file in `style-dark.scss`.
 
-## Custom components or extensions
+### Custom components or extensions
 Create a folder `components` in the styles folder. Add your new component sass file in the new folder.
 To make it easy on yourself, make a `_components.scss` file in de styles folder. In this file you can import all your new components.
 Example: `@import 'components/component-name';`
@@ -27,7 +27,7 @@ Example: `@import 'components/component-name';`
 Now you can just easily import the `_conponents.scss` in your `style.scss` and `style-dark.scss`.
 So know in the future, you only need to add new component sass files in 1 file (`_components.scss`) instead of in 2 files.
 
-### Differences in custom component for dark mode
+#### Differences in custom component for dark mode
 Make a extra folder, for example `components-dark`, and add your `_your-component.scss` file with the same name in this folder.
 
 You can again make a collector file for all dark components and import that file in `style-dark.scss`, 
@@ -37,7 +37,7 @@ You can just import your custom dark mode component file in `style-dark.scss` af
 Example: `@import 'components-dark/component-name';`
 
 
-## Overview folder structure
+### Overview folder structure
 ```$xslt
 - assets
     - styles
@@ -51,8 +51,23 @@ Example: `@import 'components-dark/component-name';`
 
 You can always fall back on the folder structure or existing components in [FrameworkStylepackage](https://github.com/sumocoders/FrameworkStylePackage/tree/master/src/sass).
 
+## JS
 
-## Separate layout frontend of application
+You can find `app.js` in the folder `assets/`. This is the main collector for the Javascript.
+The file `imports.js` is imported in `app.js`.
+These imports are the default components from our [FrameworkStylepackage](https://github.com/sumocoders/frameworkStylePackage).
+
+We use ES6 classes for each Javascript component. More info [here](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes)
+
+### Custom components or extensions
+Create a folder `components` in the js folder. Add your new component js file in the new folder.
+Build you ES6 class in a new file with as name the name of your component. Do not forgot to import you new component file in `app.js`.
+
+If you want to extend or change an existing ES6 class from the FrameworkStylepackage you can update the path to the import in `imports.js`
+to a new class you made yourself. The new class can be totally different of based on the class in de FrameworkStylepackage.
+
+
+## Separate Sass for frontend of application
 
 For a basic frontend layout of the application you can use a basic Bootstrap5 setup. 
 We do not need FrameworkStylepackage here.
@@ -65,7 +80,7 @@ Both work fine.
 Do not forget to add a new entry in `webpack.config.js` for `style-fronted.scss` and load you entry in the head.
 More info about how wepback works in this project can be found in our [documentation](https://github.com/sumocoders/FrameworkCoreBundle/blob/master/docs/frontend/webpack.md)
 
-### import Bootstrap yourself
+#### import Bootstrap yourself
 
 - Create a `frontend` folder under folder styles
 - Create a `components` folder under folder frontend for your custom/extended components
@@ -89,6 +104,11 @@ More info about how wepback works in this project can be found in our [documenta
 // components
 @import 'frontend/components/component-name';
 ```
+
+### Separate JS
+
+Works the same way as the Sass. Create a new entry, a new collector js file, example: `app-frontend.js`, in a separated js frontend folder.
+Load the correct entry in you frontend templates.
 
 ## Extra
 

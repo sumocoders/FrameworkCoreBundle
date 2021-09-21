@@ -1,6 +1,13 @@
-## Dark mode
+# Dark mode
 
-### Disabled dark mode
+On page load we load the correct theme stylesheet in `templates/head.html.twig` based on the variable `theme.current`.
+We also use that variable to show the correct logo in `templates/navigation.html.twig`.
+
+First time on the application we show the theme based on the users OS preferences.
+Later when the user uses the theme switcher in the navigation, we set a cookie with the theme chosen in Javascript.
+
+
+## Disabled dark mode
 
 - Remove the import of `Theme` from `imports.js`
 - Remove all `theme.current` if statements and remove the dark mode code.

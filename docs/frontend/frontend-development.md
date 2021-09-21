@@ -50,3 +50,46 @@ Example: `@import 'components-dark/component-name';`
 ```
 
 You can always fall back on the folder structure or existing components in [FrameworkStylepackage](https://github.com/sumocoders/FrameworkStylePackage/tree/master/src/sass).
+
+
+## Separate layout frontend of application
+
+For a basic frontend layout of the application you can use a basic Bootstrap5 setup. 
+We do not need FrameworkStylepackage here.
+
+Create a file `style-frontend.scss` in de folder styles.
+You can import Bootstrap in here in the way they do it in there [documentation](https://getbootstrap.com/docs/5.1/getting-started/webpack/#importing-styles)
+or you can import the Bootstrap components yourself and copy the bootstrap variables.
+
+Both work fine.
+
+### import Bootstrap yourself
+
+- Create a `frontend` folder under folder styles
+- Create a `components` folder under folder frontend for your custom/extended components
+- Create a `_bootstrap-imports.scss` file under frontend folder.
+    - Copy/Paste the content of `node_modules/bootstrap/scss/bootstrap.scss` in it. 
+    - Update the paths from `@import "...` to `@import "~bootstrap/scss/...`.
+    - Comment the first 2 imports, namely functions and variables
+- Create a `_bootstrap_variables.scss` file under frontend folder.
+    - Copy/Paste the content of `node_modules/bootstrap/scss/variables.scss` in it
+    - Remove the ` !default` from every line in the file.
+- Add imports to `style-frontend.scss`, should look like this:
+```$xslt
+@charset 'UTF-8';
+
+// bootstrap
+@import '~bootstrap/scss/functions';
+@import '~bootstrap/scss/variables';
+@import 'frontend/bootstrap-variables';
+@import 'frontend/bootstrap-imports';
+
+// components
+@import 'frontend/components/component-name';
+```
+
+## Extra
+
+- You can also group all the backend sass files and put them in a folder named backend. So the 2 are totally separated.
+- Make a common `components` folder for components that are used in frontend and backend.
+

@@ -34,6 +34,10 @@ A random hash will be added to the file name to prevent browser caching.
 You can use the `asset`-method in twig templates like below:
 
     {{ asset('build/images/logo-application.svg') }}
+    
+`absolute_url`-method can be wrapper around for an absolute path:
+
+    {{ absolute_url(asset('build/images/logo-application.svg')) }}
 
 
 ## Usage

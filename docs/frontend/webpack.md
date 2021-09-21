@@ -27,22 +27,13 @@ You can reference an entry in your templates by name
 
 ### Images
 
-We will look into all bundles in the `src`-folder for all files in the
-`Resources/assets/images`-folder, these files will be copied to the
-`web/assets/images`-folder in the root directory. The folder structure you
-(optionally) created will be preserved.
+Image can be placed in `assets/images`. The files wil be moved when compiling to `public/build/images/`.
+A random hash will be added to the file name to prevent browser caching.
 
-*Important*: make sure you don't have duplicate filenames as the files will be
-overwritten.
-
-You can link to the font-files with the compass-shortcurt image-url('filename')`
-in your scss-files.
-
-When running `gulp build` the images will be optimized for web.
 
 You can use the `asset`-method in twig templates like below:
 
-    <img src="{{ asset('assets/images/arrow_show_menu.png') }}" />
+    {{ asset('build/images/logo-application.svg') }}
 
 
 ## Usage

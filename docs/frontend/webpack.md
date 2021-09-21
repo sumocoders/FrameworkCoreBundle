@@ -14,7 +14,7 @@ You can reference an entry in your templates by name
     {{ encore_entry_script_tags('app') }}
 
 
-### SASS/SCSS
+### SASS
 
 There is an entry for `style.scss` and `style-dark.scss`. 
 Each entry in `webpack.config.js` will result in one CSS file and compiled in `public/build`

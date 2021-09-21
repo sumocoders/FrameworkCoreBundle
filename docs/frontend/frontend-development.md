@@ -114,4 +114,3 @@ Load the correct entry in you frontend templates.
 
 - You can also group all the backend sass files and put them in a folder named backend. So the 2 are totally separated.
 - Make a common `components` folder for components that are used in frontend and backend.
-

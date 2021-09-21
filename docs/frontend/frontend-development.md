@@ -60,8 +60,10 @@ We do not need FrameworkStylepackage here.
 Create a file `style-frontend.scss` in de folder styles.
 You can import Bootstrap in here in the way they do it in there [documentation](https://getbootstrap.com/docs/5.1/getting-started/webpack/#importing-styles)
 or you can import the Bootstrap components yourself and copy the bootstrap variables.
-
 Both work fine.
+
+Do not forget to add a new entry in `webpack.config.js` for `style-fronted.scss` and load you entry in the head.
+More info about how wepback works in this project can be found in our [documentation](https://github.com/sumocoders/FrameworkCoreBundle/blob/master/docs/frontend/webpack.md)
 
 ### import Bootstrap yourself
 

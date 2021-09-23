@@ -21,7 +21,7 @@
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require": {
-    "php": "^7.4 | ^8.0",
+    "php": "^7.4 || ^8.0",
     "gedmo/doctrine-extensions": "^2.4",
     "friendsofsymfony/jsrouting-bundle": "^2",
     "tijsverkoyen/css-to-inline-styles": "^2.2",

@@ -22,7 +22,7 @@
   "prefer-stable": true,
   "require": {
     "php": "^7.4",
-    "gedmo/doctrine-extensions": "^2.4",
+    "gedmo/doctrine-extensions": "^3",
     "friendsofsymfony/jsrouting-bundle": "^2",
     "tijsverkoyen/css-to-inline-styles": "^2.2",
     "knplabs/knp-menu-bundle": "^3.0",

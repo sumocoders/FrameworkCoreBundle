@@ -28,7 +28,7 @@ class TranslateCommand extends Command
         $arguments = [
             'locale' => $locale,
             '--force' => true,
-            '--output-format' => 'yaml',
+            '--format' => 'yaml',
         ];
 
         $translationInput = new ArrayInput($arguments);

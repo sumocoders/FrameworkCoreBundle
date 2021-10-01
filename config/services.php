@@ -34,6 +34,7 @@ return static function (ContainerConfigurator $container): void {
         ->defaults()
         ->autowire()
         ->autoconfigure()
+        ->bind('$projectDir', '%kernel.project_dir%')
 
         /*
          * Services
@@ -41,18 +42,6 @@ return static function (ContainerConfigurator $container): void {
         ->set('framework.fallbacks', Fallbacks::class)
             ->args([
                 param('fallbacks')
-            ])
-
-        ->set('framework.jsdata', JsData::class)
-            ->args([
-                service('request_stack')
-            ])
-
-        ->set('framework.theme', Theme::class)
-            ->args([
-                service('request_stack'),
-                service('framework.jsdata'),
-                service('assets.packages')
             ])
 
         /*

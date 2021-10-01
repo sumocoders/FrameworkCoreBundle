@@ -20,13 +20,18 @@ class FrameworkExtension extends AbstractExtension
     {
         return [
             new TwigFilter('ucfirst','ucfirst'),
+        ];
+    }
+
+    public function getFunctions(): array
+    {
+        return [
             new TwigFunction('theme', [$this, 'determineTheme']),
         ];
     }
 
     public function determineTheme(): string
     {
-        // no request available, when called thru a cli or such
         if (is_null($this->requestStack->getCurrentRequest())) {
             return 'theme-light';
         }

@@ -13,8 +13,6 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 use SumoCoders\FrameworkCoreBundle\Twig\PaginatorRuntime;
 use SumoCoders\FrameworkCoreBundle\Twig\PaginatorExtension;
 use SumoCoders\FrameworkCoreBundle\Twig\FrameworkExtension;
-use SumoCoders\FrameworkCoreBundle\Service\Theme;
-use SumoCoders\FrameworkCoreBundle\Service\JsData;
 use SumoCoders\FrameworkCoreBundle\Service\BreadcrumbTrail;
 use SumoCoders\FrameworkCoreBundle\EventListener\BreadcrumbListener;
 use SumoCoders\FrameworkCoreBundle\Menu\MenuBuilder;

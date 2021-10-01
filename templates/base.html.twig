@@ -2,7 +2,7 @@
   {{ include('@SumoCodersFrameworkCore/head.html.twig') }}
 {% endblock %}
 
-<body class="body-base" data-theme-current="{{ theme() }}" data-theme-dark="{{ asset('build/style-dark') }}">
+<body class="body-base" data-theme-path="{{ asset('build/style-dark') }}">
   <div id="main-wrapper" class="main-wrapper" data-sidebar-wrapper>
     <div id="main-menu" class="main-menu" role="navigation">
       {% block include_navigation %}

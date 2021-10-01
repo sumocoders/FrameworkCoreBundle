@@ -15,13 +15,7 @@
             {{ encore_entry_link_tags('style-dark') }}
         {% endif %}
     {% endblock %}
-
-    {% block head_javascripts %}
-        <script type="text/javascript" nonce="FOR725">
-            const jsData = {{ jsData|raw }};
-        </script>
-    {% endblock %}
-
+  
     {% block icons %}
         <link rel="apple-touch-icon" href="{{ asset('build/images/apple-touch-icon.png') }}">
         <link rel="image_src" href="{{ asset('build/images/image_src.png') }}" />

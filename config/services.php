@@ -34,7 +34,6 @@ return static function (ContainerConfigurator $container): void {
         ->defaults()
         ->autowire()
         ->autoconfigure()
-        ->bind('$projectDir', '%kernel.project_dir%')
 
         /*
          * Services

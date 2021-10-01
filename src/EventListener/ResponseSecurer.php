@@ -27,8 +27,7 @@ class ResponseSecurer
         if (!$this->isDebug) {
             $event->getResponse()->headers->set('Content-Security-Policy',
                 "default-src 'self';" . // Default rule: only allow content from our own domain
-                "frame-src 'none';" . // Block all iframes
-                "script-src 'self' 'nonce-FOR725'" // Allow our jsData inline script
+                "frame-src 'none';" // Block all iframes
             );
 
             $event->getResponse()->headers->set('X-Frame-Options', 'deny');

@@ -36,7 +36,7 @@ class BreadcrumbListener
         $controller = $event->getController();
         $this->request = $event->getRequest();
 
-        if (!is_callable($controller)) {
+        if (is_array($controller)) {
             $controller = $controller[0];
         }
 
@@ -47,7 +47,7 @@ class BreadcrumbListener
         $this->processBreadcrumbs($controller);
     }
 
-    private function processBreadcrumbs(callable $controller): void
+    private function processBreadcrumbs(object $controller): void
     {
         // Build a new ReflectionClass instance of our controller
         $class = new \ReflectionClass($controller);

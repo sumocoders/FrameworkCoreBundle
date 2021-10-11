@@ -3,6 +3,7 @@
 namespace SumoCoders\FrameworkCoreBundle\EventListener;
 
 use SumoCoders\FrameworkCoreBundle\ValueObject\Route;
+use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use SumoCoders\FrameworkCoreBundle\Service\BreadcrumbTrail;
 use SumoCoders\FrameworkCoreBundle\ValueObject\Breadcrumb;
@@ -13,23 +14,20 @@ use Symfony\Component\HttpFoundation\Request;
 use InvalidArgumentException;
 use RuntimeException;
 
-/*
- * This listener will fire on every registered controller
- * in our application, loop over all the methods in said
- * controller and attempt to process and generate a breadcrumb
- * for each valid attribute it finds on those methods.
- */
 class BreadcrumbListener
 {
     private RouterInterface $router;
+    private PropertyAccessorInterface $propertyAccess;
     private BreadcrumbTrail $breadcrumbTrail;
     private Request $request;
 
     public function __construct(
         RouterInterface $router,
+        PropertyAccessorInterface $propertyAccess,
         BreadcrumbTrail $breadcrumbTrail
     ) {
         $this->router = $router;
+        $this->propertyAccess = $propertyAccess;
         $this->breadcrumbTrail = $breadcrumbTrail;
     }
 
@@ -74,7 +72,7 @@ class BreadcrumbListener
         foreach ($attributes as $attribute) {
             /** @var BreadcrumbAttribute $attributeInstance */
             $attributeInstance = $attribute->newInstance();
-            dump($attributeInstance);
+
             if ($route !== null) {
                 $attributeInstance->setRoute($route);
             }
@@ -135,21 +133,21 @@ class BreadcrumbListener
                 throw new RuntimeException('When using objects in a breadcrumb, you have to specify which method to read. E.g. {object.name}');
             }
 
-            $methods = explode('.', $expression);
-            $variableName = array_shift($methods);
+            $methods = explode('.', $expression, 2);
+            $objectName = $methods[0];
+            $propertyPath = $methods[1];
 
-            if (!$this->request->attributes->has($variableName)) {
-                throw new RuntimeException('You tried to use {' . $variableName . '} as a breadcrumb parameter, but there is no parameter with that name in the route.');
+            if (!$this->request->attributes->has($objectName)) {
+                throw new RuntimeException('You tried to use {' . $objectName . '} as a breadcrumb parameter, but there is no parameter with that name in the route.');
             }
 
-            $object = $this->request->attributes->get($variableName);
+            $object = $this->request->attributes->get($objectName);
 
-            //TODO: if $object is a string and not an object, the paramconversion failed and could'nt find a valid object. handle exception
             if (is_string($object)) {
-                throw new RuntimeException('The parameter conversion ');
+                throw new RuntimeException('The parameter conversion failed to find a valid object.');
             }
 
-            $title = $this->processMethodChain($object, $methods);
+            $title = $this->propertyAccess->getValue($object, $propertyPath);
         }
 
         if ($breadcrumb->hasRoute()) {
@@ -223,9 +221,7 @@ class BreadcrumbListener
                 'A route with name "'. $routeName . '" could not be found. Check your spelling.'
             );
         }
-        //TODO: check if we need to manually pass the attrbutes
-        //since each attribute will resolve their own parameters
-        //from the URL anyway
+
         $requiredParameters = $routeInformation['parameters'];
 
         $parentParameters = [];
@@ -248,31 +244,5 @@ class BreadcrumbListener
         $method = $class->getMethod($routeInformation['method']);
 
         $this->processAttributeFromMethod($method, new Route($routeName, $parentParameters));
-    }
-
-    private function processMethodChain(
-        object $object,
-        array $methods
-    ): string {
-        foreach ($methods as $method) {
-            $fullMethodNames = [
-                'get' . $method,
-                'has' . $method,
-                'is' . $method,
-            ];
-
-            foreach ($fullMethodNames as $fullMethodName) {
-                if (is_callable([$object, $fullMethodName])) {
-                    $object = call_user_func([$object, $fullMethodName]);
-
-                    continue 2;
-                }
-
-                throw new RuntimeException(sprintf('"%s" is not callable.',
-                    implode('.', $methods)));
-            }
-        }
-
-        return $object;
     }
 }

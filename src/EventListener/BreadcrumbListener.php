@@ -93,76 +93,88 @@ class BreadcrumbListener
         }
     }
 
-    private function verifyRoute(Route $attributeRoute)
-    {
-        // Get the route
-        $routeInformation = $this->getRouteInformation($attributeRoute->getName());
-
-        if (count($routeInformation['parameters']) > 0 &&
-            !$attributeRoute->getParameters()) {
-            throw new RuntimeException(
-                'Your breadcrumb route is missing required parameters: ' .
-                implode($routeInformation['parameters'])
-            );
-        }
-
-        foreach ($routeInformation['parameters'] as $requiredParameter) {
-            if (!\array_key_exists($requiredParameter, $attributeRoute->getParameters())) {
-                throw new RuntimeException('Your breadcrumb route is missing required parameters: ' . $requiredParameter);
-            }
-        }
-    }
-
     private function generateBreadcrumb(BreadcrumbAttribute $breadcrumb): Breadcrumb
     {
         $title = $breadcrumb->getTitle();
 
-        // Check if the passed value was an expression, e.g. {item.name}
-        preg_match(
-            '/{\K[^}]*(?=})/m',
-            $title,
-            $match
-        );
-
-        // The passed value was an expression
-        if (\array_key_exists(0, $match)) {
-            $expression = $match[0];
+        // We're dealing with an expression, e.g. {item.name}
+        if ($title[0] === '{' && $title[-1] === '}') {
+            $expression = substr($title, 1, strlen($title) - 2);
 
             // If no functions were used
             if (!str_contains($expression, '.')) {
                 throw new RuntimeException('When using objects in a breadcrumb, you have to specify which method to read. E.g. {object.name}');
             }
 
-            $methods = explode('.', $expression, 2);
-            $objectName = $methods[0];
-            $propertyPath = $methods[1];
+            $split = explode('.', $expression, 2);
+            $objectName = $split[0];
+            $propertyPath = $split[1];
 
             if (!$this->request->attributes->has($objectName)) {
                 throw new RuntimeException('You tried to use {' . $objectName . '} as a breadcrumb parameter, but there is no parameter with that name in the route.');
             }
 
+            /*
+             * By reading the object's name from the request attributes,
+             * we receive the object found by the paramconverter.
+             */
             $object = $this->request->attributes->get($objectName);
 
             if (is_string($object)) {
-                throw new RuntimeException('The parameter conversion failed to find a valid object.');
+                throw new RuntimeException('The parameter conversion failed to find a valid object for: ' . $objectName);
             }
 
             $title = $this->propertyAccess->getValue($object, $propertyPath);
         }
 
         if ($breadcrumb->hasRoute()) {
-            $routeName = $breadcrumb->getRoute()->getName();
-            $routeParameters = $breadcrumb->getRoute()->getParameters();
-
             return new Breadcrumb(
                 $title,
-                $this->router->generate($routeName, $routeParameters, UrlGeneratorInterface::ABSOLUTE_URL)
+                $this->router->generate(
+                    $breadcrumb->getRoute()->getName(),
+                    $breadcrumb->getRoute()->getParameters(),
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                )
             );
         }
 
-        return new Breadcrumb(
-            $title
-        );
+        // Just a simple string
+        return new Breadcrumb($title);
+    }
+
+    private function addBreadcrumbsForParent(Route $parent): void
+    {
+        $routeName = $parent->getName();
+        $routeInformation = $this->getRouteInformation($routeName);
+
+        if ($routeInformation === null) {
+            throw new RuntimeException(
+                'A route with name "'. $routeName . '" could not be found. Check your spelling.'
+            );
+        }
+
+        $requiredParameters = $routeInformation['parameters'];
+
+        $parentParameters = [];
+        $currentAttributes = $this->request->attributes->all();
+
+        foreach ($requiredParameters as $requiredParameterForParent) {
+            /*
+             * In real world scenario's, the parent is often present
+             * in the same URI as the request. Take for example:
+             *  /{item}/{child}
+             * If we're currently in the child route, we can check the URI
+             * for the author parameter and already fill it in.
+             */
+            if (\array_key_exists($requiredParameterForParent, $currentAttributes)) {
+                $parentParameters[$requiredParameterForParent] = $currentAttributes[$requiredParameterForParent]->getId();
+            }
+        }
+
+        $class = new \ReflectionClass($routeInformation['controller']);
+        $method = $class->getMethod($routeInformation['method']);
+
+        $this->processAttributeFromMethod($method, new Route($routeName, $parentParameters));
     }
 
     private function getRouteInformation(string $name): ?array
@@ -211,38 +223,23 @@ class BreadcrumbListener
         return null;
     }
 
-    private function addBreadcrumbsForParent(Route $parent): void
+    private function verifyRoute(Route $attributeRoute)
     {
-        $routeName = $parent->getName();
-        $routeInformation = $this->getRouteInformation($routeName);
+        // Get the route
+        $routeInformation = $this->getRouteInformation($attributeRoute->getName());
 
-        if ($routeInformation === null) {
+        if (count($routeInformation['parameters']) > 0 &&
+            !$attributeRoute->getParameters()) {
             throw new RuntimeException(
-                'A route with name "'. $routeName . '" could not be found. Check your spelling.'
+                'Your breadcrumb route is missing required parameters: ' .
+                implode($routeInformation['parameters'])
             );
         }
 
-        $requiredParameters = $routeInformation['parameters'];
-
-        $parentParameters = [];
-        $currentAttributes = $this->request->attributes->all();
-
-        foreach ($requiredParameters as $requiredParameterForParent) {
-            /*
-             * In real world scenario's, the parent is often present
-             * in the same URI as the request. Take for example:
-             *  /{author}/{book}
-             * If we're currently in the book route, we can check the URI
-             * for the author parameter and already fill it in.
-             */
-            if (\array_key_exists($requiredParameterForParent, $currentAttributes)) {
-                $parentParameters[$requiredParameterForParent] = $currentAttributes[$requiredParameterForParent]->getId();
+        foreach ($routeInformation['parameters'] as $requiredParameter) {
+            if (!\array_key_exists($requiredParameter, $attributeRoute->getParameters())) {
+                throw new RuntimeException('Your breadcrumb route is missing required parameters: ' . $requiredParameter);
             }
         }
-
-        $class = new \ReflectionClass($routeInformation['controller']);
-        $method = $class->getMethod($routeInformation['method']);
-
-        $this->processAttributeFromMethod($method, new Route($routeName, $parentParameters));
     }
 }

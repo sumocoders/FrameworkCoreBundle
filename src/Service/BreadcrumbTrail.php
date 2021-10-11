@@ -32,32 +32,32 @@ class BreadcrumbTrail implements Iterator, Countable
         return $this->breadcrumbs;
     }
 
-    public function count()
+    public function count(): int
     {
         return count($this->breadcrumbs);
     }
 
-    public function current()
+    public function current(): Breadcrumb
     {
         return $this->breadcrumbs[$this->index];
     }
 
-    public function next()
+    public function next(): void
     {
         ++ $this->index;
     }
 
-    public function key()
+    public function key(): int
     {
         return $this->index;
     }
 
-    public function valid()
+    public function valid(): bool
     {
-        return isset($this->breadcrumbs[$this->index]);
+        return \array_key_exists($this->index, $this->breadcrumbs);
     }
 
-    public function rewind()
+    public function rewind(): void
     {
         $this->index = 0;
     }

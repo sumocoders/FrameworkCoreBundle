@@ -3,7 +3,6 @@
 {% endblock %}
 
 <body class="body-base">
-  {{ browser_check }}
   <div id="main-wrapper" class="main-wrapper" data-sidebar-wrapper>
     <div id="main-menu" class="main-menu" role="navigation">
       {% block include_navigation %}
@@ -11,6 +10,7 @@
       {% endblock %}
     </div>
     <div id="content-wrapper">
+      {{ browser_check() }}
       <div class="main-header">
         <div class="d-md-none breadcrumb-mobile">
           <nav aria-label="breadcrumb" class="my-2">

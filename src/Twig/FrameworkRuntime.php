@@ -26,9 +26,9 @@ class FrameworkRuntime implements RuntimeExtensionInterface
             $this->browser->getName() === Browser::CHROME && $this->browser->getVersion() < 60 ||
             $this->browser->getName() === Browser::SAFARI && $this->browser->getVersion() < 12) {
             return $this->twig->render(
-                'browser.html',
+                '@SumoCodersFrameworkCore/browser.html.twig',
                 [
-                    'message' => 'You\'re using an outdated browser.'
+                    'message' => 'Your browser version is outdated. Please upgrade to a newer version to use this application.'
                 ]
             );
         }

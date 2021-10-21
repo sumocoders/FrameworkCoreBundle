@@ -142,3 +142,6 @@ user:
     actions:
         logout: afmelden
         switchback: terug naar eigen account
+
+'Your browser version is outdated. Please upgrade to a newer version to use this application.': 'U gebruikt momenteel een verouderde browser. <a class="text-decoration-underline" href="https://browsehappy.com/">Update nu</a> naar een nieuwere versie om deze applicatie te gebruiken.'
+

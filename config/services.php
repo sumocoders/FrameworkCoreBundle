@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Sinergi\BrowserDetector\Browser;
 use SumoCoders\FrameworkCoreBundle\Command\TranslateCommand;
 use SumoCoders\FrameworkCoreBundle\Twig\FrameworkRuntime;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
@@ -127,5 +128,11 @@ return static function (ContainerConfigurator $container): void {
          * Commands
          */
         ->set(TranslateCommand::class)
-            ->tag('console.command');
+            ->tag('console.command')
+
+        /*
+         * Browser detection
+         */
+        ->set('browser_detector.browser', Browser::class)
+        ->alias(Browser::class, 'browser_detector.browser');
 };

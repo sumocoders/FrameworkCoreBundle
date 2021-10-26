@@ -21,18 +21,22 @@ class TranslateCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $locale = $this->parameters->get('locale');
+        $locales = $this->parameters->get('locales');
 
         $command = $this->getApplication()->find('translation:update');
 
-        $arguments = [
-            'locale' => $locale,
-            '--force' => true,
-            '--format' => 'yaml',
-        ];
+        foreach ($locales as $locale) {
+            $arguments = [
+                'locale' => $locale,
+                '--force' => true,
+                '--format' => 'yaml',
+            ];
 
-        $translationInput = new ArrayInput($arguments);
+            $translationInput = new ArrayInput($arguments);
 
-        return $command->run($translationInput, $output);
+            $command->run($translationInput, $output);
+        }
+
+        return Command::SUCCESS;
     }
 }

@@ -1,20 +1,18 @@
 {% apply inky_to_html|inline_css(source(asset('build/mail.css'))) %}
-    <wrapper class="header">
-        <container>
-            <row class="collapse">
-                {% block logo %}
-                    <img width="135" src="{{ absolute_url(asset('build/images/logo-application-mail.gif')) }}" alt="{{ fallbacks.get('site_title') }}" align="center" class="float-center">
-                {% endblock %}
-            </row>
-        </container>
-    </wrapper>
-
+    <spacer size="16"></spacer>
     <container>
         <spacer size="16"></spacer>
         <row>
-            {% block content %}
-                {{ content|raw }}
-            {% endblock %}
+            <columns>
+                <center>
+                    {% block logo %}
+                        <img src="{{ absolute_url(asset('build/images/logo-application-mail.gif')) }}" alt="{{ fallbacks.get('site_title') }}">
+                    {% endblock %}
+                </center>
+            </columns>
         </row>
+        {% block content %}
+            {{ content|raw }}
+        {% endblock %}
     </container>
 {% endapply %}

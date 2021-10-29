@@ -25,9 +25,9 @@ You can either tweak the CSP header inside a specific controller (where you alre
 
 services.yaml
 ```yaml
-  App\EventListener\ResponseListener
+  App\EventListener\ResponseListener:
       tags:
-        - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
+        - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse, priority: -5 }
 ```
 
 ResponseListener.php

@@ -94,7 +94,8 @@ return static function (ContainerConfigurator $container): void {
          */
         ->set('framework.response_securer', ResponseSecurer::class)
             ->args([
-                param('kernel.debug')
+                param('kernel.debug'),
+                param('sumo_coders_framework_core.content_security_policy'),
             ])
             ->tag('kernel.event_listener', ['event' => 'kernel.response', 'method' => 'onKernelResponse'])
 

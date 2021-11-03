@@ -16,5 +16,13 @@ class SumoCodersFrameworkCoreExtension extends Extension
             new FileLocator(__DIR__ . '/../../config')
         );
         $loader->load('services.php');
+
+        $configuration = new Configuration();
+        $config = $this->processConfiguration($configuration, $configs);
+
+        $container->setParameter(
+            'sumo_coders_framework_core.content_security_policy',
+            $config['content_security_policy']
+        );
     }
 }

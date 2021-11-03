@@ -80,8 +80,18 @@ sumo_coders_framework_core:
 
 ```
 
+
+
 # X-Frame-Options
 See [X-Frame-Options](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options) for more information.
 
 Can be configured by setting `sumo_coders_framework_core.x-frame-options`. The default is `deny`. If you set an empty
 string the header won't be added.
+
+
+
+# X-Content-Type-Options
+See [X-Content-Type-Options](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options) for more information.
+
+Can be configured by setting `sumo_coders_framework_core.x-content-type-options`. The default is `nosniff`. If you set 
+an empty string the header won't be added.

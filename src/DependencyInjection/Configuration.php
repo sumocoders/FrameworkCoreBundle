@@ -41,6 +41,10 @@ class Configuration implements ConfigurationInterface
                     ->values(['', 'deny', 'sameorigin'])
                     ->defaultValue('deny')
                 ->end()
+                ->enumNode('x_content_type_options')
+                    ->values(['', 'nosniff'])
+                    ->defaultValue('nosniff')
+                ->end()
             ->end();
 
         return $treeBuilder;

@@ -10,17 +10,20 @@ class ResponseSecurer
     private array $cspDirectives;
     private array $extraCspDirectives;
     private string $xFrameOptions;
+    private string $xContentTypeOptions;
 
     public function __construct(
         bool $isDebug,
         array $cspDirectives,
         array $extraCspDirectives,
-        string $xFrameOptions
+        string $xFrameOptions,
+        string $xContentTypeOptions
     ) {
         $this->isDebug = $isDebug;
         $this->cspDirectives = $cspDirectives;
         $this->extraCspDirectives = $extraCspDirectives;
         $this->xFrameOptions = $xFrameOptions;
+        $this->xContentTypeOptions = $xContentTypeOptions;
     }
 
     /**
@@ -36,17 +39,16 @@ class ResponseSecurer
          */
         if (!$this->isDebug) {
             if (!empty($this->cspDirectives)) {
-                $event->getResponse()->headers->set(
-                    'Content-Security-Policy',
-                    $this->buildCSPDirectiveString()
-                );
+                $event->getResponse()->headers->set('Content-Security-Policy', $this->buildCSPDirectiveString());
             }
 
             if ($this->xFrameOptions !== '') {
                 $event->getResponse()->headers->set('X-Frame-Options', $this->xFrameOptions);
             }
 
-            $event->getResponse()->headers->set('X-Content-Type-Options', 'nosniff');
+            if ($this->xContentTypeOptions !== '') {
+                $event->getResponse()->headers->set('X-Content-Type-Options', $this->xContentTypeOptions);
+            }
         }
     }
 

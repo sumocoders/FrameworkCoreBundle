@@ -36,6 +36,7 @@ class Configuration implements ConfigurationInterface
                     ])
                 ->end()
                 ->variableNode('extra_content_security_policy')
+                    ->defaultValue([])
                 ->end()
                 ->enumNode('x_frame_options')
                     ->values(['', 'deny', 'sameorigin'])

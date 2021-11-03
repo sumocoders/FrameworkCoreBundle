@@ -24,5 +24,9 @@ class SumoCodersFrameworkCoreExtension extends Extension
             'sumo_coders_framework_core.content_security_policy',
             $config['content_security_policy']
         );
+        $container->setParameter(
+            'sumo_coders_framework_core.extra_content_security_policy',
+            $config['extra_content_security_policy']
+        );
     }
 }

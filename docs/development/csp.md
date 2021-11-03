@@ -23,43 +23,30 @@ The default Content Security Policies are:
 "script-src 'self' 'nonce-FOR725'"
 ```
 
-## Extending the headers
+
+## Extending the default Content Security Policies
 
 In some cases, you might have to allow external CSS and/or JS in your project. To do so, you'll have to allow the domain
 on which the resource is hosted.
 
-You can either tweak the CSP header inside a specific controller (where you already have a Response object), or add an
-event listener on the kernel response event and tweak the headers there (globally).
+You can either tweak the CSP header inside a specific controller (where you already have a Response object). Or you can 
+add extra policies application wide by using a configuration file: `config/packages/sumo_coders_framework_core.yaml`.
 
-services.yaml
+In this file you can set the extra policies. Hereunder you can find an example to allow Google Maps.
 
 ```yaml
-  App\EventListener\ResponseListener:
-    tags:
-      - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse, priority: -5 }
-```
-
-ResponseListener.php
-
-```php
-<?php
-
-namespace App\EventListener;
-
-use Symfony\Component\HttpKernel\Event\ResponseEvent;
-
-class ResponseListener
-{
-    public function onKernelResponse(ResponseEvent $event)
-    {
-        $event->getResponse()->headers->set('Content-Security-Policy',
-            "script-src https://your-cdn.com/your-script.js",
-            false // Passing false here will add the new headers instead of overwrite
-        );
-    }
-}
+sumo_coders_framework_core:
+  extra_content_security_policy:
+    script-src:
+      - 'maps.googleapis.com'
+    img-src:
+      - "'self'"
+      - 'data: maps.gstatic.com'
+      - '*.googleapis.com'
+      - '*.ggpht.com'
 
 ```
+
 
 ## Overriding the default Content Security Policies
 

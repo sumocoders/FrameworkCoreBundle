@@ -35,6 +35,8 @@ class Configuration implements ConfigurationInterface
                         ],
                     ])
                 ->end()
+                ->variableNode('extra_content_security_policy')
+                ->end()
             ->end();
 
         return $treeBuilder;

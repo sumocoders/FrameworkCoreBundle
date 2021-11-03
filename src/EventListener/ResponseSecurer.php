@@ -8,11 +8,13 @@ class ResponseSecurer
 {
     private bool $isDebug;
     private array $cspDirectives;
+    private array $extraCspDirectives;
 
-    public function __construct(bool $isDebug, array $cspDirectives)
+    public function __construct(bool $isDebug, array $cspDirectives, array $extraCspDirectives)
     {
         $this->isDebug = $isDebug;
         $this->cspDirectives = $cspDirectives;
+        $this->extraCspDirectives = $extraCspDirectives;
     }
 
     /**
@@ -42,6 +44,17 @@ class ResponseSecurer
     private function buildCSPDirectiveString(): string
     {
         $cspDirectives = $this->cspDirectives;
+
+        if (!empty($this->extraCspDirectives)) {
+            foreach ($this->extraCspDirectives as $directive => $policies) {
+                if (array_key_exists($directive, $cspDirectives)) {
+                    $cspDirectives[$directive] = array_unique(array_merge($cspDirectives[$directive], $policies));
+                } else {
+                    $cspDirectives[$directive] = $policies;
+                }
+            }
+        }
+
         $policyDirectivesString = '';
 
         foreach ($cspDirectives as $directive => $policies) {

@@ -79,3 +79,9 @@ sumo_coders_framework_core:
       - "'nonce-FOR725'"
 
 ```
+
+# X-Frame-Options
+See [X-Frame-Options](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options) for more information.
+
+Can be configured by setting `sumo_coders_framework_core.x-frame-options`. The default is `deny`. If you set an empty
+string the header won't be added.

@@ -37,6 +37,10 @@ class Configuration implements ConfigurationInterface
                 ->end()
                 ->variableNode('extra_content_security_policy')
                 ->end()
+                ->enumNode('x_frame_options')
+                    ->values(['', 'deny', 'sameorigin'])
+                    ->defaultValue('deny')
+                ->end()
             ->end();
 
         return $treeBuilder;

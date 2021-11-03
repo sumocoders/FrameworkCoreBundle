@@ -9,12 +9,18 @@ class ResponseSecurer
     private bool $isDebug;
     private array $cspDirectives;
     private array $extraCspDirectives;
+    private string $xFrameOptions;
 
-    public function __construct(bool $isDebug, array $cspDirectives, array $extraCspDirectives)
-    {
+    public function __construct(
+        bool $isDebug,
+        array $cspDirectives,
+        array $extraCspDirectives,
+        string $xFrameOptions
+    ) {
         $this->isDebug = $isDebug;
         $this->cspDirectives = $cspDirectives;
         $this->extraCspDirectives = $extraCspDirectives;
+        $this->xFrameOptions = $xFrameOptions;
     }
 
     /**
@@ -36,7 +42,10 @@ class ResponseSecurer
                 );
             }
 
-            $event->getResponse()->headers->set('X-Frame-Options', 'deny');
+            if ($this->xFrameOptions !== '') {
+                $event->getResponse()->headers->set('X-Frame-Options', $this->xFrameOptions);
+            }
+
             $event->getResponse()->headers->set('X-Content-Type-Options', 'nosniff');
         }
     }

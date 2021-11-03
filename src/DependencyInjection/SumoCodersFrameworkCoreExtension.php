@@ -28,5 +28,10 @@ class SumoCodersFrameworkCoreExtension extends Extension
             'sumo_coders_framework_core.extra_content_security_policy',
             $config['extra_content_security_policy']
         );
+
+        $container->setParameter(
+            'sumo_coders_framework_core.x_frame_options',
+            $config['x_frame_options']
+        );
     }
 }

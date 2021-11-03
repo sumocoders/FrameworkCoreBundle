@@ -97,6 +97,7 @@ return static function (ContainerConfigurator $container): void {
                 param('kernel.debug'),
                 param('sumo_coders_framework_core.content_security_policy'),
                 param('sumo_coders_framework_core.extra_content_security_policy'),
+                param('sumo_coders_framework_core.x_frame_options'),
             ])
             ->tag('kernel.event_listener', ['event' => 'kernel.response', 'method' => 'onKernelResponse'])
 

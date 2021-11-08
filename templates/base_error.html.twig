@@ -1,10 +1,20 @@
 {% block head %}
     {{ include('@SumoCodersFrameworkCore/head.html.twig') }}
+
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('error') }}
+    {% endblock %}
+
 {% endblock %}
 
-<body class="body-empty">
-    <div class="container">
-        {% block main %}{% endblock %}
+<body>
+<div id="content">
+    <div class="wrapper">
+        <div class="header" role="alert">
+            {% block body %}{% endblock %}
+        </div>
+        <div id="illustration"></div>
     </div>
+</div>
 </body>
 </html>

@@ -1,0 +1,22 @@
+{% block head %}
+    {{ include('@SumoCodersFrameworkCore/head.html.twig') }}
+
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('error') }}
+    {% endblock %}
+
+{% endblock %}
+
+<body class="error-page">
+<div id="content" class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-7 col-xl-6">
+            <div class="header" role="alert">
+                {% block body %}{% endblock %}
+            </div>
+            <div id="illustration"></div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

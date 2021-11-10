@@ -7,13 +7,15 @@
 
 {% endblock %}
 
-<body>
-<div id="content">
-    <div class="wrapper">
-        <div class="header" role="alert">
-            {% block body %}{% endblock %}
+<body class="error-page">
+<div id="content" class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-7 col-xl-6">
+            <div class="header" role="alert">
+                {% block body %}{% endblock %}
+            </div>
+            <div id="illustration"></div>
         </div>
-        <div id="illustration"></div>
     </div>
 </div>
 </body>

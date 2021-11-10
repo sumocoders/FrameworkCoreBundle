@@ -1,10 +1,7 @@
-{% extends 'base_error.html.twig' %}
+{% extends '@SumoCodersFrameworkCore/base_error.html.twig' %}
 
 {% block body %}
-    <h1>Page not found</h1>
-
-    <p>
-        The requested page couldn't be located. Checkout for any URL
-        misspelling or <a href="{{ path('homepage') }}">return to the homepage</a>.
-    </p>
+    <h1>{{ 'error.messages.crash'|trans }}</h1>
+    <p>{{ 'error.messages.crashMessage'|trans }}</p>
+    <a href="{{ app.request.headers.get('referer') }}" class="btn btn-outline-primary">{{ 'go back'|trans }}</a>
 {% endblock %}

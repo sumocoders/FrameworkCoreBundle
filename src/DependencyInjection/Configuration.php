@@ -20,11 +20,9 @@ class Configuration implements ConfigurationInterface
                         ],
                         'style-src' => [
                             "'self'",
-                            'https://fonts.googleapis.com', // Allow Google Fonts
                         ],
                         'font-src' => [
                             "'self'",
-                            'https://fonts.gstatic.com', // Allow Google Fonts
                         ],
                         'frame-src' => [
                             "'none'", // Block all iframes

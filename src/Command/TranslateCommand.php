@@ -23,7 +23,7 @@ class TranslateCommand extends Command
     {
         $locales = $this->parameters->get('locales');
 
-        $command = $this->getApplication()->find('translation:update');
+        $command = $this->getApplication()->find('translation:extract');
 
         foreach ($locales as $locale) {
             $arguments = [

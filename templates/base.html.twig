@@ -2,7 +2,7 @@
   {{ include('@SumoCodersFrameworkCore/head.html.twig') }}
 {% endblock %}
 
-<body class="body-base">
+<body class="body-base" data-theme-path="{{ asset('build/style-dark') }}">
   <div id="main-wrapper" class="main-wrapper" data-sidebar-wrapper>
     <div id="main-menu" class="main-menu" role="navigation">
       {% block include_navigation %}
@@ -39,11 +39,6 @@
             </div>
           </div>
         {% endif %}
-      </div>
-
-      <div class="loading-indicator d-none" data-role="ajax-indicator">
-        <p class="text-center">{{ 'core.interface.loading'|trans|ucfirst }}...</p>
-        <div class="loading-bar"></div>
       </div>
 
       <section id="main" role="main">

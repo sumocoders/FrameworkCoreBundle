@@ -13,8 +13,6 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 use SumoCoders\FrameworkCoreBundle\Twig\PaginatorRuntime;
 use SumoCoders\FrameworkCoreBundle\Twig\PaginatorExtension;
 use SumoCoders\FrameworkCoreBundle\Twig\FrameworkExtension;
-use SumoCoders\FrameworkCoreBundle\Service\Theme;
-use SumoCoders\FrameworkCoreBundle\Service\JsData;
 use SumoCoders\FrameworkCoreBundle\Service\BreadcrumbTrail;
 use SumoCoders\FrameworkCoreBundle\EventListener\BreadcrumbListener;
 use SumoCoders\FrameworkCoreBundle\Menu\MenuBuilder;
@@ -41,18 +39,6 @@ return static function (ContainerConfigurator $container): void {
         ->set('framework.fallbacks', Fallbacks::class)
             ->args([
                 param('fallbacks')
-            ])
-
-        ->set('framework.jsdata', JsData::class)
-            ->args([
-                service('request_stack')
-            ])
-
-        ->set('framework.theme', Theme::class)
-            ->args([
-                service('request_stack'),
-                service('framework.jsdata'),
-                service('assets.packages')
             ])
 
         /*

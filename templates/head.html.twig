@@ -11,7 +11,7 @@
 
     {% block stylesheets %}
         {{ encore_entry_link_tags('style') }}
-        {% if theme.current == 'theme-dark' %}
+        {% if theme() == 'theme-dark' %}
             {{ encore_entry_link_tags('style-dark') }}
         {% endif %}
     {% endblock %}

@@ -16,5 +16,27 @@ class SumoCodersFrameworkCoreExtension extends Extension
             new FileLocator(__DIR__ . '/../../config')
         );
         $loader->load('services.php');
+
+        $configuration = new Configuration();
+        $config = $this->processConfiguration($configuration, $configs);
+
+        $container->setParameter(
+            'sumo_coders_framework_core.content_security_policy',
+            $config['content_security_policy']
+        );
+        $container->setParameter(
+            'sumo_coders_framework_core.extra_content_security_policy',
+            $config['extra_content_security_policy']
+        );
+
+        $container->setParameter(
+            'sumo_coders_framework_core.x_frame_options',
+            $config['x_frame_options']
+        );
+
+        $container->setParameter(
+            'sumo_coders_framework_core.x_content_type_options',
+            $config['x_content_type_options']
+        );
     }
 }

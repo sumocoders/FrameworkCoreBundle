@@ -24,12 +24,11 @@ class Configuration implements ConfigurationInterface
                         'font-src' => [
                             "'self'",
                         ],
-                        'frame-src' => [
+                        'child-src' => [
                             "'none'", // Block all iframes
                         ],
                         'script-src' => [
                             "'self'",
-                            "'nonce-FOR725'", // Allow our jsData inline script
                         ],
                     ])
                 ->end()

@@ -53,7 +53,7 @@ public function __invoke(): Response
 }
 
 #[Route('/books/genres', name:'genres_overview')]
-#[Breadcrumb('genres', parent:'books_overview')]
+#[Breadcrumb('genres', parent:['name' => 'books_overview'])]
 public function __invoke(): Response
 {
 }
@@ -83,7 +83,7 @@ public function __invoke(Author $author): Response
 }
 
 #[Route('/{author}/{book}', name:'book_overview')]
-#[Breadcrumb('{book.title}', parent:['author_overview'])]
+#[Breadcrumb('{book.title}', parent:['name' => 'author_overview'])]
 public function __invoke(Author $author, Book $book): Response
 {
 }
@@ -101,7 +101,7 @@ public function __invoke(Author $author): Response
 // ! You can only link to parent breadcrumbs if their parameters
 // ! are still present in the route URL
 #[Route('/{book}', name:'book_overview')]
-#[Breadcrumb('{book.title}', parent:['author_overview'])]
+#[Breadcrumb('{book.title}', parent:['name' => 'author_overview'])]
 public function __invoke(Author $author, Book $book): Response
 {
 }

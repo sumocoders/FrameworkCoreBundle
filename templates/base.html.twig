@@ -13,7 +13,7 @@
       <div class="main-header">
         <div class="d-md-none breadcrumb-mobile">
           <nav aria-label="breadcrumb" class="my-2">
-            {{ block('breadcrumb', '@SumoCodersFrameworkCore/BreadCrumb/breadCrumb.html.twig') }}
+            {{ block('breadcrumb', '@SumoCodersFrameworkCore/Breadcrumb/breadcrumb.html.twig') }}
           </nav>
         </div>
         <div class="sub-nav d-flex">
@@ -46,7 +46,7 @@
           {{ include('@SumoCodersFrameworkCore/notifications.html.twig') }}
           <div class="header-title-bar d-none d-md-flex justify-content-md-between align-items-md-center flex-column flex-md-row flex-wrap">
             <nav aria-label="breadcrumb" class="my-2">
-              {{ block('breadcrumb', '@SumoCodersFrameworkCore/BreadCrumb/breadCrumb.html.twig') }}
+              {{ block('breadcrumb', '@SumoCodersFrameworkCore/Breadcrumb/breadcrumb.html.twig') }}
             </nav>
             <div class="ms-md-auto">
               {% if block('header_navigation') is defined and block('header_navigation') is not empty %}

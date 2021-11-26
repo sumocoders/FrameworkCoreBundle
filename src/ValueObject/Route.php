@@ -22,4 +22,9 @@ class Route
     {
         return $this->parameters;
     }
+
+    public function addParameters(array $parameters): void
+    {
+        $this->parameters = array_merge($this->parameters, $parameters);
+    }
 }

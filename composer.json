@@ -26,21 +26,21 @@
     "friendsofsymfony/jsrouting-bundle": "^2",
     "knplabs/knp-menu-bundle": "^3.0",
     "sensio/framework-extra-bundle": "^6.1",
-    "symfony/form": "^5.3",
-    "symfony/asset": "^5.3",
-    "symfony/console": "^5.3",
-    "symfony/security-bundle": "^5.3",
-    "symfony/translation": "^5.3",
+    "symfony/form": "^5.3 || 6.0",
+    "symfony/asset": "^5.3 || 6.0",
+    "symfony/console": "^5.3 || 6.0",
+    "symfony/security-bundle": "^5.3 || 6.0",
+    "symfony/translation": "^5.3 || 6.0",
+    "symfony/twig-bundle": "^5.3 || 6.0",
+    "twig/inky-extra": "^3.3",
     "twig/cssinliner-extra": "^3.3",
-    "twig/extra-bundle": "^3.3",
-    "symfony/twig-bundle": "^5.3",
-    "twig/inky-extra": "^3.3"
+    "twig/extra-bundle": "^3.3"
   },
   "require-dev": {
     "roave/security-advisories": "dev-master",
-    "symfony/phpunit-bridge": "^4.3",
+    "symfony/phpunit-bridge": "^6.0",
     "friendsoftwig/twigcs": "^5.0",
-    "symfony/maker-bundle": "^1.31"
+    "symfony/maker-bundle": "^1.0"
   },
   "autoload": {
     "psr-4": {

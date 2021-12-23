@@ -41,10 +41,8 @@ final class DateTypeExtension extends AbstractTypeExtension
 
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
-        $view->vars['maximum_date'] = $options['maximum_date'] ?
-            DateTime::createFromFormat($options['format'], $options['maximum_date']) : null;
-        $view->vars['minimum_date'] = $options['minimum_date'] ?
-            DateTime::createFromFormat($options['format'], $options['minimum_date']) : null;
+        $view->vars['maximum_date'] = $options['maximum_date'] ?? null;
+        $view->vars['minimum_date'] = $options['minimum_date'] ?? null;
         $view->vars['format'] = $options['format'];
         $view->vars['divider'] = (strpos($options['format'], '-') !== false) ? '-' : '/';
         $view->vars['datepicker'] = $options['datepicker'] ?? false;

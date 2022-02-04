@@ -135,6 +135,7 @@ class Paginator implements Countable, IteratorAggregate
         return count($this->getResults());
     }
 
+    /** @return ArrayIterator<int, object> */
     public function getIterator(): Traversable
     {
         $results = $this->getResults();

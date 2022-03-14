@@ -411,3 +411,42 @@
     {% endif %}
   </select>
 {% endblock %}
+
+{% block form_help -%}
+  {% set row_class = row_attr.class|default('') %}
+  {% set help_class = ' form-text' %}
+  {% if 'input-group' in row_class %}
+    {#- Hack to properly display help with input group -#}
+    {% set help_class = ' input-group-text' %}
+  {% endif %}
+  {%- if help is not empty -%}
+    {%- set help_attr = help_attr|merge({class: (help_attr.class|default('') ~ help_class ~ ' mb-0')|trim}) -%}
+  {%- endif -%}
+
+  {%- if help is not empty -%}
+    {%- set help_attr = help_attr|merge({class: (help_attr.class|default('') ~ ' help-text')|trim}) -%}
+    {%- if help_html is same as(false) -%}
+    <p id="{{ id }}_help"{% with { attr: help_attr } %}{{ block('attributes') }}{% endwith %}>
+    {%- else -%}
+      <div id="{{ id }}_help"{% with { attr: help_attr } %}{{ block('attributes') }}{% endwith %}>
+    {%- endif -%}
+    {%- if translation_domain is same as(false) -%}
+      {%- if help_html is same as(false) -%}
+        {{- help -}}
+      {%- else -%}
+        {{- help|raw -}}
+      {%- endif -%}
+    {%- else -%}
+      {%- if help_html is same as(false) -%}
+        {{- help|trans(help_translation_parameters, translation_domain) -}}
+      {%- else -%}
+        {{- help|trans(help_translation_parameters, translation_domain)|raw -}}
+      {%- endif -%}
+    {%- endif -%}
+    {%- if help_html is same as(false) -%}
+      </p>
+    {%- else -%}
+      </div>
+    {%- endif -%}
+  {%- endif -%}
+{%- endblock form_help %}

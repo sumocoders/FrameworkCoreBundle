@@ -12,15 +12,24 @@ services:
       - { name: kernel.event_listener, event: framework_core.configure_menu, method: onConfigureMenu }
 ```
 
-To make things easier, there's a DefaultMenuListener to extend your MenuListener from. This base class already has two autowired arguments:
+To make things easier, there's a DefaultMenuListener to extend your MenuListener from. This base class already has three autowired arguments:
  * TranslatorInterface
  * Security
+ * RequestStack
 
 You can use them like so:
 * `$this->getTranslator()->trans('some text')` to translate stuff
 * `$this->getSecurity()->isGranted('ROLE_ADMIN');` to check for roles
+* `$this->getRequestStack()->getCurrentRequest()->...` to access the current request.
 
+There is also a helper called `enableChildRoutes`, which takes a prefix string as an argument. Calling this method on a menu item, will activate it when a route is visited that starts with the prefix you pass.
 
+In short, if you have a menu item with `user_overview` as the route, and you enable child routes with the `user_` prefix, all the following routes will also mark the user menu item as active:
+
+* `user_create`
+* `user_update`
+* `user_export`
+* `user_whatever`
 ## The example listener
 
 ```php
@@ -52,16 +61,18 @@ class MenuListener extends DefaultMenuListener
             );
         }
         
-        $menu->addChild(
-            $factory->createItem(
-                $this->getTranslator()->trans('menu.something_regular'),
-                [
-                    'route' => 'route_for_normal_users',
-                    'labelAttributes' => [
-                        'icon' => 'fas fa-user',
-                    ],
+        $userItem = $factory->createItem(
+            $this->getTranslator()->trans('menu.something_regular'),
+            [
+                'route' => 'user_overview',
+                'labelAttributes' => [
+                    'icon' => 'fas fa-user',
                 ],
-            )
+            ],
         );
+        
+        $userMenuItem->enableChildRoutes($userItem, 'user_');
+        
+        $menu->addChild($userMenuItem);
     }
 }

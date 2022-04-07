@@ -18,14 +18,14 @@
 
 {% block item %}
   {% if item.parent.name == 'root' and item.hasChildren %}
-    {% set item = item.setLinkAttributes({'class': 'nav-link d-flex align-items-center dropdown-toggle', 'data-bs-toggle': 'dropdown', 'role': 'button', 'aria-expended': false}) %}
-    {% set item = item.setAttributes({'class': 'dropdown nav-item', 'icon': item.attribute('icon'), 'pill': item.attribute('pill')}) %}
-    {% set item = item.setChildrenAttributes({'class': 'dropdown-menu', 'role': 'menu'}) %}
+    {% set item = item.setLinkAttributes({'class': item.linkAttribute('class') ~ ' nav-link d-flex align-items-center dropdown-toggle', 'data-bs-toggle': 'dropdown', 'role': 'button', 'aria-expanded': false}) %}
+    {% set item = item.setAttributes({'class': item.attribute('class') ~ ' dropdown nav-item', 'icon': item.attribute('icon'), 'pill': item.attribute('pill')}) %}
+    {% set item = item.setChildrenAttributes({'class': item.childrenAttribute('class') ~ ' dropdown-menu', 'role': 'menu'}) %}
   {% elseif item.parent.name == 'root' and not item.hasChildren %}
-    {% set item = item.setAttributes({'class': 'nav-item', 'pill': item.attribute('pill')}) %}
-    {% set item = item.setLinkAttributes({'class': 'nav-link d-flex align-items-center'}) %}
+    {% set item = item.setAttributes({'class': item.attribute('class') ~ ' nav-item', 'pill': item.attribute('pill')}) %}
+    {% set item = item.setLinkAttributes({'class': item.linkAttribute('class') ~ ' nav-link d-flex align-items-center'}) %}
   {% elseif item.parent.name != 'root' and not item.hasChildren %}
-    {% set item = item.setLinkAttributes({'class': 'dropdown-item d-flex align-items-center'}) %}
+    {% set item = item.setLinkAttributes({'class': item.linkAttribute('class') ~ ' dropdown-item d-flex align-items-center'}) %}
   {% endif %}
   {{ parent() }}
 {% endblock %}

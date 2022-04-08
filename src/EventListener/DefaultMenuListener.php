@@ -52,4 +52,24 @@ class DefaultMenuListener
             );
         }
     }
+
+    public function toggleDropdowns(itemInterface $menu)
+    {
+        $request = $this->requestStack->getCurrentRequest();
+
+        // Loop over all the defined menu items
+        foreach ($menu->getChildren() as $child) {
+            // If a menu has children -> it has a sub-menu
+            if ($child->hasChildren()) {
+                foreach ($child->getExtra('routes') as $routes) {
+                    // If the current route is inside the sub-menu
+                    if ($routes['route'] === $request->get('_route')) {
+                        // Toggle the dropdown to active on page load
+                        $child->setAttribute('class', 'show');
+                        $child->setChildrenAttribute('class', 'show');
+                    }
+                }
+            }
+        }
+    }
 }

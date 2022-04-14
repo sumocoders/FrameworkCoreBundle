@@ -288,8 +288,6 @@
         </div>
       </div>
 
-      {{- form_errors(form) -}}
-      {{- form_help(form) -}}
     {% else %}
       {% if dont_render_row is not defined or not dont_render_row %}
         <div class="row align-items-center">
@@ -316,6 +314,8 @@
         </div>
       {% endif %}
     {% endif %}
+
+    {{- form_errors(form) -}}
     {{- form_help(form) -}}
   {% endapply %}
 {%- endblock time_widget %}

@@ -69,7 +69,7 @@ class ResponseSecurer
         $policyDirectivesString = '';
 
         foreach ($cspDirectives as $directive => $policies) {
-            $policyDirectivesString .= $directive . ' ' . implode(' ', $policies) . ';' . "\n";
+            $policyDirectivesString .= $directive . ' ' . implode(' ', $policies) . ';' . " ";
         }
 
         return $policyDirectivesString;

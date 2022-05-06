@@ -133,7 +133,7 @@
         {{ form_widget(item) }}
         {{ form_errors(item) }}
         {% if allow_delete is defined and allow_delete %}
-          <button type="button" class="btn btn-danger collection-item-delete" data-role="collection-remove-button" title="{{ 'forms.buttons.removeItem'|trans|ucfirst }}">
+          <button type="button" class="btn btn-outline-danger collection-item-delete" data-role="collection-remove-button" title="{{ 'forms.buttons.removeItem'|trans|ucfirst }}">
             <i class="fas fa-trash"></i> <span class="sr-only">{{ 'forms.buttons.removeItem'|trans|ucfirst }}</span>
           </button>
         {% endif %}

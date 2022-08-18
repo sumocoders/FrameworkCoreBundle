@@ -2,100 +2,44 @@
 
 namespace SumoCoders\FrameworkCoreBundle\Twig;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\Extension\AbstractExtension;
-use Twig\TwigFunction;
 use Twig\TwigFilter;
+use Twig\TwigFunction;
 
 class FrameworkExtension extends AbstractExtension
 {
-    /**
-     * @var \Symfony\Component\DependencyInjection\ContainerInterface
-     */
-    protected $container;
+    private RequestStack $requestStack;
 
-    /**
-     * @param ContainerInterface $container
-     */
-    public function __construct(ContainerInterface $container)
+    public function __construct(RequestStack $requestStack)
     {
-        $this->container = $container;
+        $this->requestStack = $requestStack;
     }
 
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
-            new TwigFilter(
-                'ucfirst',
-                'ucfirst'
-            ),
+            new TwigFilter('ucfirst','ucfirst'),
         ];
     }
 
-
-    /**
-     * Get the registered functions
-     *
-     * @return array
-     */
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
-            new TwigFunction(
-                'bundleExists',
-                [$this, 'bundleExists']
-            ),
-            new TwigFunction(
-                'toTranslation',
-                [$this, 'convertToTranslation']
-            ),
+            new TwigFunction('theme', [$this, 'determineTheme']),
         ];
     }
 
-    /**
-     * Check if a bundle exists
-     *
-     * @param string $bundle
-     * @return bool
-     */
-    public function bundleExists($bundle)
+    public function determineTheme(): string
     {
-        $bundles = $this->container->getParameter('kernel.bundles');
-
-        return array_key_exists($bundle, $bundles);
-    }
-
-    /**
-     * Convert a given string into a string that will/can be used as a id for
-     * translations
-     *
-     * @param string $stringToConvert
-     * @return string
-     */
-    public function convertToTranslation($stringToConvert)
-    {
-        $stringToConvert = trim($stringToConvert);
-        $stringToConvert = str_replace(
-            ['_', '-', ' ', 'framework', 'Framework'],
-            '.',
-            $stringToConvert
-        );
-
-        // the first item will mostly be the prefix of the namespace
-        $stringToConvert = preg_replace('/(.*)\.(.*)bundle/U', '$1$2', $stringToConvert);
-        $stringToConvert = str_replace('bundle', '', $stringToConvert);
-        $stringToConvert = str_replace('Bundle', '', $stringToConvert);
-
-        if (strtolower(mb_substr($stringToConvert, 0, 11)) == 'sumocoders.') {
-            $stringToConvert = substr($stringToConvert, 11);
+        if (is_null($this->requestStack->getCurrentRequest())) {
+            return 'theme-light';
         }
 
-        // remove numbers if they appear at the end or as single items
-        $stringToConvert = preg_replace('/\d+$/', '', $stringToConvert);
-        $stringToConvert = preg_replace('/\.\d*\./', '.', $stringToConvert);
+        if (!$this->requestStack->getCurrentRequest()->cookies->has('theme')) {
+            return 'theme-light';
+        }
 
-        $stringToConvert = preg_replace('/\.+/', '.', $stringToConvert);
-
-        return trim($stringToConvert, '.');
+        return 'theme-' . $this->requestStack->getCurrentRequest()->cookies->get('theme');
     }
 }

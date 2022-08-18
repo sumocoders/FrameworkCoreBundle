@@ -2,11 +2,11 @@
   {{ include('@SumoCodersFrameworkCore/head.html.twig') }}
 {% endblock %}
 
-<body class="user h-100">
+<body class="user h-100" data-theme-path="{{ asset('build/style-dark.css') }}">
 
 <div class="d-flex justify-content-end mt-3 me-3">
   <div class="form-check dark-mode-switch" data-theme-toggler-wrapper>
-    <input type="checkbox" class="form-check-input" id="dark-mode" data-theme-toggler{% if theme.current == 'theme-dark' %} checked="checked"{% endif %}>
+    <input type="checkbox" class="form-check-input" id="dark-mode" data-theme-toggler{% if theme() == 'theme-dark' %} checked="checked"{% endif %}>
     <label class="form-check-label" for="dark-mode">{{ 'core.themes.dark'|trans|ucfirst }} {{ 'core.themes.themes'|trans }}</label>
   </div>
 </div>
@@ -17,8 +17,8 @@
       <div class="card p-4 mt-5">
         <div class="text-center mb-3 py-5 px-sm-4 px-md-5">
           {% block logo_image %}
-            <img class="img-responsive{% if theme.current != 'theme-dark' %} d-none{% endif %}" data-navbar-logo-dark src="{{ asset('build/images/logo-application-dark.svg') }}" alt="{{ fallbacks.get('site_title') }}">
-            <img class="img-responsive{% if theme.current == 'theme-dark' %} d-none{% endif %}" data-navbar-logo src="{{ asset('build/images/logo-application.svg') }}" alt="{{ fallbacks.get('site_title') }}">
+            <img class="img-responsive{% if theme() != 'theme-dark' %} d-none{% endif %}" data-navbar-logo-dark src="{{ asset('build/images/logo-application-dark.svg') }}" alt="{{ fallbacks.get('site_title') }}">
+            <img class="img-responsive{% if theme() == 'theme-dark' %} d-none{% endif %}" data-navbar-logo src="{{ asset('build/images/logo-application.svg') }}" alt="{{ fallbacks.get('site_title') }}">
           {% endblock %}
         </div>
 

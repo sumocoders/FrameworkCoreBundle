@@ -2,7 +2,7 @@
   {{ include('@SumoCodersFrameworkCore/head.html.twig') }}
 {% endblock %}
 
-<body class="body-base">
+<body class="body-base" data-theme-path="{{ asset('build/style-dark.css') }}">
   <div id="main-wrapper" class="main-wrapper" data-sidebar-wrapper>
     <div id="main-menu" class="main-menu" role="navigation">
       {% block include_navigation %}
@@ -13,7 +13,7 @@
       <div class="main-header">
         <div class="d-md-none breadcrumb-mobile">
           <nav aria-label="breadcrumb" class="my-2">
-            {{ block('breadcrumb', '@SumoCodersFrameworkCore/BreadCrumb/breadCrumb.html.twig') }}
+            {{ block('breadcrumb', '@SumoCodersFrameworkCore/Breadcrumb/breadcrumb.html.twig') }}
           </nav>
         </div>
         <div class="sub-nav d-flex">
@@ -41,17 +41,12 @@
         {% endif %}
       </div>
 
-      <div class="loading-indicator d-none" data-role="ajax-indicator">
-        <p class="text-center">{{ 'core.interface.loading'|trans|ucfirst }}...</p>
-        <div class="loading-bar"></div>
-      </div>
-
       <section id="main" role="main">
         <div class="header-subbar">
           {{ include('@SumoCodersFrameworkCore/notifications.html.twig') }}
           <div class="header-title-bar d-none d-md-flex justify-content-md-between align-items-md-center flex-column flex-md-row flex-wrap">
             <nav aria-label="breadcrumb" class="my-2">
-              {{ block('breadcrumb', '@SumoCodersFrameworkCore/BreadCrumb/breadCrumb.html.twig') }}
+              {{ block('breadcrumb', '@SumoCodersFrameworkCore/Breadcrumb/breadcrumb.html.twig') }}
             </nav>
             <div class="ms-md-auto">
               {% if block('header_navigation') is defined and block('header_navigation') is not empty %}

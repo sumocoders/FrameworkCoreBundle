@@ -1,0 +1,91 @@
+{%- block pager -%}
+
+<nav class="d-flex justify-content-center">
+    <ul class="pagination">
+    {# Previous Page Link #}
+    {%- if paginator.hasPreviousPage() -%}
+    {{- block('previous_page_link') -}}
+    {%- else -%}
+    {{- block('previous_page_link_disabled') -}}
+    {%- endif -%}
+
+    {# First Page Link #}
+    {%- if start_page > 1 -%}
+    {%- set page = 1 -%}
+    {{- block('page_link') -}}
+    {%- endif -%}
+
+    {# Second Page Link, displays if we are on page 3 #}
+    {%- if start_page == 3 -%}
+    {%- set page = 2 -%}
+    {{- block('page_link') -}}
+    {%- endif -%}
+
+    {# Separator, creates a "..." separator to limit the number of items if we are starting beyond page 3 #}
+    {%- if start_page > 3 -%}
+    {{- block('ellipsis') -}}
+    {%- endif -%}
+
+    {# Page Links #}
+    {%- for page in range(start_page, end_page) -%}
+    {%- if page == current_page -%}
+        {{- block('current_page_link') -}}
+    {%- else -%}
+        {{- block('page_link') -}}
+    {%- endif -%}
+    {%- endfor -%}
+
+    {# Separator, creates a "..." separator to limit the number of items if we are over 3 pages away from the last page #}
+    {%- if end_page < (page_count - 2) -%}
+    {{- block('ellipsis') -}}
+    {%- endif -%}
+
+    {# Second to Last Page Link, displays if we are on the third from last page #}
+    {%- if end_page == (page_count - 2) -%}
+    {%- set page = (page_count - 1) -%}
+    {{- block('page_link') -}}
+    {%- endif -%}
+
+    {# Last Page Link #}
+    {%- if page_count > end_page -%}
+    {%- set page = page_count -%}
+    {{- block('page_link') -}}
+    {%- endif -%}
+
+    {# Next Page Link #}
+    {%- if paginator.hasNextPage() -%}
+    {{- block('next_page_link') -}}
+    {%- else -%}
+    {{- block('next_page_link_disabled') -}}
+    {%- endif -%}
+    </ul>
+</nav>
+{% endblock %}
+
+{% block page_link %}
+    <li class="page-item"><a class="page-link" href="{{ path(route, routeParams|merge({'page': page})) }}">{{ page }}</a></li>
+{% endblock %}
+
+{% block current_page_link %}
+    <li class="page-item active"><span class="page-link current" aria-current="page">{{ page }}</span></li>
+{% endblock %}
+
+{% block previous_page_link %}
+    <li class="page-item previous"><a class="page-link" href="{{ path(route, routeParams|merge({'page': paginator.getPreviousPage})) }}" rel="previous">«</a></li>
+{% endblock %}
+
+{% block previous_page_link_disabled %}
+    <li class="page-item prev disabled"><span class="page-link disabled">«</span></li>
+{% endblock %}
+
+{% block next_page_link %}
+    <li class="page-item next"><a class="page-link" href="{{ path(route, routeParams|merge({'page': paginator.getNextPage})) }}" rel="next">»</a></li>
+{% endblock %}
+
+{% block next_page_link_disabled %}
+    <li class="page-item next disabled"><span class="page-link disabled">»</span></li>
+{% endblock %}
+
+{% block ellipsis %}
+    <li class="page-item disabled"><span class="page-link">...</span></li>
+{% endblock %}

@@ -8,31 +8,35 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
-class DumpTranslationsCommand extends Command
+class TranslateCommand extends Command
 {
     private ParameterBagInterface $parameters;
 
     public function __construct(ParameterBagInterface $parameters)
     {
         parent::__construct();
-        $this->setName('sumo:dump:translations');
+        $this->setName('sumo:translate');
         $this->parameters = $parameters;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $locale = $this->parameters->get('locale');
+        $locales = $this->parameters->get('locales');
 
-        $command = $this->getApplication()->find('translation:update');
+        $command = $this->getApplication()->find('translation:extract');
 
-        $arguments = [
-            'locale' => $locale,
-            '--force' => true,
-            '--output-format' => 'yaml',
-        ];
+        foreach ($locales as $locale) {
+            $arguments = [
+                'locale' => $locale,
+                '--force' => true,
+                '--format' => 'yaml',
+            ];
 
-        $translationInput = new ArrayInput($arguments);
+            $translationInput = new ArrayInput($arguments);
 
-        return $command->run($translationInput, $output);
+            $command->run($translationInput, $output);
+        }
+
+        return Command::SUCCESS;
     }
 }

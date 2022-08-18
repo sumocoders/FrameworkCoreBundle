@@ -18,7 +18,7 @@
         <li>
           <div class="dropdown-item">
             <div class="form-check dark-mode-switch" data-theme-toggler-wrapper>
-              <input type="checkbox" class="form-check-input" id="dark-mode{% if mobile %}-mobile{% endif %}" data-theme-toggler{% if theme.current == 'theme-dark' %} checked="checked"{% endif %}>
+              <input type="checkbox" class="form-check-input" id="dark-mode{% if mobile %}-mobile{% endif %}" data-theme-toggler{% if theme() == 'theme-dark' %} checked="checked"{% endif %}>
               <label class="form-check-label" for="dark-mode{% if mobile %}-mobile{% endif %}">{{ 'core.themes.dark'|trans|ucfirst }} {{ 'core.themes.themes'|trans }}</label>
             </div>
           </div>

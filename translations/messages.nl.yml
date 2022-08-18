@@ -98,9 +98,16 @@ dialogs:
         confirmDelete: Ben je zeker dat je %entity% wil verwijderen?
 
 error:
-    messages:
-      generic: Er ging iets mis.
-      noRouteFound: De pagina werd niet gevonden.
+  messages:
+    generic: Er ging iets mis.
+    noRouteFound: De pagina werd niet gevonden.
+    noRouteFoundMessage: Het lijkt erop dat deze pagina niet (meer) bestaat of verhuisd is.
+    unauthorized: Je hebt geen toegang tot deze pagina.
+    unauthorizedMessage: Controleer of je bent ingelogd en de nodige rechten hebt om deze pagina te bekijken.
+    crash: Oeps. Er ging iets mis.
+    crashMessage: Dat was niet de bedoeling. Neem contact op met de eigenaar van de website of de ontwikkelaar indien het probleem zich blijft voordoen
+
+go back: Keer terug
 
 forms:
     labels:

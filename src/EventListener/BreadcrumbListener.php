@@ -2,350 +2,246 @@
 
 namespace SumoCoders\FrameworkCoreBundle\EventListener;
 
-use Doctrine\Common\Annotations\Reader;
-use InvalidArgumentException;
-use ReflectionClass;
-use RuntimeException;
-use SumoCoders\FrameworkCoreBundle\Annotation\Breadcrumb as BreadcrumbAnnotation;
+use SumoCoders\FrameworkCoreBundle\ValueObject\Route;
+use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use SumoCoders\FrameworkCoreBundle\Service\BreadcrumbTrail;
 use SumoCoders\FrameworkCoreBundle\ValueObject\Breadcrumb;
-use Symfony\Component\HttpFoundation\Request;
+use SumoCoders\FrameworkCoreBundle\Attribute\Breadcrumb as BreadcrumbAttribute;
 use Symfony\Component\HttpKernel\Event\KernelEvent;
-use Symfony\Component\Routing\CompiledRoute;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\HttpFoundation\Request;
+use InvalidArgumentException;
+use RuntimeException;
 
 class BreadcrumbListener
 {
     private RouterInterface $router;
-    private Reader $reader;
+    private PropertyAccessorInterface $propertyAccess;
     private BreadcrumbTrail $breadcrumbTrail;
+    private Request $request;
 
     public function __construct(
         RouterInterface $router,
-        Reader $reader,
+        PropertyAccessorInterface $propertyAccess,
         BreadcrumbTrail $breadcrumbTrail
     ) {
         $this->router = $router;
-        $this->reader = $reader;
+        $this->propertyAccess = $propertyAccess;
         $this->breadcrumbTrail = $breadcrumbTrail;
     }
 
     public function onKernelController(KernelEvent $event): void
     {
         $controller = $event->getController();
+        $this->request = $event->getRequest();
 
-        /*
-         * If a single controller action is defined using the __invoke
-         * magic method, we won't receive an array with the method name
-         * but only a single callable object. To ensure compatibility with
-         * the rest of the breadcrumb code, we wrap it in an array right here.
-         */
-        if (!is_array($controller) &&
-            is_callable($controller) &&
-            method_exists($controller, '__invoke')
-        ) {
-            $controller = [$controller, '__invoke'];
+        if (is_array($controller)) {
+            $controller = $controller[0];
         }
 
-        if (!is_array($controller)) {
-            return;
-        }
-
-        if ($event->isMasterRequest()) {
+        if ($event->isMainRequest()) {
             $this->breadcrumbTrail->reset();
         }
 
-        $this->processAnnotations($event, $controller);
+        $this->processBreadcrumbs($controller);
     }
 
-    private function processAnnotations(KernelEvent $event, array $controller): void
+    private function processBreadcrumbs(object $controller): void
     {
-        $class = new ReflectionClass($controller[0]);
+        // Build a new ReflectionClass instance of our controller
+        $class = new \ReflectionClass($controller);
 
         if ($class->isAbstract()) {
-            throw new InvalidArgumentException(sprintf('Annotations from class "%s" cannot be read as it is abstract.', $class));
+            throw new InvalidArgumentException(sprintf('Attributes from class "%s" cannot be read as it is abstract.', $class));
         }
 
-        $method = $class->getMethod($controller[1]);
-        if ($event->isMasterRequest()) {
-            $this->addBreadcrumbsFromClass($event, $this->reader->getClassAnnotations($class));
-            $this->addBreadcrumbsFromMethod($event, $this->reader->getMethodAnnotations($method));
-        }
-    }
+        $methods = $class->getMethods();
 
-    private function processParentAnnotations(
-        KernelEvent $event,
-        array $controller,
-        ?string $routeName = null,
-        ?array $parameters = null
-    ): void {
-        $class = new ReflectionClass($controller[0]);
-        $method = $class->getMethod($controller[1]);
-
-        if ($event->isMasterRequest()) {
-            $this->addBreadcrumbsFromMethod(
-                $event,
-                $this->reader->getMethodAnnotations($method),
-                $routeName,
-                $parameters
-            );
+        foreach ($methods as $method) {
+            $this->processAttributeFromMethod($method);
         }
     }
 
-    private function addBreadcrumbsFromMethod(
-        KernelEvent $event,
-        array $annotations,
-        ?string $routeName = null,
-        ?array $parameters = null
-    ): void {
-        $this->addBreadcrumbsFromAnnotations($event, $annotations, $routeName, $parameters);
-    }
-
-    private function addBreadcrumbsFromClass(KernelEvent $event, array $annotations): void
-    {
-        $this->addBreadcrumbsFromAnnotations($event, $annotations);
-    }
-
-    private function addBreadcrumbsFromAnnotations(
-        KernelEvent $event,
-        array $annotations,
-        ?string $routeName = null,
-        ?array $parameters = null
+    private function processAttributeFromMethod(
+        \Reflectionmethod $method,
+        ?Route $route = null
     ) {
-        foreach ($annotations as $annotation) {
-            if (!$annotation instanceof BreadcrumbAnnotation) {
-                continue;
+        $attributes = $method->getAttributes(BreadcrumbAttribute::class, \ReflectionAttribute::IS_INSTANCEOF);
+
+        foreach ($attributes as $attribute) {
+            /** @var BreadcrumbAttribute $attributeInstance */
+            $attributeInstance = $attribute->newInstance();
+
+            if ($route !== null) {
+                $attributeInstance->setRoute($route);
             }
 
-            if ($annotation->getParentRouteName()) {
-                $this->addBreadcrumbsForParent($annotation, $event);
+            if ($attributeInstance->hasParent()) {
+                $this->addBreadcrumbsForParent($attributeInstance->getParent());
             }
 
             $this->breadcrumbTrail->add(
                 $this->generateBreadcrumb(
-                    $event->getRequest(),
-                    $annotation,
-                    $routeName,
-                    $parameters
+                    $attributeInstance
                 )
             );
         }
     }
 
-    private function generateBreadcrumb(
-        Request $request,
-        BreadcrumbAnnotation $breadcrumb,
-        ?string $route = null,
-        ?array $parameters = null
-    ): Breadcrumb {
+    private function generateBreadcrumb(BreadcrumbAttribute $breadcrumb): Breadcrumb
+    {
         $title = $breadcrumb->getTitle();
-        $routeParameters = $parameters ?? $breadcrumb->getRouteParameters();
-        $routeName = $route ?? $breadcrumb->getRouteName();
-        preg_match_all(
-            '#\{(?P<variable>\w+).?(?P<function>([\w\.])*):?(?P<parameters>(\w|,| )*)\}#',
-            $title,
-            $matches,
-            PREG_OFFSET_CAPTURE | PREG_SET_ORDER
-        );
 
-        // Convert the breadcrumb title to the correct value
-        foreach ($matches as $match) {
-            $varName = $match['variable'][0];
-            // Get the methods that need to be called on the route parameter
-            $functions = $match['function'][0] ? explode('.', $match['function'][0]) : [];
-            $parameters = $match['parameters'][0] ? explode(',', $match['parameters'][0]) : [];
-            $nbCalls = count($functions);
+        // We're dealing with an expression, e.g. {item.name}
+        if ($title[0] === '{' && $title[-1] === '}') {
+            $expression = substr($title, 1, strlen($title) - 2);
 
-            if ($request->attributes->has($varName)) {
-                $object = $request->attributes->get($varName);
+            if (str_contains($expression, '.')) {
+                $split = explode('.', $expression, 2);
+                $attributeName = $split[0];
+                $propertyPath = $split[1];
+            } else {
+                $attributeName = $expression;
+            }
 
-                // If no functions need to be called use the title as given
-                if (empty($functions)) {
-                    $objectValue = (string) $object;
-                    $title = str_replace($match[0][0], $objectValue, $title);
+            if (!$this->request->attributes->has($attributeName)) {
+                throw new RuntimeException('You tried to use {' . $attributeName . '} as a breadcrumb parameter, but there is no parameter with that name in the route.');
+            }
 
-                    continue;
+            $attribute = $this->request->attributes->get($attributeName);
+
+            if (is_object($attribute)) {
+                if (!isset($propertyPath)) {
+                    throw new RuntimeException('When using objects in a breadcrumb, you have to specify which method to read. E.g. {object.name}');
                 }
 
-                // Chain the method calls so we can get the correct value
-                // Example book.author.name should call getAuthor().getName() on the given book object
-                $objectValue = $this->processFunctionChain($functions, $nbCalls, $object, $varName, $parameters);
-
-                $title = str_replace($match[0][0], $objectValue, $title);
+                $title = $this->propertyAccess->getValue($attribute, $propertyPath);
+            } else {
+                $title = $attribute;
             }
         }
 
-        // Convert the route parameters to a usable format
-        foreach ($routeParameters as $key => $value) {
-            if (is_numeric($key)) {
-                $routeParameters[$value] = $request->get($value);
-                unset($routeParameters[$key]);
+        if ($breadcrumb->hasRoute()) {
+            $this->resolveRouteParameters($breadcrumb);
 
-                continue;
-            }
-
-            if (preg_match('#^\{(?P<parameter>\w+)\}$#', $value, $matches)) {
-                $routeParameters[$key] = $request->get($matches['parameter']);
-
-                continue;
-            }
-
-            if (preg_match_all(
-                '#\{(?P<variable>\w+).?(?P<function>([\w\.])*):?(?P<parameters>(\w|,| )*)\}#',
-                $value,
-                $matches,
-                PREG_OFFSET_CAPTURE | PREG_SET_ORDER
-            )) {
-                foreach ($matches as $match) {
-                    $varName = $match['variable'][0];
-                    // Get the methods that need to be called on the route parameter
-                    $functions = $match['function'][0] ? explode('.', $match['function'][0]) : [];
-                    $parameters = $match['parameters'][0] ? explode(',', $match['parameters'][0]) : [];
-                    $nbCalls = count($functions);
-
-                    if (!$request->attributes->has($varName)) {
-                      continue;
-                    }
-
-                    $object = $request->attributes->get($varName);
-                    if (empty($functions)) {
-                        $objectValue = (string) $object;
-                        $routeParameter = str_replace($match[0][0], $objectValue, $value);
-                        $routeParameters[$key] = $routeParameter;
-
-                        continue;
-                    }
-
-                    // Chain the method calls so we can get the correct value
-                    // Example book.author.name should call getAuthor().getName() on the given book object
-                    $objectValue = $this->processFunctionChain($functions, $nbCalls, $object, $varName, $parameters);
-
-                    $routeParameter = str_replace($match[0][0], $objectValue, $value);
-                    $routeParameters[$key] = $routeParameter;
-                }
-            }
+            return new Breadcrumb(
+                $title,
+                $this->router->generate(
+                    $breadcrumb->getRoute()->getName(),
+                    $breadcrumb->getRoute()->getParameters(),
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                )
+            );
         }
 
-        $url = null;
-        if ($routeName !== null) {
-            $url = $this->router->generate($routeName, $routeParameters, UrlGeneratorInterface::ABSOLUTE_URL);
-        }
-
-        return new Breadcrumb(
-            $title,
-            $url
-        );
+        // Just a simple string
+        return new Breadcrumb($title);
     }
 
-    private function getControllerFromName(string $name): array
+    private function addBreadcrumbsForParent(Route $parent): void
     {
+        $routeName = $parent->getName();
+        $routeInformation = $this->getRouteInformation($routeName);
+
+        if ($routeInformation === null) {
+            throw new RuntimeException(
+                'A route with name "'. $routeName . '" could not be found. Check your spelling.'
+            );
+        }
+
+        $class = new \ReflectionClass($routeInformation['controller']);
+        $method = $class->getMethod($routeInformation['method']);
+
+        $this->processAttributeFromMethod($method, new Route($routeName));
+    }
+
+    private function getRouteInformation(string $name): ?array
+    {
+        // Get all the routes defined in the entire application
         $routes = $this->router->getRouteCollection()->all();
 
-        /** @var Route $route */
         foreach ($routes as $route) {
+            // Get our canonical (without a locale prefixed) route name
             if ($route->getDefault('_canonical_route') !== $name) {
                 continue;
             }
 
-            $controller = explode('::', $route->getDefault('_controller'));
+            /*
+             * In the case of multiple methods defined per controller,
+             * explode the controller name and method
+             */
+            if (strpos('::', $route->getDefault('controller')) > 0) {
+                $chunk = explode('::', $route->getDefault('_controller'));
+                $controller = $chunk[0];
+                $method = $chunk[1];
+            } else {
+                $controller = $route->getDefault('_controller');
+            }
 
+            // Compile the route to access the parameters
+            $compiledRoute = $route->compile();
+            $parameters = $compiledRoute->getVariables();
+
+            // Loop each parameter and check if a default exists for it
+            $requiredParameters = [];
+            foreach ($parameters as $parameter) {
+                if ($route->getDefault($parameter) === null) {
+                    $requiredParameters[] = $parameter;
+                }
+            }
+
+            // Return the controller, method and required parameters
             return [
-                $controller[0],
-                $controller[1] ?? '__invoke',
+                'controller' => $controller,
+                'method' => $method ?? '__invoke',
+                'parameters' => $requiredParameters,
             ];
         }
+
+        return null;
     }
 
-    public function getRouteParametersFromName(string $name): array
+    private function resolveRouteParameters(BreadcrumbAttribute $breadcrumb)
     {
-        $routes = $this->router->getRouteCollection()->all();
-
-        /** @var Route $route */
-        foreach ($routes as $route) {
-            if ($route->getDefault('_canonical_route') !== $name) {
-                continue;
-            }
-
-            $compiledRoute = $route->compile();
-            if (!$compiledRoute instanceof CompiledRoute) {
-                return [];
-            }
-
-            return $compiledRoute->getVariables();
-        }
-    }
-
-    private function addBreadcrumbsForParent(BreadcrumbAnnotation $annotation, KernelEvent $event): void
-    {
-        $controller = $this->getControllerFromName(
-            $annotation->getParentRouteName()
-        );
-
-        $requiredParameters = $this->getRouteParametersFromName(
-            $annotation->getParentRouteName()
-        );
+        $route = $breadcrumb->getRoute();
+        $routeInformation = $this->getRouteInformation($route->getName());
+        $requiredParameters = $routeInformation['parameters'];
 
         $parentParameters = [];
-        foreach ($requiredParameters as $requiredParameter) {
-            $parentParameters[$requiredParameter] =
-                $event->getRequest()->attributes->all()[$requiredParameter] ?? '';
-        }
+        $currentAttributes = $this->request->attributes->all();
 
-        if (count($annotation->getParentRouteParameters()) > 0) {
-            $parentParameters = $annotation->getParentRouteParameters();
-        }
-
-        $this->processParentAnnotations(
-            $event,
-            $controller,
-            $annotation->getParentRouteName(),
-            $parentParameters
-        );
-    }
-
-    private function processFunctionChain(
-        array $functions,
-        int $nbCalls,
-        $object,
-        string $varName,
-        array $parameters
-    ): string {
-        foreach ($functions as $f => $function) {
-            $fullFunctionNames = [
-                'get'.$function,
-                'has'.$function,
-                'is'.$function,
-            ];
-
-            // While this is not the last function, call the chain
-            if ($f < $nbCalls - 1) {
-                foreach ($fullFunctionNames as $fullFunctionName) {
-                    if (is_callable([$object, $fullFunctionName])) {
-                        $object = call_user_func([$object, $fullFunctionName]);
-
-                        continue 2;
-                    }
-                }
-
-                throw new RuntimeException(sprintf('"%s" is not callable.',
-                    implode('.', array_merge([$varName], $functions))));
-            }
-
-            // End of the chain: call the method
-            foreach ($fullFunctionNames as $fullFunctionName) {
-                if (is_callable([$object, $fullFunctionName])) {
-                    $objectValue = call_user_func_array([$object, $fullFunctionName], $parameters);
-
-                    continue 2;
+        foreach ($requiredParameters as $requiredParameterForParent) {
+            /*
+             * In real world scenario's, the parent is often present
+             * in the same URI as the request. Take for example:
+             *  /{item}/{child}
+             * If we're currently in the child route, we can check the URI
+             * for the author parameter and already fill it in.
+             */
+            if (\array_key_exists($requiredParameterForParent, $currentAttributes)) {
+                if (is_object($currentAttributes[$requiredParameterForParent])) {
+                    $parentParameters[$requiredParameterForParent] = $currentAttributes[$requiredParameterForParent]->getId();
+                } else {
+                    $parentParameters[$requiredParameterForParent] = $currentAttributes[$requiredParameterForParent];
                 }
             }
-
-            throw new RuntimeException(sprintf('"%s" is not callable.',
-                implode('.', array_merge([$varName], $functions))));
         }
 
-        return $objectValue;
+        $route->addParameters($parentParameters);
+
+        if (count($routeInformation['parameters']) > 0 &&
+            !$route->getParameters()) {
+            throw new RuntimeException(
+                'Your breadcrumb route is missing required parameters: ' .
+                implode($routeInformation['parameters'])
+            );
+        }
+
+        foreach ($routeInformation['parameters'] as $requiredParameter) {
+            if (!\array_key_exists($requiredParameter, $route->getParameters())) {
+                throw new RuntimeException('Your breadcrumb route is missing required parameters: ' . $requiredParameter);
+            }
+        }
     }
 }

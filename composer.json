@@ -21,27 +21,26 @@
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require": {
-    "php": "^7.4",
-    "gedmo/doctrine-extensions": "^2.4",
-    "friendsofsymfony/jsrouting-bundle": "^2",
-    "ramsey/uuid": "^3.7",
-    "tijsverkoyen/css-to-inline-styles": "^2.2",
-    "babdev/pagerfanta-bundle": "^2.0",
+    "php": "^8.0",
+    "gedmo/doctrine-extensions": "^3",
+    "friendsofsymfony/jsrouting-bundle": "^3",
     "knplabs/knp-menu-bundle": "^3.0",
     "sensio/framework-extra-bundle": "^6.1",
-    "symfony/form": "^5.3",
-    "symfony/console": "^5.3",
-    "symfony/security-bundle": "^5.3",
-    "symfony/translation": "^5.3",
+    "symfony/form": "^6.0",
+    "symfony/asset": "^6.0",
+    "symfony/console": "^6.0",
+    "symfony/security-bundle": "^6.0",
+    "symfony/translation": "^6.0",
+    "symfony/twig-bundle": "^6.0",
+    "twig/inky-extra": "^3.3",
     "twig/cssinliner-extra": "^3.3",
-    "twig/extra-bundle": "^3.3",
-    "symfony/twig-bundle": "^5.3"
+    "twig/extra-bundle": "^3.3"
   },
   "require-dev": {
     "roave/security-advisories": "dev-master",
-    "symfony/phpunit-bridge": "^4.3",
-    "friendsoftwig/twigcs": "^5.0",
-    "symfony/maker-bundle": "^1.31"
+    "symfony/phpunit-bridge": "^6.0",
+    "friendsoftwig/twigcs": "^6.0",
+    "symfony/maker-bundle": "^1.0"
   },
   "autoload": {
     "psr-4": {

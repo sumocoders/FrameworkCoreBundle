@@ -17,15 +17,11 @@ final class TimeTypeExtension extends AbstractTypeExtension
         return [TimeType::class];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(
             [
                 'format' => 'HH:mm',
-                'timepicker' => true,
                 'widget' => 'single_text',
             ]
         );
@@ -41,10 +37,7 @@ final class TimeTypeExtension extends AbstractTypeExtension
         $resolver->setDefined(['helper_text']);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['format'] = $options['format'];
         $view->vars['divider'] = (strpos($options['format'], '-') !== false) ? '-' : '/';

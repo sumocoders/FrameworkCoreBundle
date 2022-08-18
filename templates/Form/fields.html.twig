@@ -4,7 +4,7 @@
   {% if label is not same as(false) -%}
     {%- set parent_label_class = parent_label_class|default(label_attr.class|default('')) -%}
     {% if label is empty %}
-      {% set label = toTranslation(id)|trans({}, translation_domain)|ucfirst %}
+      {% set label = name|humanize|trans({}, translation_domain)|ucfirst  %}
     {% else %}
       {% set label = label|trans({}, translation_domain)|ucfirst %}
     {% endif %}
@@ -20,22 +20,22 @@
         {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ('input-group' in row_class ? ' input-group-text' : ' form-label') )|trim}) -%}
       {%- endif -%}
     {%- endif -%}
-  {%- endif -%}
-  <{{ element|default('label') }}{% if label_attr %}{% with { attr: label_attr } %}{{ block('attributes') }}{% endwith %}{% endif %}>
-  {%- if translation_domain is same as(false) -%}
-    {%- if label_html is same as(false) -%}
-      {{- label -}}
+    <{{ element|default('label') }}{% if label_attr %}{% with { attr: label_attr } %}{{ block('attributes') }}{% endwith %}{% endif %}>
+    {%- if translation_domain is same as(false) -%}
+      {%- if label_html is same as(false) -%}
+        {{- label -}}
+      {%- else -%}
+        {{- label|raw -}}
+      {%- endif -%}
     {%- else -%}
-      {{- label|raw -}}
+      {%- if label_html is same as(false) -%}
+        {{- label|trans(label_translation_parameters, translation_domain)|ucfirst -}}&#32;{{- block('label_asterisk') }}
+      {%- else -%}
+        {{- label|trans(label_translation_parameters, translation_domain)|raw|ucfirst -}}&#32;{{- block('label_asterisk') }}
+      {%- endif -%}
     {%- endif -%}
-  {%- else -%}
-    {%- if label_html is same as(false) -%}
-      {{- label|trans(label_translation_parameters, translation_domain)|ucfirst -}}&#32;{{- block('label_asterisk') }}
-    {%- else -%}
-      {{- label|trans(label_translation_parameters, translation_domain)|raw|ucfirst -}}&#32;{{- block('label_asterisk') }}
-    {%- endif -%}
+    </{{ element|default('label') }}>
   {%- endif -%}
-  </{{ element|default('label') }}>
 {%- endblock form_label %}
 
 {%- block label_asterisk -%}
@@ -133,7 +133,7 @@
         {{ form_widget(item) }}
         {{ form_errors(item) }}
         {% if allow_delete is defined and allow_delete %}
-          <button type="button" class="btn btn-danger collection-item-delete" data-role="collection-remove-button" title="{{ 'forms.buttons.removeItem'|trans|ucfirst }}">
+          <button type="button" class="btn btn-outline-danger collection-item-delete" data-role="collection-remove-button" title="{{ 'forms.buttons.removeItem'|trans|ucfirst }}">
             <i class="fas fa-trash"></i> <span class="sr-only">{{ 'forms.buttons.removeItem'|trans|ucfirst }}</span>
           </button>
         {% endif %}
@@ -217,10 +217,8 @@
 
       <div class="input-group">
         {{- block('form_widget_simple') -}}
-        <div class="input-group-append">
-          <div class="input-group-text">
-            <i class="fas fa-calendar"></i>
-          </div>
+        <div class="input-group-text">
+          <i class="fas fa-calendar"></i>
         </div>
       </div>
 
@@ -285,31 +283,31 @@
 
       <div class="input-group">
         {{- block('form_widget_simple') -}}
-        <div class="input-group-append">
-          <div class="input-group-text">
-            <i class="fas fa-clock"></i>
-          </div>
+        <div class="input-group-text">
+          <i class="fas fa-clock"></i>
         </div>
       </div>
 
-      {{- form_errors(form) -}}
-      {{- form_help(form) -}}
     {% else %}
       {% if dont_render_row is not defined or not dont_render_row %}
-        <div class="row align-items-center">
+        <div class="row">
       {% endif %}
 
       <div class="col-md-3">
         {%- if label is not same as(false) -%}{{ form_label(form.hour, null, { 'label_attr': {'class': 'sr-only'} }) }}{%- endif -%}
         {{ form_widget(form.hour) }}
       </div>
-      <span>{{ divider }}</span>
+      <div class="col-md-1 text-center">
+        <span>{{ divider }}</span>
+      </div>
       <div class="col-md-3">
         {%- if label is not same as(false) -%}{{ form_label(form.minute, null, { 'label_attr': {'class': 'sr-only'} }) }}{%- endif -%}
         {{ form_widget(form.minute) }}
       </div>
       {% if with_seconds %}
-        <span>{{ divider }}</span>
+        <div class="col-md-1 text-center">
+          <span>{{ divider }}</span>
+        </div>
         <div class="col-md-3">
           {%- if label is not same as(false) -%}{{ form_label(form.second, null, { 'label_attr': {'class': 'sr-only'} }) }}{%- endif -%}
           {{ form_widget(form.second) }}
@@ -320,6 +318,8 @@
         </div>
       {% endif %}
     {% endif %}
+
+    {{- form_errors(form) -}}
     {{- form_help(form) -}}
   {% endapply %}
 {%- endblock time_widget %}
@@ -356,10 +356,8 @@
 
       <div class="input-group">
         {{- block('form_widget_simple') -}}
-        <div class="input-group-append">
-          <div class="input-group-text">
-            <i class="fas fa-calendar"></i>
-          </div>
+        <div class="input-group-text">
+          <i class="fas fa-calendar"></i>
         </div>
       </div>
 
@@ -417,3 +415,42 @@
     {% endif %}
   </select>
 {% endblock %}
+
+{% block form_help -%}
+  {% set row_class = row_attr.class|default('') %}
+  {% set help_class = ' form-text' %}
+  {% if 'input-group' in row_class %}
+    {#- Hack to properly display help with input group -#}
+    {% set help_class = ' input-group-text' %}
+  {% endif %}
+  {%- if help is not empty -%}
+    {%- set help_attr = help_attr|merge({class: (help_attr.class|default('') ~ help_class ~ ' mb-0')|trim}) -%}
+  {%- endif -%}
+
+  {%- if help is not empty -%}
+    {%- set help_attr = help_attr|merge({class: (help_attr.class|default('') ~ ' help-text')|trim}) -%}
+    {%- if help_html is same as(false) -%}
+    <p id="{{ id }}_help"{% with { attr: help_attr } %}{{ block('attributes') }}{% endwith %}>
+    {%- else -%}
+      <div id="{{ id }}_help"{% with { attr: help_attr } %}{{ block('attributes') }}{% endwith %}>
+    {%- endif -%}
+    {%- if translation_domain is same as(false) -%}
+      {%- if help_html is same as(false) -%}
+        {{- help -}}
+      {%- else -%}
+        {{- help|raw -}}
+      {%- endif -%}
+    {%- else -%}
+      {%- if help_html is same as(false) -%}
+        {{- help|trans(help_translation_parameters, translation_domain) -}}
+      {%- else -%}
+        {{- help|trans(help_translation_parameters, translation_domain)|raw -}}
+      {%- endif -%}
+    {%- endif -%}
+    {%- if help_html is same as(false) -%}
+      </p>
+    {%- else -%}
+      </div>
+    {%- endif -%}
+  {%- endif -%}
+{%- endblock form_help %}

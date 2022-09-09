@@ -5,8 +5,6 @@
     {%- set parent_label_class = parent_label_class|default(label_attr.class|default('')) -%}
     {% if label is empty %}
       {% set label = name|humanize|trans({}, translation_domain)|ucfirst  %}
-    {% else %}
-      {% set label = label|trans({}, translation_domain)|ucfirst %}
     {% endif %}
     {%- if compound is defined and compound -%}
       {%- set element = 'legend' -%}

@@ -89,6 +89,7 @@ class ImageType extends AbstractType
                 'remove_image_label',
                 'required_image_error',
                 'accept',
+                'help',
             ]
         );
 

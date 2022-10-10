@@ -89,6 +89,8 @@ class FileType extends AbstractType
                 'show_remove_file',
                 'remove_file_label',
                 'required_file_error',
+                'help',
+                'accept',
             ]
         );
 

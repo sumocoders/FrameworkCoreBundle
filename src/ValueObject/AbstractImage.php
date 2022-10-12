@@ -21,7 +21,7 @@ abstract class AbstractImage extends AbstractFile
     /**
      * @var string|null
      */
-    const FALLBACK_IMAGE = null;
+    public const FALLBACK_IMAGE = null;
 
     public function getWebPath(): string
     {

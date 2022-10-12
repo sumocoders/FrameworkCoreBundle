@@ -53,7 +53,12 @@ class BreadcrumbListener
         $class = new \ReflectionClass($controller);
 
         if ($class->isAbstract()) {
-            throw new InvalidArgumentException(sprintf('Attributes from class "%s" cannot be read as it is abstract.', $class));
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Attributes from class "%s" cannot be read as it is abstract.',
+                    $class
+                )
+            );
         }
 
         $methods = $class->getMethods();
@@ -106,14 +111,20 @@ class BreadcrumbListener
             }
 
             if (!$this->request->attributes->has($attributeName)) {
-                throw new RuntimeException('You tried to use {' . $attributeName . '} as a breadcrumb parameter, but there is no parameter with that name in the route.');
+                throw new RuntimeException(
+                    'You tried to use {' . $attributeName . '} as a breadcrumb parameter, but there is no ' .
+                    'parameter with that name in the route.'
+                );
             }
 
             $attribute = $this->request->attributes->get($attributeName);
 
             if (is_object($attribute)) {
                 if (!isset($propertyPath)) {
-                    throw new RuntimeException('When using objects in a breadcrumb, you have to specify which method to read. E.g. {object.name}');
+                    throw new RuntimeException(
+                        'When using objects in a breadcrumb, you have to specify which method to read.' .
+                        ' E.g. {object.name}'
+                    );
                 }
 
                 $title = $this->propertyAccess->getValue($attribute, $propertyPath);
@@ -146,7 +157,7 @@ class BreadcrumbListener
 
         if ($routeInformation === null) {
             throw new RuntimeException(
-                'A route with name "'. $routeName . '" could not be found. Check your spelling.'
+                'A route with name "' . $routeName . '" could not be found. Check your spelling.'
             );
         }
 
@@ -211,7 +222,7 @@ class BreadcrumbListener
         $parentParameters = [];
         $currentAttributes = $this->request->attributes->all();
 
-        foreach ($requiredParameters as $requiredParameterForParent) {
+        foreach ($requiredParameters as $requiredParentParameter) {
             /*
              * In real world scenario's, the parent is often present
              * in the same URI as the request. Take for example:
@@ -219,19 +230,21 @@ class BreadcrumbListener
              * If we're currently in the child route, we can check the URI
              * for the author parameter and already fill it in.
              */
-            if (\array_key_exists($requiredParameterForParent, $currentAttributes)) {
-                if (is_object($currentAttributes[$requiredParameterForParent])) {
-                    $parentParameters[$requiredParameterForParent] = $currentAttributes[$requiredParameterForParent]->getId();
+            if (\array_key_exists($requiredParentParameter, $currentAttributes)) {
+                if (is_object($currentAttributes[$requiredParentParameter])) {
+                    $parentParameters[$requiredParentParameter] = $currentAttributes[$requiredParentParameter]->getId();
                 } else {
-                    $parentParameters[$requiredParameterForParent] = $currentAttributes[$requiredParameterForParent];
+                    $parentParameters[$requiredParentParameter] = $currentAttributes[$requiredParentParameter];
                 }
             }
         }
 
         $route->addParameters($parentParameters);
 
-        if (count($routeInformation['parameters']) > 0 &&
-            !$route->getParameters()) {
+        if (
+            count($routeInformation['parameters']) > 0
+            && !$route->getParameters()
+        ) {
             throw new RuntimeException(
                 'Your breadcrumb route is missing required parameters: ' .
                 implode($routeInformation['parameters'])
@@ -240,7 +253,9 @@ class BreadcrumbListener
 
         foreach ($routeInformation['parameters'] as $requiredParameter) {
             if (!\array_key_exists($requiredParameter, $route->getParameters())) {
-                throw new RuntimeException('Your breadcrumb route is missing required parameters: ' . $requiredParameter);
+                throw new RuntimeException(
+                    'Your breadcrumb route is missing required parameters: ' . $requiredParameter
+                );
             }
         }
     }

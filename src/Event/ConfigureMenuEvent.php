@@ -8,7 +8,7 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class ConfigureMenuEvent extends Event
 {
-    const EVENT_NAME = 'framework_core.configure_menu';
+    public const EVENT_NAME = 'framework_core.configure_menu';
 
     /**
      * @var \Knp\Menu\FactoryInterface

@@ -19,7 +19,7 @@ class FrameworkExtension extends AbstractExtension
     public function getFilters(): array
     {
         return [
-            new TwigFilter('ucfirst','ucfirst'),
+            new TwigFilter('ucfirst', 'ucfirst'),
         ];
     }
 

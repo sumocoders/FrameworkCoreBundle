@@ -20,13 +20,19 @@ final class Breadcrumb
         $this->title = $title;
 
         if ($route !== null) {
-            $this->route = new Route($route['name'], \array_key_exists('parameters', $route) ? $route['parameters'] : null);
+            $this->route = new Route(
+                $route['name'],
+                \array_key_exists('parameters', $route) ? $route['parameters'] : null
+            );
         } else {
             $this->route = $route;
         }
 
         if ($parent !== null) {
-            $this->parent = new Route($parent['name'], \array_key_exists('parameters', $parent) ? $parent['parameters'] : null);
+            $this->parent = new Route(
+                $parent['name'],
+                \array_key_exists('parameters', $parent) ? $parent['parameters'] : null
+            );
         } else {
             $this->parent = $parent;
         }
@@ -61,5 +67,4 @@ final class Breadcrumb
     {
         return $this->parent !== null;
     }
-
 }

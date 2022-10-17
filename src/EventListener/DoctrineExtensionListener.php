@@ -29,7 +29,10 @@ class DoctrineExtensionListener
 
     public function onKernelRequest(RequestEvent $event)
     {
-        if ($this->tokenStorage->getToken() !== null && $this->authorizationChecker->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+        if (
+            $this->tokenStorage->getToken() !== null
+            && $this->authorizationChecker->isGranted('IS_AUTHENTICATED_REMEMBERED')
+        ) {
             $user = $this->tokenStorage->getToken()->getUser();
 
             $this->loggableListener->setUsername($user);

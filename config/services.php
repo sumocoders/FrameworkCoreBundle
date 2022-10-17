@@ -24,6 +24,7 @@ use SumoCoders\FrameworkCoreBundle\Form\Extension\DateTimeTypeExtension;
 use SumoCoders\FrameworkCoreBundle\Form\Extension\CollectionTypeExtension;
 use SumoCoders\FrameworkCoreBundle\Form\Extension\BirthdayTypeExtension;
 use SumoCoders\FrameworkCoreBundle\EventListener\ResponseSecurer;
+
 use function Symfony\Component\DependencyInjection\Loader\Configurator\param;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
@@ -107,7 +108,14 @@ return static function (ContainerConfigurator $container): void {
         ->alias(BreadcrumbTrail::class, 'framework.breadcrumb_trail')
 
         ->set('framework.breadcrumb_listener', BreadcrumbListener::class)
-            ->tag('kernel.event_listener', ['event' => 'kernel.controller', 'method' => 'onKernelController', 'priority' => -1])
+            ->tag(
+                'kernel.event_listener',
+                [
+                    'event' => 'kernel.controller',
+                    'method' => 'onKernelController',
+                    'priority' => -1
+                ]
+            )
 
         /*
          * Commands

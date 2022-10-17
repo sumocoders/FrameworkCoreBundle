@@ -44,7 +44,7 @@ class BreadcrumbTrail implements Iterator, Countable
 
     public function next(): void
     {
-        ++ $this->index;
+        ++$this->index;
     }
 
     public function key(): int

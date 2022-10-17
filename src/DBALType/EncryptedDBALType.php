@@ -8,7 +8,7 @@ use Doctrine\DBAL\Types\ConversionException;
 
 class EncryptedDBALType extends Type
 {
-    const ENCRYPTED = 'encrypted';
+    public const ENCRYPTED = 'encrypted';
 
     public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {

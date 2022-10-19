@@ -214,10 +214,10 @@
       {% if required %}{% set attr = attr|merge({'required': 'required'}) -%}{% endif %}
 
       <div class="input-group">
-        {{- block('form_widget_simple') -}}
         <div class="input-group-text">
           <i class="fas fa-calendar"></i>
         </div>
+        {{- block('form_widget_simple') -}}
       </div>
 
       {{- form_errors(form) -}}
@@ -280,10 +280,16 @@
       {% if required %}{% set attr = attr|merge({'required': 'required'}) -%}{% endif %}
 
       <div class="input-group">
-        {{- block('form_widget_simple') -}}
         <div class="input-group-text">
           <i class="fas fa-clock"></i>
         </div>
+        {{- block('form_widget_simple') -}}
+        {% if not required %}
+          <button class="btn btn-outline-secondary" type="button" data-flatpicker-clear>
+            <i class="fas fa-times"></i>
+          </button>
+        {% endif %}
+
       </div>
 
     {% else %}
@@ -353,10 +359,10 @@
       {% if required %}{% set attr = attr|merge({'required': 'required'}) -%}{% endif %}
 
       <div class="input-group">
-        {{- block('form_widget_simple') -}}
         <div class="input-group-text">
           <i class="fas fa-calendar"></i>
         </div>
+        {{- block('form_widget_simple') -}}
       </div>
 
       {{- form_errors(form) -}}

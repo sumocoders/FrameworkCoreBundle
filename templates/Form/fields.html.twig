@@ -352,8 +352,8 @@
       {# Its hardcoded for the symfony format because the patterns don't match #}
       {% if format is defined and format == 'dd/MM/yyyy HH:mm' %}{% set attr = attr|merge({'data-date-format': 'd/m/Y H:i'}) -%}{% endif %}
       {# The format needs to be defined before any min or max date #}
-      {% if minimum_date %}{% set attr = attr|merge({'data-min-date': minimum_date}) -%}{% endif %}
-      {% if maximum_date %}{% set attr = attr|merge({'data-max-date': maximum_date}) -%}{% endif %}
+      {% if minimum_date %}{% set attr = attr|merge({'data-min-date': minimum_date|date('d/m/Y')}) -%}{% endif %}
+      {% if maximum_date %}{% set attr = attr|merge({'data-max-date': maximum_date|date('d/m/Y')}) -%}{% endif %}
       {% if read_only is defined and read_only %}{% set attr = attr|merge({'readonly': 'readonly'}) -%}{% endif %}
       {% if disabled %}{% set attr = attr|merge({'disabled': 'disabled'}) -%}{% endif %}
       {% if required %}{% set attr = attr|merge({'required': 'required'}) -%}{% endif %}

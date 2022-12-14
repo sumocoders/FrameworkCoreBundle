@@ -4,7 +4,7 @@ namespace SumoCoders\FrameworkCoreBundle\EventListener;
 
 use Knp\Menu\ItemInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class DefaultMenuListener

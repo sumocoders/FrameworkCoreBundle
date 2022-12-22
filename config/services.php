@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Twig\ContentExtension;
 use SumoCoders\FrameworkCoreBundle\Command\TranslateCommand;
+use SumoCoders\FrameworkCoreBundle\Twig\ContentExtension;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use SumoCoders\FrameworkCoreBundle\Service\Fallbacks;
 use Symfony\Component\Form\Extension\Core\Type\DateType;

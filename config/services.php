@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Twig\ContentExtension;
 use SumoCoders\FrameworkCoreBundle\Command\TranslateCommand;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use SumoCoders\FrameworkCoreBundle\Service\Fallbacks;
@@ -101,8 +102,8 @@ return static function (ContainerConfigurator $container): void {
         ->set('framework.paginator_runtime', PaginatorRuntime::class)
             ->tag('twig.runtime')
 
-        ->set('framework.content_extension', \App\Twig\ContentExtension::class)
-            ->tag('twig.runtime')
+        ->set('framework.content_extension', ContentExtension::class)
+            ->tag('twig.extension')
 
         /*
          * Breadcrumbs

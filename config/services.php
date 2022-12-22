@@ -101,6 +101,9 @@ return static function (ContainerConfigurator $container): void {
         ->set('framework.paginator_runtime', PaginatorRuntime::class)
             ->tag('twig.runtime')
 
+        ->set('framework.content_extension', \App\Twig\ContentExtension::class)
+            ->tag('twig.runtime')
+
         /*
          * Breadcrumbs
          */

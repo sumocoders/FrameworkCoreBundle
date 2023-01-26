@@ -2,6 +2,7 @@
 
 namespace SumoCoders\FrameworkCoreBundle\EventListener;
 
+use Doctrine\ORM\EntityManagerInterface;
 use SumoCoders\FrameworkCoreBundle\ValueObject\Route;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -20,15 +21,18 @@ class BreadcrumbListener
     private PropertyAccessorInterface $propertyAccess;
     private BreadcrumbTrail $breadcrumbTrail;
     private Request $request;
+    private EntityManagerInterface $manager;
 
     public function __construct(
         RouterInterface $router,
         PropertyAccessorInterface $propertyAccess,
-        BreadcrumbTrail $breadcrumbTrail
+        BreadcrumbTrail $breadcrumbTrail,
+        EntityManagerInterface $manager
     ) {
         $this->router = $router;
         $this->propertyAccess = $propertyAccess;
         $this->breadcrumbTrail = $breadcrumbTrail;
+        $this->manager = $manager;
     }
 
     public function onKernelController(KernelEvent $event): void
@@ -88,14 +92,17 @@ class BreadcrumbListener
 
             $this->breadcrumbTrail->add(
                 $this->generateBreadcrumb(
-                    $attributeInstance
+                    $attributeInstance,
+                    $method
                 )
             );
         }
     }
 
-    private function generateBreadcrumb(BreadcrumbAttribute $breadcrumb): Breadcrumb
-    {
+    private function generateBreadcrumb(
+        BreadcrumbAttribute $breadcrumb,
+        \Reflectionmethod $method
+    ): Breadcrumb {
         $title = $breadcrumb->getTitle();
 
         // We're dealing with an expression, e.g. {item.name}
@@ -117,20 +124,38 @@ class BreadcrumbListener
                 );
             }
 
-            $attribute = $this->request->attributes->get($attributeName);
+            $attributeId = $this->request->attributes->get($attributeName);
 
-            if (is_object($attribute)) {
-                if (!isset($propertyPath)) {
-                    throw new RuntimeException(
-                        'When using objects in a breadcrumb, you have to specify which method to read.' .
-                        ' E.g. {object.name}'
-                    );
+            $name = null;
+            foreach ($method->getParameters() as $parameter) {
+                if ($parameter->name === $attributeName) {
+                    $name = $parameter->getType()->getName();
                 }
-
-                $title = $this->propertyAccess->getValue($attribute, $propertyPath);
-            } else {
-                $title = $attribute;
             }
+
+            if ($name === null) {
+                throw new RuntimeException(
+                    'You tried to use {' . $attributeName . '} as a breadcrumb parameter, but there is no ' .
+                    'parameter with that name in the route.'
+                );
+            }
+
+            $attribute = $this->manager->getRepository($name)->find($attributeId);
+
+            if (!is_object($attribute)) {
+                throw new RuntimeException(
+                    'Could not resolve entity ' . $name . ' with ID ' . $attributeId
+                );
+            }
+
+            if (!isset($propertyPath)) {
+                throw new RuntimeException(
+                    'When using objects in a breadcrumb, you have to specify which method to read.' .
+                    ' E.g. {object.name}'
+                );
+            }
+
+            $title = $this->propertyAccess->getValue($attribute, $propertyPath);
         }
 
         if ($breadcrumb->hasRoute()) {

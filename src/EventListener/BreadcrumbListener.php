@@ -186,8 +186,16 @@ class BreadcrumbListener
             );
         }
 
-        $class = new \ReflectionClass($routeInformation['controller']);
-        $method = $class->getMethod($routeInformation['method']);
+        // If class contains :: in the name, we're dealing with a static method
+        if (strpos($routeInformation['controller'], '::') > 0) {
+            $parts = explode('::', $routeInformation['controller']);
+            $class = new \ReflectionClass($parts[0]);
+
+            $method = $class->getMethod($parts[1]);
+        } else {
+            $class = new \ReflectionClass($routeInformation['controller']);
+            $method = $class->getMethod($routeInformation['method']);
+        }
 
         $this->processAttributeFromMethod($method, new Route($routeName));
     }
@@ -197,9 +205,9 @@ class BreadcrumbListener
         // Get all the routes defined in the entire application
         $routes = $this->router->getRouteCollection()->all();
 
-        foreach ($routes as $route) {
+        foreach ($routes as $key => $route) {
             // Get our canonical (without a locale prefixed) route name
-            if ($route->getDefault('_canonical_route') !== $name) {
+            if ($route->getDefault('_canonical_route') !== $name && $key !== $name) {
                 continue;
             }
 

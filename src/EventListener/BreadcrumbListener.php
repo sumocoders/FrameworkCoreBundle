@@ -215,7 +215,7 @@ class BreadcrumbListener
              * In the case of multiple methods defined per controller,
              * explode the controller name and method
              */
-            if (strpos('::', $route->getDefault('controller')) > 0) {
+            if (strpos($route->getDefault('_controller'), '::') > 0) {
                 $chunk = explode('::', $route->getDefault('_controller'));
                 $controller = $chunk[0];
                 $method = $chunk[1];

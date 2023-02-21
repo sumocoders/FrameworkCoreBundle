@@ -14,6 +14,7 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\HttpFoundation\Request;
 use InvalidArgumentException;
 use RuntimeException;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class BreadcrumbListener
 {
@@ -22,17 +23,20 @@ class BreadcrumbListener
     private BreadcrumbTrail $breadcrumbTrail;
     private Request $request;
     private EntityManagerInterface $manager;
+    private TranslatorInterface $translator;
 
     public function __construct(
         RouterInterface $router,
         PropertyAccessorInterface $propertyAccess,
         BreadcrumbTrail $breadcrumbTrail,
-        EntityManagerInterface $manager
+        EntityManagerInterface $manager,
+        TranslatorInterface $translator
     ) {
         $this->router = $router;
         $this->propertyAccess = $propertyAccess;
         $this->breadcrumbTrail = $breadcrumbTrail;
         $this->manager = $manager;
+        $this->translator = $translator;
     }
 
     public function onKernelController(KernelEvent $event): void
@@ -104,6 +108,7 @@ class BreadcrumbListener
         \Reflectionmethod $method
     ): Breadcrumb {
         $title = $breadcrumb->getTitle();
+        $parameters = $breadcrumb->getParameters();
 
         // We're dealing with an expression, e.g. {item.name}
         if ($title[0] === '{' && $title[-1] === '}') {
@@ -169,6 +174,60 @@ class BreadcrumbListener
                     UrlGeneratorInterface::ABSOLUTE_URL
                 )
             );
+        }
+
+        if (count($parameters)) {
+            foreach ($parameters as $key => $parameterValue) {
+                if (str_contains($parameterValue, '.')) {
+                    $split = explode('.', $parameterValue, 2);
+                    $attributeName = $split[0];
+                    $propertyPath = $split[1];
+                } else {
+                    $attributeName = $parameterValue;
+                }
+
+                if (!$this->request->attributes->has($attributeName)) {
+                    throw new RuntimeException(
+                        'You tried to use {' . $attributeName . '} as a breadcrumb parameter, but there is no ' .
+                        'parameter with that name in the route.'
+                    );
+                }
+
+                $attributeId = $this->request->attributes->get($attributeName);
+
+                $name = null;
+                foreach ($method->getParameters() as $parameter) {
+                    if ($parameter->name === $attributeName) {
+                        $name = $parameter->getType()->getName();
+                    }
+                }
+
+                if ($name === null) {
+                    throw new RuntimeException(
+                        'You tried to use {' . $attributeName . '} as a breadcrumb parameter, but there is no ' .
+                        'parameter with that name in the route.'
+                    );
+                }
+
+                $attribute = $this->manager->getRepository($name)->find($attributeId);
+
+                if (!is_object($attribute)) {
+                    throw new RuntimeException(
+                        'Could not resolve entity ' . $name . ' with ID ' . $attributeId
+                    );
+                }
+
+                if (!isset($propertyPath)) {
+                    throw new RuntimeException(
+                        'When using objects in a breadcrumb, you have to specify which method to read.' .
+                        ' E.g. {object.name}'
+                    );
+                }
+
+                $parameters[$key] = $this->propertyAccess->getValue($attribute, $propertyPath);
+            }
+
+            $title = $this->translator->trans($title, $parameters);
         }
 
         // Just a simple string

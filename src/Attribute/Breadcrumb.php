@@ -9,11 +9,13 @@ use SumoCoders\FrameworkCoreBundle\ValueObject\Route;
 final class Breadcrumb
 {
     private string $title;
+    private array $parameters;
     private ?Route $route;
     private ?Route $parent;
 
     public function __construct(
         string $title,
+        ?array $parameters = null,
         ?array $route = null,
         ?array $parent = null
     ) {
@@ -36,6 +38,12 @@ final class Breadcrumb
         } else {
             $this->parent = $parent;
         }
+
+        if ($parameters !== null) {
+            $this->parameters = $parameters;
+        } else {
+            $this->parameters = [];
+        }
     }
 
     public function getTitle(): ?string
@@ -56,6 +64,11 @@ final class Breadcrumb
     public function getParent(): ?Route
     {
         return $this->parent;
+    }
+
+    public function getParameters(): array
+    {
+        return $this->parameters;
     }
 
     public function hasRoute(): bool

@@ -138,6 +138,21 @@ public function book(Author $author): Response
 }
 ```
 
+
+It's also possible to add paramters to the translation.
+
+```yaml
+breadcrumb.authors: 'Author: %name%'
+```
+
+```php
+#[Route('/authors/{author}', name:'authors')]
+#[Breadcrumb('breadcrumb.authors', parameters: ['%name%' => 'author.name
+public function book(Author $author): Response
+{
+}
+```
+
 ## Full example
 Auteurs > J.K. Rowling > Harry Potter
 

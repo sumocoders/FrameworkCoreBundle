@@ -76,9 +76,8 @@
 {{ include('@SumoCodersFrameworkCore/dialogs.html.twig') }}
 
 {% block javascripts %}
-  <script src="{{ url('bazinga_jstranslation_js') }}"></script>
-
   {{ encore_entry_script_tags('app') }}
+  <script src="{{ url('bazinga_jstranslation_js') }}" defer></script>
 {% endblock %}
 </body>
 </html>

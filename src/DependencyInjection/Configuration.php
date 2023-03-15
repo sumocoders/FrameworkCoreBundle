@@ -24,6 +24,10 @@ class Configuration implements ConfigurationInterface
                         'font-src' => [
                             "'self'",
                         ],
+                        'img-src' => [
+                            "'self'",
+                            "data:", // Bootstrap icons
+                        ],
                         'child-src' => [
                             "'none'", // Block all iframes
                         ],

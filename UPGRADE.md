@@ -6,11 +6,43 @@ Sinds versie 5 zijn ale data attrbiuten van Bootstrap ge"namespaced". Dit wil du
 
 Je kan dit oplossen door een search & replace te doen door heel je project.
 
+```
+data-toggle="modal" -> data-bs-toggle="modal"
+data-trigger="focus" -> data-bs-trigger="focus"
+
+// etc...
+```
 ## PHP
+
+### Manieren om up te graden
+Je gaat best door de oude applicatie en maakt een inschatting van welke staat de code & dependencies zijn.
+
+Afhankelijk van de staat van de codebase kies je voor een update strategy:
+* Upgrade in het project zelf (laag aantal code changes, geen major dependency changes)
+* Volledige rewrite in nieuw Symfony project (structuur van codebase is volledig anders dan moderne Symfony applicatie, veel code changes, veel dependency conflicten)
+* Strangler Fig van de oude applicatie (zie https://symfony.com/doc/current/migration.html#introducing-symfony-to-the-existing-application) (legacy project zonder Symfony langzaam migreren naar Symfony)
+
+### Bundles & Namespaces
+
+Als het project <Symfony 3 is, staat je code mogelijk nog in bundles in src/. Indien dit het geval is begin je best met in PHPStorm de oude src/ folder te renamen naar src_old/, een nieuwe src/ folder te maken, en vervolgens alle code uit de bundles samen te voegen in de nieuwe src/ folder. Normaal gezien zal PHPStorm dan automatisch de juiste namespace al klaarzetten in je files.
 
 ### Breadcrumbs
 De breadcrumbs in onze core bundle zijn niet BC. Als ze nog op de oude manier werken (met de listener in de controller) dan moet je dit manueel refactoren.
 
+Oude manier:
+```php
+$this->breadCrumbBuilder->addSimpleItem(
+    'order.header.index',
+    $this->router->generate(
+        'qlab_order_order_overview'
+    )
+);
+```
+Nieuwe manier:
+```php
+    #[Breadcrumb('order.header.index')]
+    public function __invoke(
+```
 Als het enkel annotation -> attributen is, kan je volgende Rector sets gebruiken:
 
 ```php
@@ -36,7 +68,11 @@ $paginatedItems->paginate($request->query->getInt('page', 1));
 ### VO -> ENUM
 Vroeger gebruikten we veel ValueObjects, ook om simpele string values op te slaan. Sinds PHP8 hebben we hiervoor native enums.
 
-Je kan je VOs dus omzetten naar enums (indien ze enkel een vaste lijst string values kunnen hebben). Zaken zoals Money, Coordinates of Range zijn nog steeds VOs. Zaken zoals Gender, Province, etc.. zijn dus enums.
+Je kan je VOs dus omzetten naar enums (indien ze enkel een vaste lijst string values kunnen hebben). Zaken zoals Money, Coordinates of Range zijn nog steeds VOs. Zaken zoals Gender, Province, etc.. zijn enums.
+
+Hiervoor is geen tool beschikbaar, Rector kan dit niet. Je moet dus zelf enums gaan maken en overal in de code dit aanpassen. Omdat dit best wel veel werk is, is het niet altijd de moeite om dit te doen. Is een nice-to-have.
+
+In je entities gebruik je `#[ORM\COlumn(enumType: <enum_fqcn>)` van Doctrine. In je Symfony forms gebruik je het `EnumType` form type.
 
 ```php
 enum Gender: string
@@ -91,6 +127,8 @@ return function (RectorConfig $rectorConfig): void {
 ```
 
 ### Security
+Pre Symfony 5 was de security.yaml anders. Onder andere de password encoders/hashers config is aangepast.
+
 config/packages/security.yaml
 ```yaml
     # oud
@@ -103,7 +141,9 @@ config/packages/security.yaml
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
 ```
 
+Indien er een oude user implementatie (met msgphp bundle, of iets ouder) in het projet zit, is het vaak het snelst om alles weg te smijten en https://github.com/sumocoders/Framework-User-Implementation-Example opnieuw over te nemen.
 ### Config
+De Sentry configuratie om errors te ignoren is aangepast. Je gebruikt nu best deze syntax:
 
 config/packages/sentry.yaml
 ```yaml

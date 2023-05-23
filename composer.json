@@ -33,7 +33,8 @@
     "symfony/twig-bundle": "^6.2",
     "twig/inky-extra": "^3.3",
     "twig/cssinliner-extra": "^3.3",
-    "twig/extra-bundle": "^3.3"
+    "twig/extra-bundle": "^3.3",
+    "symfony/ux-autocomplete": "^2.8"
   },
   "require-dev": {
     "roave/security-advisories": "dev-master",

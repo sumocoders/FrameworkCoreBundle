@@ -10,11 +10,10 @@ use Twig\Extension\RuntimeExtensionInterface;
 
 class PaginatorRuntime implements RuntimeExtensionInterface
 {
-    private Environment $twig;
-    private RequestStack $requestStack;
-
-    public function __construct(Environment $twig, RequestStack $requestStack)
-    {
+    public function __construct(
+        private Environment $twig,
+        private RequestStack $requestStack,
+    ) {
         $this->twig = $twig;
         $this->requestStack = $requestStack;
     }

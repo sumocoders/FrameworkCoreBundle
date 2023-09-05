@@ -27,7 +27,7 @@ class DoctrineExtensionListener
         $this->blamableListener = $blamableListener;
     }
 
-    public function onKernelRequest(RequestEvent $event)
+    public function onKernelRequest(RequestEvent $event): void
     {
         if (
             $this->tokenStorage->getToken() !== null

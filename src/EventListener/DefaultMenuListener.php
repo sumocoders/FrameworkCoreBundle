@@ -38,7 +38,7 @@ class DefaultMenuListener
         return $this->requestStack;
     }
 
-    public function enableChildRoutes(ItemInterface $item, string $prefix)
+    public function enableChildRoutes(ItemInterface $item, string $prefix): void
     {
         $request = $this->requestStack->getCurrentRequest();
 

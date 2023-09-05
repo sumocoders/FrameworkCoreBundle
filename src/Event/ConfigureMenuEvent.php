@@ -10,54 +10,29 @@ class ConfigureMenuEvent extends Event
 {
     public const EVENT_NAME = 'framework_core.configure_menu';
 
-    /**
-     * @var \Knp\Menu\FactoryInterface
-     */
-    private $factory;
 
-    /**
-     * @var \Knp\Menu\ItemInterface
-     */
-    private $menu;
-
-    /**
-     * @param FactoryInterface $factory
-     * @param ItemInterface    $menu
-     */
-    public function __construct(FactoryInterface $factory, ItemInterface $menu)
-    {
-        $this->setFactory($factory);
-        $this->setMenu($menu);
+    public function __construct(
+        private FactoryInterface $factory,
+        private ItemInterface $menu,
+    ) {
     }
 
-    /**
-     * @param FactoryInterface $factory
-     */
-    private function setFactory($factory)
+    private function setFactory(FactoryInterface $factory): void
     {
         $this->factory = $factory;
     }
 
-    /**
-     * @return \Knp\Menu\FactoryInterface
-     */
-    public function getFactory()
+    public function getFactory(): FactoryInterface
     {
         return $this->factory;
     }
 
-    /**
-     * @param ItemInterface $menu
-     */
-    private function setMenu($menu)
+    private function setMenu(ItemInterface $menu)
     {
         $this->menu = $menu;
     }
 
-    /**
-     * @return \Knp\Menu\ItemInterface
-     */
-    public function getMenu()
+    public function getMenu(): ItemInterface
     {
         return $this->menu;
     }

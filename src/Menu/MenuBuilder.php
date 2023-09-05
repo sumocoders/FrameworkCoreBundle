@@ -39,7 +39,7 @@ class MenuBuilder
         return $menu;
     }
 
-    protected function reorderMenuItems(ItemInterface $menu)
+    protected function reorderMenuItems(ItemInterface $menu): void
     {
         $menuOrderArray = [];
         $addLast = [];

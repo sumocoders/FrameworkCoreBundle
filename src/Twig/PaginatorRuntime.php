@@ -14,8 +14,6 @@ class PaginatorRuntime implements RuntimeExtensionInterface
         private Environment $twig,
         private RequestStack $requestStack,
     ) {
-        $this->twig = $twig;
-        $this->requestStack = $requestStack;
     }
 
     public function renderPagination(Paginator $paginator): string

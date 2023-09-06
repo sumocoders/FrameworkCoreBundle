@@ -21,30 +21,16 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  */
 abstract class AbstractFile
 {
-    /**
-     * @var string
-     * Column(type="string", length=255, nullable=true)
-     */
-    protected $fileName = null;
+    protected ?UploadedFile $file = null;
 
-    /**
-     * @var UploadedFile
-     */
-    protected $file;
+    protected ?string $oldFileName = null;
 
-    /**
-     * @var string
-     */
-    protected $oldFileName;
+    protected ?string $namePrefix = null;
 
-    /**
-     * @var string
-     */
-    protected $namePrefix;
-
-    protected function __construct(?string $fileName)
-    {
-        $this->fileName = $fileName;
+    protected function __construct(
+        #[ORM\Column(type: 'string', length: 255, nullable: true)]
+        protected ?string $fileName = null,
+    ) {
     }
 
     public function getFileName(): ?string
@@ -105,14 +91,10 @@ abstract class AbstractFile
         return clone $this;
     }
 
-    /**
-     * @param UploadedFile|null $uploadedFile
-     * @param string|null $namePrefix If set this will be prepended to the generated filename
-     *
-     * @return static
-     */
-    public static function fromUploadedFile(UploadedFile $uploadedFile = null, string $namePrefix = null)
-    {
+    public static function fromUploadedFile(
+        ?UploadedFile $uploadedFile = null,
+        ?string $namePrefix = null
+    ): static {
         $file = new static(null);
         $file->setFile($uploadedFile);
         if ($namePrefix !== null) {

@@ -9,9 +9,7 @@ use Twig\TwigFunction;
 
 class FrameworkExtension extends AbstractExtension
 {
-    private RequestStack $requestStack;
-
-    public function __construct(RequestStack $requestStack)
+    public function __construct(private RequestStack $requestStack)
     {
         $this->requestStack = $requestStack;
     }

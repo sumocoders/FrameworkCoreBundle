@@ -32,7 +32,7 @@ class ResponseSecurer
      *
      * @param ResponseEvent $event
      */
-    public function onKernelResponse(ResponseEvent $event)
+    public function onKernelResponse(ResponseEvent $event): void
     {
         /*
          * We only send the security headers when we're not in dev mode

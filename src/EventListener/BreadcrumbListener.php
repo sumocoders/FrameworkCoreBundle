@@ -79,7 +79,7 @@ class BreadcrumbListener
     private function processAttributeFromMethod(
         \Reflectionmethod $method,
         ?Route $route = null
-    ) {
+    ): void {
         $attributes = $method->getAttributes(BreadcrumbAttribute::class, \ReflectionAttribute::IS_INSTANCEOF);
 
         foreach ($attributes as $attribute) {
@@ -305,7 +305,7 @@ class BreadcrumbListener
         return null;
     }
 
-    private function resolveRouteParameters(BreadcrumbAttribute $breadcrumb)
+    private function resolveRouteParameters(BreadcrumbAttribute $breadcrumb): void
     {
         $route = $breadcrumb->getRoute();
         $routeInformation = $this->getRouteInformation($route->getName());

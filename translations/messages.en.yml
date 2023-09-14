@@ -101,6 +101,13 @@ error:
     messages:
         generic: Something went wrong.
         noRouteFound: Page not found.
+        noRouteFoundMessage: It seems this page does not exist (anymore) or has been moved.
+        unauthorized: You are not authorized to view this page.
+        unauthorizedMessage: Please check if you are logged in and have the necessary rights to view this page.
+        crash: Oops. Something went wrong.
+        crashMessage: This was not supposed to happen. Please contact the owner of the website or the developer if the problem persists
+
+go back: Go back
 
 forms:
     labels:
@@ -138,3 +145,8 @@ navigation:
 
 previous: previous
 next: next
+
+user:
+    actions:
+        logout: logout
+        switchback: switch back to own account

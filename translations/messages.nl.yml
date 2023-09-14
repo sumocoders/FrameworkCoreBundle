@@ -138,6 +138,7 @@ header:
             overview: overzicht
 
 navigation:
+    translations: vertalingen
     titles:
         possible_actions: mogelijke acties
         showHideMenu: toon/verberg menu

@@ -129,5 +129,8 @@ return static function (ContainerConfigurator $container): void {
             ->tag('console.command')
 
         ->set(SecretsGetCommand::class)
+            ->args([
+                service('secrets.vault')
+            ])
             ->tag('console.command');
 };

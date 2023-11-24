@@ -14,9 +14,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 )]
 class SecretsGetCommand extends Command
 {
-    private function __construct(
+    public function __construct(
         private AbstractVault $vault
     ){
+        parent::__construct();
     }
 
     public function configure()

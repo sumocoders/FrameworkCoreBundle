@@ -31,7 +31,7 @@ class SecretsGetCommand extends Command
         $key = $input->getArgument('key');
 
         $output->writeln(
-            $this->vault->reveal($key)
+            $this->vault->reveal($key) ?? ''
         );
 
         return Command::SUCCESS;

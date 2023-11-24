@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use SumoCoders\FrameworkCoreBundle\Command\SecretsGetCommand;
 use SumoCoders\FrameworkCoreBundle\Command\TranslateCommand;
 use SumoCoders\FrameworkCoreBundle\Twig\ContentExtension;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
@@ -125,5 +126,8 @@ return static function (ContainerConfigurator $container): void {
          * Commands
          */
         ->set(TranslateCommand::class)
+            ->tag('console.command')
+
+        ->set(SecretsGetCommand::class)
             ->tag('console.command');
 };

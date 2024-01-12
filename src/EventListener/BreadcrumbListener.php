@@ -4,6 +4,7 @@ namespace SumoCoders\FrameworkCoreBundle\EventListener;
 
 use Doctrine\ORM\EntityManagerInterface;
 use SumoCoders\FrameworkCoreBundle\ValueObject\Route;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use SumoCoders\FrameworkCoreBundle\Service\BreadcrumbTrail;
@@ -132,9 +133,15 @@ class BreadcrumbListener
             $attributeId = $this->request->attributes->get($attributeName);
 
             $name = null;
+            $mapping = null;
             foreach ($method->getParameters() as $parameter) {
                 if ($parameter->name === $attributeName) {
                     $name = $parameter->getType()->getName();
+                    foreach ($parameter->getAttributes() as $attribute) {
+                        if ($attribute->getName() === MapEntity::class) {
+                            $mapping = $attribute->newInstance()->mapping;
+                        }
+                    }
                 }
             }
 
@@ -145,7 +152,11 @@ class BreadcrumbListener
                 );
             }
 
-            $attribute = $this->manager->getRepository($name)->find($attributeId);
+            if ($mapping !== null && isset($mapping[$attributeName])) {
+                $attribute = $this->manager->getRepository($name)->findOneBy([$mapping[$attributeName] => $attributeId]);
+            } else {
+                $attribute = $this->manager->getRepository($name)->find($attributeId);
+            }
 
             if (!is_object($attribute)) {
                 throw new RuntimeException(

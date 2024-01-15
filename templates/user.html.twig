@@ -1,5 +1,5 @@
 {% block head %}
-  {{ include('@SumoCodersFrameworkCore/head.html.twig') }}
+  {% include '@SumoCodersFrameworkCore/head.html.twig' with {title: block('title') is defined ? block('title') : fallbacks.get('site_title')} %}
 {% endblock %}
 
 <body class="user h-100" data-theme-path="{{ asset('build/style-dark.css') }}">

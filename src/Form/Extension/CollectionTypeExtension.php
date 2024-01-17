@@ -24,8 +24,8 @@ final class CollectionTypeExtension extends AbstractTypeExtension
             [
                 'allow_drag_and_drop' => true,
                 'add_button_label' => 'forms.buttons.addItem',
-                'min' => 0,
-                'max' => null,
+                'minimum_required_items' => 0,
+                'maximum_required_items' => null,
             ]
         );
     }
@@ -34,7 +34,7 @@ final class CollectionTypeExtension extends AbstractTypeExtension
     {
         $view->vars['allow_drag_and_drop'] = $options['allow_drag_and_drop'];
         $view->vars['add_button_label'] = $options['add_button_label'];
-        $view->vars['min'] = $options['min'];
-        $view->vars['max'] = $options['max'];
+        $view->vars['minimum_required_items'] = $options['minimum_required_items'];
+        $view->vars['maximum_required_items'] = $options['maximum_required_items'];
     }
 }

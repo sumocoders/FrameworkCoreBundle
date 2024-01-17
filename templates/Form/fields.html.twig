@@ -80,7 +80,7 @@
     {% set attr = attr|merge({'data-allow-remove': allow_delete ? 1 : 0}) %}
     {% set attr = attr|merge({'data-name-prefix': full_name}) %}
     {% set attr = attr|merge({'data-role': 'collection'}) %}
-    {% set attr = attr|merge({'data-min': min, 'data-max': max}) %}
+    {% set attr = attr|merge({'data-min': minimum_required_items, 'data-max': maximum_required_items}) %}
 
     <div
       {{ block('widget_container_attributes') }}

@@ -3,5 +3,9 @@
 {% block body %}
     <h1>{{ 'error.messages.unauthorized'|trans }}</h1>
     <p>{{ 'error.messages.unauthorizedMessage'|trans }}</p>
-    <a href="{{ app.request.headers.get('referer') }}" class="btn btn-outline-primary">{{ 'go back'|trans }}</a>
+    {% if app.request.headers.get('referer') != "" %}
+        <a href="{{ app.request.headers.get('referer') }}" class="btn btn-outline-primary">{{ 'go back'|trans }}</a>
+    {% else %}
+        <a href="{{ fallbacks.get('redirect_path') }}" class="btn btn-outline-primary">{{ 'go back'|trans }}</a>
+    {% endif %}
 {% endblock %}

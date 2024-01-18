@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use SumoCoders\FrameworkCoreBundle\Command\SecretsGetCommand;
 use SumoCoders\FrameworkCoreBundle\Command\TranslateCommand;
+use SumoCoders\FrameworkCoreBundle\Service\PageTitle;
 use SumoCoders\FrameworkCoreBundle\Twig\ContentExtension;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use SumoCoders\FrameworkCoreBundle\Service\Fallbacks;
@@ -40,71 +41,71 @@ return static function (ContainerConfigurator $container): void {
          * Services
          */
         ->set('framework.fallbacks', Fallbacks::class)
-            ->args([
-                param('fallbacks')
-            ])
+        ->args([
+            param('fallbacks')
+        ])
 
         /*
          * Menu
          */
         ->set('framework.menu_builder', MenuBuilder::class)
-            ->args([
-                service('knp_menu.factory'),
-                service('event_dispatcher')
-            ])
-            ->tag('knp_menu.menu_builder', ['method' => 'createMainMenu', 'alias' => 'side_menu'])
+        ->args([
+            service('knp_menu.factory'),
+            service('event_dispatcher')
+        ])
+        ->tag('knp_menu.menu_builder', ['method' => 'createMainMenu', 'alias' => 'side_menu'])
 
         /*
          * Forms
          */
         ->set('framework.date_type_extension', DateTypeExtension::class)
-            ->tag('form.type_extension', ['extended_type' => DateType::class])
+        ->tag('form.type_extension', ['extended_type' => DateType::class])
 
         ->set('framework.time_type_extension', TimeTypeExtension::class)
-            ->tag('form.type_extension', ['extended_type' => TimeType::class])
+        ->tag('form.type_extension', ['extended_type' => TimeType::class])
 
         ->set('framework.date_time_type_extension', DateTimeTypeExtension::class)
-            ->tag('form.type_extension', ['extended_type' => DateTimeType::class])
+        ->tag('form.type_extension', ['extended_type' => DateTimeType::class])
 
         ->set('framework.birthday_type_extension', BirthdayTypeExtension::class)
-            ->tag('form.type_extension', ['extended_type' => BirthdayType::class])
+        ->tag('form.type_extension', ['extended_type' => BirthdayType::class])
 
         ->set('framework.collection_type_extension', CollectionTypeExtension::class)
-            ->tag('form.type_extension', ['extended_type' => CollectionType::class])
+        ->tag('form.type_extension', ['extended_type' => CollectionType::class])
 
         ->set('framework.image_type', ImageType::class)
-            ->tag('form.type', ['alias' => 'image'])
+        ->tag('form.type', ['alias' => 'image'])
 
         ->set('framework.file_type', FileType::class)
-            ->tag('form.type', ['alias' => 'sumoFile'])
+        ->tag('form.type', ['alias' => 'sumoFile'])
 
         /*
          * Secure headers
          */
         ->set('framework.response_securer', ResponseSecurer::class)
-            ->args([
-                param('kernel.debug'),
-                param('sumo_coders_framework_core.content_security_policy'),
-                param('sumo_coders_framework_core.extra_content_security_policy'),
-                param('sumo_coders_framework_core.x_frame_options'),
-                param('sumo_coders_framework_core.x_content_type_options'),
-            ])
-            ->tag('kernel.event_listener', ['event' => 'kernel.response', 'method' => 'onKernelResponse'])
+        ->args([
+            param('kernel.debug'),
+            param('sumo_coders_framework_core.content_security_policy'),
+            param('sumo_coders_framework_core.extra_content_security_policy'),
+            param('sumo_coders_framework_core.x_frame_options'),
+            param('sumo_coders_framework_core.x_content_type_options'),
+        ])
+        ->tag('kernel.event_listener', ['event' => 'kernel.response', 'method' => 'onKernelResponse'])
 
         /*
          * Twig extensions
          */
         ->set('framework.framework_extension', FrameworkExtension::class)
-            ->tag('twig.extension')
+        ->tag('twig.extension')
 
         ->set('framework.paginator_extension', PaginatorExtension::class)
-            ->tag('twig.extension')
+        ->tag('twig.extension')
 
         ->set('framework.paginator_runtime', PaginatorRuntime::class)
-            ->tag('twig.runtime')
+        ->tag('twig.runtime')
 
         ->set('framework.content_extension', ContentExtension::class)
-            ->tag('twig.extension')
+        ->tag('twig.extension')
 
         /*
          * Breadcrumbs
@@ -113,24 +114,35 @@ return static function (ContainerConfigurator $container): void {
         ->alias(BreadcrumbTrail::class, 'framework.breadcrumb_trail')
 
         ->set('framework.breadcrumb_listener', BreadcrumbListener::class)
-            ->tag(
-                'kernel.event_listener',
-                [
-                    'event' => 'kernel.controller',
-                    'method' => 'onKernelController',
-                    'priority' => -1
-                ]
-            )
+        ->tag(
+            'kernel.event_listener',
+            [
+                'event' => 'kernel.controller',
+                'method' => 'onKernelController',
+                'priority' => -1
+            ]
+        )
+
+        /*
+         * Page title
+         */
+        ->set('framework.page_title', PageTitle::class)
+        ->args([
+            service('framework.breadcrumb_trail'),
+            service('framework.fallbacks'),
+            service('translator')
+        ])
+        ->alias(PageTitle::class, 'framework.page_title')
 
         /*
          * Commands
          */
         ->set(TranslateCommand::class)
-            ->tag('console.command')
+        ->tag('console.command')
 
         ->set(SecretsGetCommand::class)
-            ->args([
-                service('secrets.vault')
-            ])
-            ->tag('console.command');
+        ->args([
+            service('secrets.vault')
+        ])
+        ->tag('console.command');
 };

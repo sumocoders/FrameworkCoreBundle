@@ -2,3 +2,6 @@ forms:
   not_blank: This field is required.
   url: This is not a valid URL.
   email: This is not a valid e-mail address.
+
+You can add a maximum of %count% items: You can add a maximum of %count% items.
+You must add at least %count% items: You must add at least %count% items.

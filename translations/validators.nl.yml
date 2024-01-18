@@ -2,3 +2,6 @@ forms:
   not_blank: Dit veld is verplicht.
   url: Dit is geen geldige URL.
   email: Dit is geen geldige e-mailadres.
+
+You can add a maximum of %count% items: Je kan maximaal %count% items toevoegen.
+You must add at least %count% items: Je moet minimaal %count% items toevoegen.

@@ -15,21 +15,16 @@ class PageTitle
 
     public function getTitle(): string
     {
-        $breadcrumbs = $this->breadcrumbTrail->all();
-        $breadcrumbs =array_reverse($breadcrumbs);
+        $breadcrumbs = array_reverse($this->breadcrumbTrail->all());
 
-        if (count($breadcrumbs) === 0) {
+        if (empty($breadcrumbs)) {
             return $this->fallbacks->get('site_title');
         }
 
-        $title = '';
-        foreach ($breadcrumbs as $breadcrumb) {
-            $title .= $this->translator->trans($breadcrumb->getTitle()).' - ';
-        }
+        $titles = array_map(fn($breadcrumb) => $this->translator->trans($breadcrumb->getTitle()), $breadcrumbs);
+        $titles[] = $this->fallbacks->get('site_title');
 
-        $title .= $this->fallbacks->get('site_title');
-
-        return $title;
+        return implode(' - ', $titles);
     }
 
     public function __toString(): string

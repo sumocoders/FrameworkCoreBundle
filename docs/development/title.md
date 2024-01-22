@@ -1,3 +1,9 @@
+# The page title
+By default no page title should be set. This is because by default the `fallback.site_title` is used. This is a configuration value that can be set in the `services.yaml` file.
+In case there are breadcrumbs configured, the reverse order of the breadcrumbs will be used as the page title.
+
+## The `Title` attribute
+
 The `Title` attribute is a custom attribute used in the framework. It is used to set the title of a page dynamically based on the controller method that is being executed. Here's a step-by-step guide on how to use it:
 
 1. Import the `Title` attribute at the top of your controller file:

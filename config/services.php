@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use SumoCoders\FrameworkCoreBundle\Command\SecretsGetCommand;
 use SumoCoders\FrameworkCoreBundle\Command\TranslateCommand;
+use SumoCoders\FrameworkCoreBundle\EventListener\TitleListener;
 use SumoCoders\FrameworkCoreBundle\Service\PageTitle;
 use SumoCoders\FrameworkCoreBundle\Twig\ContentExtension;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
@@ -114,6 +115,21 @@ return static function (ContainerConfigurator $container): void {
         ->alias(BreadcrumbTrail::class, 'framework.breadcrumb_trail')
 
         ->set('framework.breadcrumb_listener', BreadcrumbListener::class)
+        ->tag(
+            'kernel.event_listener',
+            [
+                'event' => 'kernel.controller',
+                'method' => 'onKernelController',
+                'priority' => -1
+            ]
+        )
+
+        ->set('framework.title_listener', TitleListener::class)
+        ->args([
+            service('framework.page_title'),
+            service('framework.fallbacks'),
+            service('router')
+        ])
         ->tag(
             'kernel.event_listener',
             [

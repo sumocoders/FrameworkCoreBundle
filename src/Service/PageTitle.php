@@ -13,8 +13,19 @@ class PageTitle
     ) {
     }
 
+    private ?string $title = null;
+
+    public function setTitle(string $title): void
+    {
+        $this->title = $title;
+    }
+
     public function getTitle(): string
     {
+        if ($this->title !== null) {
+            return $this->title;
+        }
+
         $breadcrumbs = array_reverse($this->breadcrumbTrail->all());
 
         if (empty($breadcrumbs)) {

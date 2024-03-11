@@ -199,6 +199,7 @@ class DoctrineAuditListener
         foreach ($properties as $property) {
             if ($property->getAttributes(Id::class)) {
                 $property->setAccessible(true);
+
                 return (string) $property->getValue($entity);
             }
         }

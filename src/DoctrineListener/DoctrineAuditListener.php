@@ -18,10 +18,10 @@ use SumoCoders\FrameworkCoreBundle\Enum\EventAction;
 use SumoCoders\FrameworkCoreBundle\Logger\AuditLogger;
 use Symfony\Component\Serializer\SerializerInterface;
 
-#[AsDoctrineListener(event: Events::postPersist, priority: 500, connection: 'default')]
-#[AsDoctrineListener(event: Events::postUpdate, priority: 500, connection: 'default')]
-#[AsDoctrineListener(event: Events::preRemove, priority: 500, connection: 'default')]
-#[AsDoctrineListener(event: Events::postRemove, priority: 500, connection: 'default')]
+#[AsDoctrineListener(event: Events::postPersist, priority: 500)]
+#[AsDoctrineListener(event: Events::postUpdate, priority: 500)]
+#[AsDoctrineListener(event: Events::preRemove, priority: 500)]
+#[AsDoctrineListener(event: Events::postRemove, priority: 500)]
 class DoctrineAuditListener
 {
     public function __construct(
@@ -196,7 +196,6 @@ class DoctrineAuditListener
             }
         }
 
-        // Use the first method that exists in ['__toString', 'getName', 'getTitle', 'getId', 'getUuid']
         foreach (['__toString', 'getName', 'getTitle', 'getId', 'getUuid'] as $method) {
             if (in_array($method, $methods)) {
                 return (string) $entity->$method();

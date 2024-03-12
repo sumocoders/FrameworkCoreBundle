@@ -1,6 +1,6 @@
 <?php
 
-namespace SumoCoders\FrameworkCoreBundle\Attribute;
+namespace SumoCoders\FrameworkCoreBundle\Attribute\AuditTrail;
 
 use Attribute;
 

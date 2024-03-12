@@ -5,6 +5,6 @@ namespace SumoCoders\FrameworkCoreBundle\Attribute\AuditTrail;
 use Attribute;
 
 #[Attribute]
-class AuditTrailDisplayData
+class DisplayAllEntityFieldWithDataInLog
 {
 }

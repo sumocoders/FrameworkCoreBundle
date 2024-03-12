@@ -11,7 +11,7 @@ use Doctrine\ORM\Event\PreRemoveEventArgs;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\Id;
 use ReflectionClass;
-use SumoCoders\FrameworkCoreBundle\Attribute\AuditTrail\AuditTrailDisplayData;
+use SumoCoders\FrameworkCoreBundle\Attribute\AuditTrail\DisplayAllEntityFieldWithDataInLog;
 use SumoCoders\FrameworkCoreBundle\Attribute\AuditTrail\AuditTrailIdentifier;
 use SumoCoders\FrameworkCoreBundle\Attribute\AuditTrail\AuditTrailSensitiveData;
 use SumoCoders\FrameworkCoreBundle\Enum\EventAction;
@@ -66,7 +66,7 @@ class DoctrineAuditListener
             }
 
             // If the attribute AuditTrailDisplayData::class isn't set, we don't want to log it
-            if ($property->getAttributes(AuditTrailDisplayData::class)) {
+            if ($reflectionClass->getAttributes(DisplayAllEntityFieldWithDataInLog::class)) {
                 $data['trail_fields'][] = $property->getName();
             }
         }
@@ -131,7 +131,7 @@ class DoctrineAuditListener
                     }
 
                     // If the attribute AuditTrailDisplayData::class isn't set, we don't want to log it
-                    if ($property->getAttributes(AuditTrailDisplayData::class)) {
+                    if ($reflectionClass->getAttributes(DisplayAllEntityFieldWithDataInLog::class)) {
                         $trailFields[] = $property->getName();
                     }
                 }
@@ -156,7 +156,7 @@ class DoctrineAuditListener
                     }
 
                     // If the attribute AuditTrailDisplayData::class isn't set, we don't want to log it
-                    if ($property->getAttributes(AuditTrailDisplayData::class)) {
+                    if ($reflectionClass->getAttributes(DisplayAllEntityFieldWithDataInLog::class)) {
                         $trailFields[] = $property->getName();
                     }
                 }

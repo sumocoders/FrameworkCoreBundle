@@ -18,13 +18,13 @@ For every action the following data is tracked:
 * The fields that were changed
 * The data that was changed
 
-To track the data of a changed field add the `AuditTrailDisplayData` attribute to the property.
+To track the data of a changed field add the `DisplayAllEntityFieldWithDataInLog` attribute to the class.
 ```php
+#[AuditTrail\DisplayAllEntityFieldWithDataInLog]
 #[ORM\Entity]
 class Test
 {
     public function __construct(
-        #[AuditTrailDisplayData]
         #[ORM\Column]
         private string $secret,
         #[ORM\Column]
@@ -50,7 +50,7 @@ If the attribute is not present an educated guess will be made.
 #[ORM\Entity]
 class Test
 {
-    #[AuditTrailIdentifier]
+    #[AuditTrail\AuditTrailIdentifier]
     public function displayName(): string
     {
         return $this->displayName;
@@ -61,12 +61,12 @@ class Test
 You can hide secure data from the audit trail by adding the `AuditTrailSensitiveData` attribute to the property.
 This will transform the data to `****` in the audit trail.
 ```php
+#[AuditTrail\AuditTrailDisplayData]
 #[ORM\Entity]
 class Test
 {
     public function __construct(
-        #[AuditTrailSensitiveData]
-        #[AuditTrailDisplayData]
+        #[AuditTrail\AuditTrailSensitiveData]
         #[ORM\Column]
         private string $secret,
         #[ORM\Column]

@@ -11,6 +11,7 @@ use Doctrine\ORM\Event\PreRemoveEventArgs;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\Id;
 use ReflectionClass;
+use SumoCoders\FrameworkCoreBundle\Attribute\AuditTrail\AuditTrailLoggedField;
 use SumoCoders\FrameworkCoreBundle\Attribute\AuditTrail\DisplayAllEntityFieldWithDataInLog;
 use SumoCoders\FrameworkCoreBundle\Attribute\AuditTrail\AuditTrailIdentifier;
 use SumoCoders\FrameworkCoreBundle\Attribute\AuditTrail\AuditTrailSensitiveData;
@@ -100,8 +101,13 @@ class DoctrineAuditListener
 
                 $entityFields = array_keys($entityData);
 
-                if (!$this->showDataForEntity($entity)) {
+                if (!$this->showDataForEntity($entity) && !$this->showPropertyDataForEntity($entity)) {
                     $entityData = [];
+                } elseif ($this->showPropertyDataForEntity($entity)) {
+                    $entityData = array_filter(
+                        $entityData,
+                        fn(string $field) => $this->isPropertyDataVisible($entity, $field)
+                    );
                 }
 
                 foreach ($entityData as $field => $value) {
@@ -115,8 +121,13 @@ class DoctrineAuditListener
                 $entityData = $this->serializer->normalize($entity);
                 $entityFields = array_keys($entityData);
 
-                if (!$this->showDataForEntity($entity)) {
+                if (!$this->showDataForEntity($entity) && !$this->showPropertyDataForEntity($entity)) {
                     $entityData = [];
+                } elseif ($this->showPropertyDataForEntity($entity)) {
+                    $entityData = array_filter(
+                        $entityData,
+                        fn(string $field) => $this->isPropertyDataVisible($entity, $field)
+                    );
                 }
 
                 foreach ($entityData as $field => $value) {
@@ -131,8 +142,13 @@ class DoctrineAuditListener
                 $entityData = $uow->getEntityChangeSet($entity);
                 $entityFields = array_keys($entityData);
 
-                if (!$this->showDataForEntity($entity)) {
+                if (!$this->showDataForEntity($entity) && !$this->showPropertyDataForEntity($entity)) {
                     $entityData = [];
+                } elseif ($this->showPropertyDataForEntity($entity)) {
+                    $entityData = array_filter(
+                        $entityData,
+                        fn(string $field) => $this->isPropertyDataVisible($entity, $field)
+                    );
                 }
 
                 foreach ($entityData as $field => $change) {
@@ -287,6 +303,18 @@ class DoctrineAuditListener
         return false;
     }
 
+    private function showPropertyDataForEntity(object $entity): bool
+    {
+        $properties = $this->getProperties($entity);
+        foreach ($properties as $property) {
+            if ($this->isPropertyDataVisible($entity, $property)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private function showDataForEntity(object $entity): bool
     {
         $reflectionClass = new ReflectionClass($entity);
@@ -338,6 +366,17 @@ class DoctrineAuditListener
             $entity,
             $property,
             AuditTrailIdentifier::class,
+        );
+    }
+
+    private function isPropertyDataVisible(
+        object $entity,
+        string $property
+    ): bool {
+        return $this->propertyHasAttribute(
+            $entity,
+            $property,
+            AuditTrailLoggedField::class,
         );
     }
 

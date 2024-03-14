@@ -38,6 +38,26 @@ class Test
 }
 ```
 
+To track the data of a single changed field add `AuditTrailLoggedField` attribute to the property.
+```php
+#[ORM\Entity]
+class Test
+{
+    public function __construct(
+        #[ORM\Column]
+        private string $secret,
+        #[AuditTrail\AuditTrailLoggedField]
+        #[ORM\Column]
+        private string $name,
+        #[ORM\Id]
+        #[ORM\GeneratedValue]
+        #[ORM\Column]
+        private ?int $id = null,
+    ) {
+    }
+}
+```
+
 To identify which entity is being tracked a `AuditTrailIdentifier` attribute can be used. When the attribute is present the value of the property or method will be used.
 If the attribute is not present an educated guess will be made.
 * `__toString` method

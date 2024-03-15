@@ -17,6 +17,10 @@ use SumoCoders\FrameworkCoreBundle\Attribute\AuditTrail\AuditTrailIdentifier;
 use SumoCoders\FrameworkCoreBundle\Attribute\AuditTrail\AuditTrailSensitiveData;
 use SumoCoders\FrameworkCoreBundle\Enum\EventAction;
 use SumoCoders\FrameworkCoreBundle\Logger\AuditLogger;
+use SumoCoders\FrameworkCoreBundle\Serializer\CircularReferenceHandler;
+use SumoCoders\FrameworkCoreBundle\Serializer\MaxDepthHandler;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
+use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 
 #[AsDoctrineListener(event: Events::postPersist, priority: 500)]
@@ -55,7 +59,7 @@ class DoctrineAuditListener
     {
         $entity = $args->getObject();
         $properties = $this->getProperties($entity);
-        $data = $this->serializer->normalize($entity);
+        $data = $this->serialize($entity);
 
         // Hide sensitive data
         foreach ($properties as $property) {
@@ -118,7 +122,7 @@ class DoctrineAuditListener
 
                 break;
             case EventAction::CREATE:
-                $entityData = $this->serializer->normalize($entity);
+                $entityData = $this->serialize($entity);
                 $entityFields = array_keys($entityData);
 
                 if (!$this->showDataForEntity($entity) && !$this->showPropertyDataForEntity($entity)) {
@@ -172,11 +176,24 @@ class DoctrineAuditListener
         );
     }
 
+    private function serialize(object $object): array
+    {
+        return $this->serializer->normalize(
+            $object,
+            null,
+            [
+                AbstractObjectNormalizer::ENABLE_MAX_DEPTH => true,
+                AbstractObjectNormalizer::MAX_DEPTH_HANDLER => new MaxDepthHandler(),
+                AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => new CircularReferenceHandler(),
+            ]
+        );
+    }
+
     private function getIdForEntity(object $entity): ?string
     {
         $properties = $this->getProperties($entity);
         $methods = $this->getMethods($entity);
-        $serializedData = $this->serializer->normalize($entity);
+        $serializedData = $this->serialize($entity);
 
         foreach ($properties as $property) {
             if ($this->isPropertyPrimaryKey($entity, $property)) {
@@ -198,7 +215,7 @@ class DoctrineAuditListener
         // Check if the entity has a AuditTrailIdentifier::class attribute
         $properties = $this->getProperties($entity);
         $methods = $this->getMethods($entity);
-        $serializedData = $this->serializer->normalize($entity);
+        $serializedData = $this->serialize($entity);
 
         foreach ($properties as $property) {
             if ($this->isPropertyIdentifier($entity, $property)) {
@@ -238,7 +255,7 @@ class DoctrineAuditListener
         }
 
         $idProperty = array_shift($properties);
-        $serializedEntity = $this->serializer->normalize($entity);
+        $serializedEntity = $this->serialize($entity);
 
         foreach ($removals as $rKey => $removal) {
             $isSameEntity = true;

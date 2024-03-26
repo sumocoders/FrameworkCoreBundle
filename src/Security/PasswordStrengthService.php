@@ -2,6 +2,10 @@
 
 namespace SumoCoders\FrameworkCoreBundle\Security;
 
+/**
+ * This service can be used to estimate the strength of a password.
+ * It's based on the private static method Symfony\Component\Validator\Constraints\PasswordStrengthValidator::estimateStrength.
+ */
 class PasswordStrengthService
 {
     public const STRENGTH_VERY_WEAK = 0;

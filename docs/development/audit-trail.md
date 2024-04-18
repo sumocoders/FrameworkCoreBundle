@@ -122,3 +122,24 @@ class TestController extends AbstractController
     }
 }
 ```
+
+## Ignoring entities
+If you want to ignore an entity from the audit trail you can add the `AuditTrailIgnore` attribute to the class.
+```php
+#[AuditTrail\AuditTrailIgnore]
+#[ORM\Entity]
+class Test
+{
+    public function __construct(
+        #[ORM\Column]
+        private string $secret,
+        #[ORM\Column]
+        private string $name,
+        #[ORM\Id]
+        #[ORM\GeneratedValue]
+        #[ORM\Column]
+        private ?int $id = null,
+    ) {
+    }
+}
+```

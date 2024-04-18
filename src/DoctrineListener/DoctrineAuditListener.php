@@ -15,6 +15,7 @@ use SumoCoders\FrameworkCoreBundle\Attribute\AuditTrail\AuditTrailLoggedField;
 use SumoCoders\FrameworkCoreBundle\Attribute\AuditTrail\DisplayAllEntityFieldWithDataInLog;
 use SumoCoders\FrameworkCoreBundle\Attribute\AuditTrail\AuditTrailIdentifier;
 use SumoCoders\FrameworkCoreBundle\Attribute\AuditTrail\AuditTrailSensitiveData;
+use SumoCoders\FrameworkCoreBundle\Attribute\AuditTrail\AuditTrailIgnore;
 use SumoCoders\FrameworkCoreBundle\Enum\EventAction;
 use SumoCoders\FrameworkCoreBundle\Logger\AuditLogger;
 use SumoCoders\FrameworkCoreBundle\Serializer\CircularReferenceHandler;
@@ -39,6 +40,10 @@ class DoctrineAuditListener
     public function postPersist(PostPersistEventArgs $args): void
     {
         $entity = $args->getObject();
+        if ($this->classHasAttribute($entity, AuditTrailIgnore::class)) {
+            return;
+        }
+
         $entityManager = $args->getObjectManager();
 
         $this->log($entity, EventAction::CREATE, $entityManager);
@@ -47,6 +52,10 @@ class DoctrineAuditListener
     public function postUpdate(PostUpdateEventArgs $args): void
     {
         $entity = $args->getObject();
+        if ($this->classHasAttribute($entity, AuditTrailIgnore::class)) {
+            return;
+        }
+
         $entityManager = $args->getObjectManager();
 
         $this->log($entity, EventAction::UPDATE, $entityManager);
@@ -58,6 +67,10 @@ class DoctrineAuditListener
     public function preRemove(PreRemoveEventArgs $args): void
     {
         $entity = $args->getObject();
+        if ($this->classHasAttribute($entity, AuditTrailIgnore::class)) {
+            return;
+        }
+
         $properties = $this->getProperties($entity);
         $data = $this->serialize($entity);
 
@@ -77,6 +90,10 @@ class DoctrineAuditListener
     public function postRemove(PostRemoveEventArgs $args): void
     {
         $entity = $args->getObject();
+        if ($this->classHasAttribute($entity, AuditTrailIgnore::class)) {
+            return;
+        }
+
         $entityManager = $args->getObjectManager();
 
         $this->log($entity, EventAction::DELETE, $entityManager);
@@ -280,6 +297,14 @@ class DoctrineAuditListener
 
         // No ID found, so we'll return null
         return null;
+    }
+
+    private function classHasAttribute(
+        object $entity,
+        string $attribute
+    ): bool {
+        $reflectionClass = new ReflectionClass($entity);
+        return count($reflectionClass->getAttributes($attribute)) > 0;
     }
 
     private function propertyHasAttribute(

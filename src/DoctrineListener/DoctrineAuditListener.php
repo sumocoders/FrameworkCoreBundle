@@ -3,6 +3,7 @@
 namespace SumoCoders\FrameworkCoreBundle\DoctrineListener;
 
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
+use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\PostPersistEventArgs;
 use Doctrine\ORM\Event\PostRemoveEventArgs;
@@ -31,9 +32,9 @@ use Symfony\Component\Serializer\SerializerInterface;
 class DoctrineAuditListener
 {
     public function __construct(
-        private readonly AuditLogger $auditLogger,
+        private readonly AuditLogger         $auditLogger,
         private readonly SerializerInterface $serializer,
-        private $removals = [],
+        private                              $removals = [],
     ) {
     }
 
@@ -214,13 +215,13 @@ class DoctrineAuditListener
 
         foreach ($properties as $property) {
             if ($this->isPropertyPrimaryKey($entity, $property)) {
-                return (string) $serializedData[$property];
+                return (string)$serializedData[$property];
             }
         }
 
         foreach (['getId', 'getUuid'] as $method) {
             if (in_array($method, $methods)) {
-                return (string) $entity->$method();
+                return (string)$entity->$method();
             }
         }
 
@@ -236,19 +237,19 @@ class DoctrineAuditListener
 
         foreach ($properties as $property) {
             if ($this->isPropertyIdentifier($entity, $property)) {
-                return (string) $serializedData[$property];
+                return (string)$serializedData[$property];
             }
         }
 
         foreach ($methods as $method) {
             if ($this->isMethodIdentifier($entity, $method)) {
-                return (string) $entity->$method();
+                return (string)$entity->$method();
             }
         }
 
         foreach (['__toString', 'getName', 'getTitle', 'getId', 'getUuid'] as $method) {
             if (in_array($method, $methods)) {
-                return (string) $entity->$method();
+                return (string)$entity->$method();
             }
         }
 
@@ -303,7 +304,8 @@ class DoctrineAuditListener
         object $entity,
         string $attribute
     ): bool {
-        $reflectionClass = new ReflectionClass($entity);
+        $classString = ClassUtils::getRealClass($entity);
+        $reflectionClass = new ReflectionClass($classString);
         return count($reflectionClass->getAttributes($attribute)) > 0;
     }
 
@@ -312,7 +314,8 @@ class DoctrineAuditListener
         string $property,
         string $attribute
     ): bool {
-        $reflectionClass = new ReflectionClass($entity);
+        $classString = ClassUtils::getRealClass($entity);
+        $reflectionClass = new ReflectionClass($classString);
         $properties = $reflectionClass->getProperties();
         foreach ($properties as $item) {
             if (
@@ -331,7 +334,8 @@ class DoctrineAuditListener
         string $method,
         string $attribute
     ): bool {
-        $reflectionClass = new ReflectionClass($entity);
+        $classString = ClassUtils::getRealClass($entity);
+        $reflectionClass = new ReflectionClass($classString);
         $methods = $reflectionClass->getMethods();
         foreach ($methods as $item) {
             if (
@@ -359,7 +363,8 @@ class DoctrineAuditListener
 
     private function showDataForEntity(object $entity): bool
     {
-        $reflectionClass = new ReflectionClass($entity);
+        $classString = ClassUtils::getRealClass($entity);
+        $reflectionClass = new ReflectionClass($classString);
         if ($reflectionClass->getAttributes(DisplayAllEntityFieldWithDataInLog::class)) {
             return true;
         }
@@ -369,7 +374,8 @@ class DoctrineAuditListener
 
     private function getMethods(object $entity): array
     {
-        $reflectionClass = new ReflectionClass($entity);
+        $classString = ClassUtils::getRealClass($entity);
+        $reflectionClass = new ReflectionClass($classString);
         $methods = $reflectionClass->getMethods();
 
         return array_map(
@@ -380,7 +386,8 @@ class DoctrineAuditListener
 
     private function getProperties(object $entity): array
     {
-        $reflectionClass = new ReflectionClass($entity);
+        $classString = ClassUtils::getRealClass($entity);
+        $reflectionClass = new ReflectionClass($classString);
         $properties = $reflectionClass->getProperties();
 
         return array_map(

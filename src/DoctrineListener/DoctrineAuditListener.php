@@ -216,13 +216,13 @@ class DoctrineAuditListener
 
         foreach ($properties as $property) {
             if ($this->isPropertyPrimaryKey($entity, $property)) {
-                return (string)$serializedData[$property];
+                return (string) $serializedData[$property];
             }
         }
 
         foreach (['getId', 'getUuid'] as $method) {
             if (in_array($method, $methods)) {
-                return (string)$entity->$method();
+                return (string) $entity->$method();
             }
         }
 
@@ -238,23 +238,37 @@ class DoctrineAuditListener
 
         foreach ($properties as $property) {
             if ($this->isPropertyIdentifier($entity, $property)) {
-                return (string)$serializedData[$property];
+                return (string) $serializedData[$property];
             }
         }
 
         foreach ($methods as $method) {
             if ($this->isMethodIdentifier($entity, $method)) {
-                return (string)$entity->$method();
+                return (string) $entity->$method();
             }
         }
 
         foreach (['__toString', 'getName', 'getTitle', 'getId', 'getUuid'] as $method) {
-            if (in_array($method, $methods)) {
-                return (string)$entity->$method();
+            try {
+                if (in_array($method, $methods)) {
+                    $value = $entity->$method();
+                    if ((is_object($value) && $this->isEnum($value))) {
+                        continue;
+                    }
+
+                    return (string)$value;
+                }
+            } catch (\Exception $e) {
+                // Do nothing, it's probably not a valid method
             }
         }
 
         return $this->getIdForEntity($entity);
+    }
+
+    private function isEnum(object $object): bool
+    {
+        return (new ReflectionClass($object))->isEnum();
     }
 
     private function getDataForDeletedEntity(object $entity): ?array

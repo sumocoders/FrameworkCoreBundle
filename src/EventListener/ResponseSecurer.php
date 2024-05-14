@@ -2,6 +2,7 @@
 
 namespace SumoCoders\FrameworkCoreBundle\EventListener;
 
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
 class ResponseSecurer
@@ -48,6 +49,13 @@ class ResponseSecurer
 
             if ($this->xContentTypeOptions !== '') {
                 $event->getResponse()->headers->set('X-Content-Type-Options', $this->xContentTypeOptions);
+            }
+
+            if ($event->getResponse()->getStatusCode() === Response::HTTP_OK) {
+                $event->getResponse()->headers->set(
+                    'Strict-Transport-Security',
+                    'max-age=31536000; includeSubDomains; preload'
+                );
             }
         }
     }

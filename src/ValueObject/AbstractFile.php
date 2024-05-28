@@ -239,7 +239,7 @@ abstract class AbstractFile
      */
     public function isPendingDeletion(): bool
     {
-        return \strlen($this->oldFileName) > 0 && $this->fileName === null;
+        return !empty($this->oldFileName) && $this->fileName === null;
     }
 
     public function jsonSerialize(): string

@@ -25,9 +25,9 @@
         </li>
         <div class="dropdown-divider"></div>
           {% if is_granted('IS_IMPERSONATOR') %}
-              <li><a href="{{ path('user_overview', {'_switch_user': '_exit'}) }}" class="dropdown-item">{{ 'user.actions.switchback'|trans|ucfirst }}</a></li>
+              <li><a href="{{ impersonation_exit_path(path('user_overview')) }}" class="dropdown-item">{{ 'user.actions.switchback'|trans|ucfirst }}</a></li>
           {% else %}
-              <li><a href="{{ path('logout') }}" class="dropdown-item">{{ 'user.actions.logout'|trans|ucfirst }}</a></li>
+              <li><a href="{{ path('_logout_main') }}" class="dropdown-item">{{ 'user.actions.logout'|trans|ucfirst }}</a></li>
           {% endif %}
       </ul>
     </div>

@@ -43,7 +43,7 @@ class Paginator implements Countable, IteratorAggregate
 
         $paginator = new DoctrinePaginator($query, true);
 
-        $useOutputWalkers = count($this->queryBuilder->getDQLPart('having') ?: []) > 0;
+        $useOutputWalkers = $this->queryBuilder->getDQLPart('having') !== null;
         $paginator->setUseOutputWalkers($useOutputWalkers);
 
         $this->results = $paginator->getIterator();

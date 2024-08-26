@@ -29,7 +29,7 @@
       {%- if label_html is same as(false) -%}
         {{- label|trans(label_translation_parameters, translation_domain)|ucfirst -}}&#32;{{- block('label_asterisk') }}
       {%- else -%}
-        {{- label|trans(label_translation_parameters, translation_domain)|raw|ucfirst -}}&#32;{{- block('label_asterisk') }}
+        {{- label|trans(label_translation_parameters, translation_domain)|ucfirst|raw -}}&#32;{{- block('label_asterisk') }}
       {%- endif -%}
     {%- endif -%}
     </{{ element|default('label') }}>

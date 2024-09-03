@@ -3,6 +3,7 @@
 namespace SumoCoders\FrameworkCoreBundle\EventListener;
 
 use Doctrine\ORM\EntityManagerInterface;
+use SumoCoders\FrameworkCoreBundle\Exception\Breadcrumb\EntityNotFoundException;
 use SumoCoders\FrameworkCoreBundle\ValueObject\Route;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
@@ -95,12 +96,16 @@ class BreadcrumbListener
                 $this->addBreadcrumbsForParent($attributeInstance->getParent());
             }
 
-            $this->breadcrumbTrail->add(
-                $this->generateBreadcrumb(
-                    $attributeInstance,
-                    $method
-                )
-            );
+            try {
+                $this->breadcrumbTrail->add(
+                    $this->generateBreadcrumb(
+                        $attributeInstance,
+                        $method
+                    )
+                );
+            } catch (EntityNotFoundException $e) {
+
+            }
         }
     }
 
@@ -159,7 +164,7 @@ class BreadcrumbListener
             }
 
             if (!is_object($attribute)) {
-                throw new RuntimeException(
+                throw new EntityNotFoundException(
                     'Could not resolve entity ' . $name . ' with ID ' . $attributeId
                 );
             }

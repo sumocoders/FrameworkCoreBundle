@@ -4,7 +4,7 @@ namespace SumoCoders\FrameworkCoreBundle\Attribute\AuditTrail;
 
 use Attribute;
 
-#[Attribute]
-class DisplayAllEntityFieldWithDataInLog
+#[Attribute(Attribute::TARGET_PROPERTY)]
+class SensitiveData
 {
 }

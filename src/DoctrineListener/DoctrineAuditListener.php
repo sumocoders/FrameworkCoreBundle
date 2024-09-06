@@ -3,460 +3,175 @@
 namespace SumoCoders\FrameworkCoreBundle\DoctrineListener;
 
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Proxy\Proxy;
 use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Event\PostPersistEventArgs;
 use Doctrine\ORM\Event\PostRemoveEventArgs;
 use Doctrine\ORM\Event\PostUpdateEventArgs;
 use Doctrine\ORM\Event\PreRemoveEventArgs;
+use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
+use Doctrine\ORM\Mapping\Embedded;
 use Doctrine\ORM\Mapping\Id;
+use Doctrine\ORM\Mapping\ManyToOne;
+use Doctrine\ORM\Mapping\OneToOne;
+use Doctrine\ORM\UnitOfWork;
+use PhpParser\Node\Stmt\PropertyProperty;
 use ReflectionClass;
-use SumoCoders\FrameworkCoreBundle\Attribute\AuditTrail\AuditTrailLoggedField;
-use SumoCoders\FrameworkCoreBundle\Attribute\AuditTrail\DisplayAllEntityFieldWithDataInLog;
-use SumoCoders\FrameworkCoreBundle\Attribute\AuditTrail\AuditTrailIdentifier;
-use SumoCoders\FrameworkCoreBundle\Attribute\AuditTrail\AuditTrailSensitiveData;
-use SumoCoders\FrameworkCoreBundle\Attribute\AuditTrail\AuditTrailIgnore;
+use ReflectionProperty;
+use SumoCoders\FrameworkCoreBundle\Attribute\AuditTrail\AuditTrail;
+use SumoCoders\FrameworkCoreBundle\Attribute\AuditTrail\SensitiveData;
 use SumoCoders\FrameworkCoreBundle\Enum\EventAction;
 use SumoCoders\FrameworkCoreBundle\Logger\AuditLogger;
-use SumoCoders\FrameworkCoreBundle\Serializer\CircularReferenceHandler;
-use SumoCoders\FrameworkCoreBundle\Serializer\MaxDepthHandler;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 
 #[AsDoctrineListener(event: Events::postPersist, priority: 500)]
-#[AsDoctrineListener(event: Events::postUpdate, priority: 500)]
-#[AsDoctrineListener(event: Events::preRemove, priority: 500)]
-#[AsDoctrineListener(event: Events::postRemove, priority: 500)]
+#[AsDoctrineListener(event: Events::onFlush, priority: 500)]
 class DoctrineAuditListener
 {
     public function __construct(
-        private readonly AuditLogger         $auditLogger,
-        private readonly SerializerInterface $serializer,
-        private                              $removals = [],
+        private readonly AuditLogger $auditLogger,
     ) {
+    }
+
+    public function onFlush(OnFlushEventArgs $args): void
+    {
+        $unitOfWork = $args->getObjectManager()->getUnitOfWork();
+
+        foreach ($unitOfWork->getScheduledEntityUpdates() as $entityUpdate) {
+            $auditTrailAttributes = (new ReflectionClass($entityUpdate))->getAttributes(AuditTrail::class);
+            if (empty($auditTrailAttributes)) {
+                return;
+            }
+
+            $propertiesToTrack = $auditTrailAttributes[0]->getArguments()['fields'] ?? [];
+            $changes = [];
+            $changeSet = $unitOfWork->getEntityChangeSet($entityUpdate);
+            foreach ($changeSet as $field => $change) {
+                if (!empty($propertiesToTrack) && !in_array($field, $propertiesToTrack, true)) {
+                    continue;
+                }
+
+                if ($auditTrailAttributes[0]->getArguments()['withData'] ?? true === false) {
+                    continue;
+                }
+
+                $fieldReflection = new ReflectionProperty($entityUpdate, $field);
+                $sensitiveDataAttributes = $fieldReflection->getAttributes(SensitiveData::class);
+                if (!empty($sensitiveDataAttributes)) {
+                    $changes[$field] = ['from' => '*****', 'to' => '*****'];
+
+                    continue;
+                }
+
+                $changes[$field] = [
+                    'from' => $this->transform($unitOfWork, new ReflectionProperty($entityUpdate, $field), $change[0]),
+                    'to' => $this->transform($unitOfWork, new ReflectionProperty($entityUpdate, $field), $change[1]),
+                ];
+            }
+
+            $this->auditLogger->log($entityUpdate::class, $unitOfWork->getSingleIdentifierValue($entityUpdate), EventAction::UPDATE, array_keys($changes), $changes);
+        }
+
+        foreach ($unitOfWork->getScheduledEntityDeletions() as $entityDeletion) {
+            $properties = $this->getProperties(
+                $entityDeletion,
+                $unitOfWork,
+                $auditTrailAttributes[0]->getArguments()['fields'] ?? [],
+                $auditTrailAttributes[0]->getArguments()['withData'] ?? true
+            );
+
+            $this->auditLogger->log($entityDeletion::class, $unitOfWork->getSingleIdentifierValue($entityDeletion), EventAction::DELETE, [], $properties);
+        }
     }
 
     public function postPersist(PostPersistEventArgs $args): void
     {
         $entity = $args->getObject();
-        if ($this->classHasAttribute($entity, AuditTrailIgnore::class)) {
+
+        $auditTrailAttributes = (new ReflectionClass($entity))->getAttributes(AuditTrail::class);
+        if (empty($auditTrailAttributes)) {
             return;
         }
 
-        $entityManager = $args->getObjectManager();
+        $unitOfWork = $args->getObjectManager()->getUnitOfWork();
 
-        $this->log($entity, EventAction::CREATE, $entityManager);
-    }
-
-    public function postUpdate(PostUpdateEventArgs $args): void
-    {
-        $entity = $args->getObject();
-        if ($this->classHasAttribute($entity, AuditTrailIgnore::class)) {
-            return;
-        }
-
-        $entityManager = $args->getObjectManager();
-
-        $this->log($entity, EventAction::UPDATE, $entityManager);
-    }
-
-    // We need to store the entity in a temporary array here, because the entity's ID is no longer
-    // available in the postRemove event. We convert it to an array here, so we can retain the ID for
-    // our audit log.
-    public function preRemove(PreRemoveEventArgs $args): void
-    {
-        $entity = $args->getObject();
-        if ($this->classHasAttribute($entity, AuditTrailIgnore::class)) {
-            return;
-        }
-
-        $properties = $this->getProperties($entity);
-        $data = $this->serialize($entity);
-
-        // Hide sensitive data
-        foreach ($properties as $property) {
-            if ($this->isPropertySensitiveData($entity, $property)) {
-                $data[$property] = '*****';
-            }
-        }
-
-        $data['trail_id'] = $this->getIdentifierForEntity($entity);
-        $data['entity_id'] = $this->getIdForEntity($entity);
-
-        $this->removals[get_class($entity)][] = $data;
-    }
-
-    public function postRemove(PostRemoveEventArgs $args): void
-    {
-        $entity = $args->getObject();
-        if ($this->classHasAttribute($entity, AuditTrailIgnore::class)) {
-            return;
-        }
-
-        $entityManager = $args->getObjectManager();
-
-        $this->log($entity, EventAction::DELETE, $entityManager);
-    }
-
-    private function log(object $entity, EventAction $action, EntityManagerInterface $entityManager): void
-    {
-        $className = get_class($entity);
-        $entityIdentifier = $this->getIdentifierForEntity($entity);
-        $entityId = $this->getIdForEntity($entity);
-
-        switch ($action) {
-            case EventAction::DELETE:
-                $entityData = $this->getDataForDeletedEntity($entity);
-                if ($entityData === null) {
-                    // Something went wrong, no preRemove data found
-
-                    return;
-                }
-
-                $entityIdentifier = $entityData['trail_id'];
-                $entityId = $entityData['entity_id'];
-
-                unset($entityData['trail_id']);
-                unset($entityData['entity_id']);
-
-                $entityFields = array_keys($entityData);
-
-                if (!$this->showDataForEntity($entity) && !$this->showPropertyDataForEntity($entity)) {
-                    $entityData = [];
-                } elseif ($this->showPropertyDataForEntity($entity)) {
-                    $entityData = array_filter(
-                        $entityData,
-                        fn(string $field) => $this->isPropertyDataVisible($entity, $field)
-                    );
-                }
-
-                foreach ($entityData as $field => $value) {
-                    if ($this->isPropertySensitiveData($entity, $field)) {
-                        $entityData[$field] = '*****';
-                    }
-                }
-
-                break;
-            case EventAction::CREATE:
-                $entityData = $this->serialize($entity);
-                $entityFields = array_keys($entityData);
-
-                if (!$this->showDataForEntity($entity) && !$this->showPropertyDataForEntity($entity)) {
-                    $entityData = [];
-                } elseif ($this->showPropertyDataForEntity($entity)) {
-                    $entityData = array_filter(
-                        $entityData,
-                        fn(string $field) => $this->isPropertyDataVisible($entity, $field)
-                    );
-                }
-
-                foreach ($entityData as $field => $value) {
-                    if ($this->isPropertySensitiveData($entity, $field)) {
-                        $entityData[$field] = '*****';
-                    }
-                }
-
-                break;
-            default:
-                $uow = $entityManager->getUnitOfWork();
-                $entityData = $uow->getEntityChangeSet($entity);
-                $entityFields = array_keys($entityData);
-
-                if (!$this->showDataForEntity($entity) && !$this->showPropertyDataForEntity($entity)) {
-                    $entityData = [];
-                } elseif ($this->showPropertyDataForEntity($entity)) {
-                    $entityData = array_filter(
-                        $entityData,
-                        fn(string $field) => $this->isPropertyDataVisible($entity, $field)
-                    );
-                }
-
-                foreach ($entityData as $field => $change) {
-                    if ($this->isPropertySensitiveData($entity, $field)) {
-                        $change = ['*****', '*****'];
-                    }
-
-                    $entityData[$field] = [
-                        'from' => $change[0],
-                        'to' => $change[1],
-                    ];
-                }
-        }
-
-        $this->auditLogger->log(
-            $className,
-            $entityId ? $entityIdentifier . ' (' . $entityId . ')' : $entityIdentifier,
-            $action,
-            $entityFields,
-            $entityData
-        );
-    }
-
-    private function serialize(object $object): array
-    {
-        return $this->serializer->normalize(
-            $object,
-            null,
-            [
-                AbstractObjectNormalizer::ENABLE_MAX_DEPTH => true,
-                AbstractObjectNormalizer::MAX_DEPTH_HANDLER => new MaxDepthHandler(),
-                AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => new CircularReferenceHandler(),
-            ]
-        );
-    }
-
-    private function getIdForEntity(object $entity): ?string
-    {
-        $properties = $this->getProperties($entity);
-        $methods = $this->getMethods($entity);
-        $serializedData = $this->serialize($entity);
-
-        foreach ($properties as $property) {
-            if ($this->isPropertyPrimaryKey($entity, $property)) {
-                return (string) $serializedData[$property];
-            }
-        }
-
-        foreach (['getId', 'getUuid'] as $method) {
-            if (in_array($method, $methods)) {
-                return (string) $entity->$method();
-            }
-        }
-
-        return null;
-    }
-
-    private function getIdentifierForEntity(object $entity): ?string
-    {
-        // Check if the entity has a AuditTrailIdentifier::class attribute
-        $properties = $this->getProperties($entity);
-        $methods = $this->getMethods($entity);
-        $serializedData = $this->serialize($entity);
-
-        foreach ($properties as $property) {
-            if ($this->isPropertyIdentifier($entity, $property)) {
-                return (string) $serializedData[$property];
-            }
-        }
-
-        foreach ($methods as $method) {
-            if ($this->isMethodIdentifier($entity, $method)) {
-                return (string) $entity->$method();
-            }
-        }
-
-        foreach (['__toString', 'getName', 'getTitle', 'getId', 'getUuid'] as $method) {
-            try {
-                if (in_array($method, $methods)) {
-                    $value = $entity->$method();
-                    if ((is_object($value) && $this->isEnum($value))) {
-                        continue;
-                    }
-
-                    return (string)$value;
-                }
-            } catch (\Exception $e) {
-                // Do nothing, it's probably not a valid method
-            }
-        }
-
-        return $this->getIdForEntity($entity);
-    }
-
-    private function isEnum(object $object): bool
-    {
-        return (new ReflectionClass($object))->isEnum();
-    }
-
-    private function getDataForDeletedEntity(object $entity): ?array
-    {
-        // Get the removals for the given entity class
-        $removals = $this->removals[get_class($entity)];
-
-        $properties = $this->getProperties($entity);
-        $properties = array_filter(
-            $properties,
-            fn($property) => $this->isPropertyPrimaryKey($entity, $property)
-        );
-
-        // We can't get the ID for the entity, so we'll return null
-        if (count($properties) === 0) {
-            return null;
-        }
-
-        $idProperty = array_shift($properties);
-        $serializedEntity = $this->serialize($entity);
-
-        foreach ($removals as $rKey => $removal) {
-            $isSameEntity = true;
-            foreach ($serializedEntity as $key => $value) {
-                if ($key === $idProperty) {
-                    continue;
-                }
-
-                $isSensitiveData = $this->isPropertySensitiveData($entity, $key);
-
-                if ($removal[$key] !== $value && !($removal[$key] === '*****' && $isSensitiveData)) {
-                    $isSameEntity = false;
-                }
-            }
-
-            if ($isSameEntity) {
-                unset($this->removals[get_class($entity)][$rKey]);
-
-                return $removal;
-            }
-        }
-
-        // No ID found, so we'll return null
-        return null;
-    }
-
-    private function classHasAttribute(
-        object $entity,
-        string $attribute
-    ): bool {
-        $reflectionClass = ClassUtils::newReflectionClass(get_class($entity));
-        return count($reflectionClass->getAttributes($attribute)) > 0;
-    }
-
-    private function propertyHasAttribute(
-        object $entity,
-        string $property,
-        string $attribute
-    ): bool {
-        $reflectionClass = ClassUtils::newReflectionClass(get_class($entity));
-        $properties = $reflectionClass->getProperties();
-        foreach ($properties as $item) {
-            if (
-                $item->getName() == $property &&
-                $item->getAttributes($attribute)
-            ) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private function methodHasAttribute(
-        object $entity,
-        string $method,
-        string $attribute
-    ): bool {
-        $reflectionClass = ClassUtils::newReflectionClass(get_class($entity));
-        $methods = $reflectionClass->getMethods();
-        foreach ($methods as $item) {
-            if (
-                $item->getName() == $method &&
-                $item->getAttributes($attribute)
-            ) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private function showPropertyDataForEntity(object $entity): bool
-    {
-        $properties = $this->getProperties($entity);
-        foreach ($properties as $property) {
-            if ($this->isPropertyDataVisible($entity, $property)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private function showDataForEntity(object $entity): bool
-    {
-        $reflectionClass = ClassUtils::newReflectionClass(get_class($entity));
-        if ($reflectionClass->getAttributes(DisplayAllEntityFieldWithDataInLog::class)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    private function getMethods(object $entity): array
-    {
-        $reflectionClass = ClassUtils::newReflectionClass(get_class($entity));
-        $methods = $reflectionClass->getMethods();
-
-        return array_map(
-            fn($method) => $method->getName(),
-            $methods
-        );
-    }
-
-    private function getProperties(object $entity): array
-    {
-        $reflectionClass = ClassUtils::newReflectionClass(get_class($entity));
-        $properties = $reflectionClass->getProperties();
-
-        return array_map(
-            fn($property) => $property->getName(),
-            $properties
-        );
-    }
-
-    private function isPropertyPrimaryKey(
-        object $entity,
-        string $property
-    ): bool {
-        return $this->propertyHasAttribute(
+        $properties = $this->getProperties(
             $entity,
-            $property,
-            Id::class,
+            $unitOfWork,
+            $auditTrailAttributes[0]->getArguments()['fields'] ?? [],
+            $auditTrailAttributes[0]->getArguments()['withData'] ?? true
         );
+
+        $this->auditLogger->log($entity::class, $unitOfWork->getSingleIdentifierValue($entity), EventAction::CREATE, [], $properties);
     }
 
-    private function isPropertyIdentifier(
-        object $entity,
-        string $property
-    ): bool {
-        return $this->propertyHasAttribute(
-            $entity,
-            $property,
-            AuditTrailIdentifier::class,
-        );
+    public function getProperties(object $entity, UnitOfWork $unitOfWork, array $fields = [], bool $withData = false): array
+    {
+        $reflection = new ReflectionClass($entity);
+        $entityProperties = $reflection->getProperties();
+
+        $properties = [];
+        foreach ($entityProperties as $property) {
+            if ($property->getName() === 'id') {
+                continue;
+            }
+
+            if (!$withData) {
+                continue;
+            }
+
+            $sensitiveDataAttributes = $property->getAttributes(SensitiveData::class);
+            if (!empty($sensitiveDataAttributes)) {
+                $properties[$property->getName()] = '*****';
+
+                continue;
+            }
+
+            $properties[$property->getName()] = $this->transform($unitOfWork, $property, $property->getValue($entity));
+        }
+
+        if (!empty($fields)) {
+            $properties = array_filter(
+                $properties,
+                fn ($key) => in_array($key, $fields, true), ARRAY_FILTER_USE_KEY
+            );
+        }
+
+        return $properties;
     }
 
-    private function isPropertyDataVisible(
-        object $entity,
-        string $property
-    ): bool {
-        return $this->propertyHasAttribute(
-            $entity,
-            $property,
-            AuditTrailLoggedField::class,
-        );
-    }
+    public function transform(UnitOfWork $unitOfWork, ReflectionProperty $reflectionProperty, mixed $value): string|array|null
+    {
+        if ($value instanceof \UnitEnum) {
+            return $value->value;
+        }
 
-    private function isMethodIdentifier(
-        object $entity,
-        string $method
-    ): bool {
-        return $this->methodHasAttribute(
-            $entity,
-            $method,
-            AuditTrailIdentifier::class,
-        );
-    }
+        if (!is_object($value)) {
+            return $value;
+        }
 
-    private function isPropertySensitiveData(
-        object $entity,
-        string $property
-    ): bool {
-        return $this->propertyHasAttribute(
-            $entity,
-            $property,
-            AuditTrailSensitiveData::class,
-        );
+        if ($value instanceof Collection) {
+            return $value->map(fn($item) => $item->getId())->toArray();
+        }
+
+        $manyToOneAttributes = $reflectionProperty->getAttributes(ManyToOne::class);
+        $oneToOneAttributes = $reflectionProperty->getAttributes(OneToOne::class);
+        if (!empty($manyToOneAttributes) || !empty($oneToOneAttributes)) {
+            return $unitOfWork->getSingleIdentifierValue($value);
+        }
+
+        $embeddedAttributes = $reflectionProperty->getAttributes(Embedded::class);
+        if (!empty($embeddedAttributes)) {
+            return $this->getProperties($value, $unitOfWork);
+        }
+
+        return (string) $value;
     }
 }

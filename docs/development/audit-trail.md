@@ -5,8 +5,30 @@ The audit trail is a feature that allows you to track changes to your data.
 It is useful for tracking changes to sensitive data, such as user accounts, or for tracking changes to data that is important for compliance, such as financial records.
 
 ## Usage
-The audit trail is enabled by default for all entities.
-For every action the following data is tracked:
+The audit trail is NOT enabled by default. You will need to add the `#[AuditTrial]` attribute to the entity you want to track.
+
+```php
+#[ORM\Entity]
+#[AuditTrail]
+class Book
+{
+    public function __construct(
+        #[ORM\Column]
+        private string $title,
+        #[ORM\Column]
+        private string $author,
+        #[ORM\Column]
+        private string $price,
+    ) {
+    }
+}
+```
+
+```
+[2024-09-06T08:30:40.145881+00:00] audit_trail.INFO: Source: https://test.wip/trail; Entity: App\Entity\Book; Identifier: 1; Action: C; User: test@sumocoders.be; Roles: ROLE_ADMIN, ROLE_USER; IP: 127.0.0.1; Fields: []; Data: {"title":"The Lord of the Rings","author":"J. R. R. Tolkien","price":40.50} [] []
+```
+
+By default the following data is tracked:
 * The date and time of the action
 * The source of the action (e.g. the url of the request, the command that was run, etc.)
 * The entity that was changed
@@ -18,86 +40,73 @@ For every action the following data is tracked:
 * The fields that were changed
 * The data that was changed
 
-To track the data of a changed field add the `DisplayAllEntityFieldWithDataInLog` attribute to the class.
+You can specify which fields you want to track by adding the specifying the `field` property in the `#[AuditTrail]` attribute.
+
 ```php
-#[AuditTrail\DisplayAllEntityFieldWithDataInLog]
 #[ORM\Entity]
-class Test
+#[AuditTrail(fields: ['price'])]
+class Book
 {
     public function __construct(
         #[ORM\Column]
-        private string $secret,
+        private string $title,
         #[ORM\Column]
-        private string $name,
-        #[ORM\Id]
-        #[ORM\GeneratedValue]
+        private string $author,
         #[ORM\Column]
-        private ?int $id = null,
+        private string $price,
     ) {
     }
 }
 ```
 
-To track the data of a single changed field add `AuditTrailLoggedField` attribute to the property.
-```php
-#[ORM\Entity]
-class Test
-{
-    public function __construct(
-        #[ORM\Column]
-        private string $secret,
-        #[AuditTrail\AuditTrailLoggedField]
-        #[ORM\Column]
-        private string $name,
-        #[ORM\Id]
-        #[ORM\GeneratedValue]
-        #[ORM\Column]
-        private ?int $id = null,
-    ) {
-    }
-}
+```
+[2024-09-06T08:30:40.145881+00:00] audit_trail.INFO: Source: https://test.wip/trail; Entity: App\Entity\Book; Identifier: 1; Action: U; User: test@sumocoders.be; Roles: ROLE_ADMIN, ROLE_USER; IP: 127.0.0.1; Fields: ["price"]; Data: {"price":{"from": 40.50, "to": 38.95}} [] []
 ```
 
-To identify which entity is being tracked a `AuditTrailIdentifier` attribute can be used. When the attribute is present the value of the property or method will be used.
-If the attribute is not present an educated guess will be made.
-* `__toString` method
-* `getName` method
-* `getTitle` method
-* `getId` method
-* `getUuid` method
-
-```php
-#[ORM\Entity]
-class Test
-{
-    #[AuditTrail\AuditTrailIdentifier]
-    public function displayName(): string
-    {
-        return $this->displayName;
-    }
-}
-```
-
-You can hide secure data from the audit trail by adding the `AuditTrailSensitiveData` attribute to the property.
+You can hide secure data from the audit trail by adding the `#[SensitiveData]` attribute to the property.
 This will transform the data to `****` in the audit trail.
 ```php
-#[AuditTrail\AuditTrailDisplayData]
+#[AuditTrail]
 #[ORM\Entity]
-class Test
+class User
 {
     public function __construct(
-        #[AuditTrail\AuditTrailSensitiveData]
         #[ORM\Column]
-        private string $secret,
+        private string $email,
         #[ORM\Column]
-        private string $name,
-        #[ORM\Id]
-        #[ORM\GeneratedValue]
+        private string $username,
         #[ORM\Column]
-        private ?int $id = null,
+        #[SensitiveData]
+        private string $password,
     ) {
     }
 }
+```
+
+```
+[2024-09-06T09:48:53.540500+00:00] audit_trail.INFO: Source: https://test.wip/profile; Entity: App\Entity\User; Identifier: 2; Action: U; User: test@sumocoders.be; Roles: ROLE_ADMIN, ROLE_USER; IP: 127.0.0.1; Fields: ["password"]; Data: {"password":{"from":"*****","to":"*****"}} [] []
+```
+
+There is also an option to only track the fields that are changes without the data, with the option `withData` set to `false`.
+```php
+#[AuditTrail(withData: false)]
+#[ORM\Entity]
+class User
+{
+    public function __construct(
+        #[ORM\Column]
+        private string $email,
+        #[ORM\Column]
+        private string $username,
+        #[ORM\Column]
+        private string $password,
+    ) {
+    }
+}
+```
+
+```
+[2024-09-06T09:48:53.540500+00:00] audit_trail.INFO: Source: https://test.wip/profile; Entity: App\Entity\User; Identifier: 2; Action: U; User: test@sumocoders.be; Roles: ROLE_ADMIN, ROLE_USER; IP: 127.0.0.1; Fields: ["password"]; Data: []} [] []
 ```
 
 ### Manually tracking changes
@@ -119,27 +128,6 @@ class TestController extends AbstractController
             'test/index.html.twig',
             []
         );
-    }
-}
-```
-
-## Ignoring entities
-If you want to ignore an entity from the audit trail you can add the `AuditTrailIgnore` attribute to the class.
-```php
-#[AuditTrail\AuditTrailIgnore]
-#[ORM\Entity]
-class Test
-{
-    public function __construct(
-        #[ORM\Column]
-        private string $secret,
-        #[ORM\Column]
-        private string $name,
-        #[ORM\Id]
-        #[ORM\GeneratedValue]
-        #[ORM\Column]
-        private ?int $id = null,
-    ) {
     }
 }
 ```

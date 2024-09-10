@@ -1,6 +1,6 @@
 # Mail stijling
 
-We use Foundation, so consult the [docs](https://get.foundation/emails/docs/global.html) to see 
+We use Foundation, so consult the [docs](https://get.foundation/emails/docs/global.html) to see
 what your options are regarding components, helpers, ...
 
 ## Logo

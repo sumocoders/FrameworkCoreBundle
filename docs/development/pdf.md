@@ -15,6 +15,7 @@ When generating multiple files and using `encore_entry_css_files` in the twig te
 ### Diagnose
 
 Dump HTML and check if everything is included:
+
 ```php
 $html = $this->twig->render(...);
 echo $html;
@@ -22,6 +23,7 @@ die();
 ```
 
 Or open the chrome instance in a window.
+
 ```php
 // App\Service\PdfCreator
 $this->pdfGenerator->generate(
@@ -44,9 +46,11 @@ public function generate(...)
 ```
 
 ### Fix
+
 Call reset on EntrypointLookupInterface before each render.
 
 Example:
+
 ```php
 public function __construct(
     private readonly Environment $twig,

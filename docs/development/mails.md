@@ -1,8 +1,10 @@
 # Sending mails
 
-The framework provides a base template with proper CSS that you can use to quickly send good-looking emails to most email clients.
+The framework provides a base template with proper CSS that you can use to quickly send good-looking emails to most
+email clients.
 
-Simply extend your email template from the `@SumoCodersFrameworkCore/Mail/base.html.twig` template and place your own content inside the `{%block content %}` block.
+Simply extend your email template from the `@SumoCodersFrameworkCore/Mail/base.html.twig` template and place your own
+content inside the `{%block content %}` block.
 
 The base template will place your content in a table-based layout, load and inline styles and return the end result.
 
@@ -11,6 +13,7 @@ To send the mail, you can use the default Symfony package: `symfony/mailer`. See
 ## Basic example
 
 template.html.twig
+
 ```twig
 {% extends '@SumoCodersFrameworkCore/Mail/base.html.twig' %}
 

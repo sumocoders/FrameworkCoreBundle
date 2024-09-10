@@ -1,10 +1,13 @@
 # Audit trail
 
 ## Introduction
-The audit trail is a feature that allows you to track changes to your data. 
-It is useful for tracking changes to sensitive data, such as user accounts, or for tracking changes to data that is important for compliance, such as financial records.
+
+The audit trail is a feature that allows you to track changes to your data.
+It is useful for tracking changes to sensitive data, such as user accounts, or for tracking changes to data that is
+important for compliance, such as financial records.
 
 ## Usage
+
 The audit trail is NOT enabled by default. You will need to add the `#[AuditTrial]` attribute to the entity you want to track.
 
 ```php
@@ -88,6 +91,7 @@ class User
 ```
 
 There is also an option to only track the fields that are changes without the data, with the option `withData` set to `false`.
+
 ```php
 #[AuditTrail(withData: false)]
 #[ORM\Entity]
@@ -112,6 +116,7 @@ class User
 ### Manually tracking changes
 
 You can manually track changes by using the `AuditLogger` service.
+
 ```php
 class TestController extends AbstractController
 {

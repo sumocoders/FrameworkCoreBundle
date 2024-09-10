@@ -4,7 +4,8 @@ The framework core makes use of `symfony/ux-autocomplete` to provide autocomplet
 
 ## Usage
 
-To enable autocomplete functionality, you need to add the `autocomplete` parameter to your form field. All other options are optional.
+To enable autocomplete functionality, you need to add the `autocomplete` parameter to your form field. All other options
+are optional.
 
 ```php
 class AnyForm extends AbstractType
@@ -36,7 +37,8 @@ class AnyForm extends AbstractType
 
 ## Using Ajax
 
-If you want to use ajax to fetch the autocomplete options, you need to create a new form type with the `AsEntityAutocompleteFieldz` attribute.
+If you want to use ajax to fetch the autocomplete options, you need to create a new form type with the
+`AsEntityAutocompleteFieldz` attribute.
 
 ```php
 use Symfony\Component\Security\Core\Security;

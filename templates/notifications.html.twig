@@ -1,19 +1,4 @@
 {% block notifications %}
-<div class="toasts-wrapper" id="toast-wrapper">
-  {% for flash_message in app.session.flashbag.get('success') %}
-    <toast type="success" message="{{ flash_message|trans }}"></toast>
-  {% endfor %}
-
-  {% for flash_message in app.session.flashbag.get('report') %}
-    <toast type="info" message="{{ flash_message|trans }}"></toast>
-  {% endfor %}
-
-  {% for flash_message in app.session.flashbag.get('warning') %}
-    <toast type="warning" message="{{ flash_message|trans }}"></toast>
-  {% endfor %}
-
-  {% for flash_message in app.session.flashbag.get('error') %}
-    <toast type="danger" message="{{ flash_message|trans }}"></toast>
-  {% endfor %}
-</div>
+    <div class="toasts-wrapper" id="toast-wrapper" data-success-messages="{{ app.session.flashbag.get('success')|json_encode }}" data-report-messages="{{ app.session.flashbag.get('report')|json_encode }}" data-warning-messages="{{ app.session.flashbag.get('warning')|json_encode }}" data-error-messages="{{ app.session.flashbag.get('error')|json_encode }}">
+    </div>
 {% endblock %}

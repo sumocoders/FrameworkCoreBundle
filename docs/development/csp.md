@@ -23,13 +23,12 @@ The default Content Security Policies are:
 "script-src 'self' 'nonce-FOR725'"
 ```
 
-
 ## Extending the default Content Security Policies
 
 In some cases, you might have to allow external CSS and/or JS in your project. To do so, you'll have to allow the domain
 on which the resource is hosted.
 
-You can either tweak the CSP header inside a specific controller (where you already have a Response object). Or you can 
+You can either tweak the CSP header inside a specific controller (where you already have a Response object). Or you can
 add extra policies application wide by using a configuration file: `config/packages/sumo_coders_framework_core.yaml`.
 
 In this file you can set the extra policies. Hereunder you can find an example to allow Google Maps.
@@ -46,7 +45,6 @@ sumo_coders_framework_core:
       - '*.ggpht.com'
 
 ```
-
 
 ## Overriding the default Content Security Policies
 
@@ -80,18 +78,17 @@ sumo_coders_framework_core:
 
 ```
 
-
-
 # X-Frame-Options
+
 See [X-Frame-Options](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options) for more information.
 
 Can be configured by setting `sumo_coders_framework_core.x-frame-options`. The default is `deny`. If you set an empty
 string the header won't be added.
 
-
-
 # X-Content-Type-Options
-See [X-Content-Type-Options](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options) for more information.
 
-Can be configured by setting `sumo_coders_framework_core.x-content-type-options`. The default is `nosniff`. If you set 
+See [X-Content-Type-Options](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options) for more
+information.
+
+Can be configured by setting `sumo_coders_framework_core.x-content-type-options`. The default is `nosniff`. If you set
 an empty string the header won't be added.

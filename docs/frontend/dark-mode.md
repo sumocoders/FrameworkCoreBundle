@@ -1,11 +1,10 @@
 # Dark mode
 
-On page load we load the correct theme stylesheet in `templates/head.html.twig` based on the result of the `theme()` 
+On page load we load the correct theme stylesheet in `templates/head.html.twig` based on the result of the `theme()`
 twig function. We also use that variable to show the correct logo in `templates/navigation.html.twig`.
 
 First time on the application we show the theme based on the users OS preferences.
 Later when the user uses the theme switcher in the navigation, we set a cookie with the theme chosen in Javascript.
-
 
 ## Disabled dark mode
 

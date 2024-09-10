@@ -24,4 +24,5 @@ You can add a language switch to navigation.html.twig by using the following sni
 </div>
 
 ```
+
 Place it between the logo and user menu dropdown.

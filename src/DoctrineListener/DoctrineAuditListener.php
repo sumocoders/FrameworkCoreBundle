@@ -2,6 +2,7 @@
 
 namespace SumoCoders\FrameworkCoreBundle\DoctrineListener;
 
+use DateTimeInterface;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -160,6 +161,10 @@ class DoctrineAuditListener
 
         if (!is_object($value)) {
             return $value;
+        }
+
+        if ($value instanceof DateTimeInterface) {
+            return $value->format('Y-m-d H:i:s');
         }
 
         if ($value instanceof Collection) {

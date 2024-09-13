@@ -66,7 +66,7 @@ class Book
 [2024-09-06T08:30:40.145881+00:00] audit_trail.INFO: Source: https://test.wip/trail; Entity: App\Entity\Book; Identifier: 1; Action: U; User: test@sumocoders.be; Roles: ROLE_ADMIN, ROLE_USER; IP: 127.0.0.1; Fields: ["price"]; Data: {"price":{"from": 40.50, "to": 38.95}} [] []
 ```
 
-You can hide secure data from the audit trail by adding the `#[SensitiveData]` attribute to the property.
+You can hide secure data from the audit trail by adding the `#[SensitiveParameter]` attribute to the property.
 This will transform the data to `****` in the audit trail.
 ```php
 #[AuditTrail]
@@ -79,7 +79,7 @@ class User
         #[ORM\Column]
         private string $username,
         #[ORM\Column]
-        #[SensitiveData]
+        #[SensitiveParameter]
         private string $password,
     ) {
     }

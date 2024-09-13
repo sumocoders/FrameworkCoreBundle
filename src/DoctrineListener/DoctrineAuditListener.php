@@ -23,8 +23,8 @@ use Doctrine\ORM\UnitOfWork;
 use PhpParser\Node\Stmt\PropertyProperty;
 use ReflectionClass;
 use ReflectionProperty;
+use SensitiveParameter;
 use SumoCoders\FrameworkCoreBundle\Attribute\AuditTrail\AuditTrail;
-use SumoCoders\FrameworkCoreBundle\Attribute\AuditTrail\SensitiveData;
 use SumoCoders\FrameworkCoreBundle\Enum\EventAction;
 use SumoCoders\FrameworkCoreBundle\Logger\AuditLogger;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
@@ -63,8 +63,8 @@ class DoctrineAuditListener
                 }
 
                 $fieldReflection = new ReflectionProperty($entityUpdate, $field);
-                $sensitiveDataAttributes = $fieldReflection->getAttributes(SensitiveData::class);
-                if (!empty($sensitiveDataAttributes)) {
+                $sensitiveParameterAttributes = $fieldReflection->getAttributes(SensitiveParameter::class);
+                if (!empty($sensitiveParameterAttributes)) {
                     $changes[$field] = ['from' => '*****', 'to' => '*****'];
 
                     continue;
@@ -127,8 +127,8 @@ class DoctrineAuditListener
                 continue;
             }
 
-            $sensitiveDataAttributes = $property->getAttributes(SensitiveData::class);
-            if (!empty($sensitiveDataAttributes)) {
+            $sensitiveParameterAttributes = $property->getAttributes(SensitiveParameter::class);
+            if (!empty($sensitiveParameterAttributes)) {
                 $properties[$property->getName()] = '*****';
 
                 continue;

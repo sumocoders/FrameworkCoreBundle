@@ -80,6 +80,11 @@ class DoctrineAuditListener
         }
 
         foreach ($unitOfWork->getScheduledEntityDeletions() as $entityDeletion) {
+            $auditTrailAttributes = (new ReflectionClass($entityDeletion))->getAttributes(AuditTrail::class);
+            if (empty($auditTrailAttributes)) {
+                return;
+            }
+
             $properties = $this->getProperties(
                 $entityDeletion,
                 $unitOfWork,

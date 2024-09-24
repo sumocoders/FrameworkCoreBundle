@@ -37,11 +37,9 @@
 {%- endblock form_label %}
 
 {%- block label_asterisk -%}
-  {% apply spaceless %}
-    {% if required %}
-      <abbr title="{{ 'forms.labels.required'|trans({}, translation_domain) }}">*</abbr>
-    {% endif %}
-  {% endapply %}
+  {% if required %}
+    <abbr title="{{ 'forms.labels.required'|trans({}, translation_domain) }}">*</abbr>
+  {% endif %}
 {%- endblock label_asterisk -%}
 
 {%- block form_row -%}
@@ -66,56 +64,52 @@
   </{{ element|default('div') }}>
 {%- endblock form_row %}
 
-{% block collection_widget %}
+{%- block collection_widget -%}
   {% import _self as formMacros %}
 
-  {% apply spaceless %}
+  {% if prototype is defined %}
+    {% set attr = attr|merge({'data-prototype-name': prototype.vars.name}) %}
+    {% set attr = attr|merge({'data-prototype-label': prototype.vars.label}) %}
+  {% endif %}
+
+  {% set attr = attr|merge({'data-allow-drag-and-drop': allow_drag_and_drop ? 1 : 0}) %}
+  {% set attr = attr|merge({'data-allow-add': allow_add ? 1 : 0}) %}
+  {% set attr = attr|merge({'data-allow-remove': allow_delete ? 1 : 0}) %}
+  {% set attr = attr|merge({'data-name-prefix': full_name}) %}
+  {% set attr = attr|merge({'data-role': 'collection'}) %}
+  {% set attr = attr|merge({'data-min': minimum_required_items, 'data-max': maximum_required_items}) %}
+
+  <div
+    {{ block('widget_container_attributes') }}
     {% if prototype is defined %}
-      {% set attr = attr|merge({'data-prototype-name': prototype.vars.name}) %}
-      {% set attr = attr|merge({'data-prototype-label': prototype.vars.label}) %}
+      data-prototype="{{ formMacros.renderCollectionItem(prototype, allow_delete, allow_drag_and_drop)|e('html_attr') }}"
     {% endif %}
-
-    {% set attr = attr|merge({'data-allow-drag-and-drop': allow_drag_and_drop ? 1 : 0}) %}
-    {% set attr = attr|merge({'data-allow-add': allow_add ? 1 : 0}) %}
-    {% set attr = attr|merge({'data-allow-remove': allow_delete ? 1 : 0}) %}
-    {% set attr = attr|merge({'data-name-prefix': full_name}) %}
-    {% set attr = attr|merge({'data-role': 'collection'}) %}
-    {% set attr = attr|merge({'data-min': minimum_required_items, 'data-max': maximum_required_items}) %}
-
-    <div
-      {{ block('widget_container_attributes') }}
-      {% if prototype is defined %}
-        data-prototype="{{ formMacros.renderCollectionItem(prototype, allow_delete, allow_drag_and_drop)|e('html_attr') }}"
-      {% endif %}
-      class="card card-collection{% if allow_drag_and_drop is defined and allow_drag_and_drop %} card-collection-drag{% endif %}"
-    >
-      <div class="card-body">
-        {{ block('collection_rows') }}
-        {{ form_rest(form) }}
-      </div>
+    class="card card-collection{% if allow_drag_and_drop is defined and allow_drag_and_drop %} card-collection-drag{% endif %}"
+  >
+    <div class="card-body">
+      {{ block('collection_rows') }}
+      {{ form_rest(form) }}
     </div>
-    {{ block('form_errors') }}
-  {% endapply %}
-{% endblock collection_widget %}
+  </div>
+  {{ block('form_errors') }}
+{%- endblock collection_widget -%}
 
-{% block collection_rows %}
-  {% apply spaceless %}
-    {% import _self as formMacros %}
-    {{ form_errors(form) }}
+{%- block collection_rows -%}
+  {% import _self as formMacros %}
+  {{ form_errors(form) }}
 
-    <ul data-role="collection-item-container" class="list-unstyled">
-      {% for child in form %}
-        {{ formMacros.renderCollectionItem(child, allow_delete, allow_drag_and_drop) }}
-      {% endfor %}
-    </ul>
+  <ul data-role="collection-item-container" class="list-unstyled">
+    {% for child in form %}
+      {{ formMacros.renderCollectionItem(child, allow_delete, allow_drag_and_drop) }}
+    {% endfor %}
+  </ul>
 
-    {% if allow_add %}
-      <button type="button" class="btn btn-success btn-sm" data-role="collection-add-button">
-        <i class="fas fa-plus me-2"></i> {{ add_button_label|trans|ucfirst }}
-      </button>
-    {% endif %}
-  {% endapply %}
-{% endblock collection_rows %}
+  {% if allow_add %}
+    <button type="button" class="btn btn-success btn-sm" data-role="collection-add-button">
+      <i class="fas fa-plus me-2"></i> {{ add_button_label|trans|ucfirst }}
+    </button>
+  {% endif %}
+{%- endblock collection_rows -%}
 
 {% macro renderCollectionItem(item, allow_delete, allow_drag_and_drop) %}
   <li>
@@ -141,49 +135,45 @@
   </li>
 {% endmacro %}
 
-{% block image_widget %}
-  {% apply spaceless %}
+{%- block image_widget -%}
+  <div class="form-group">
+    {{ form_widget(form.file) }}
+    {{ form_errors(form.file) }}
+  </div>
+  {% set show_preview = show_preview and data is not null and data.fileName is not empty %}
+  {% if show_preview or show_remove_image %}
     <div class="form-group">
-      {{ form_widget(form.file) }}
-      {{ form_errors(form.file) }}
+      {% if show_preview and preview_url %}
+        <img class="{% if preview_class is defined and preview_class is not empty %}{{ preview_class }}{% endif %}"
+             src="{{ preview_url }}">
+      {% endif %}
+      {% if show_remove_image %}
+        {{ form_widget(form.remove) }}
+      {% endif %}
     </div>
-    {% set show_preview = show_preview and data is not null and data.fileName is not empty %}
-    {% if show_preview or show_remove_image %}
-      <div class="form-group">
-        {% if show_preview and preview_url %}
-          <img class="{% if preview_class is defined and preview_class is not empty %}{{ preview_class }}{% endif %}"
-               src="{{ preview_url }}">
-        {% endif %}
-        {% if show_remove_image %}
-          {{ form_widget(form.remove) }}
-        {% endif %}
-      </div>
-    {% endif %}
-  {% endapply %}
-{% endblock %}
+  {% endif %}
+{%- endblock -%}
 
-{% block sumoFile_widget %}
-  {% apply spaceless %}
+{%- block sumoFile_widget -%}
+  <div class="form-group">
+    {{ form_widget(form.file) }}
+    {{ form_errors(form.file) }}
+  </div>
+  {% set show_preview = show_preview and data is not null and data.fileName is not empty %}
+  {% if show_preview or show_remove_file %}
     <div class="form-group">
-      {{ form_widget(form.file) }}
-      {{ form_errors(form.file) }}
+      {% if show_preview and preview_url %}
+        <a href="{{ preview_url }}" class="btn btn-xs btn-default" target="_blank">
+          <span class="fas fa-eye" aria-hidden="true"></span>
+          {{ preview_label|trans|ucfirst }}
+        </a>
+      {% endif %}
+      {% if show_remove_file %}
+        {{ form_widget(form.remove) }}
+      {% endif %}
     </div>
-    {% set show_preview = show_preview and data is not null and data.fileName is not empty %}
-    {% if show_preview or show_remove_file %}
-      <div class="form-group">
-        {% if show_preview and preview_url %}
-          <a href="{{ preview_url }}" class="btn btn-xs btn-default" target="_blank">
-            <span class="fas fa-eye" aria-hidden="true"></span>
-            {{ preview_label|trans|ucfirst }}
-          </a>
-        {% endif %}
-        {% if show_remove_file %}
-          {{ form_widget(form.remove) }}
-        {% endif %}
-      </div>
-    {% endif %}
-  {% endapply %}
-{% endblock %}
+  {% endif %}
+{%- endblock -%}
 
 {% block date_row -%}
   {%- if compound is defined and compound -%}
@@ -199,58 +189,56 @@
   </{{ element|default('div') }}>
 {%- endblock date_row %}
 
-{% block date_widget -%}
-  {% apply spaceless %}
-    {%- if widget == 'single_text' -%}
-      {% set attr = attr|merge({'data-role': 'date-picker'}) -%}
-      {%- if not valid -%}{% set attr = attr|merge({class: (attr.class|default('') ~ ' is-invalid')|trim}) -%}{%- endif -%}
-      {%- if help is not empty -%}{%- set widget_attr = {attr: {'aria-describedby': id ~ "_help"}} -%}{%- endif -%}
-      {# Its hardcoded for the symfony format because the patterns don't match #}
-      {% if format is defined and format == 'dd/MM/yyyy' %}{% set attr = attr|merge({'data-date-format': 'd/m/Y'}) -%}{% endif %}
-      {# The format needs to be defined before any min or max date #}
-      {% if minimum_date %}{% set attr = attr|merge({'data-min-date': minimum_date|date('d/m/Y')}) -%}{% endif %}
-      {% if maximum_date %}{% set attr = attr|merge({'data-max-date': maximum_date|date('d/m/Y')}) -%}{% endif %}
-      {% if read_only is defined and read_only %}{% set attr = attr|merge({'readonly': 'readonly'}) -%}{% endif %}
-      {% if disabled %}{% set attr = attr|merge({'disabled': 'disabled'}) -%}{% endif %}
-      {% if required %}{% set attr = attr|merge({'required': 'required'}) -%}{% endif %}
+{%- block date_widget -%}
+  {%- if widget == 'single_text' -%}
+    {% set attr = attr|merge({'data-role': 'date-picker'}) -%}
+    {%- if not valid -%}{% set attr = attr|merge({class: (attr.class|default('') ~ ' is-invalid')|trim}) -%}{%- endif -%}
+    {%- if help is not empty -%}{%- set widget_attr = {attr: {'aria-describedby': id ~ "_help"}} -%}{%- endif -%}
+    {# Its hardcoded for the symfony format because the patterns don't match #}
+    {% if format is defined and format == 'dd/MM/yyyy' %}{% set attr = attr|merge({'data-date-format': 'd/m/Y'}) -%}{% endif %}
+    {# The format needs to be defined before any min or max date #}
+    {% if minimum_date %}{% set attr = attr|merge({'data-min-date': minimum_date|date('d/m/Y')}) -%}{% endif %}
+    {% if maximum_date %}{% set attr = attr|merge({'data-max-date': maximum_date|date('d/m/Y')}) -%}{% endif %}
+    {% if read_only is defined and read_only %}{% set attr = attr|merge({'readonly': 'readonly'}) -%}{% endif %}
+    {% if disabled %}{% set attr = attr|merge({'disabled': 'disabled'}) -%}{% endif %}
+    {% if required %}{% set attr = attr|merge({'required': 'required'}) -%}{% endif %}
 
-      <div class="input-group">
-        <div class="input-group-text">
-          <i class="fas fa-calendar"></i>
-        </div>
-        {{- block('form_widget_simple') -}}
+    <div class="input-group">
+      <div class="input-group-text">
+        <i class="fas fa-calendar"></i>
       </div>
+      {{- block('form_widget_simple') -}}
+    </div>
 
-      {{- form_errors(form) -}}
-      {{- form_help(form) -}}
-    {% else %}
-      {% if dont_render_row is not defined or not dont_render_row %}
-        <div class="row align-items-center">
-      {% endif %}
-
-      <div class="col-md-3">
-        {%- if label is not same as(false) -%}{{ form_label(form.day, null, { 'label_attr': {'class': 'sr-only'} }) }}{%- endif -%}
-        {{ form_widget(form.day) }}
-      </div>
-      <span>{{ divider }}</span>
-      <div class="col-md-3">
-        {%- if label is not same as(false) -%}{{ form_label(form.month, null, { 'label_attr': {'class': 'sr-only'} }) }}{%- endif -%}
-        {{ form_widget(form.month) }}
-      </div>
-      <span>{{ divider }}</span>
-      <div class="col-md-3">
-        {%- if label is not same as(false) -%}{{ form_label(form.year, null, { 'label_attr': {'class': 'sr-only'} }) }}{%- endif -%}
-        {{ form_widget(form.year) }}
-      </div>
-
-      {% if dont_render_row is not defined or not dont_render_row %}
-        </div>
-      {% endif %}
-    {%- endif -%}
-    {% if helper_text %}
-      {{ block('helper_text') }}
+    {{- form_errors(form) -}}
+    {{- form_help(form) -}}
+  {% else %}
+    {% if dont_render_row is not defined or not dont_render_row %}
+      <div class="row align-items-center">
     {% endif %}
-  {% endapply %}
+
+    <div class="col-md-3">
+      {%- if label is not same as(false) -%}{{ form_label(form.day, null, { 'label_attr': {'class': 'sr-only'} }) }}{%- endif -%}
+      {{ form_widget(form.day) }}
+    </div>
+    <span>{{ divider }}</span>
+    <div class="col-md-3">
+      {%- if label is not same as(false) -%}{{ form_label(form.month, null, { 'label_attr': {'class': 'sr-only'} }) }}{%- endif -%}
+      {{ form_widget(form.month) }}
+    </div>
+    <span>{{ divider }}</span>
+    <div class="col-md-3">
+      {%- if label is not same as(false) -%}{{ form_label(form.year, null, { 'label_attr': {'class': 'sr-only'} }) }}{%- endif -%}
+      {{ form_widget(form.year) }}
+    </div>
+
+    {% if dont_render_row is not defined or not dont_render_row %}
+      </div>
+    {% endif %}
+  {%- endif -%}
+  {% if helper_text %}
+    {{ block('helper_text') }}
+  {% endif %}
 {%- endblock date_widget %}
 
 {% block time_row -%}
@@ -267,66 +255,64 @@
   </{{ element|default('div') }}>
 {%- endblock time_row %}
 
-{% block time_widget -%}
-  {% apply spaceless %}
-    {% if widget == 'single_text' %}
-      {% set attr = attr|merge({'data-role': 'time-picker'}) -%}
-      {% set attr = attr|merge({'data-time_24hr': 'true'}) -%}
-      {%- if not valid -%}{% set attr = attr|merge({class: (attr.class|default('') ~ ' is-invalid')|trim}) -%}{%- endif -%}
-      {%- if help is not empty -%}{%- set widget_attr = {attr: {'aria-describedby': id ~ "_help"}} -%}{%- endif -%}
-      {# Its hardcoded for the symfony format because the patterns don't match #}
-      {% if format is defined and format == 'HH:mm' %}{% set attr = attr|merge({'data-date-format': 'H:i'}) -%}{% endif %}
-      {% if read_only is defined and read_only %}{% set attr = attr|merge({'readonly': 'readonly'}) -%}{% endif %}
-      {% if disabled %}{% set attr = attr|merge({'disabled': 'disabled'}) -%}{% endif %}
-      {% if required %}{% set attr = attr|merge({'required': 'required'}) -%}{% endif %}
+{%- block time_widget -%}
+  {% if widget == 'single_text' %}
+    {% set attr = attr|merge({'data-role': 'time-picker'}) -%}
+    {% set attr = attr|merge({'data-time_24hr': 'true'}) -%}
+    {%- if not valid -%}{% set attr = attr|merge({class: (attr.class|default('') ~ ' is-invalid')|trim}) -%}{%- endif -%}
+    {%- if help is not empty -%}{%- set widget_attr = {attr: {'aria-describedby': id ~ "_help"}} -%}{%- endif -%}
+    {# Its hardcoded for the symfony format because the patterns don't match #}
+    {% if format is defined and format == 'HH:mm' %}{% set attr = attr|merge({'data-date-format': 'H:i'}) -%}{% endif %}
+    {% if read_only is defined and read_only %}{% set attr = attr|merge({'readonly': 'readonly'}) -%}{% endif %}
+    {% if disabled %}{% set attr = attr|merge({'disabled': 'disabled'}) -%}{% endif %}
+    {% if required %}{% set attr = attr|merge({'required': 'required'}) -%}{% endif %}
 
-      <div class="input-group">
-        <div class="input-group-text">
-          <i class="fas fa-clock"></i>
-        </div>
-        {{- block('form_widget_simple') -}}
-        {% if not required %}
-          <button class="btn btn-outline-secondary" type="button" data-flatpicker-clear>
-            <i class="fas fa-times"></i>
-          </button>
-        {% endif %}
-
+    <div class="input-group">
+      <div class="input-group-text">
+        <i class="fas fa-clock"></i>
       </div>
-
-    {% else %}
-      {% if dont_render_row is not defined or not dont_render_row %}
-        <div class="row">
+      {{- block('form_widget_simple') -}}
+      {% if not required %}
+        <button class="btn btn-outline-secondary" type="button" data-flatpicker-clear>
+          <i class="fas fa-times"></i>
+        </button>
       {% endif %}
 
-      <div class="col-md-3">
-        {%- if label is not same as(false) -%}{{ form_label(form.hour, null, { 'label_attr': {'class': 'sr-only'} }) }}{%- endif -%}
-        {{ form_widget(form.hour) }}
-      </div>
+    </div>
+
+  {% else %}
+    {% if dont_render_row is not defined or not dont_render_row %}
+      <div class="row">
+    {% endif %}
+
+    <div class="col-md-3">
+      {%- if label is not same as(false) -%}{{ form_label(form.hour, null, { 'label_attr': {'class': 'sr-only'} }) }}{%- endif -%}
+      {{ form_widget(form.hour) }}
+    </div>
+    <div class="col-md-1 text-center">
+      <span>{{ divider }}</span>
+    </div>
+    <div class="col-md-3">
+      {%- if label is not same as(false) -%}{{ form_label(form.minute, null, { 'label_attr': {'class': 'sr-only'} }) }}{%- endif -%}
+      {{ form_widget(form.minute) }}
+    </div>
+    {% if with_seconds %}
       <div class="col-md-1 text-center">
         <span>{{ divider }}</span>
       </div>
       <div class="col-md-3">
-        {%- if label is not same as(false) -%}{{ form_label(form.minute, null, { 'label_attr': {'class': 'sr-only'} }) }}{%- endif -%}
-        {{ form_widget(form.minute) }}
+        {%- if label is not same as(false) -%}{{ form_label(form.second, null, { 'label_attr': {'class': 'sr-only'} }) }}{%- endif -%}
+        {{ form_widget(form.second) }}
       </div>
-      {% if with_seconds %}
-        <div class="col-md-1 text-center">
-          <span>{{ divider }}</span>
-        </div>
-        <div class="col-md-3">
-          {%- if label is not same as(false) -%}{{ form_label(form.second, null, { 'label_attr': {'class': 'sr-only'} }) }}{%- endif -%}
-          {{ form_widget(form.second) }}
-        </div>
-      {% endif %}
-
-      {% if dont_render_row is not defined or not dont_render_row %}
-        </div>
-      {% endif %}
     {% endif %}
 
-    {{- form_errors(form) -}}
-    {{- form_help(form) -}}
-  {% endapply %}
+    {% if dont_render_row is not defined or not dont_render_row %}
+      </div>
+    {% endif %}
+  {% endif %}
+
+  {{- form_errors(form) -}}
+  {{- form_help(form) -}}
 {%- endblock time_widget %}
 
 {% block datetime_row -%}
@@ -343,52 +329,50 @@
   </{{ element|default('div') }}>
 {%- endblock datetime_row %}
 
-{% block datetime_widget -%}
-  {% apply spaceless %}
-    {% if widget == 'single_text' %}
-      {% set attr = attr|merge({'data-role': 'date-time-picker'}) -%}
-      {% set attr = attr|merge({'data-time_24hr': 'true'}) -%}
-      {%- if not valid -%}{% set attr = attr|merge({class: (attr.class|default('') ~ ' is-invalid')|trim}) -%}{%- endif -%}
-      {%- if help is not empty -%}{%- set widget_attr = {attr: {'aria-describedby': id ~ "_help"}} -%}{%- endif -%}
-      {# Its hardcoded for the symfony format because the patterns don't match #}
-      {% if format is defined and format == 'dd/MM/yyyy HH:mm' %}{% set attr = attr|merge({'data-date-format': 'd/m/Y H:i'}) -%}{% endif %}
-      {# The format needs to be defined before any min or max date #}
-      {% if minimum_date %}{% set attr = attr|merge({'data-min-date': minimum_date|date('d/m/Y')}) -%}{% endif %}
-      {% if maximum_date %}{% set attr = attr|merge({'data-max-date': maximum_date|date('d/m/Y')}) -%}{% endif %}
-      {% if read_only is defined and read_only %}{% set attr = attr|merge({'readonly': 'readonly'}) -%}{% endif %}
-      {% if disabled %}{% set attr = attr|merge({'disabled': 'disabled'}) -%}{% endif %}
-      {% if required %}{% set attr = attr|merge({'required': 'required'}) -%}{% endif %}
+{%- block datetime_widget -%}
+  {% if widget == 'single_text' %}
+    {% set attr = attr|merge({'data-role': 'date-time-picker'}) -%}
+    {% set attr = attr|merge({'data-time_24hr': 'true'}) -%}
+    {%- if not valid -%}{% set attr = attr|merge({class: (attr.class|default('') ~ ' is-invalid')|trim}) -%}{%- endif -%}
+    {%- if help is not empty -%}{%- set widget_attr = {attr: {'aria-describedby': id ~ "_help"}} -%}{%- endif -%}
+    {# Its hardcoded for the symfony format because the patterns don't match #}
+    {% if format is defined and format == 'dd/MM/yyyy HH:mm' %}{% set attr = attr|merge({'data-date-format': 'd/m/Y H:i'}) -%}{% endif %}
+    {# The format needs to be defined before any min or max date #}
+    {% if minimum_date %}{% set attr = attr|merge({'data-min-date': minimum_date|date('d/m/Y')}) -%}{% endif %}
+    {% if maximum_date %}{% set attr = attr|merge({'data-max-date': maximum_date|date('d/m/Y')}) -%}{% endif %}
+    {% if read_only is defined and read_only %}{% set attr = attr|merge({'readonly': 'readonly'}) -%}{% endif %}
+    {% if disabled %}{% set attr = attr|merge({'disabled': 'disabled'}) -%}{% endif %}
+    {% if required %}{% set attr = attr|merge({'required': 'required'}) -%}{% endif %}
 
-      <div class="input-group">
-        <div class="input-group-text">
-          <i class="fas fa-calendar"></i>
-        </div>
-        {{- block('form_widget_simple') -}}
+    <div class="input-group">
+      <div class="input-group-text">
+        <i class="fas fa-calendar"></i>
       </div>
+      {{- block('form_widget_simple') -}}
+    </div>
 
-      {{- form_errors(form) -}}
-      {{- form_help(form) -}}
-    {% else %}
-      {% if dont_render_row is not defined or not dont_render_row %}
-        <div class="row align-items-center">
-      {% endif %}
-
-      <div class="col-md-3">
-        {%- if label is not same as(false) -%}{{ form_label(form.date, null, { 'label_attr': {'class': 'sr-only'} }) }}{%- endif -%}
-        {{ form_widget(form.date) }}
-      </div>
-      <span>{{ divider }}</span>
-      <div class="col-md-3">
-        {%- if label is not same as(false) -%}{{ form_label(form.time, null, { 'label_attr': {'class': 'sr-only'} }) }}{%- endif -%}
-        {{ form_widget(form.time) }}
-      </div>
-
-      {% if dont_render_row is not defined or not dont_render_row %}
-        </div>
-      {% endif %}
-    {% endif %}
+    {{- form_errors(form) -}}
     {{- form_help(form) -}}
-  {% endapply %}
+  {% else %}
+    {% if dont_render_row is not defined or not dont_render_row %}
+      <div class="row align-items-center">
+    {% endif %}
+
+    <div class="col-md-3">
+      {%- if label is not same as(false) -%}{{ form_label(form.date, null, { 'label_attr': {'class': 'sr-only'} }) }}{%- endif -%}
+      {{ form_widget(form.date) }}
+    </div>
+    <span>{{ divider }}</span>
+    <div class="col-md-3">
+      {%- if label is not same as(false) -%}{{ form_label(form.time, null, { 'label_attr': {'class': 'sr-only'} }) }}{%- endif -%}
+      {{ form_widget(form.time) }}
+    </div>
+
+    {% if dont_render_row is not defined or not dont_render_row %}
+      </div>
+    {% endif %}
+  {% endif %}
+  {{- form_help(form) -}}
 {%- endblock datetime_widget %}
 
 {% block select_2_errors %}

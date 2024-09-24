@@ -20,7 +20,7 @@ class SecretsGetCommand extends Command
         parent::__construct();
     }
 
-    public function configure()
+    public function configure(): void
     {
         $this->setDescription('Get a secret from the vault');
         $this->addArgument('key', InputArgument::REQUIRED, 'The key to get from the vault');

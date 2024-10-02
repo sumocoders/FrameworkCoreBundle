@@ -1,4 +1,6 @@
 {% block notifications %}
     <div class="toasts-wrapper" id="toast-wrapper" data-success-messages="{{ app.session.flashbag.get('success')|json_encode }}" data-report-messages="{{ app.session.flashbag.get('report')|json_encode }}" data-warning-messages="{{ app.session.flashbag.get('warning')|json_encode }}" data-error-messages="{{ app.session.flashbag.get('error')|json_encode }}">
     </div>
+    <div class="toasts-wrapper" id="toast-wrapper-js">
+    </div>
 {% endblock %}

@@ -10,12 +10,12 @@
     {% endblock %}
 
     {% block stylesheets %}
-        {{ encore_entry_link_tags('style') }}
+        <link rel="stylesheet" href="{{ asset('styles/style.scss') }}">
         {% if theme() == 'theme-dark' %}
-            {{ encore_entry_link_tags('style-dark') }}
+            <link rel="stylesheet" href="{{ asset('styles/style-dark.scss') }}">
         {% endif %}
     {% endblock %}
-  
+
     {% block icons %}
         <link rel="apple-touch-icon" href="{{ asset('build/images/apple-touch-icon.png') }}">
         <link rel="image_src" href="{{ asset('build/images/image_src.png') }}" />

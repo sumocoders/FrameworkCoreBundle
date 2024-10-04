@@ -1,0 +1,16 @@
+// Bootstrap variables
+@import "../../../../../vendor/twbs/bootstrap/scss/functions";
+@import '../../../../../vendor/twbs/bootstrap/scss/variables';
+@import "../../../../../vendor/twbs/bootstrap/scss/variables-dark";
+@import 'bootstrap-variables';
+// Foundation mail variables
+@import 'mail/variables';
+@import 'foundation-emails/dist/foundation-emails.min.css';
+
+.dark-gray {
+  color: $medium-gray;
+}
+
+.mb-0 {
+  margin-bottom: 0 !important;
+}

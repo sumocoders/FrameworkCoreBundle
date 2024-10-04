@@ -16,6 +16,10 @@
         {% endif %}
     {% endblock %}
 
+    {% block javascripts %}
+        {{ importmap('app') }}
+    {% endblock %}
+
     {% block icons %}
         <link rel="apple-touch-icon" href="{{ asset('build/images/apple-touch-icon.png') }}">
         <link rel="image_src" href="{{ asset('build/images/image_src.png') }}" />

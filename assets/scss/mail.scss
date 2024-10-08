@@ -5,7 +5,7 @@
 @import 'bootstrap-variables';
 // Foundation mail variables
 @import 'mail/variables';
-@import 'foundation-emails/dist/foundation-emails.min.css';
+@import './foundation-emails/scss/foundation-emails';
 
 .dark-gray {
   color: $medium-gray;

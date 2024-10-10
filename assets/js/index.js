@@ -14,6 +14,7 @@ import { TimePicker } from './Framework/DateTimePicker/TimePicker.js'
 import Clipboard from './Framework/Clipboard.js'
 import Theme from './Framework/Theme.js'
 import SelectSearch from './Framework/SelectSearch.js'
+import PasswordStrengthChecker from './Framework/PasswordStrengthChecker.js'
 
 export function Framework () {
   const formsList = document.querySelectorAll('form')
@@ -57,6 +58,7 @@ export function Framework () {
   Tabs()
   Tooltip()
   Popover()
+  PasswordStrengthChecker()
 }
 
 document.addEventListener('DOMContentLoaded', function () {

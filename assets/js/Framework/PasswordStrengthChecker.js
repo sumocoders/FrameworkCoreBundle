@@ -1,12 +1,20 @@
 import axios from 'axios'
-import { debounce } from 'lodash'
 
 export default function PasswordStrengthChecker () {
   const passwordInput = document.querySelectorAll('[data-role="check-password"] input[type="password"]')[0]
   const meterSections = document.querySelectorAll('.meter-section')
 
-  const debounced = debounce(getStrength, 250, { maxWait: 750, leading: true, trailing: true })
+  const debounced = debounce(getStrength)
   if (passwordInput) passwordInput.addEventListener('input', debounced)
+
+  function debounce (func, timeout = 300) {
+    let timer;
+
+    return (...args) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => { func.apply(this, args); }, timeout);
+    };
+  }
 
   function getStrength () {
     const password = passwordInput.value

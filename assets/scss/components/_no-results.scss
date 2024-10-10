@@ -1,0 +1,14 @@
+.data-no-results {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  font-size: $font-size-base * 1.125;
+  padding-top: 2rem;
+  color: $gray-600;
+
+  img {
+    width: 140px;
+    height: auto;
+    margin-bottom: 1.5rem;
+  }
+}

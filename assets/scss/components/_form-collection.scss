@@ -1,0 +1,38 @@
+.collection-item {
+  position: relative;
+  margin-bottom: $font-size-base * 0.7;
+
+  .collection-item-drag-and-drop {
+    align-items: center;
+    background-color: $secondary;
+    border-radius: 50%;
+    cursor: move;
+    display: flex;
+    height: 40px;
+    justify-content: center;
+    left: -20px;
+    padding: 7px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+  }
+
+  .collection-item-delete {
+    align-items: center;
+    border-radius: 50%;
+    display: flex;
+    height: 40px;
+    justify-content: center;
+    padding: 7px;
+    position: absolute;
+    right: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+  }
+}
+
+.collection-items {
+  margin-bottom: 0;
+}

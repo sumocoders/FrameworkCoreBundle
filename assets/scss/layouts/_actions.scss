@@ -1,0 +1,14 @@
+.action-buttons {
+  button {
+    margin-bottom: calc(#{$spacer} / 4);
+    margin-top: calc(#{$spacer} / 4);
+  }
+
+  form.form-inline {
+    display: inline;
+
+    div {
+      display: inline;
+    }
+  }
+}

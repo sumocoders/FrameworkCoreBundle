@@ -2,8 +2,8 @@
   <div class="navbar p-0 navbar-expand-md flex-row flex-md-column" data-role="navbar-wrapper">
     <a href="/" rel="home" class="navbar-brand d-block d-md-flex justify-content-md-center">
       {% block logo_image %}
-        <img class="img-responsive{% if theme() != 'theme-dark' %} d-none{% endif %}" data-navbar-logo-dark src="{{ asset('build/images/logo-application-dark.svg') }}" alt="{{ fallbacks.get('site_title') }}">
-        <img class="img-responsive{% if theme() == 'theme-dark' %} d-none{% endif %}" data-navbar-logo src="{{ asset('build/images/logo-application.svg') }}" alt="{{ fallbacks.get('site_title') }}">
+        <img class="img-responsive{% if theme() != 'theme-dark' %} d-none{% endif %}" data-navbar-logo-dark src="{{ asset('images/logo-application-dark.svg') }}" alt="{{ fallbacks.get('site_title') }}">
+        <img class="img-responsive{% if theme() == 'theme-dark' %} d-none{% endif %}" data-navbar-logo src="{{ asset('images/logo-application.svg') }}" alt="{{ fallbacks.get('site_title') }}">
       {% endblock %}
     </a>
     <div class="navbar-header d-md-none d-flex">

@@ -1,0 +1,49 @@
+.flatpickr-calendar {
+  .flatpickr-day {
+    &.selected:hover,
+    &.selected:focus,
+    &.selected {
+      background: $primary;
+      border-color: $primary;
+    }
+
+    &:hover,
+    &:focus {
+      background: $primary;
+      border-color: $primary;
+      color: color-contrast($primary);
+    }
+  }
+
+  .flatpickr-day.nextMonthDay.today:not(.selected),
+  .flatpickr-day.prevMonthDay.today:not(.selected),
+  .flatpickr-day.today:not(.selected) {
+    border-color: transparent transparent $primary #e9e9e9;
+  }
+
+  .flatpickr-day.today:not(.selected):hover,
+  .flatpickr-day.prevMonthDay.today:not(.selected):hover,
+  .flatpickr-day.nextMonthDay.today:not(.selected):hover {
+    border: 1px solid $primary;
+  }
+
+  .flatpickr-day.today:hover,
+  .flatpickr-day.today:focus {
+    background: $primary;
+  }
+
+  .flatpickr-months .flatpickr-prev-month:hover,
+  .flatpickr-months .flatpickr-next-month:hover {
+    color: $primary;
+  }
+
+  .flatpickr-months .flatpickr-prev-month:hover svg,
+  .flatpickr-months .flatpickr-next-month:hover svg {
+    fill: $primary;
+  }
+}
+
+.flatpickr-input[readonly="readonly"] {
+  background: $input-bg;
+  color: $input-color;
+}

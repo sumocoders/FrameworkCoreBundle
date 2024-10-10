@@ -1,0 +1,42 @@
+.flatpickr-calendar {
+  background: $gray-900;
+  color: $white;
+
+  .flatpickr-months .flatpickr-month {
+    color: $white;
+  }
+
+  .flatpickr-months .flatpickr-prev-month,
+  .flatpickr-months .flatpickr-next-month {
+    color: $white;
+    fill: $white;
+  }
+
+  .flatpickr-day.flatpickr-disabled,
+  .flatpickr-day.flatpickr-disabled:hover,
+  .flatpickr-day.prevMonthDay,
+  .flatpickr-day.nextMonthDay,
+  .flatpickr-day.notAllowed,
+  .flatpickr-day.notAllowed.prevMonthDay,
+  .flatpickr-day.notAllowed.nextMonthDay {
+    color: rgba($white, 0.5);
+  }
+
+  .flatpickr-time input,
+  .flatpickr-day,
+  .flatpickr-weekday {
+    color: $white;
+  }
+
+  .flatpickr-time input:hover,
+  .flatpickr-time .flatpickr-am-pm:hover,
+  .flatpickr-time input:focus,
+  .flatpickr-time .flatpickr-am-pm:focus {
+    background: $gray-800;
+  }
+}
+
+.flatpickr-input[readonly="readonly"] {
+  background: $input-bg;
+  color: $input-color;
+}

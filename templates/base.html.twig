@@ -52,7 +52,7 @@
             </nav>
             <div class="ms-md-auto">
               {% if block('header_navigation') is defined and block('header_navigation') is not empty %}
-                <div class="action-buttons">
+                <div class="d-flex gap-2 align-items-center">
                   {{ block('header_navigation') }}
                 </div>
               {% endif %}

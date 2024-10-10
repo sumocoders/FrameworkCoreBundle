@@ -1,26 +1,19 @@
-// External frameworks
-import * as bootstrap from 'bootstrap/dist/js/bootstrap.js'
-
-// Vue components
-// import Toast from 'core/Framework/Components/Toast.vue'
-
 // Other components
-import Form from 'sumocoders/Form'
-import GoBack from 'sumocoders/GoBack'
-import Popover from 'sumocoders/Popover'
-import Scrolling from 'sumocoders/Scrolling'
-import Sidebar from 'sumocoders/Sidebar'
+import Form from './Framework/Form.js'
+import GoBack from './Framework/GoBack.js'
+import Popover from './Framework/Popover.js'
+import Scrolling from './Framework/Scrolling.js'
+import Sidebar from './Framework/Sidebar.js'
 import TomSelect from 'tom-select'
-import Tabs from 'sumocoders/Tabs'
-import Tooltip from 'sumocoders/Tooltip'
-import FormCollection from 'sumocoders/FormCollection'
-import { DatePicker } from 'sumocoders/DatePicker'
-import { DateTimePicker } from 'sumocoders/DateTimePicker'
-import { TimePicker } from 'sumocoders/TimePicker'
-import Theme from 'sumocoders/Theme'
-import SelectSearch from 'sumocoders/SelectSearch'
-
-window.bootstrap = bootstrap
+import Tabs from './Framework/Tabs.js'
+import Tooltip from './Framework/Tooltip.js'
+import FormCollection from './Framework/FormCollection.js'
+import { DatePicker } from './Framework/DateTimePicker/DatePicker.js'
+import { DateTimePicker } from './Framework/DateTimePicker/DateTimePicker.js'
+import { TimePicker } from './Framework/DateTimePicker/TimePicker.js'
+import Clipboard from './Framework/Clipboard.js'
+import Theme from './Framework/Theme.js'
+import SelectSearch from './Framework/SelectSearch.js'
 
 export function Framework () {
   const formsList = document.querySelectorAll('form')

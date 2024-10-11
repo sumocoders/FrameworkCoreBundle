@@ -3,7 +3,6 @@ import Form from './Framework/Form.js'
 import GoBack from './Framework/GoBack.js'
 import Popover from './Framework/Popover.js'
 import Scrolling from './Framework/Scrolling.js'
-import Sidebar from './Framework/Sidebar.js'
 import TomSelect from 'tom-select'
 import Tabs from './Framework/Tabs.js'
 import Tooltip from './Framework/Tooltip.js'
@@ -21,9 +20,6 @@ export function Framework () {
 
   const scrollToTopEl = document.querySelector('[data-role="back-to-top"]')
   Scrolling(scrollToTopEl)
-
-  const sidebarEl = document.querySelector('[data-sidebar-wrapper]')
-  Sidebar(sidebarEl)
 
   const backButtonEl = document.querySelector('[data-button-previous="back"]')
   GoBack(backButtonEl)

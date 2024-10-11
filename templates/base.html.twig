@@ -5,7 +5,7 @@
 <body class="body-base" data-theme-path="{{ asset('styles/style-dark.scss') }}">
   {% block start_body %}
   {% endblock %}
-  <div id="main-wrapper" class="main-wrapper" data-sidebar-wrapper>
+  <div id="main-wrapper" class="main-wrapper" data-controller="sidebar-collapsable" data-sidebar-collapsable-target="toggleable">
     <div id="main-menu" class="main-menu" role="navigation">
       {% block include_navigation %}
         {{ include('@SumoCodersFrameworkCore/navigation.html.twig') }}

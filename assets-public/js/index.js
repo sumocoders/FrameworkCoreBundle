@@ -11,7 +11,6 @@ import FormCollection from './Framework/FormCollection.js'
 import { DatePicker } from './Framework/DateTimePicker/DatePicker.js'
 import { DateTimePicker } from './Framework/DateTimePicker/DateTimePicker.js'
 import { TimePicker } from './Framework/DateTimePicker/TimePicker.js'
-import Clipboard from './Framework/Clipboard.js'
 import Theme from './Framework/Theme.js'
 import SelectSearch from './Framework/SelectSearch.js'
 import PasswordStrengthChecker from './Framework/PasswordStrengthChecker.js'
@@ -49,11 +48,6 @@ export function Framework () {
 
   // initialize datetimepickers
   initializeDateTimePickers()
-
-  // initialize clipboard
-  document.querySelectorAll('[data-role="clipboard"]').forEach((element) => {
-    element.clipboard = new Clipboard(element)
-  })
 
   Tabs()
   Tooltip()

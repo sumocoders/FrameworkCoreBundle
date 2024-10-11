@@ -1,20 +1,14 @@
-@mixin font-import($font-name, $font-file, $style: normal, $weight: 400) {
+// Example for importing fonts
+//@mixin font-import($font-name, $font-file, $style: normal, $weight: 400) {
+//
+//  @font-face {
+//    font-family: "#{$font-name}";
+//    src: url("../fonts/#{$font-file}.woff") format('woff'), /* Modern Browsers */
+//    url("../fonts/#{$font-file}.ttf")  format('truetype'); /* Safari, Android, iOS */
+//
+//    font-style:   $style;
+//    font-weight:  $weight;
+//  }
+//}
 
-  @font-face {
-    font-family: "#{$font-name}";
-    src: url("../../fonts/#{$font-file}.woff") format('woff'), /* Modern Browsers */
-    url("../../fonts/#{$font-file}.ttf")  format('truetype'); /* Safari, Android, iOS */
-
-    font-style:   $style;
-    font-weight:  $weight;
-  }
-}
-
-@include font-import(Lato, lato-regular-webfont, normal, 400);
-@include font-import(Lato, lato-italic-webfont, italic, 400);
-@include font-import(Lato, lato-bold-webfont, normal, 700);
-@include font-import(Lato, lato-bolditalic-webfont, italic, 700);
-@include font-import(Lato, lato-light-webfont, normal, 300);
-@include font-import(Lato, lato-lightitalic-webfont, italic, 300);
-@include font-import(Lato, lato-black-webfont, normal, 900);
-@include font-import(Lato, lato-blackitalic-webfont, italic, 900);
+//@include font-import(Lato, lato-regular-webfont, normal, 400);

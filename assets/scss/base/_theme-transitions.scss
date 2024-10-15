@@ -1,0 +1,77 @@
+table.table,
+.form-control,
+.select2-container .select2-selection--single,
+.custom-select,
+.custom-file-label,
+.input-group-text,
+.nav-link.active,
+.nav-item.show .nav-link,
+.dropdown-menu,
+.page-link,
+.popover,
+.alert,
+.list-group-item.active,
+.list-group-item-action,
+.toast-header {
+  transition: background-color $transition-theme-duration $transition-theme-timing-function, color $transition-theme-duration $transition-theme-timing-function, border-color $transition-theme-duration $transition-theme-timing-function;
+}
+
+.custom-control-label::before,
+.card,
+.popover-header,
+.progress,
+.list-group-item,
+.img-thumbnail,
+.table [class^="table-"] > th,
+.table [class^="table-"] > td,
+.main-header,
+.toast {
+  transition: background-color $transition-theme-duration $transition-theme-timing-function, border-color $transition-theme-duration $transition-theme-timing-function;
+}
+
+body,
+mark,
+.mark,
+table.table thead,
+.dropdown-item.active,
+.dropdown-item:active,
+.badge,
+.main-menu,
+.main-menu .nav-item {
+  transition: background-color $transition-theme-duration $transition-theme-timing-function, color $transition-theme-duration $transition-theme-timing-function;
+}
+
+a,
+.text-muted,
+.blockquote-footer,
+.form-control::placeholder,
+.popover-body,
+.alert::before,
+.breadcrumb-item,
+pre {
+  transition: color $transition-theme-duration $transition-theme-timing-function;
+}
+
+hr,
+.table th,
+.table td,
+.nav-tabs,
+.dropdown-divider,
+.bs-popover-right > .arrow::after,
+.bs-popover-auto[x-placement^="right"] > .arrow::after,
+.bs-popover-right > .arrow::before,
+.bs-popover-auto[x-placement^="right"] > .arrow::before {
+  transition: border-color $transition-theme-duration $transition-theme-timing-function;
+}
+
+.table-striped tbody tr:nth-of-type(even),
+.jumbotron,
+.progress-bar,
+.navbar-brand,
+.user-nav {
+  transition: background-color $transition-theme-duration $transition-theme-timing-function;
+}
+
+.custom-file-label::after {
+  transition: background-color $transition-theme-duration $transition-theme-timing-function, background $transition-theme-duration $transition-theme-timing-function, color $transition-theme-duration $transition-theme-timing-function;
+}

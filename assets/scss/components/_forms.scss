@@ -1,0 +1,19 @@
+.form-group {
+  margin-bottom: $spacer;
+}
+
+.form-group abbr[title] {
+  border-bottom: 0;
+  color: $primary;
+  margin-left: 5px;
+  text-decoration: none;
+}
+
+.datetime-widget select[size],
+.time-widget select[size] {
+  height: 34px;
+}
+
+[data-role="clipboard"]:hover {
+  cursor: copy;
+}

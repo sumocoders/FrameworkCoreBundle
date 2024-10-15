@@ -1,0 +1,18 @@
+table.table {
+  border-bottom: $table-border-width solid $table-border-color;
+
+  thead {
+    background-color: $white;
+    color: $body-color;
+    font-style: normal;
+    font-weight: $font-weight-bold;
+
+    th {
+      border-top: none;
+    }
+
+    td, th {
+      box-shadow: none;
+    }
+  }
+}

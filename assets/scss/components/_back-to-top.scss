@@ -1,0 +1,23 @@
+.back-to-top {
+  background-color: $back-to-top-bg;
+  bottom: 0;
+  box-shadow: $box-shadow;
+  display: none;
+  margin: 15px 0;
+  opacity: 0;
+  position: fixed;
+  padding: 10px 30px 10px 20px;
+  right: 0;
+  transform: translateX(calc(100% - 50px));
+  transition: $transition-base;
+  z-index: $zindex-backtotop;
+
+  &:hover {
+    transform: translateX(0);
+  }
+
+  &.show {
+    animation: show 0.35s 1 forwards;
+    display: block;
+  }
+}

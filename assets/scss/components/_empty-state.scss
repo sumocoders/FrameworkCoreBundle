@@ -1,0 +1,15 @@
+.no-items-icons {
+  font-size: $font-size-base * 2;
+}
+
+@include media-breakpoint-up(sm) {
+  .no-items-icons {
+    font-size: $font-size-base * 4;
+  }
+}
+
+@include media-breakpoint-up(lg) {
+  .no-items-icons {
+    font-size: $font-size-base * 7;
+  }
+}

@@ -1,6 +1,5 @@
 // Other components
 import Scrolling from './Framework/Scrolling.js'
-import Tabs from './Framework/Tabs.js'
 import FormCollection from './Framework/FormCollection.js'
 import PasswordStrengthChecker from './Framework/PasswordStrengthChecker.js'
 
@@ -13,6 +12,5 @@ export function Framework () {
     FormCollection(element)
   })
 
-  Tabs()
   PasswordStrengthChecker()
 }

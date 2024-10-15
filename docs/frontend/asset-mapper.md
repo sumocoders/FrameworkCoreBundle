@@ -53,6 +53,12 @@ To compile the CSS with SASS, you can run the following command:
 symfony console sass:build
 ```
 
+If you are working locally and are making changes to the SCSS, you can run the following command to watch for changes:
+
+```bash
+symfony console sass:build --watch
+```
+
 ## Deploy
 
 For production, we compile the assets with the following command:

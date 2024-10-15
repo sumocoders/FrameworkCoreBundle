@@ -1,0 +1,15 @@
+:target {
+  // .menu-menu .navbar height
+  scroll-margin-block-start: 60px;
+}
+
+@include media-breakpoint-up(md) {
+  :target {
+    scroll-margin-block-start: $topbar-height-md;
+  }
+
+  .tab-pane:target {
+    // topbar-heigth-md + .nav-tabs height + .nav-tabs margin-bottom
+    scroll-margin-block-start: calc($topbar-height-md + 42px + 1rem);
+  }
+}

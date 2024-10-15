@@ -1,16 +1,12 @@
 // Other components
 import Form from './Framework/Form.js'
 import GoBack from './Framework/GoBack.js'
-import Popover from './Framework/Popover.js'
 import Scrolling from './Framework/Scrolling.js'
-import TomSelect from 'tom-select'
 import Tabs from './Framework/Tabs.js'
-import Tooltip from './Framework/Tooltip.js'
 import FormCollection from './Framework/FormCollection.js'
 import { DatePicker } from './Framework/DateTimePicker/DatePicker.js'
 import { DateTimePicker } from './Framework/DateTimePicker/DateTimePicker.js'
 import { TimePicker } from './Framework/DateTimePicker/TimePicker.js'
-import SelectSearch from './Framework/SelectSearch.js'
 import PasswordStrengthChecker from './Framework/PasswordStrengthChecker.js'
 
 export function Framework () {
@@ -23,15 +19,6 @@ export function Framework () {
   const backButtonEl = document.querySelector('[data-button-previous="back"]')
   GoBack(backButtonEl)
 
-  // initialize selects
-  document.querySelectorAll('[data-role="select"]').forEach((element) => {
-    if (element.dataset.options !== null) {
-      element.select = new TomSelect(element, element.dataset.options)
-    } else {
-      element.select = new TomSelect(element, {})
-    }
-  })
-
   // initialize collections
   document.querySelectorAll('[data-role="collection"]').forEach((element) => {
     FormCollection(element)
@@ -41,8 +28,6 @@ export function Framework () {
   initializeDateTimePickers()
 
   Tabs()
-  Tooltip()
-  Popover()
   PasswordStrengthChecker()
 }
 

@@ -1,5 +1,4 @@
 // Other components
-import Form from './Framework/Form.js'
 import GoBack from './Framework/GoBack.js'
 import Scrolling from './Framework/Scrolling.js'
 import Tabs from './Framework/Tabs.js'
@@ -10,9 +9,6 @@ import { TimePicker } from './Framework/DateTimePicker/TimePicker.js'
 import PasswordStrengthChecker from './Framework/PasswordStrengthChecker.js'
 
 export function Framework () {
-  const formsList = document.querySelectorAll('form')
-  Form(formsList)
-
   const scrollToTopEl = document.querySelector('[data-role="back-to-top"]')
   Scrolling(scrollToTopEl)
 

@@ -10,7 +10,6 @@ import FormCollection from './Framework/FormCollection.js'
 import { DatePicker } from './Framework/DateTimePicker/DatePicker.js'
 import { DateTimePicker } from './Framework/DateTimePicker/DateTimePicker.js'
 import { TimePicker } from './Framework/DateTimePicker/TimePicker.js'
-import Theme from './Framework/Theme.js'
 import SelectSearch from './Framework/SelectSearch.js'
 import PasswordStrengthChecker from './Framework/PasswordStrengthChecker.js'
 
@@ -50,10 +49,6 @@ export function Framework () {
   Popover()
   PasswordStrengthChecker()
 }
-
-document.addEventListener('DOMContentLoaded', function () {
-  Theme()
-})
 
 document.addEventListener('added.collection.item', function () {
   initializeDateTimePickers()

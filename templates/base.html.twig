@@ -2,7 +2,7 @@
   {% include '@SumoCodersFrameworkCore/head.html.twig' with {title: block('title') is defined ? block('title') : page_title} %}
 {% endblock %}
 
-<body class="body-base" data-theme-path="{{ asset('styles/style-dark.scss') }}">
+<body class="body-base" data-theme-path="{{ asset('styles/style-dark.scss') }}" data-turbo="false">
   {% block start_body %}
   {% endblock %}
   <div id="main-wrapper" class="main-wrapper" data-controller="sidebar-collapsable" data-sidebar-collapsable-target="toggleable">

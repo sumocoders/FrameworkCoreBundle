@@ -191,7 +191,7 @@
 
 {%- block date_widget -%}
   {%- if widget == 'single_text' -%}
-    {% set attr = attr|merge({'data-role': 'date-picker'}) -%}
+    {% set attr = attr|merge({'data-controller': 'date-time-picker'}) -%}
     {%- if not valid -%}{% set attr = attr|merge({class: (attr.class|default('') ~ ' is-invalid')|trim}) -%}{%- endif -%}
     {%- if help is not empty -%}{%- set widget_attr = {attr: {'aria-describedby': id ~ "_help"}} -%}{%- endif -%}
     {# Its hardcoded for the symfony format because the patterns don't match #}
@@ -257,7 +257,7 @@
 
 {%- block time_widget -%}
   {% if widget == 'single_text' %}
-    {% set attr = attr|merge({'data-role': 'time-picker'}) -%}
+    {% set attr = attr|merge({'data-controller': 'date-time-picker', 'data-date-time-picker-enable-time-value': 'true', 'data-date-time-picker-show-calendar-value': 'false'}) -%}
     {% set attr = attr|merge({'data-time_24hr': 'true'}) -%}
     {%- if not valid -%}{% set attr = attr|merge({class: (attr.class|default('') ~ ' is-invalid')|trim}) -%}{%- endif -%}
     {%- if help is not empty -%}{%- set widget_attr = {attr: {'aria-describedby': id ~ "_help"}} -%}{%- endif -%}
@@ -331,7 +331,7 @@
 
 {%- block datetime_widget -%}
   {% if widget == 'single_text' %}
-    {% set attr = attr|merge({'data-role': 'date-time-picker'}) -%}
+    {% set attr = attr|merge({'data-controller': 'date-time-picker', 'data-date-time-picker-enable-time-value': 'true'}) -%}
     {% set attr = attr|merge({'data-time_24hr': 'true'}) -%}
     {%- if not valid -%}{% set attr = attr|merge({class: (attr.class|default('') ~ ' is-invalid')|trim}) -%}{%- endif -%}
     {%- if help is not empty -%}{%- set widget_attr = {attr: {'aria-describedby': id ~ "_help"}} -%}{%- endif -%}

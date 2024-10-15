@@ -3,9 +3,6 @@ import GoBack from './Framework/GoBack.js'
 import Scrolling from './Framework/Scrolling.js'
 import Tabs from './Framework/Tabs.js'
 import FormCollection from './Framework/FormCollection.js'
-import { DatePicker } from './Framework/DateTimePicker/DatePicker.js'
-import { DateTimePicker } from './Framework/DateTimePicker/DateTimePicker.js'
-import { TimePicker } from './Framework/DateTimePicker/TimePicker.js'
 import PasswordStrengthChecker from './Framework/PasswordStrengthChecker.js'
 
 export function Framework () {
@@ -20,27 +17,6 @@ export function Framework () {
     FormCollection(element)
   })
 
-  // initialize datetimepickers
-  initializeDateTimePickers()
-
   Tabs()
   PasswordStrengthChecker()
-}
-
-document.addEventListener('added.collection.item', function () {
-  initializeDateTimePickers()
-})
-
-const initializeDateTimePickers = function () {
-  document.querySelectorAll('[data-role="date-picker"]').forEach((element) => {
-    element.datepicker = new DatePicker(element)
-  })
-
-  document.querySelectorAll('[data-role="time-picker"]').forEach((element) => {
-    element.timepicker = new TimePicker(element)
-  })
-
-  document.querySelectorAll('[data-role="date-time-picker"]').forEach((element) => {
-    element.datetimepicker = new DateTimePicker(element)
-  })
 }

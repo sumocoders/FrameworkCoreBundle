@@ -32,10 +32,6 @@ export function Framework () {
     }
   })
 
-  document.querySelectorAll('[data-role="select-search"]').forEach((element) => {
-    SelectSearch(element)
-  })
-
   // initialize collections
   document.querySelectorAll('[data-role="collection"]').forEach((element) => {
     FormCollection(element)

@@ -443,3 +443,11 @@
     {%- endif -%}
   {%- endif -%}
 {%- endblock form_help %}
+
+{% block repeated_password_strength_row %}
+  <div data-controller="password-strength-checker" data-password-strength-checker-route-value="{{ path('admin_user_ajax_password_strength') }}">
+    {{ form_row(form.first, {attr: form.first.vars.attr|merge({'data-password-strength-checker-target': 'input', 'data-action': 'input->password-strength-checker#calculateStrength'})}) }}
+    {{ include('user/password-strength-meter.html.twig') }}
+  </div>
+  {{ form_row(form.second) }}
+{% endblock %}

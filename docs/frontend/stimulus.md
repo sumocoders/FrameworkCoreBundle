@@ -1,19 +1,19 @@
 # Stimulus
 
-For out javascript needs we use Symfony UX with Stimulus. See the Symfony site for information https://symfony.com/bundles/StimulusBundle/current/index.html or the stimulus documentation for more information: https://stimulus.hotwired.dev/handbook/introduction
+For our javascript needs we use Symfony UX with Stimulus. See the Symfony site for information https://symfony.com/bundles/StimulusBundle/current/index.html or the stimulus documentation for more information: https://stimulus.hotwired.dev/handbook/introduction
 
 We have a few default components that can be used in your project:
 
 ## Clipboard
 
-Je kan deze op twee manieren gebruiken:
+This can be implemented two different ways: 
 
-1. Met een aparte knop
+1. With separate button
 
-Via `data-controller="clipboard"` geef je aan dat dit een stimulus controller moet starten.
-Via `data-clipboard-target="source"` geef je aan welke tekst je wil kopiëren.
-Op de knop dat je wil gebruiken om de source te kopiëren zet je: `data-action="clipboard#copy"`.
-Met `data-clipboard-success-content-value` kan je de tekst van de knop tijdelijk veranderd na het kopiëren.
+With `data-controller="clipboard"` you set up the clipboard controller.
+With `data-clipboard-target="source"` you specify the text you want to be copied.
+To use the button to copy the source, you add `data-action="clipboard#copy"` to the button.
+With `data-clipboard-success-content-value` you can temporarily change the button text after copying.
 
 ```html
 <div data-controller="clipboard" data-clipboard-success-content-value="{{ 'Text copied!'|trans }}">
@@ -22,9 +22,9 @@ Met `data-clipboard-success-content-value` kan je de tekst van de knop tijdelijk
 </div>
 ```
 
-2. Rechtstreeks op tekst
+2. Directly on text
 
-Het enige verschil is dat je het event `data-action="click->clipboard#copy"` direct toevoegt op de tekst.
+The only differnce is that you add the event `data-action="click->clipboard#copy"` directly on the text.
 
 ```html
 <div data-controller="clipboard">
@@ -32,8 +32,8 @@ Het enige verschil is dat je het event `data-action="click->clipboard#copy"` dir
 </div>
 ```
 
-Iets kopiëren naar het clipboard toont een toast notification. Om deze tekst in te stellen gebruik je
-`data-clipboard-success-message-value` op het element met je `data-controller="clipboard"`.
+Copying something will show a toast notification. To set this text you can use `data-clipboard-success-message-value`
+on the element with your `data-controller="clipboard"`.
 
 ```html
 <div data-controller="clipboard" data-clipboard-success-message-value="{{ 'Text copied!'|trans }}">
@@ -44,8 +44,8 @@ Iets kopiëren naar het clipboard toont een toast notification. Om deze tekst in
 
 ## Toast
 
-Toast notifications via flash messages direct uit controllers worden direct getoond. Maar je kan ook via javascript
-een toast laten verschijnen:
+Toast notifications can be shown via flash messages directly from controllers. But you can also show a toast
+through javascript:
 
 ```javascript
 import addToast from 'sumocoders/addToast'
@@ -55,9 +55,8 @@ addToast('This is a toast message', 'info')
 
 ## Tooltip
 
-Om tooltips toe te voegen gebruik je `data-controller="tooltip"` met de default werking van bootstrap:
-`data-bs-title="Text here"`. Zie https://getbootstrap.com/docs/5.3/components/tooltips/#overview voor meer
-informatie.
+To use tooltips, you can use `data-controller="tooltip"` with the default bootstrap behavior:
+`data-bs-title="Text here"`. See https://getbootstrap.com/docs/5.3/components/tooltips/#overview for more information.
 
 ```html
   <span data-controller="tooltip" data-bs-title="Default tooltip">
@@ -68,9 +67,9 @@ informatie.
 
 ## Popover
 
-Om popovers toe te voegen gebruik je `data-controller="popover"` met de default werking van bootstrap via
-`data-bs-title="Title here"` en `data-bs-content="Content here"`. Zie
-https://getbootstrap.com/docs/5.3/components/popovers/#overview voor meer informatie.
+To use popovers, you can use `data-controller="popover"` with the default bootstrap behavior:
+`data-bs-title="Title here"` and `data-bs-content="Content here"`. See
+https://getbootstrap.com/docs/5.3/components/popovers/#overview for more information.
 
 ```html
 <button type="button" class="btn btn-outline-primary" data-controller="popover" data-bs-trigger="hover" data-bs-title="Foo" data-bs-content="Content goes here.">Hover me</button>
@@ -78,10 +77,10 @@ https://getbootstrap.com/docs/5.3/components/popovers/#overview voor meer inform
 
 ## Autocomplete
 
-Om autocomplete te gebruiken, kan je werken via Symfony autocomplete-ux, zie
-https://symfony.com/bundles/ux-autocomplete/current/index.html voor meer informatie.
+To use autocomplete, you can with Symfony autocomplete-ux, see
+https://symfony.com/bundles/ux-autocomplete/current/index.html for more information.
 
-Om dit te gebruiken in uw form type, kan je `autocomplete` op true zetten.
+To use this in your form type, you can set `autocomplete` to true.
 
 ```php
     'autocomplete' => true,
@@ -89,12 +88,12 @@ Om dit te gebruiken in uw form type, kan je `autocomplete` op true zetten.
 
 ## Tabs
 
-Tabs werken bijna volledig via de standaard bootstrap tabs, zie
-https://getbootstrap.com/docs/5.3/components/navs-tabs/#javascript-behavior voor meer informatie.
+Tabs work almost entirely with the standard bootstrap tabs, see
+https://getbootstrap.com/docs/5.3/components/navs-tabs/#javascript-behavior for more information.
 
-Als je `data-controller="tabs" data-action="shown.bs.tab->tabs#addAnchorToUrl"` aan je tabs container toevoegd, zal
-er history push gedaan worden en zal de url veranderen met de anchor van de tab. Bij het reloaden van de pagina zal de
-juiste tab geopend worden.
+If you add `data-controller="tabs" data-action="shown.bs.tab->tabs#addAnchorToUrl"` to your tabs container, there will
+be a history push when a tab is changes. This will change the url with the anchor of the tab. When reloading the page,
+the correct tab will be opened.
 
 ```html
   <ul class="nav nav-tabs" id="myTab" role="tablist" data-controller="tabs" data-action="shown.bs.tab->tabs#addAnchorToUrl">
@@ -121,7 +120,7 @@ juiste tab geopend worden.
 
 ## Password Strength Checker
 
-Dit werkt automatisch vanaf je `RepeatedPasswordStrengthType` gebruikt in je form type.
+This works automatically when you use the `RepeatedPasswordStrengthType` in your form type.
 
 ```php
         $builder->add(
@@ -132,16 +131,16 @@ Dit werkt automatisch vanaf je `RepeatedPasswordStrengthType` gebruikt in je for
 
 ## DateTime pickers
 
-Dit werkt automatisch als je DateType, DateTimeType of TimeType gebruikt in je form type.
+This works automatically when you use the `DateType`, `DateTimeType` or `TimeType` in your form type.
 
 ## Sidebar
 
-Dit werkt automatisch.
+This works automatically.
 
 ## Form collection
 
-Dit werkt automatisch.
+This works automatically.
 
 ## Scroll to top
 
-Dit werkt automatisch.
+This works automatically.

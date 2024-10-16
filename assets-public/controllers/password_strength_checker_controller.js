@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import debounce from 'sumocoders/debounce'
 import axios from 'axios'
 
 export default class extends Controller {
@@ -8,7 +9,7 @@ export default class extends Controller {
   static targets = ['input', 'meterSections']
 
   connect () {
-    this.debouncedStrength = this.debounce(this.getStrength)
+    this.debouncedStrength = debounce(() => this.getStrength())
   }
 
   calculateStrength () {
@@ -24,15 +25,6 @@ export default class extends Controller {
     )
       .then((response) => this.updateMeter(response.data.strength, this))
       .catch((error) => console.error(error))
-  }
-
-  debounce (func, timeout = 500) {
-    let timer;
-
-    return (...args) => {
-      clearTimeout(timer);
-      timer = setTimeout(() => { func.apply(this, args); }, timeout);
-    };
   }
 
   updateMeter (strength) {

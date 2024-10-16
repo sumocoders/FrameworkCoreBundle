@@ -5,7 +5,7 @@
 <body class="body-base" data-theme-path="{{ asset('styles/style-dark.scss') }}">
   {% block start_body %}
   {% endblock %}
-  <div id="main-wrapper" class="main-wrapper" data-sidebar-wrapper>
+  <div id="main-wrapper" class="main-wrapper" data-controller="sidebar-collapsable" data-sidebar-collapsable-target="toggleable">
     <div id="main-menu" class="main-menu" role="navigation">
       {% block include_navigation %}
         {{ include('@SumoCodersFrameworkCore/navigation.html.twig') }}
@@ -70,7 +70,7 @@
     </div>
     <footer class="footer">
       {% block footer %}
-        <a href="#main-wrapper" class="back-to-top d-none" data-role="back-to-top"><i class="fas fa-chevron-up me-3"></i> {{ 'core.interface.backToTop'|trans|ucfirst }}</a>
+        <a href="#main-wrapper" class="back-to-top d-none" data-controller="scroll-to-top" data-action="scroll@window->scroll-to-top#scroll"><i class="fas fa-chevron-up me-3"></i> {{ 'core.interface.backToTop'|trans|ucfirst }}</a>
       {% endblock %}
     </footer>
   </div>

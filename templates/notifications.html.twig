@@ -1,4 +1,13 @@
 {% block notifications %}
-    <div class="toasts-wrapper" id="toast-wrapper" data-success-messages="{{ app.session.flashbag.get('success')|json_encode }}" data-report-messages="{{ app.session.flashbag.get('report')|json_encode }}" data-warning-messages="{{ app.session.flashbag.get('warning')|json_encode }}" data-error-messages="{{ app.session.flashbag.get('error')|json_encode }}">
+    <div class="toasts-wrapper" id="toast-wrapper">
+        {% for flash in app.session.flashbag.get('success') %}
+            {{ include('@SumoCodersFrameworkCore/_toast.html.twig', {message: flash, type: 'success'}) }}
+        {% endfor %}
+        {% for flash in app.session.flashbag.get('report') %}
+            {{ include('@SumoCodersFrameworkCore/_toast.html.twig', {message: flash, type: 'info'}) }}
+        {% endfor %}
+        {% for flash in app.session.flashbag.get('warning') %}
+            {{ include('@SumoCodersFrameworkCore/_toast.html.twig', {message: flash, type: 'danger', autohide: false}) }}
+        {% endfor %}
     </div>
 {% endblock %}

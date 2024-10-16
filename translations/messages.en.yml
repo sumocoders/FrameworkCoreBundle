@@ -150,3 +150,5 @@ user:
     actions:
         logout: logout
         switchback: switch back to own account
+
+'Text copied!': 'Test copied!'

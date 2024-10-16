@@ -1,20 +1,7 @@
-const Scrolling = function (scrollToTop) {
+const Scrolling = function () {
   document.querySelectorAll('a[href*=\\#]').forEach((link) => {
     link.addEventListener('click', scrollTo)
   })
-
-  // On long pages, show the Back to top link
-  if (scrollToTop) {
-    window.addEventListener('scroll', () => {
-      if (document.body.scrollY > 1000) {
-        scrollToTop.classList.remove('d-none')
-        scrollToTop.classList.add('show')
-      } else {
-        scrollToTop.classList.add('d-none')
-        scrollToTop.classList.remove('show')
-      }
-    })
-  }
 }
 
 const scrollTo = (event) => {

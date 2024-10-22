@@ -120,7 +120,7 @@ class Paginator implements Countable, IteratorAggregate
 
     private function calculateNumberOfPages(): int
     {
-        return (int) ceil($this->getNumResults() / self::PAGE_SIZE);
+        return (int) ceil($this->getNumResults() / $this->pageSize);
     }
 
     public function getResults(): Traversable

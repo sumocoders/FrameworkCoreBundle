@@ -85,6 +85,7 @@
       data-prototype="{{ formMacros.renderCollectionItem(prototype, allow_delete, allow_drag_and_drop)|e('html_attr') }}"
     {% endif %}
     class="card card-collection{% if allow_drag_and_drop is defined and allow_drag_and_drop %} card-collection-drag{% endif %}"
+    data-controller="form-collection"
   >
     <div class="card-body">
       {{ block('collection_rows') }}
@@ -98,14 +99,14 @@
   {% import _self as formMacros %}
   {{ form_errors(form) }}
 
-  <ul data-role="collection-item-container" class="list-unstyled">
+  <ul data-role="collection-item-container" class="list-unstyled" data-form-collection-target="itemContainer">
     {% for child in form %}
       {{ formMacros.renderCollectionItem(child, allow_delete, allow_drag_and_drop) }}
     {% endfor %}
   </ul>
 
   {% if allow_add %}
-    <button type="button" class="btn btn-success btn-sm" data-role="collection-add-button">
+    <button type="button" class="btn btn-success btn-sm" data-action="form-collection#addItem" data-form-collection-target="addButton">
       <i class="fas fa-plus me-2"></i> {{ add_button_label|trans|ucfirst }}
     </button>
   {% endif %}
@@ -126,7 +127,7 @@
         {{ form_widget(item) }}
         {{ form_errors(item) }}
         {% if allow_delete is defined and allow_delete %}
-          <button type="button" class="btn btn-outline-danger collection-item-delete" data-role="collection-remove-button" title="{{ 'forms.buttons.removeItem'|trans|ucfirst }}">
+          <button type="button" class="btn btn-outline-danger collection-item-delete"  title="{{ 'forms.buttons.removeItem'|trans|ucfirst }}" data-action="form-collection#deleteItem">
             <i class="fas fa-trash"></i> <span class="sr-only">{{ 'forms.buttons.removeItem'|trans|ucfirst }}</span>
           </button>
         {% endif %}
@@ -191,7 +192,7 @@
 
 {%- block date_widget -%}
   {%- if widget == 'single_text' -%}
-    {% set attr = attr|merge({'data-role': 'date-picker'}) -%}
+    {% set attr = attr|merge({'data-controller': 'date-time-picker'}) -%}
     {%- if not valid -%}{% set attr = attr|merge({class: (attr.class|default('') ~ ' is-invalid')|trim}) -%}{%- endif -%}
     {%- if help is not empty -%}{%- set widget_attr = {attr: {'aria-describedby': id ~ "_help"}} -%}{%- endif -%}
     {# Its hardcoded for the symfony format because the patterns don't match #}
@@ -257,7 +258,7 @@
 
 {%- block time_widget -%}
   {% if widget == 'single_text' %}
-    {% set attr = attr|merge({'data-role': 'time-picker'}) -%}
+    {% set attr = attr|merge({'data-controller': 'date-time-picker', 'data-date-time-picker-enable-time-value': 'true', 'data-date-time-picker-show-calendar-value': 'false'}) -%}
     {% set attr = attr|merge({'data-time_24hr': 'true'}) -%}
     {%- if not valid -%}{% set attr = attr|merge({class: (attr.class|default('') ~ ' is-invalid')|trim}) -%}{%- endif -%}
     {%- if help is not empty -%}{%- set widget_attr = {attr: {'aria-describedby': id ~ "_help"}} -%}{%- endif -%}
@@ -331,7 +332,7 @@
 
 {%- block datetime_widget -%}
   {% if widget == 'single_text' %}
-    {% set attr = attr|merge({'data-role': 'date-time-picker'}) -%}
+    {% set attr = attr|merge({'data-controller': 'date-time-picker', 'data-date-time-picker-enable-time-value': 'true'}) -%}
     {% set attr = attr|merge({'data-time_24hr': 'true'}) -%}
     {%- if not valid -%}{% set attr = attr|merge({class: (attr.class|default('') ~ ' is-invalid')|trim}) -%}{%- endif -%}
     {%- if help is not empty -%}{%- set widget_attr = {attr: {'aria-describedby': id ~ "_help"}} -%}{%- endif -%}
@@ -443,3 +444,11 @@
     {%- endif -%}
   {%- endif -%}
 {%- endblock form_help %}
+
+{% block repeated_password_strength_row %}
+  <div data-controller="password-strength-checker" data-password-strength-checker-route-value="{{ path('admin_user_ajax_password_strength') }}">
+    {{ form_row(form.first, {attr: form.first.vars.attr|merge({'data-password-strength-checker-target': 'input', 'data-action': 'input->password-strength-checker#calculateStrength'})}) }}
+    {{ include('user/password-strength-meter.html.twig') }}
+  </div>
+  {{ form_row(form.second) }}
+{% endblock %}

@@ -1,0 +1,14 @@
+// Example for importing fonts
+//@mixin font-import($font-name, $font-file, $style: normal, $weight: 400) {
+//
+//  @font-face {
+//    font-family: "#{$font-name}";
+//    src: url("../fonts/#{$font-file}.woff") format('woff'), /* Modern Browsers */
+//    url("../fonts/#{$font-file}.ttf")  format('truetype'); /* Safari, Android, iOS */
+//
+//    font-style:   $style;
+//    font-weight:  $weight;
+//  }
+//}
+
+//@include font-import(Lato, lato-regular-webfont, normal, 400);

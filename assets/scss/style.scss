@@ -1,0 +1,13 @@
+// Bootstrap
+@import '../../../../../vendor/twbs/bootstrap/scss/functions';
+@import 'bootstrap-variables';
+@import '../../../../../vendor/twbs/bootstrap/scss/variables';
+@import "../../../../../vendor/twbs/bootstrap/scss/variables-dark";
+@import 'bootstrap-imports';
+
+// Imports
+@import 'imports';
+
+.page-link.disabled {
+  border: none;
+}

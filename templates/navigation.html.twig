@@ -2,8 +2,8 @@
   <div class="navbar p-0 navbar-expand-md flex-row flex-md-column" data-role="navbar-wrapper">
     <a href="/" rel="home" class="navbar-brand d-block d-md-flex justify-content-md-center">
       {% block logo_image %}
-        <img class="img-responsive{% if theme() != 'theme-dark' %} d-none{% endif %}" data-navbar-logo-dark src="{{ asset('build/images/logo-application-dark.svg') }}" alt="{{ fallbacks.get('site_title') }}">
-        <img class="img-responsive{% if theme() == 'theme-dark' %} d-none{% endif %}" data-navbar-logo src="{{ asset('build/images/logo-application.svg') }}" alt="{{ fallbacks.get('site_title') }}">
+        <img class="img-responsive{% if theme() != 'theme-dark' %} d-none{% endif %}" data-navbar-logo-dark src="{{ asset('images/logo-application-dark.svg') }}" alt="{{ fallbacks.get('site_title') }}">
+        <img class="img-responsive{% if theme() == 'theme-dark' %} d-none{% endif %}" data-navbar-logo src="{{ asset('images/logo-application.svg') }}" alt="{{ fallbacks.get('site_title') }}">
       {% endblock %}
     </a>
     <div class="navbar-header d-md-none d-flex">
@@ -13,7 +13,7 @@
     </div>
     <div class="collapse navbar-collapse" id="navbar-collapse-1" data-role="navbar-collapse">
       {{ knp_menu_render('side_menu', {'template': '@SumoCodersFrameworkCore/Menu/menu.html.twig', 'ancestorClass': 'open active'}) }}
-      <div class="d-none d-md-block toggle-menu-visibility" data-sidebar-toggler>
+      <div class="d-none d-md-block toggle-menu-visibility" data-action="click->sidebar-collapsable#toggle">
         <div class="nav-item">
           <div class="nav-link d-flex align-items-center">
             <i class="fas fa-arrow-left"></i> <div class="nav-link-text">{{ 'core.interface.collapse'|trans|ucfirst }}</div>

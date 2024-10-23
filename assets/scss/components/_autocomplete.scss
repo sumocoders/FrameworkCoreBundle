@@ -1,0 +1,34 @@
+.ui-autocomplete.ui-widget-content {
+  border-color: $gray-700;
+  z-index: 100000;
+
+  .ui-menu-item a {
+    color: $gray-100;
+  }
+
+  .ui-state-focus a {
+    color: $white;
+  }
+
+  .ui-state-focus {
+    background: $primary;
+    border-color: $primary;
+    color: $white;
+  }
+}
+
+.ui-menu .ui-menu-item {
+  padding-bottom: 10px;
+  padding-top: 10px;
+}
+
+.ui-state-focus {
+  background: $primary;
+  border: 0;
+  color: $white;
+  margin: 0;
+
+  a {
+    color: $white;
+  }
+}

@@ -1,4 +1,4 @@
-{% apply inky_to_html|inline_css(content(asset('build/mail.css'))) %}
+{% apply inky_to_html|inline_css(content('/../var/sass/mail.output.css')) %}
     <spacer size="16"></spacer>
     <container>
         <spacer size="16"></spacer>
@@ -6,7 +6,7 @@
             <columns>
                 <center>
                     {% block logo %}
-                        <img src="{{ absolute_url(asset('build/images/logo-application-mail.gif')) }}" alt="{{ fallbacks.get('site_title') }}">
+                        <img src="{{ absolute_url(asset('images/logo-application-mail.gif')) }}" alt="{{ fallbacks.get('site_title') }}">
                     {% endblock %}
                 </center>
             </columns>

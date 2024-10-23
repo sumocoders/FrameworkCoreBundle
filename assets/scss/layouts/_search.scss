@@ -1,0 +1,127 @@
+.user-nav {
+  .search-box {
+    margin-left: 50px;
+    overflow: hidden;
+    z-index: 666;
+
+    .form-control:focus {
+      box-shadow: none;
+      transition: $transition-base;
+    }
+
+    .control-label {
+      display: none;
+    }
+
+    .form-control {
+      border: 0;
+      border-radius: 0;
+      float: left;
+      font-family: $font-family-sans-serif;
+      font-style: normal;
+      font-weight: normal;
+      height: 42px;
+      margin: 3px 0 4px 0;
+      width: 85%;
+      box-shadow: none;
+    }
+
+    .controls .btn {
+      background-color: $white;
+      padding: 10px 0;
+      width: 15%;
+    }
+
+    .fa-search {
+      color: $gray-700;
+      float: right;
+      font-size: $font-size-sm;
+      width: 0;
+
+      &:hover,
+      &:focus {
+        background-color: $gray-700;
+        color: $white;
+      }
+    }
+
+    .toggle-searchbar {
+      display: none;
+    }
+  }
+
+  .link-searchbar {
+    display: none;
+  }
+}
+
+@include media-breakpoint-up(md) {
+  .sub-nav .user-nav {
+    border-bottom: 0;
+    border-top: 0;
+
+    .search-box {
+      border-left: 1px $gray-500 solid;
+      display: inline-block;
+      float: right;
+      margin-left: 0;
+
+      .form-control {
+        float: none;
+        height: 50px;
+        margin: 0;
+        width: 100%;
+      }
+
+      .search-form {
+        float: left;
+        overflow: hidden;
+        transition: $transition-base;
+        width: 0;
+      }
+
+      .submit-searchbar {
+        display: none;
+      }
+
+      &.open {
+        .search-form {
+          display: block;
+          float: left;
+          transition: $transition-base;
+          width: 145px;
+        }
+
+        .toggle-searchbar {
+          display: none;
+        }
+
+        .submit-searchbar {
+          display: block;
+        }
+      }
+    }
+
+    .toggle-searchbar {
+      display: inline-block;
+      padding: 15px 20px;
+    }
+
+    .controls .btn {
+      padding: 12px 20px 13px;
+      width: auto;
+    }
+  }
+}
+
+@include media-breakpoint-up(md) {
+  .sub-nav .user-nav .search-box.open .search-form {
+    width: 245px;
+  }
+}
+
+@include media-breakpoint-up(lg) {
+  .sub-nav .user-nav .search-box.open .search-form {
+    width: 395px;
+  }
+}

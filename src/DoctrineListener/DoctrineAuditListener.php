@@ -63,7 +63,21 @@ class DoctrineAuditListener
                     continue;
                 }
 
-                $fieldReflection = new ReflectionProperty($entityUpdate, $field);
+                if (str_contains($field, '.')) {
+                    [$property, $subProperty] = explode('.', $field);
+
+                    $fieldReflection = new ReflectionProperty($entityUpdate, $property);
+                    $embeddedAttributes = $fieldReflection->getAttributes(Embedded::class);
+                    if (empty($embeddedAttributes)) {
+                        continue;
+                    }
+
+                    $embedded = $entityUpdate->{'get' . ucfirst($property)}();
+                    $fieldReflection = new ReflectionProperty($embedded, $subProperty);
+                } else {
+                    $fieldReflection = new ReflectionProperty($entityUpdate, $field);
+                }
+
                 $sensitiveDataAttributes = $fieldReflection->getAttributes(SensitiveData::class);
                 if (!empty($sensitiveDataAttributes)) {
                     $changes[$field] = ['from' => '*****', 'to' => '*****'];
@@ -72,8 +86,8 @@ class DoctrineAuditListener
                 }
 
                 $changes[$field] = [
-                    'from' => $this->transform($unitOfWork, new ReflectionProperty($entityUpdate, $field), $change[0]),
-                    'to' => $this->transform($unitOfWork, new ReflectionProperty($entityUpdate, $field), $change[1]),
+                    'from' => $this->transform($unitOfWork, $fieldReflection, $change[0]),
+                    'to' => $this->transform($unitOfWork, $fieldReflection, $change[1]),
                 ];
             }
 

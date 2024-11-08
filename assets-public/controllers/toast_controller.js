@@ -1,12 +1,12 @@
-import { Controller } from '@hotwired/stimulus';
-import { Toast } from 'bootstrap';
+import { Controller } from '@hotwired/stimulus'
+import { Toast } from 'bootstrap'
 
 export default class extends Controller {
   static values = {
     type: String,
     message: String,
-    autohide: {type: Boolean, default: true},
-    delay: {type: Number, default: 10000}
+    autohide: { type: Boolean, default: true },
+    delay: { type: Number, default: 10000 }
   }
 
   connect () {
@@ -15,8 +15,8 @@ export default class extends Controller {
     this.element.role = this.typeValue === 'danger' ? 'alert' : 'status'
     this.element['aria-live'] = this.typeValue === 'danger' ? 'assertive' : 'polite'
     this.element['aria-atomic'] = 'true'
-    this.element.dataset['bsAutohide'] = this.autohideValue ? 'true' : 'false'
-    this.element.dataset['bsDelay'] = this.delayValue
+    this.element.dataset.bsAutohide = this.autohideValue ? 'true' : 'false'
+    this.element.dataset.bsDelay = this.delayValue
     this.element.id = 'toast-' + Math.random().toString(36).substring(2, 15)
     let icon = 'fas fa-info-circle'
     if (this.typeValue === 'success') {

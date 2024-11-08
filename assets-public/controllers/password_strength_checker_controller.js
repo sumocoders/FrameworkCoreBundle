@@ -1,4 +1,4 @@
-import { Controller } from '@hotwired/stimulus';
+import { Controller } from '@hotwired/stimulus'
 import debounce from 'sumocoders/debounce'
 import axios from 'axios'
 
@@ -6,6 +6,7 @@ export default class extends Controller {
   static values = {
     route: String
   }
+
   static targets = ['input', 'meterSections']
 
   connect () {

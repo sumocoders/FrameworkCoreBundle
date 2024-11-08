@@ -1,4 +1,4 @@
-export default function addToast(message, type = 'info', autohide = true, delay = 10000) {
+export default function addToast (message, type = 'info', autohide = true, delay = 10000) {
   document.querySelector('body').insertAdjacentHTML('beforeend', `
     <turbo-stream action="append" targets="#toast-wrapper">
       <template>

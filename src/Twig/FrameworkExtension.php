@@ -25,6 +25,7 @@ class FrameworkExtension extends AbstractExtension
     {
         return [
             new TwigFunction('theme', [$this, 'determineTheme']),
+            new TwigFunction('sidebarIsOpen', [$this, 'sidebarIsOpen']),
         ];
     }
 
@@ -39,5 +40,18 @@ class FrameworkExtension extends AbstractExtension
         }
 
         return 'theme-' . $this->requestStack->getCurrentRequest()->cookies->get('theme');
+    }
+
+    public function sidebarIsOpen(): bool
+    {
+        if (is_null($this->requestStack->getCurrentRequest())) {
+            return true;
+        }
+
+        if (!$this->requestStack->getCurrentRequest()->cookies->has('sidebar_is_open')) {
+            return true;
+        }
+
+        return $this->requestStack->getCurrentRequest()->cookies->get('sidebar_is_open') !== 'false';
     }
 }

@@ -1,4 +1,4 @@
-import { Controller } from '@hotwired/stimulus';
+import { Controller } from '@hotwired/stimulus'
 import debounce from 'sumocoders/debounce'
 
 export default class extends Controller {

@@ -3,10 +3,10 @@ import addToast from 'sumocoders/addToast'
 
 export default class extends Clipboard {
   static values = {
-    successMessage: {type: String, default: 'Copied to clipboard!'}
+    successMessage: { type: String, default: 'Copied to clipboard!' }
   }
 
-  copied() {
+  copied () {
     super.copied()
     addToast(this.successMessageValue, 'success')
   }

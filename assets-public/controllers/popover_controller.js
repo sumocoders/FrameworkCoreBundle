@@ -1,8 +1,8 @@
-import { Controller } from '@hotwired/stimulus';
+import { Controller } from '@hotwired/stimulus'
 import { Popover } from 'bootstrap'
 
 export default class extends Controller {
-  connect() {
+  connect () {
     this.element.popoverObject = new Popover(this.element)
   }
 }

@@ -1,4 +1,4 @@
-import { Controller } from '@hotwired/stimulus';
+import { Controller } from '@hotwired/stimulus'
 import flatpickr from 'flatpickr'
 
 // import the most common languages
@@ -28,7 +28,7 @@ export default class extends Controller {
     showCalendar: { type: Boolean, default: true }
   }
 
-  connect() {
+  connect () {
     let locale = document.documentElement.lang
     if (locale === 'en') {
       locale = 'default'

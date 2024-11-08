@@ -1,4 +1,4 @@
-import { Controller } from '@hotwired/stimulus';
+import { Controller } from '@hotwired/stimulus'
 import { setCookie } from 'sumocoders/cookie'
 
 export default class extends Controller {

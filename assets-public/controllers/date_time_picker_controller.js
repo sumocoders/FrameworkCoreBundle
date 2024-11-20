@@ -37,7 +37,8 @@ export default class extends Controller {
     this.element._flatpickr = flatpickr(this.element, {
       locale,
       enableTime: this.enableTimeValue,
-      noCalendar: !this.showCalendarValue
+      noCalendar: !this.showCalendarValue,
+      allowInput: true
     })
   }
 }

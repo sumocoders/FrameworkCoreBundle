@@ -22,28 +22,28 @@
   "prefer-stable": true,
   "require": {
     "php": "^8.3",
-    "gedmo/doctrine-extensions": "^3",
-    "friendsofsymfony/jsrouting-bundle": "^3",
-    "knplabs/knp-menu-bundle": "^3.0",
+    "gedmo/doctrine-extensions": "^3.17",
+    "friendsofsymfony/jsrouting-bundle": "^3.5",
+    "knplabs/knp-menu-bundle": "^3.4",
     "symfony/form": "^7.2",
     "symfony/asset": "^7.2",
     "symfony/console": "^7.2",
     "symfony/security-bundle": "^7.2",
     "symfony/translation": "^7.2",
     "symfony/twig-bundle": "^7.2",
-    "twig/inky-extra": "^3.3",
-    "twig/cssinliner-extra": "^3.3",
-    "twig/extra-bundle": "^3.3",
-    "symfony/ux-autocomplete": "^2.8",
-    "doctrine/doctrine-bundle": "^2.11",
-    "doctrine/orm": "^2.0",
-    "symfony/ux-toggle-password": "^2.16"
+    "twig/inky-extra": "^3.16",
+    "twig/cssinliner-extra": "^3.16",
+    "twig/extra-bundle": "^3.16",
+    "symfony/ux-autocomplete": "^2.22",
+    "doctrine/doctrine-bundle": "^2.13",
+    "doctrine/orm": "^3.3",
+    "symfony/ux-toggle-password": "^2.22"
   },
   "require-dev": {
     "roave/security-advisories": "dev-master",
     "symfony/phpunit-bridge": "^7.2",
-    "friendsoftwig/twigcs": "^6.0",
-    "symfony/maker-bundle": "^1.0"
+    "friendsoftwig/twigcs": "^6.5",
+    "symfony/maker-bundle": "^1.61"
   },
   "autoload": {
     "psr-4": {

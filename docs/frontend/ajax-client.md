@@ -11,7 +11,7 @@ Some configuration is done by default. But it can be overruled.
 
 ## Usage
 
-Is the AJAX Client is just an extended version of the Axios client all Axios
+The AJAX Client is just an extended version of the Axios client all Axios
 documentation is still valid. For the full documentatuon see
 [https://axios-http.com/docs/intro](https://axios-http.com/docs/intro).
 

@@ -58,7 +58,7 @@ class FileType extends AbstractType
             )
             ->addModelTransformer(
                 new CallbackTransformer(
-                    function (AbstractFile $file = null) {
+                    function (?AbstractFile $file = null) {
                         return $file;
                     },
                     function ($file) use ($options) {
@@ -108,7 +108,7 @@ class FileType extends AbstractType
                         /** @var bool */
                         protected $pendingDeletion = false;
 
-                        public function setFile(UploadedFile $file = null)
+                        public function setFile(?UploadedFile $file = null)
                         {
                             $this->file = $file;
                         }

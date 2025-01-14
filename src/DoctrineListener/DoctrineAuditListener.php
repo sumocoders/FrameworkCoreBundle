@@ -196,6 +196,10 @@ class DoctrineAuditListener
             return $this->getProperties($value, $unitOfWork);
         }
 
+        if ($value::class === 'Money\\Money') {
+            return $value->getCurrency()->getCode() . ' ' . $value->getAmount();
+        }
+
         return (string) $value;
     }
 }

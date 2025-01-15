@@ -27,9 +27,9 @@
       {%- endif -%}
     {%- else -%}
       {%- if label_html is same as(false) -%}
-        {{- label|trans(label_translation_parameters, translation_domain)|ucfirst -}}&#32;{{- block('label_asterisk') }}
+        {{- label|trans(label_translation_parameters, translation_domain)|ucfirst -}}{{- block('label_asterisk') -}}
       {%- else -%}
-        {{- label|trans(label_translation_parameters, translation_domain)|ucfirst|raw -}}&#32;{{- block('label_asterisk') }}
+        {{- label|trans(label_translation_parameters, translation_domain)|ucfirst|raw -}}{{- block('label_asterisk') -}}
       {%- endif -%}
     {%- endif -%}
     </{{ element|default('label') }}>
@@ -37,9 +37,9 @@
 {%- endblock form_label %}
 
 {%- block label_asterisk -%}
-  {% if required %}
+  {%- if required -%}
     <abbr title="{{ 'forms.labels.required'|trans({}, translation_domain) }}">*</abbr>
-  {% endif %}
+  {%- endif -%}
 {%- endblock label_asterisk -%}
 
 {%- block form_row -%}

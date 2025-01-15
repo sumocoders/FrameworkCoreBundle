@@ -17,3 +17,7 @@
 [data-role="clipboard"]:hover {
   cursor: copy;
 }
+
+.form-group abbr[title] {
+  margin-left: 0;
+}

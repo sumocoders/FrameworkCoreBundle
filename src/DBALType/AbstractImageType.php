@@ -14,7 +14,7 @@ abstract class AbstractImageType extends Type
      *
      * @return string
      */
-    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
+    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform): string
     {
         return 'VARCHAR(255)';
     }

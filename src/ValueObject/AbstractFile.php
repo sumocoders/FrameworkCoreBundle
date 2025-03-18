@@ -72,7 +72,7 @@ abstract class AbstractFile
      */
     abstract protected function getUploadDir(): string;
 
-    public function setFile(UploadedFile $file = null): self
+    public function setFile(?UploadedFile $file = null): self
     {
         if ($file === null) {
             return $this;

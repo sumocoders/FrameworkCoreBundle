@@ -6,14 +6,22 @@
       <columns>
         <center>
           {% block logo %}
-            <img src="{{ absolute_url(asset('images/logo-application-mail.gif')) }}"
-                 alt="{{ fallbacks.get('site_title') }}">
+            <img
+              src="{{ absolute_url(asset('images/logo-application-mail.gif')) }}"
+              alt="{{ fallbacks.get('site_title') }}"
+            >
           {% endblock %}
         </center>
       </columns>
     </row>
-    {% block content %}
-      {{ content|raw }}
-    {% endblock %}
+    <spacer size="16"></spacer>
+    <row>
+      <columns>
+        {% block content %}
+          {{ content|raw }}
+        {% endblock %}
+      </columns>
+    </row>
   </container>
+  <spacer size="16"></spacer>
 {% endapply %}

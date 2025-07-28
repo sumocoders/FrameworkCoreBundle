@@ -37,6 +37,7 @@
     "symfony/ux-autocomplete": "^2.22",
     "doctrine/doctrine-bundle": "^2.13",
     "doctrine/orm": "^3.3",
+    "symfony/doctrine-messenger": "^7.2",
     "symfony/ux-toggle-password": "^2.22"
   },
   "require-dev": {

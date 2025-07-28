@@ -162,12 +162,6 @@ return static function (ContainerConfigurator $container): void {
         ->set(TranslateCommand::class)
         ->tag('console.command')
 
-        ->set(SecretsGetCommand::class)
-        ->args([
-            service('secrets.vault')
-        ])
-        ->tag('console.command')
-
         ->set(DoctrineAuditListener::class)
         ->set(AuditLogger::class)
         ->set(PasswordStrengthService::class);

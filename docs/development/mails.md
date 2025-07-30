@@ -12,9 +12,9 @@ To send the mail, you can use the default Symfony package: `symfony/mailer`. See
 
 ## Async
 
-Emails will be sent via the async messenge transport, meaning:
+Emails will be sent via the async messenger transport, meaning:
 1. The context must be serializable
-2. Run `console messenger:consume async` in a crontab
+2. Run `console messenger:consume async` (default already in .crontab)
 
 ## Basic example
 

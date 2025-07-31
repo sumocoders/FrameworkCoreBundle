@@ -7,7 +7,6 @@ use SumoCoders\FrameworkCoreBundle\Command\TranslateCommand;
 use SumoCoders\FrameworkCoreBundle\DoctrineListener\DoctrineAuditListener;
 use SumoCoders\FrameworkCoreBundle\EventListener\TitleListener;
 use SumoCoders\FrameworkCoreBundle\Logger\AuditLogger;
-use SumoCoders\FrameworkCoreBundle\Security\PasswordStrengthService;
 use SumoCoders\FrameworkCoreBundle\Service\PageTitle;
 use SumoCoders\FrameworkCoreBundle\Twig\ContentExtension;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
@@ -163,6 +162,5 @@ return static function (ContainerConfigurator $container): void {
         ->tag('console.command')
 
         ->set(DoctrineAuditListener::class)
-        ->set(AuditLogger::class)
-        ->set(PasswordStrengthService::class);
+        ->set(AuditLogger::class);
 };

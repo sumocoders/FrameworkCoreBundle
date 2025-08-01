@@ -10,6 +10,12 @@ The base template will place your content in a table-based layout, load and inli
 
 To send the mail, you can use the default Symfony package: `symfony/mailer`. See the example below.
 
+## Async
+
+Emails will be sent via the async messenger transport, meaning:
+1. The context must be serializable
+2. Run `console messenger:consume async` (default already in .crontab)
+
 ## Basic example
 
 template.html.twig

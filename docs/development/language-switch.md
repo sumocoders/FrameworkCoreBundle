@@ -1,7 +1,6 @@
 # Adding a new language
 
 - Extend the locales parameter in config/services.yaml
-- Change the prefix in config/routes.yaml
 
 # Language switch
 

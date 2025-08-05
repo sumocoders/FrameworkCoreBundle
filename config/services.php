@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use SumoCoders\FrameworkCoreBundle\Command\SecretsGetCommand;
 use SumoCoders\FrameworkCoreBundle\Command\TranslateCommand;
 use SumoCoders\FrameworkCoreBundle\DoctrineListener\DoctrineAuditListener;
 use SumoCoders\FrameworkCoreBundle\EventListener\TitleListener;
+use SumoCoders\FrameworkCoreBundle\Form\Type\BelgiumPostCodeType;
 use SumoCoders\FrameworkCoreBundle\Logger\AuditLogger;
 use SumoCoders\FrameworkCoreBundle\Service\PageTitle;
 use SumoCoders\FrameworkCoreBundle\Twig\ContentExtension;
@@ -83,6 +83,9 @@ return static function (ContainerConfigurator $container): void {
 
         ->set('framework.file_type', FileType::class)
         ->tag('form.type', ['alias' => 'sumoFile'])
+
+        ->set('framework.file_type', BelgiumPostCodeType::class)
+        ->tag('form.type', ['alias' => 'sumoBelgiumPostCode'])
 
         /*
          * Secure headers

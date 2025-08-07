@@ -24,13 +24,27 @@ class AjaxClient {
     this.instance.defaults.headers.common = {
       'Accept': 'application/json',
     }
+    this.instance.defaults.busy_targets = []
   }
 
   configureInterceptors () {
+    this.instance.interceptors.request.use(
+      (config) => {
+        // Do something before request is sent
+        this.setBusy()
+        return config
+      },
+      (error) => {
+        // Do something with request error
+        return Promise.reject(error)
+      },
+      { runWhen: () => this.instance.busy_targets }
+    )
     this.instance.interceptors.response.use(
       // Successful request
-      function (response) {
+      (response) => {
         // Any status code that lie *within* the range of 2xx cause this function to trigger
+        this.resetBusy()
 
         if (response.data.disable_interceptor) {
           return response
@@ -42,8 +56,9 @@ class AjaxClient {
 
         return response
       },
-      function (error) {
+      (error) => {
         // Any status codes that falls *outside* the range of 2xx cause this function to trigger
+        this.resetBusy()
 
         if (error.response.data.disable_interceptor) {
           return Promise.reject(error)
@@ -65,6 +80,26 @@ class AjaxClient {
 
         return Promise.reject(error)
       })
+  }
+
+  setBusy () {
+    this.instance.busy_targets.forEach((button) => {
+      if (!button.dataset.originalContent) {
+        button.dataset.originalContent = button.innerHTML
+      }
+      button.disabled = true
+      button.innerHTML = '<span class="spinner-border spinner-border-sm" aria-hidden="true"></span>'
+    })
+  }
+
+  resetBusy () {
+    this.instance.busy_targets.forEach((button) => {
+      button.disabled = false
+      if (button.dataset.originalContent) {
+        button.innerHTML = button.dataset.originalContent
+      }
+      button.dataset.originalContent = ''
+    })
   }
 }
 

@@ -27,12 +27,15 @@ export default class extends Controller {
     csrfToken: String
   }
 
+  static targets = ['button']
+
   test () {
     let data = {
       foo: 'bar',
     }
 
     ajaxClient.csrf_token = this.csrfTokenValue
+    ajaxClient.busy_targets = this.buttonTargets
     ajaxClient.post(this.urlValue, data)
       .then(response => {
         // do something with the response
@@ -97,7 +100,7 @@ or
 
 ### Disable this behavior
 
-You can disable the toast by passing a `disable_interceptor: false` in the response data.
+You can disable the toast by passing a `disable_interceptor: true` in the response data.
 
 ```json
 {
@@ -124,4 +127,14 @@ In your controller you will need to check if the CSRF token is valid:
   if (!$this->isCsrfTokenValid('this-is-our-csrf-token-id', $request->getPayload()->get('csrf_token'))) {
     throw new InvalidCsrfTokenException('Invalid CSRF token');
   }
+```
+
+## Busy button spinner
+
+The content of a clicked button can be replaced by a spinner during the request. Pass the DOM Node(s) like below:
+
+```javascript
+ajaxClient.busy_targets = [buttonNode]
+ajaxClient.post(this.urlValue, data)
+  ...
 ```

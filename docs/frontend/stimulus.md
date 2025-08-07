@@ -144,3 +144,15 @@ This works automatically.
 ## Scroll to top
 
 This works automatically.
+
+## Busy button spinner
+
+After submitting a form, replace the submit button with a spinner.
+
+Set the `data-controller='busy-submit'` on the form tag or in your form type:
+
+```php
+    $resolver->setDefaults([
+        'attr' => ['data-controller' => 'busy-submit'],
+    ]);
+```

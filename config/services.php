@@ -86,19 +86,6 @@ return static function (ContainerConfigurator $container): void {
         ->tag('form.type', ['alias' => 'sumoFile'])
 
         /*
-         * Secure headers
-         */
-        ->set('framework.response_securer', ResponseSecurer::class)
-        ->args([
-            param('kernel.debug'),
-            param('sumo_coders_framework_core.content_security_policy'),
-            param('sumo_coders_framework_core.extra_content_security_policy'),
-            param('sumo_coders_framework_core.x_frame_options'),
-            param('sumo_coders_framework_core.x_content_type_options'),
-        ])
-        ->tag('kernel.event_listener', ['event' => 'kernel.response', 'method' => 'onKernelResponse'])
-
-        /*
          * Twig extensions
          */
         ->set('framework.framework_extension', FrameworkExtension::class)

@@ -37,7 +37,8 @@
     "doctrine/doctrine-bundle": "^2.13",
     "doctrine/orm": "^3.3",
     "symfony/doctrine-messenger": "^7.2",
-    "symfony/ux-toggle-password": "^2.22"
+    "symfony/ux-toggle-password": "^2.22",
+    "nelmio/security-bundle": "^3.5"
   },
   "require-dev": {
     "roave/security-advisories": "dev-master",

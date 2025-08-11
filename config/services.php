@@ -16,7 +16,6 @@ use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use SumoCoders\FrameworkCoreBundle\Twig\PaginatorRuntime;
 use SumoCoders\FrameworkCoreBundle\Twig\PaginatorExtension;
 use SumoCoders\FrameworkCoreBundle\Twig\FrameworkExtension;
 use SumoCoders\FrameworkCoreBundle\Service\BreadcrumbTrail;
@@ -102,16 +101,13 @@ return static function (ContainerConfigurator $container): void {
          * Twig extensions
          */
         ->set('framework.framework_extension', FrameworkExtension::class)
-        ->tag('twig.extension')
+        ->tag('twig.attribute_extension')
 
         ->set('framework.paginator_extension', PaginatorExtension::class)
-        ->tag('twig.extension')
-
-        ->set('framework.paginator_runtime', PaginatorRuntime::class)
-        ->tag('twig.runtime')
+        ->tag('twig.attribute_extension')
 
         ->set('framework.content_extension', ContentExtension::class)
-        ->tag('twig.extension')
+        ->tag('twig.attribute_extension')
 
         /*
          * Breadcrumbs

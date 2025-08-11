@@ -33,7 +33,30 @@ class CreatePrForOutdatedDependenciesCommand extends Command
     {
         $this->io = new SymfonyStyle($input, $output);
 
+        $this->checkImportmap();
+
         return Command::SUCCESS;
+    }
+
+    private function checkImportmap(): void
+    {
+        $outdatedPackages = $this->runImportmapOutdatedCommand();
+        $semverSafeUpdatePackages = array_filter(
+            $outdatedPackages,
+            static fn($package) => $package['latest-status'] === 'semver-safe-update'
+        );
+
+        if (empty($semverSafeUpdatePackages)) {
+            return;
+        }
+
+        $this->createPullRequest(
+            date('YmdHi') . '-update-importmap-dependencies',
+            date('d/m/Y') . ' Update importmap dependencies',
+            [$this, 'runImportmapUpdateCommands'],
+            [$semverSafeUpdatePackages]
+        );
+        exit;
     }
 
     private function createPullRequest(
@@ -154,5 +177,60 @@ class CreatePrForOutdatedDependenciesCommand extends Command
         }
 
         return null;
+    }
+
+    /**
+     * @return array<int, array{
+     *     'name': string,
+     *     'current': string,
+     *     'latest': string,
+     *     'latest-status': string
+     * }>
+     */
+    private function runImportmapOutdatedCommand(): array
+    {
+        $application = $this->getApplication();
+        $application->setAutoExit(false);
+
+        $input = new ArrayInput([
+            'command' => 'importmap:outdated',
+            '--no-interaction' => true,
+            '--format' => 'json',
+        ]);
+
+        $output = new BufferedOutput();
+        $application->run($input, $output);
+
+        $rawOutput = trim($output->fetch());
+        if ($rawOutput === '') {
+            return [];
+        }
+
+        return json_decode($rawOutput, true, 512, JSON_THROW_ON_ERROR);
+    }
+
+    private function runImportmapUpdateCommands(array $packages): void
+    {
+        foreach ($packages as $package) {
+            $this->runConsoleCommand(
+                [
+                    'command' => 'importmap:update',
+                    $package['name'],
+                    '--no-interaction' => true,
+                    '--ansi' => true,
+                ],
+                true,
+                true
+            );
+
+            $this->runCommand(['git', 'add', 'importmap.php']);
+            $commitMessage = sprintf(
+                'chore(importmap): Update %1$s (%2$s → %3$s)',
+                $package['name'],
+                $package['current'],
+                $package['latest']
+            );
+            $this->runCommand(['git', 'commit', '-nm', $commitMessage]);
+        }
     }
 }

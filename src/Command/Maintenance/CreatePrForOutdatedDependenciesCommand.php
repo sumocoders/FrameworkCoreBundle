@@ -56,7 +56,6 @@ class CreatePrForOutdatedDependenciesCommand extends Command
             [$this, 'runImportmapUpdateCommands'],
             [$semverSafeUpdatePackages]
         );
-        exit;
     }
 
     private function createPullRequest(
@@ -189,24 +188,22 @@ class CreatePrForOutdatedDependenciesCommand extends Command
      */
     private function runImportmapOutdatedCommand(): array
     {
-        $application = $this->getApplication();
-        $application->setAutoExit(false);
+        $output = $this->runConsoleCommand(
+            [
+                'command' => 'importmap:outdated',
+                '--no-interaction' => true,
+                '--format' => 'json',
+            ],
+            true,
+            false,
+            true
+        );
 
-        $input = new ArrayInput([
-            'command' => 'importmap:outdated',
-            '--no-interaction' => true,
-            '--format' => 'json',
-        ]);
-
-        $output = new BufferedOutput();
-        $application->run($input, $output);
-
-        $rawOutput = trim($output->fetch());
-        if ($rawOutput === '') {
+        if ($output === '') {
             return [];
         }
 
-        return json_decode($rawOutput, true, 512, JSON_THROW_ON_ERROR);
+        return json_decode($output, true, 512, JSON_THROW_ON_ERROR);
     }
 
     private function runImportmapUpdateCommands(array $packages): void

@@ -36,6 +36,51 @@ class CreatePrForOutdatedDependenciesCommand extends Command
         return Command::SUCCESS;
     }
 
+    private function createPullRequest(
+        string $newBranchName,
+        string $pullRequestTitle,
+        callable $commandsToRun,
+        array $arguments = []
+    ): void {
+        // get current branch name
+        $currentBranch = $this->runCommand(
+            ['git', 'rev-parse', '--abbrev-ref', 'HEAD'],
+            false,
+            false,
+            true
+        );
+
+        // create new branch
+        $this->runCommand(
+            ['git', 'checkout', '-b', $newBranchName],
+        );
+
+        // run actual commands
+        call_user_func_array($commandsToRun, $arguments);
+
+        // push to remote
+        $this->runCommand(
+            [
+                'git',
+                'push',
+                '-o merge_request.create',
+                '-o merge_request.remove_source_branch',
+                '-o merge_request.target=' . $currentBranch,
+                '-o merge_request.title=' . $pullRequestTitle,
+                '-o merge_request.description=This is an automated merge request. Please review the changes.',
+            ],
+            true,
+            true,
+        );
+
+        // go back to original branch
+        $this->runCommand(
+            ['git', 'checkout', $currentBranch],
+            false,
+            false,
+        );
+    }
+
     private function runCommand(
         array $command,
         bool $showInput = true,

@@ -9,4 +9,9 @@ readonly class BelgiumPostCode
         public string $municipality,
     ) {
     }
+
+    public function __toString()
+    {
+        return $this->postcode . ' ' . $this->municipality;
+    }
 }

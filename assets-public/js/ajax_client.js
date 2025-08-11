@@ -38,7 +38,7 @@ class AjaxClient {
         // Do something with request error
         return Promise.reject(error)
       },
-      { runWhen: () => this.instance.busy_targets }
+      { runWhen: () => !!this.instance.busy_targets.length }
     )
     this.instance.interceptors.response.use(
       // Successful request
@@ -84,22 +84,30 @@ class AjaxClient {
 
   setBusy () {
     this.instance.busy_targets.forEach((button) => {
-      if (!button.dataset.originalContent) {
-        button.dataset.originalContent = button.innerHTML
-      }
       button.disabled = true
-      button.innerHTML = '<span class="spinner-border spinner-border-sm" aria-hidden="true"></span>'
+      if (button.tagName === 'BUTTON') {
+        button.prepend(this.createSpinner())
+      } else {
+        console.debug('No spinner added, element is not a button.')
+      }
     })
   }
 
   resetBusy () {
     this.instance.busy_targets.forEach((button) => {
       button.disabled = false
-      if (button.dataset.originalContent) {
-        button.innerHTML = button.dataset.originalContent
+      const spinner = button.querySelector('.spinner-border')
+      if (spinner) {
+        button.removeChild(spinner)
       }
-      button.dataset.originalContent = ''
     })
+  }
+
+  createSpinner () {
+    let spinner = document.createElement('span')
+    spinner.setAttribute('class', 'spinner-border spinner-border-sm me-2')
+    spinner.setAttribute('aria-hidden', 'true')
+    return spinner
   }
 }
 

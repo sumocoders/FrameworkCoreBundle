@@ -30,6 +30,7 @@ use SumoCoders\FrameworkCoreBundle\Form\Extension\DateTimeTypeExtension;
 use SumoCoders\FrameworkCoreBundle\Form\Extension\CollectionTypeExtension;
 use SumoCoders\FrameworkCoreBundle\Form\Extension\BirthdayTypeExtension;
 use SumoCoders\FrameworkCoreBundle\EventListener\ResponseSecurer;
+use SumoCoders\FrameworkCoreBundle\Command\Maintenance\CreatePrForOutdatedDependenciesCommand;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\param;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
@@ -159,6 +160,8 @@ return static function (ContainerConfigurator $container): void {
          * Commands
          */
         ->set(TranslateCommand::class)
+        ->tag('console.command')
+        ->set(CreatePrForOutdatedDependenciesCommand::class)
         ->tag('console.command')
 
         ->set(DoctrineAuditListener::class)

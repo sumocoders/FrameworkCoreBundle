@@ -40,7 +40,22 @@ class CreatePrForOutdatedDependenciesCommand extends Command
 
     private function checkImportmap(): void
     {
-        $outdatedPackages = $this->runImportmapOutdatedCommand();
+        $output = $this->runConsoleCommand(
+            [
+                'command' => 'importmap:outdated',
+                '--no-interaction' => true,
+                '--format' => 'json',
+            ],
+            true,
+            false,
+            true
+        );
+
+        if ($output === '') {
+            return;
+        }
+
+        $outdatedPackages = json_decode($output, true, 512, JSON_THROW_ON_ERROR);
         $semverSafeUpdatePackages = array_filter(
             $outdatedPackages,
             static fn($package) => $package['latest-status'] === 'semver-safe-update'
@@ -58,10 +73,46 @@ class CreatePrForOutdatedDependenciesCommand extends Command
         );
     }
 
+    /**
+     * @param array<int,array{
+     *   name: string,
+     *   current: string,
+     *   latest: string,
+     *   }> $packages
+     */
+    private function runImportmapUpdateCommands(array $packages): void
+    {
+        foreach ($packages as $package) {
+            $this->runConsoleCommand(
+                [
+                    'command' => 'importmap:update',
+                    $package['name'],
+                    '--no-interaction' => true,
+                    '--ansi' => true,
+                ],
+                true,
+                true
+            );
+
+            $this->runCommand(['git', 'add', 'importmap.php']);
+            $commitMessage = sprintf(
+                'chore(importmap): Update %1$s (%2$s → %3$s)',
+                $package['name'],
+                $package['current'],
+                $package['latest']
+            );
+            $this->runCommand(['git', 'commit', '-nm', $commitMessage]);
+        }
+    }
+
+    /**
+     * @param callable|array{CreatePrForOutdatedDependenciesCommand,string} $commandsToRun
+     * @param array<mixed>                                                  $arguments
+     */
     private function createPullRequest(
         string $newBranchName,
         string $pullRequestTitle,
-        callable $commandsToRun,
+        callable|array $commandsToRun,
         array $arguments = []
     ): void {
         // get current branch name
@@ -78,6 +129,9 @@ class CreatePrForOutdatedDependenciesCommand extends Command
         );
 
         // run actual commands
+        if (!is_callable($commandsToRun)) {
+            throw new \InvalidArgumentException('The $commandsToRun parameter must be a callable.');
+        }
         call_user_func_array($commandsToRun, $arguments);
 
         // push to remote
@@ -103,6 +157,9 @@ class CreatePrForOutdatedDependenciesCommand extends Command
         );
     }
 
+    /**
+     * @param array<mixed,mixed> $command
+     */
     private function runCommand(
         array $command,
         bool $showInput = true,
@@ -138,6 +195,9 @@ class CreatePrForOutdatedDependenciesCommand extends Command
         return null;
     }
 
+    /**
+     * @param array<mixed,mixed> $command
+     */
     private function runConsoleCommand(
         array $command,
         bool $showInput = true,
@@ -176,58 +236,5 @@ class CreatePrForOutdatedDependenciesCommand extends Command
         }
 
         return null;
-    }
-
-    /**
-     * @return array<int, array{
-     *     'name': string,
-     *     'current': string,
-     *     'latest': string,
-     *     'latest-status': string
-     * }>
-     */
-    private function runImportmapOutdatedCommand(): array
-    {
-        $output = $this->runConsoleCommand(
-            [
-                'command' => 'importmap:outdated',
-                '--no-interaction' => true,
-                '--format' => 'json',
-            ],
-            true,
-            false,
-            true
-        );
-
-        if ($output === '') {
-            return [];
-        }
-
-        return json_decode($output, true, 512, JSON_THROW_ON_ERROR);
-    }
-
-    private function runImportmapUpdateCommands(array $packages): void
-    {
-        foreach ($packages as $package) {
-            $this->runConsoleCommand(
-                [
-                    'command' => 'importmap:update',
-                    $package['name'],
-                    '--no-interaction' => true,
-                    '--ansi' => true,
-                ],
-                true,
-                true
-            );
-
-            $this->runCommand(['git', 'add', 'importmap.php']);
-            $commitMessage = sprintf(
-                'chore(importmap): Update %1$s (%2$s → %3$s)',
-                $package['name'],
-                $package['current'],
-                $package['latest']
-            );
-            $this->runCommand(['git', 'commit', '-nm', $commitMessage]);
-        }
     }
 }

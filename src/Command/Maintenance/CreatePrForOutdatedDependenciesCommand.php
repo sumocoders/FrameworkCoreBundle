@@ -34,6 +34,7 @@ class CreatePrForOutdatedDependenciesCommand extends Command
         $this->io = new SymfonyStyle($input, $output);
 
         $this->checkImportmap();
+        $this->checkComposer();
 
         return Command::SUCCESS;
     }
@@ -102,6 +103,102 @@ class CreatePrForOutdatedDependenciesCommand extends Command
                 $package['latest']
             );
             $this->runCommand(['git', 'commit', '-nm', $commitMessage]);
+        }
+    }
+
+    private function checkComposer(): void
+    {
+        $outdatedPackages = $this->runCommand(
+            ['composer', 'outdated', '--direct', '--minor-only', '--no-scripts', '--format=json'],
+            true,
+            false,
+            true
+        );
+
+        if ($outdatedPackages === '') {
+            return;
+        }
+
+        $outdatedPackages = json_decode($outdatedPackages, true, 512, JSON_THROW_ON_ERROR);
+        if (!array_key_exists('installed', $outdatedPackages)) {
+            return;
+        }
+
+        $semverSafeUpdatePackages = array_filter(
+            $outdatedPackages['installed'],
+            static function ($package) {
+                if ($package['abandoned']) {
+                    return false;
+                }
+
+                return $package['latest-status'] === 'semver-safe-update';
+            }
+        );
+
+        if (empty($semverSafeUpdatePackages)) {
+            return;
+        }
+
+        $this->createPullRequest(
+            date('YmdHi') . '-update-composer-dependencies',
+            date('d/m/Y') . ' Update composer dependencies',
+            [$this, 'runComposerUpdateCommands'],
+            [$semverSafeUpdatePackages]
+        );
+    }
+
+    /**
+     * @param array<int,array{
+     *   name: string,
+     *   version: string,
+     *   latest: string,
+     *   }> $packages
+     */
+    private function runComposerUpdateCommands(array $packages): void
+    {
+        $symfonyBinary = $this->findCommand('symfony');
+
+        foreach ($packages as $package) {
+            $command = [
+                'composer',
+                'update',
+                $package['name'],
+                '--no-interaction',
+                '--ansi',
+                '--no-audit',
+                '--no-scripts',
+                '--no-progress',
+                '--no-plugins',
+            ];
+
+            // prepend symfony binary if available
+            if ($symfonyBinary !== false) {
+                array_unshift($command, $symfonyBinary);
+            }
+
+            $this->runCommand(
+                $command,
+                true,
+                true
+            );
+
+            $this->runCommand(['git', 'add', 'composer.json', 'composer.lock', 'symfony.lock']);
+            $commitMessage = sprintf(
+                'chore(composer): Update %1$s (%2$s → %3$s)',
+                $package['name'],
+                $package['version'],
+                $package['latest']
+            );
+            $this->runCommand(
+                [
+                    'git',
+                    'commit',
+                    '--allow-empty',
+                    '--no-verify',
+                    '--message',
+                    $commitMessage,
+                ]
+            );
         }
     }
 
@@ -236,5 +333,17 @@ class CreatePrForOutdatedDependenciesCommand extends Command
         }
 
         return null;
+    }
+
+    private function findCommand(string $command): string|bool
+    {
+        $process = new Process(['which', $command]);
+        $process->run();
+
+        if ($process->isSuccessful() && trim($process->getOutput()) !== '') {
+            return trim($process->getOutput());
+        }
+
+        return false;
     }
 }

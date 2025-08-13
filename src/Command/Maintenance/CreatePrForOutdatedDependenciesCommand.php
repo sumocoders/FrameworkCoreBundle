@@ -271,9 +271,10 @@ class CreatePrForOutdatedDependenciesCommand extends Command
         $proces = new Process($command);
         if ($showOutput) {
             $output = function ($type, $buffer) use ($io) {
+                $buffer = trim($buffer);
                 $lines = explode("\n", $buffer);
                 foreach ($lines as $line) {
-                    $io->writeln('← ' . $line);
+                    $io->writeln('  ← ' . $line);
                 }
             };
             $proces->run($output);
@@ -324,7 +325,7 @@ class CreatePrForOutdatedDependenciesCommand extends Command
         if ($showOutput) {
             $lines = explode("\n", $rawOutput);
             foreach ($lines as $line) {
-                $io->writeln('← ' . $line);
+                $io->writeln('  ← ' . $line);
             }
         }
 

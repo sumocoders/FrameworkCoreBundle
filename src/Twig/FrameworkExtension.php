@@ -3,32 +3,22 @@
 namespace SumoCoders\FrameworkCoreBundle\Twig;
 
 use Symfony\Component\HttpFoundation\RequestStack;
-use Twig\Extension\AbstractExtension;
-use Twig\TwigFilter;
-use Twig\TwigFunction;
+use Twig\Attribute\AsTwigFilter;
+use Twig\Attribute\AsTwigFunction;
 
-class FrameworkExtension extends AbstractExtension
+readonly class FrameworkExtension
 {
     public function __construct(private RequestStack $requestStack)
     {
-        $this->requestStack = $requestStack;
     }
 
-    public function getFilters(): array
+    #[AsTwigFilter('ucfirst')]
+    public static function ucfirst(string $string): string
     {
-        return [
-            new TwigFilter('ucfirst', 'ucfirst'),
-        ];
+        return ucfirst($string);
     }
 
-    public function getFunctions(): array
-    {
-        return [
-            new TwigFunction('theme', [$this, 'determineTheme']),
-            new TwigFunction('sidebarIsOpen', [$this, 'sidebarIsOpen']),
-        ];
-    }
-
+    #[AsTwigFunction('theme')]
     public function determineTheme(): string
     {
         if (is_null($this->requestStack->getCurrentRequest())) {
@@ -42,6 +32,7 @@ class FrameworkExtension extends AbstractExtension
         return 'theme-' . $this->requestStack->getCurrentRequest()->cookies->get('theme');
     }
 
+    #[AsTwigFunction('sidebarIsOpen')]
     public function sidebarIsOpen(): bool
     {
         if (is_null($this->requestStack->getCurrentRequest())) {

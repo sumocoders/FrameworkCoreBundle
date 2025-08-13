@@ -6,13 +6,14 @@ use SumoCoders\FrameworkCoreBundle\Command\TranslateCommand;
 use SumoCoders\FrameworkCoreBundle\DoctrineListener\DoctrineAuditListener;
 use SumoCoders\FrameworkCoreBundle\EventListener\BreadcrumbListener;
 use SumoCoders\FrameworkCoreBundle\EventListener\TitleListener;
+use SumoCoders\FrameworkCoreBundle\Form\Type\BelgiumPostCodeType;
 use SumoCoders\FrameworkCoreBundle\Form\Type\ImageType;
 use SumoCoders\FrameworkCoreBundle\Form\Type\FileType;
-use SumoCoders\FrameworkCoreBundle\Form\Extension\TimeTypeExtension;
-use SumoCoders\FrameworkCoreBundle\Form\Extension\DateTypeExtension;
-use SumoCoders\FrameworkCoreBundle\Form\Extension\DateTimeTypeExtension;
-use SumoCoders\FrameworkCoreBundle\Form\Extension\CollectionTypeExtension;
 use SumoCoders\FrameworkCoreBundle\Form\Extension\BirthdayTypeExtension;
+use SumoCoders\FrameworkCoreBundle\Form\Extension\CollectionTypeExtension;
+use SumoCoders\FrameworkCoreBundle\Form\Extension\DateTimeTypeExtension;
+use SumoCoders\FrameworkCoreBundle\Form\Extension\DateTypeExtension;
+use SumoCoders\FrameworkCoreBundle\Form\Extension\TimeTypeExtension;
 use SumoCoders\FrameworkCoreBundle\Logger\AuditLogger;
 use SumoCoders\FrameworkCoreBundle\Menu\MenuBuilder;
 use SumoCoders\FrameworkCoreBundle\Service\BreadcrumbTrail;
@@ -23,12 +24,12 @@ use SumoCoders\FrameworkCoreBundle\Twig\ContentExtension;
 use SumoCoders\FrameworkCoreBundle\Twig\FrameworkExtension;
 use SumoCoders\FrameworkCoreBundle\Twig\PaginatorExtension;
 use SumoCoders\FrameworkCoreBundle\Twig\PaginatorRuntime;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\param;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
@@ -84,20 +85,20 @@ return static function (ContainerConfigurator $container): void {
         ->set('framework.file_type', FileType::class)
         ->tag('form.type', ['alias' => 'sumoFile'])
 
+        ->set('framework.file_type', BelgiumPostCodeType::class)
+        ->tag('form.type', ['alias' => 'sumoBelgiumPostCode'])
+
         /*
          * Twig extensions
          */
         ->set('framework.framework_extension', FrameworkExtension::class)
-        ->tag('twig.extension')
+        ->tag('twig.attribute_extension')
 
         ->set('framework.paginator_extension', PaginatorExtension::class)
-        ->tag('twig.extension')
-
-        ->set('framework.paginator_runtime', PaginatorRuntime::class)
-        ->tag('twig.runtime')
+        ->tag('twig.attribute_extension')
 
         ->set('framework.content_extension', ContentExtension::class)
-        ->tag('twig.extension')
+        ->tag('twig.attribute_extension')
 
         /*
          * Breadcrumbs

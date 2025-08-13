@@ -5,3 +5,4 @@ forms:
 
 You can add a maximum of %count% items: Je kan maximaal %count% items toevoegen.
 You must add at least %count% items: Je moet minimaal %count% items toevoegen.
+'Please select a valid postcode.': 'Gelieve een geldige postcode te selecteren.'

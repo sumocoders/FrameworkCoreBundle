@@ -11,17 +11,30 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 #[AsCommand(
     name: 'sumo:maintenance:create-pr-for-outdated-dependencies',
-    description: 'Create PR for outdated dependencies (Importmap)',
+    description: 'Create PR for outdated dependencies (Importmap and Composer)',
 )]
 class CreatePrForOutdatedDependenciesCommand extends Command
 {
     private SymfonyStyle $io;
 
-    public function __construct()
-    {
+    /**
+     * @var array<int,array{
+     *     id: int,
+     *     title: string,
+     *     target_branch: string}
+     *     >
+     */
+    private array $openMergeRequests = [];
+
+    private string $currentBranch;
+
+    public function __construct(
+        private readonly HttpClientInterface $httpClient
+    ) {
         parent::__construct();
     }
 
@@ -32,6 +45,13 @@ class CreatePrForOutdatedDependenciesCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->io = new SymfonyStyle($input, $output);
+        $this->currentBranch = $this->runCommand(
+            ['git', 'rev-parse', '--abbrev-ref', 'HEAD'],
+            false,
+            false,
+            true
+        );
+        $this->openMergeRequests = $this->listOpenMergeRequests();
 
         $this->checkImportmap();
         $this->checkComposer();
@@ -41,6 +61,12 @@ class CreatePrForOutdatedDependenciesCommand extends Command
 
     private function checkImportmap(): void
     {
+        if ($this->hasMergeRequest('Update importmap dependencies', $this->currentBranch)) {
+            $this->io->warning('There is already a merge request for updating importmap dependencies.');
+
+            return;
+        }
+
         $output = $this->runConsoleCommand(
             [
                 'command' => 'importmap:outdated',
@@ -108,6 +134,12 @@ class CreatePrForOutdatedDependenciesCommand extends Command
 
     private function checkComposer(): void
     {
+        if ($this->hasMergeRequest('Update composer dependencies', $this->currentBranch)) {
+            $this->io->warning('There is already a merge request for updating composer dependencies.');
+
+            return;
+        }
+
         $outdatedPackages = $this->runCommand(
             ['composer', 'outdated', '--direct', '--minor-only', '--no-scripts', '--format=json'],
             true,
@@ -212,14 +244,6 @@ class CreatePrForOutdatedDependenciesCommand extends Command
         callable|array $commandsToRun,
         array $arguments = []
     ): void {
-        // get current branch name
-        $currentBranch = $this->runCommand(
-            ['git', 'rev-parse', '--abbrev-ref', 'HEAD'],
-            false,
-            false,
-            true
-        );
-
         // create new branch
         $this->runCommand(
             ['git', 'checkout', '-b', $newBranchName],
@@ -238,7 +262,7 @@ class CreatePrForOutdatedDependenciesCommand extends Command
                 'push',
                 '-o merge_request.create',
                 '-o merge_request.remove_source_branch',
-                '-o merge_request.target=' . $currentBranch,
+                '-o merge_request.target=' . $this->currentBranch,
                 '-o merge_request.title=' . $pullRequestTitle,
                 '-o merge_request.description=This is an automated merge request. Please review the changes.',
             ],
@@ -248,7 +272,7 @@ class CreatePrForOutdatedDependenciesCommand extends Command
 
         // go back to original branch
         $this->runCommand(
-            ['git', 'checkout', $currentBranch],
+            ['git', 'checkout', $this->currentBranch],
             false,
             false,
         );
@@ -343,6 +367,75 @@ class CreatePrForOutdatedDependenciesCommand extends Command
 
         if ($process->isSuccessful() && trim($process->getOutput()) !== '') {
             return trim($process->getOutput());
+        }
+
+        return false;
+    }
+
+    /**
+     * @return array<int,array{
+     *     id: int,
+     *     title: string,
+     *     target_branch: string}
+     *     >
+     */
+    private function listOpenMergeRequests(): array
+    {
+        $gitlabUrl = getenv('CI_API_V4_URL');
+        if ($gitlabUrl === false) {
+            $gitlabUrl = 'https://git.sumocoders.be/api/v4';
+        }
+        $projectId = getenv('CI_PROJECT_ID');
+        if ($projectId === false) {
+            // @todo fix this!
+            $projectId = urlencode('okofen/pelletdays-be');
+        }
+        $gitlabToken = getenv('GITLAB_ACCESS_TOKEN');
+        if ($gitlabToken === false) {
+            $gitlabToken = getenv('SUMO_GITLAB_ACCESS_TOKEN');
+        }
+
+        $response = $this->httpClient->request(
+            'GET',
+            sprintf(
+                '%1$s/projects/%2$s/merge_requests',
+                $gitlabUrl,
+                $projectId
+            ),
+            [
+                'headers' => [
+                    'PRIVATE-TOKEN' => $gitlabToken,
+                ],
+                'query' => [
+                    'state' => 'opened',
+                    'per_page' => 100,
+                ],
+            ]
+        );
+
+        $data = json_decode($response->getContent(), false, 512, JSON_THROW_ON_ERROR);
+
+        if (empty($data)) {
+            return [];
+        }
+
+        return array_map(function ($mergeRequest) {
+            return [
+                'id' => $mergeRequest->id,
+                'title' => $mergeRequest->title,
+                'target_branch' => $mergeRequest->target_branch,
+            ];
+        }, $data);
+    }
+
+    private function hasMergeRequest(string $title, string $targetBranch): bool
+    {
+        foreach ($this->openMergeRequests as $mergeRequest) {
+            if ($mergeRequest['target_branch'] === $targetBranch) {
+                if (stripos($mergeRequest['title'], $title) !== false) {
+                    return true;
+                }
+            }
         }
 
         return false;

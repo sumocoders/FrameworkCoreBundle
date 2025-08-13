@@ -6,6 +6,10 @@
     <title>{{ title }}</title>
 
     {% block meta %}
+        {# Call both script and style so both nonces are generated #}
+        {% set csp_nonce = csp_nonce('script') %}
+        {% set csp_nonce = csp_nonce('style') %}
+        <meta name="csp-nonce" content="{{ csp_nonce }}">
         <meta name="author" content="SumoCoders">
     {% endblock %}
 
@@ -17,7 +21,7 @@
     {% endblock %}
 
     {% block javascripts %}
-        {{ importmap('app') }}
+        {{ importmap('app', {'nonce': csp_nonce('script')}) }}
     {% endblock %}
 
     {% block icons %}

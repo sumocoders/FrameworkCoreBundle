@@ -5,8 +5,7 @@ export default class extends Controller {
   static values = {
     type: String,
     message: String,
-    autohide: { type: Boolean, default: true },
-    delay: { type: Number, default: 10000 }
+    autohide: { type: Boolean, default: true }
   }
 
   connect () {
@@ -16,7 +15,6 @@ export default class extends Controller {
     this.element['aria-live'] = this.typeValue === 'danger' ? 'assertive' : 'polite'
     this.element['aria-atomic'] = 'true'
     this.element.dataset.bsAutohide = this.autohideValue ? 'true' : 'false'
-    this.element.dataset.bsDelay = this.delayValue
     this.element.id = 'toast-' + Math.random().toString(36).substring(2, 15)
     let icon = 'fas fa-info-circle'
     if (this.typeValue === 'success') {
@@ -40,7 +38,7 @@ export default class extends Controller {
     if (this.autohideValue) {
       this.element.innerHTML += `
         <div class="toast-progress">
-          <div class="toast-progress--inner" style="animation-duration:${this.delayValue}ms"></div>
+          <div class="toast-progress--inner"></div>
         </div>
       `
     }

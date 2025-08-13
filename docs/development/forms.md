@@ -29,3 +29,18 @@ Where `Username` is a translation. So if you want to translate the label, you ca
 ```yaml
 Username: 'Enter your username'
 ```
+
+## Belgium postcode
+
+Form type that allows only valid belgian postcodes to be selected.
+
+Use in your own form:
+```php
+    $builder->add('postcode', BelgiumPostCodeType::class);
+```
+
+Add a property in the DTO:
+```php
+    #[Assert\NotBlank]
+    public ?BelgiumPostCode $postcode = null;
+```

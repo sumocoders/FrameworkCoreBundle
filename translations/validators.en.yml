@@ -5,3 +5,4 @@ forms:
 
 You can add a maximum of %count% items: You can add a maximum of %count% items.
 You must add at least %count% items: You must add at least %count% items.
+'Please select a valid postcode.': 'Please select a valid postcode.'

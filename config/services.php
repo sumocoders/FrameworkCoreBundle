@@ -2,35 +2,36 @@
 
 declare(strict_types=1);
 
-use SumoCoders\FrameworkCoreBundle\Command\SecretsGetCommand;
+use SumoCoders\FrameworkCoreBundle\Command\Maintenance\CreatePrForOutdatedDependenciesCommand;
 use SumoCoders\FrameworkCoreBundle\Command\TranslateCommand;
 use SumoCoders\FrameworkCoreBundle\DoctrineListener\DoctrineAuditListener;
+use SumoCoders\FrameworkCoreBundle\EventListener\BreadcrumbListener;
+use SumoCoders\FrameworkCoreBundle\EventListener\ResponseSecurer;
 use SumoCoders\FrameworkCoreBundle\EventListener\TitleListener;
+use SumoCoders\FrameworkCoreBundle\Form\Type\BelgiumPostCodeType;
+use SumoCoders\FrameworkCoreBundle\Form\Type\ImageType;
+use SumoCoders\FrameworkCoreBundle\Form\Type\FileType;
+use SumoCoders\FrameworkCoreBundle\Form\Extension\BirthdayTypeExtension;
+use SumoCoders\FrameworkCoreBundle\Form\Extension\CollectionTypeExtension;
+use SumoCoders\FrameworkCoreBundle\Form\Extension\DateTimeTypeExtension;
+use SumoCoders\FrameworkCoreBundle\Form\Extension\DateTypeExtension;
+use SumoCoders\FrameworkCoreBundle\Form\Extension\TimeTypeExtension;
 use SumoCoders\FrameworkCoreBundle\Logger\AuditLogger;
-use SumoCoders\FrameworkCoreBundle\Service\PageTitle;
-use SumoCoders\FrameworkCoreBundle\Twig\ContentExtension;
-use Symfony\Component\Form\Extension\Core\Type\TimeType;
+use SumoCoders\FrameworkCoreBundle\Menu\MenuBuilder;
+use SumoCoders\FrameworkCoreBundle\Service\BreadcrumbTrail;
 use SumoCoders\FrameworkCoreBundle\Service\Fallbacks;
+use SumoCoders\FrameworkCoreBundle\Service\PageTitle;
+use SumoCoders\FrameworkCoreBundle\Service\Security\NonceGenerator;
+use SumoCoders\FrameworkCoreBundle\Twig\ContentExtension;
+use SumoCoders\FrameworkCoreBundle\Twig\FrameworkExtension;
+use SumoCoders\FrameworkCoreBundle\Twig\PaginatorExtension;
+use SumoCoders\FrameworkCoreBundle\Twig\PaginatorRuntime;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
+use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use SumoCoders\FrameworkCoreBundle\Twig\PaginatorRuntime;
-use SumoCoders\FrameworkCoreBundle\Twig\PaginatorExtension;
-use SumoCoders\FrameworkCoreBundle\Twig\FrameworkExtension;
-use SumoCoders\FrameworkCoreBundle\Service\BreadcrumbTrail;
-use SumoCoders\FrameworkCoreBundle\EventListener\BreadcrumbListener;
-use SumoCoders\FrameworkCoreBundle\Menu\MenuBuilder;
-use SumoCoders\FrameworkCoreBundle\Form\Type\ImageType;
-use SumoCoders\FrameworkCoreBundle\Form\Type\FileType;
-use SumoCoders\FrameworkCoreBundle\Form\Extension\TimeTypeExtension;
-use SumoCoders\FrameworkCoreBundle\Form\Extension\DateTypeExtension;
-use SumoCoders\FrameworkCoreBundle\Form\Extension\DateTimeTypeExtension;
-use SumoCoders\FrameworkCoreBundle\Form\Extension\CollectionTypeExtension;
-use SumoCoders\FrameworkCoreBundle\Form\Extension\BirthdayTypeExtension;
-use SumoCoders\FrameworkCoreBundle\EventListener\ResponseSecurer;
-use SumoCoders\FrameworkCoreBundle\Command\Maintenance\CreatePrForOutdatedDependenciesCommand;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\param;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
@@ -86,33 +87,20 @@ return static function (ContainerConfigurator $container): void {
         ->set('framework.file_type', FileType::class)
         ->tag('form.type', ['alias' => 'sumoFile'])
 
-        /*
-         * Secure headers
-         */
-        ->set('framework.response_securer', ResponseSecurer::class)
-        ->args([
-            param('kernel.debug'),
-            param('sumo_coders_framework_core.content_security_policy'),
-            param('sumo_coders_framework_core.extra_content_security_policy'),
-            param('sumo_coders_framework_core.x_frame_options'),
-            param('sumo_coders_framework_core.x_content_type_options'),
-        ])
-        ->tag('kernel.event_listener', ['event' => 'kernel.response', 'method' => 'onKernelResponse'])
+        ->set('framework.file_type', BelgiumPostCodeType::class)
+        ->tag('form.type', ['alias' => 'sumoBelgiumPostCode'])
 
         /*
          * Twig extensions
          */
         ->set('framework.framework_extension', FrameworkExtension::class)
-        ->tag('twig.extension')
+        ->tag('twig.attribute_extension')
 
         ->set('framework.paginator_extension', PaginatorExtension::class)
-        ->tag('twig.extension')
-
-        ->set('framework.paginator_runtime', PaginatorRuntime::class)
-        ->tag('twig.runtime')
+        ->tag('twig.attribute_extension')
 
         ->set('framework.content_extension', ContentExtension::class)
-        ->tag('twig.extension')
+        ->tag('twig.attribute_extension')
 
         /*
          * Breadcrumbs
@@ -155,6 +143,15 @@ return static function (ContainerConfigurator $container): void {
             service('translator')
         ])
         ->alias(PageTitle::class, 'framework.page_title')
+
+        /*
+         * Nelmio Nonce Generator
+         */
+        ->set(NonceGenerator::class)
+        ->decorate('nelmio_security.nonce_generator')
+        ->args([
+            service('.inner')
+        ])
 
         /*
          * Commands

@@ -385,12 +385,31 @@ class CreatePrForOutdatedDependenciesCommand extends Command
         }
         $projectId = getenv('CI_PROJECT_ID');
         if ($projectId === false) {
-            // @todo fix this!
-            $projectId = urlencode('okofen/pelletdays-be');
+            $output = $this->runCommand(
+                ['git', 'config', '--get', 'remote.origin.url'],
+                false,
+                false,
+                true
+            );
+            $matches = [];
+            preg_match('/.*:(.+)\.git$/', $output, $matches);
+
+            if (!isset($matches[1])) {
+                throw new \RuntimeException(
+                    'Could not determine project ID from git remote URL.'
+                );
+            }
+
+            $projectId = urlencode($matches[1]);
         }
         $gitlabToken = getenv('GITLAB_ACCESS_TOKEN');
         if ($gitlabToken === false) {
             $gitlabToken = getenv('SUMO_GITLAB_ACCESS_TOKEN');
+        }
+        if ($gitlabToken === false) {
+            throw new \RuntimeException(
+                'You need to set the SUMO_GITLAB_ACCESS_TOKEN environment variable.'
+            );
         }
 
         $response = $this->httpClient->request(

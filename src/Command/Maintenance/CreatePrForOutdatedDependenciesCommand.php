@@ -30,7 +30,7 @@ class CreatePrForOutdatedDependenciesCommand extends Command
      */
     private array $openMergeRequests = [];
 
-    private string $currentBranch;
+    private ?string $originalBranch = null;
 
     public function __construct(
         private readonly HttpClientInterface $httpClient
@@ -45,12 +45,6 @@ class CreatePrForOutdatedDependenciesCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->io = new SymfonyStyle($input, $output);
-        $this->currentBranch = $this->runCommand(
-            ['git', 'rev-parse', '--abbrev-ref', 'HEAD'],
-            false,
-            false,
-            true
-        );
         $this->openMergeRequests = $this->listOpenMergeRequests();
 
         $this->checkImportmap();
@@ -61,7 +55,7 @@ class CreatePrForOutdatedDependenciesCommand extends Command
 
     private function checkImportmap(): void
     {
-        if ($this->hasMergeRequest('Update importmap dependencies', $this->currentBranch)) {
+        if ($this->hasMergeRequest('Update importmap dependencies', $this->getOriginalBranch())) {
             $this->io->warning('There is already a merge request for updating importmap dependencies.');
 
             return;
@@ -98,6 +92,8 @@ class CreatePrForOutdatedDependenciesCommand extends Command
             [$this, 'runImportmapUpdateCommands'],
             [$semverSafeUpdatePackages]
         );
+
+        $this->io->success('Created a merge request for updating importmap dependencies.');
     }
 
     /**
@@ -134,7 +130,7 @@ class CreatePrForOutdatedDependenciesCommand extends Command
 
     private function checkComposer(): void
     {
-        if ($this->hasMergeRequest('Update composer dependencies', $this->currentBranch)) {
+        if ($this->hasMergeRequest('Update composer dependencies', $this->getOriginalBranch())) {
             $this->io->warning('There is already a merge request for updating composer dependencies.');
 
             return;
@@ -177,6 +173,8 @@ class CreatePrForOutdatedDependenciesCommand extends Command
             [$this, 'runComposerUpdateCommands'],
             [$semverSafeUpdatePackages]
         );
+
+        $this->io->success('Created a merge request for updating composer dependencies.');
     }
 
     /**
@@ -262,7 +260,7 @@ class CreatePrForOutdatedDependenciesCommand extends Command
                 'push',
                 '-o merge_request.create',
                 '-o merge_request.remove_source_branch',
-                '-o merge_request.target=' . $this->currentBranch,
+                '-o merge_request.target=' . $this->getOriginalBranch(),
                 '-o merge_request.title=' . $pullRequestTitle,
                 '-o merge_request.description=This is an automated merge request. Please review the changes.',
             ],
@@ -272,7 +270,7 @@ class CreatePrForOutdatedDependenciesCommand extends Command
 
         // go back to original branch
         $this->runCommand(
-            ['git', 'checkout', $this->currentBranch],
+            ['git', 'checkout', $this->getOriginalBranch()],
             false,
             false,
         );
@@ -439,5 +437,25 @@ class CreatePrForOutdatedDependenciesCommand extends Command
         }
 
         return false;
+    }
+
+    private function getOriginalBranch(): string
+    {
+        if ($this->originalBranch !== null) {
+            return $this->originalBranch;
+        }
+
+        $branch = getenv('CI_COMMIT_BRANCH');
+        if ($branch === false) {
+            $branch = $this->runCommand(
+                ['git', 'rev-parse', '--abbrev-ref', 'HEAD'],
+                false,
+                false,
+                true
+            );
+        }
+        $this->originalBranch = trim($branch);
+
+        return $this->originalBranch;
     }
 }

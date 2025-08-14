@@ -290,7 +290,7 @@ class CreatePrForOutdatedDependenciesCommand extends Command
             $io->writeln('  → ' . implode(' ', $command));
         }
 
-        $proces = new Process($command);
+        $process = new Process($command);
         if ($showOutput) {
             $output = function ($type, $buffer) use ($io) {
                 $buffer = trim($buffer);
@@ -299,17 +299,17 @@ class CreatePrForOutdatedDependenciesCommand extends Command
                     $io->writeln('  ← ' . $line);
                 }
             };
-            $proces->run($output);
+            $process->run($output);
         } else {
-            $proces->run();
+            $process->run();
         }
 
-        if (!$proces->isSuccessful()) {
-            throw new ProcessFailedException($proces);
+        if (!$process->isSuccessful()) {
+            throw new ProcessFailedException($process);
         }
 
         if ($returnOutput) {
-            return trim($proces->getOutput());
+            return trim($process->getOutput());
         }
 
         return null;

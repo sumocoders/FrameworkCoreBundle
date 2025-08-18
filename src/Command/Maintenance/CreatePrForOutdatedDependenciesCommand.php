@@ -105,6 +105,7 @@ class CreatePrForOutdatedDependenciesCommand extends Command
      */
     private function runImportmapUpdateCommands(array $packages): void
     {
+        $versionMessages = [];
         foreach ($packages as $package) {
             $this->runConsoleCommand(
                 [
@@ -118,14 +119,26 @@ class CreatePrForOutdatedDependenciesCommand extends Command
             );
 
             $this->runCommand(['git', 'add', 'importmap.php']);
-            $commitMessage = sprintf(
-                'chore(importmap): Update %1$s (%2$s → %3$s)',
+            $versionMessages[] = sprintf(
+                '  * %1$s (%2$s → %3$s)',
                 $package['name'],
                 $package['current'],
                 $package['latest']
             );
-            $this->runCommand(['git', 'commit', '-nm', $commitMessage]);
         }
+
+        $commitMessage = 'chore(importmap): Update importmap dependencies' .
+                         "\n\n" . implode("\n", $versionMessages);
+        $this->runCommand(
+            [
+                'git',
+                'commit',
+                '--allow-empty',
+                '--no-verify',
+                '--message',
+                $commitMessage,
+            ]
+        );
     }
 
     private function checkComposer(): void
@@ -187,7 +200,7 @@ class CreatePrForOutdatedDependenciesCommand extends Command
     private function runComposerUpdateCommands(array $packages): void
     {
         $symfonyBinary = $this->findCommand('symfony');
-
+        $versionMessages = [];
         foreach ($packages as $package) {
             $command = [
                 'composer',
@@ -213,23 +226,26 @@ class CreatePrForOutdatedDependenciesCommand extends Command
             );
 
             $this->runCommand(['git', 'add', 'composer.json', 'composer.lock', 'symfony.lock']);
-            $commitMessage = sprintf(
-                'chore(composer): Update %1$s (%2$s → %3$s)',
+            $versionMessages[] = sprintf(
+                '  * %1$s (%2$s → %3$s)',
                 $package['name'],
                 $package['version'],
                 $package['latest']
             );
-            $this->runCommand(
-                [
-                    'git',
-                    'commit',
-                    '--allow-empty',
-                    '--no-verify',
-                    '--message',
-                    $commitMessage,
-                ]
-            );
         }
+
+        $commitMessage = 'chore(importmap): Update importmap dependencies' .
+                         "\n\n" . implode("\n", $versionMessages);
+        $this->runCommand(
+            [
+                'git',
+                'commit',
+                '--allow-empty',
+                '--no-verify',
+                '--message',
+                $commitMessage,
+            ]
+        );
     }
 
     /**

@@ -2,9 +2,11 @@
 
 declare(strict_types=1);
 
+use SumoCoders\FrameworkCoreBundle\Command\Maintenance\CreatePrForOutdatedDependenciesCommand;
 use SumoCoders\FrameworkCoreBundle\Command\TranslateCommand;
 use SumoCoders\FrameworkCoreBundle\DoctrineListener\DoctrineAuditListener;
 use SumoCoders\FrameworkCoreBundle\EventListener\BreadcrumbListener;
+use SumoCoders\FrameworkCoreBundle\EventListener\ResponseSecurer;
 use SumoCoders\FrameworkCoreBundle\EventListener\TitleListener;
 use SumoCoders\FrameworkCoreBundle\Form\Type\BelgiumPostCodeType;
 use SumoCoders\FrameworkCoreBundle\Form\Type\ImageType;
@@ -155,6 +157,8 @@ return static function (ContainerConfigurator $container): void {
          * Commands
          */
         ->set(TranslateCommand::class)
+        ->tag('console.command')
+        ->set(CreatePrForOutdatedDependenciesCommand::class)
         ->tag('console.command')
 
         ->set(DoctrineAuditListener::class)

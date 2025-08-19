@@ -42,7 +42,7 @@ body.no-scroll {
   padding: 0;
 
   img {
-    margin: 5px 0 5px $spacer;
+    margin: 5px 0 5px 5px;
     height: 50px;
   }
 }
@@ -106,15 +106,12 @@ body.no-scroll {
 }
 
 .main-menu {
-  left: 0;
-  position: fixed;
-  top: 0;
-  right: 0;
   z-index: 1040;
+  border-top: 1px $border-color solid;
 
   .navbar {
     align-items: stretch;
-    height: 60px;
+    height: 0;
 
     .navbar-header {
       padding: 5px 10px;
@@ -314,7 +311,6 @@ body.no-scroll {
   .navbar-brand {
     height: $topbar-height-md;
     margin-left: 0;
-    width: 100%;
 
     img {
       margin-left: auto;
@@ -338,6 +334,7 @@ body.no-scroll {
     background-color: $menu-bg;
     height: 100%;
     left: 0;
+    top: $topbar-height-md;
     position: fixed;
     width: $sidebar-width-open;
     z-index: 950;

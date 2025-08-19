@@ -9,7 +9,6 @@
 }
 
 #content-wrapper {
-  margin-top: 65px;
 }
 
 .header-title {
@@ -65,7 +64,7 @@
 }
 
 .main-content {
-  padding: 40px 0;
+  padding: $spacer 0;
 }
 
 .btn[disabled] {
@@ -83,7 +82,7 @@
 
 @include media-breakpoint-up(md) {
   .header-title {
-    padding: $spacer;
+    padding: $spacer * 0.5;
   }
 
   #content-wrapper {
@@ -91,7 +90,7 @@
   }
 
   #main {
-    padding-top: $topbar-height-md;
+    //padding-top: $topbar-height-md;
   }
 
   .header-title-bar {

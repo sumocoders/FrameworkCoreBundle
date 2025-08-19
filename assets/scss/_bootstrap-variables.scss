@@ -598,7 +598,7 @@ $line-height-base:            1.5 !default;
 $line-height-sm:              1.25 !default;
 $line-height-lg:              2 !default;
 
-$h1-font-size:                $font-size-base * 1.875 !default; //30px
+$h1-font-size:                $font-size-base * 1.6 !default; //30px
 $h2-font-size:                $font-size-base * 1.5 !default; //24px
 $h3-font-size:                $font-size-base * 1.25 !default; //20px
 $h4-font-size:                $font-size-base * 1.125 !default; //18px
@@ -738,14 +738,14 @@ $table-bg-scale:              -80% !default;
 
 // scss-docs-start table-loop
 $table-variants: (
-  "primary":    shift-color($primary, $table-bg-scale),
-  "secondary":  shift-color($secondary, $table-bg-scale),
-  "success":    shift-color($success, $table-bg-scale),
-  "info":       shift-color($info, $table-bg-scale),
-  "warning":    shift-color($warning, $table-bg-scale),
-  "danger":     shift-color($danger, $table-bg-scale),
-  "light":      $light,
-  "dark":       $dark,
+    "primary":    shift-color($primary, $table-bg-scale),
+    "secondary":  shift-color($secondary, $table-bg-scale),
+    "success":    shift-color($success, $table-bg-scale),
+    "info":       shift-color($info, $table-bg-scale),
+    "warning":    shift-color($warning, $table-bg-scale),
+    "danger":     shift-color($danger, $table-bg-scale),
+    "light":      $light,
+    "dark":       $dark,
 ) !default;
 // scss-docs-end table-loop
 
@@ -1595,7 +1595,7 @@ $figure-caption-color:              var(--#{$prefix}secondary-color) !default;
 // Breadcrumbs
 
 // scss-docs-start breadcrumb-variables
-$breadcrumb-font-size:              null !default;
+$breadcrumb-font-size:              $font-size-base * 0.8 !default;
 $breadcrumb-padding-y:              0 !default;
 $breadcrumb-padding-x:              0 !default;
 $breadcrumb-item-padding-x:         .5rem !default;
@@ -1726,7 +1726,7 @@ $sidebar-width-open:      $sidebar-width-sizer * 2.75 !default;
 
 // Topbar
 
-$topbar-height-md:        4.25rem !default;
+$topbar-height-md:        74px !default;
 
 // Colors
 

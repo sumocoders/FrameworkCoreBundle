@@ -54,11 +54,13 @@ export default class extends Controller {
     document.dispatchEvent(new Event('add.collection.item'))
 
     let prototype = this.element.dataset.prototype
+    let prototypeName = this.element.dataset.prototypeName
     // get the new index
     const index = parseInt(this.element.dataset.index)
-    // Replace '__name__' in the prototype's HTML to
+    // Replace prototype name (default '__name__') in the prototype's HTML to
     // instead be a number based on how many items we have
-    prototype = prototype.replace(/__name__/g, index)
+    const regex = new RegExp(prototypeName, 'g')
+    prototype = prototype.replace(regex, index)
     // increase the index with one for the next item
     this.element.dataset.index = index + 1
 

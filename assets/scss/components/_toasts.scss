@@ -3,11 +3,10 @@
     border-left: 6px solid shift-color($value, $alert-color-scale);
 
     .toast-icon-wrapper {
-      background-color: shift-color($value, $alert-color-scale);
     }
 
     .toast-icon {
-      color: $white !important;
+      color: shift-color($value, $alert-color-scale) !important;
     }
 
     .toast-progress--inner {
@@ -19,7 +18,7 @@
 .toasts-wrapper {
   position: fixed;
   right: calc(#{$grid-gutter-width} / 2);
-  top: calc(#{$grid-gutter-width} / 2);
+  bottom: calc(#{$grid-gutter-width} / 2);
   width: calc(100% - #{$grid-gutter-width});
   z-index: 1060;
 }
@@ -38,8 +37,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
 }
 
@@ -55,15 +55,15 @@
     animation-fill-mode: forwards;
     animation-delay: 0.5s;
     height: 5px;
-    animation-duration: 10s;
   }
 }
 
 @include media-breakpoint-up(md) {
   .toasts-wrapper {
-    right: $grid-gutter-width;
-    top: $grid-gutter-width;
     width: auto;
+    top: calc(#{$grid-gutter-width} / 2);
+    bottom: unset;
+    margin-bottom: env(safe-area-inset-bottom);
   }
 
   .toast {

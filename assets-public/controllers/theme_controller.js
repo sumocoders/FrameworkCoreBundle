@@ -82,9 +82,6 @@ export default class extends Controller {
   }
 
   toggleDarkAssets (theme) {
-    const darkThemePath = document.querySelector('body').dataset.themePath
-    const darkStyleLinkTag = document.querySelector('link[rel=stylesheet][href="' + darkThemePath + '"]')
-    const body = document.querySelector('body')
     const logo = document.querySelector('[data-navbar-logo]')
     const darkLogo = document.querySelector('[data-navbar-logo-dark]')
 

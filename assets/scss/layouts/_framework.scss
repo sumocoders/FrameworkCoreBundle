@@ -26,7 +26,7 @@
 }
 
 .header-title-bar {
-  border-bottom: 1px $border-color solid;
+  border-bottom: 1px var(--bs-border-color) solid;
   overflow: hidden;
   padding: 20px 19px;
   transition: border-color $transition-theme-duration $transition-theme-timing-function;

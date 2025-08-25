@@ -107,7 +107,7 @@ body.no-scroll {
 
 .main-menu {
   z-index: 1040;
-  border-top: 1px $border-color solid;
+  border-top: 1px var(--bs-border-color) solid;
 
   .navbar {
     align-items: stretch;

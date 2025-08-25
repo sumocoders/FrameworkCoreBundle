@@ -108,7 +108,7 @@
 
   .main-header {
     background-color: $top-color;
-    border-bottom: 1px $border-color solid;
+    border-bottom: 1px var(--bs-border-color) solid;
     width: 100%;
     z-index: 900;
     position: sticky;
@@ -160,7 +160,7 @@
     }
 
     .btn-group {
-      border-left: 1px $border-color solid;
+      border-left: 1px var(--bs-border-color) solid;
       border-right: 0;
       transition: border-color $transition-theme-duration $transition-theme-timing-function;
 

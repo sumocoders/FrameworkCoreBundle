@@ -2,10 +2,6 @@
   color: var(--bs-body-color);
   background-color: #b2cadd;
 
-  @include color-mode(dark) {
-    background-color: #4B6376;
-  }
-
   #content {
     text-align: center;
 
@@ -18,10 +14,6 @@
       left: 0;
       top: 0;
       z-index: -1;
-
-      @include color-mode(dark) {
-        background-color: #81919F;
-      }
 
       @include media-breakpoint-up(sm) {
         height: 385px;
@@ -56,5 +48,17 @@
     background-size: contain;
     margin: 20px auto auto auto;
     padding-bottom: 30px;
+  }
+}
+
+@include color-mode(dark) {
+  .error-page {
+    background-color: #4B6376;
+
+    #content {
+      &::before {
+        background-color: #81919F;
+      }
+    }
   }
 }

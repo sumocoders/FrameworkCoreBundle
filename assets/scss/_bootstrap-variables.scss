@@ -1778,7 +1778,7 @@ $top-color:               $white !default;
 $logo-bg:                 $top-color !default;
 $user-bg:                 $top-color !default;
 $user-dropdown-bg:        $dropdown-bg !default;
-$navbar-toggler-color:    $body-color !default;
+$navbar-toggler-color:    var(--bs-body-color) !default;
 $menu-bg:                 $primary !default;
 $loading-indicator-color: $primary !default;
 

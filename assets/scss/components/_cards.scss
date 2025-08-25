@@ -37,10 +37,6 @@
   .card-body {
     //flex-grow: 1;
     background-color: $white;
-
-    @include color-mode(dark) {
-      background-color: $gray-900;
-    }
   }
 
   .card-footer {
@@ -155,5 +151,13 @@
   .card.card-dashboard .card-body {
     padding-bottom: 2rem;
     padding-top: 2rem;
+  }
+}
+
+@include color-mode(dark) {
+  .card {
+    .card-body {
+      background-color: $gray-900;
+    }
   }
 }

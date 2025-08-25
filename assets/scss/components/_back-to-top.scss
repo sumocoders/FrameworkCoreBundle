@@ -12,10 +12,6 @@
   transition: $transition-base;
   z-index: $zindex-backtotop;
 
-  @include color-mode(dark) {
-    background-color: $back-to-top-bg-dark;
-  }
-
   &:hover {
     transform: translateX(0);
   }
@@ -23,5 +19,11 @@
   &.show {
     animation: show 0.35s 1 forwards;
     display: block;
+  }
+}
+
+@include color-mode(dark) {
+  .back-to-top {
+    background-color: $back-to-top-bg-dark;
   }
 }

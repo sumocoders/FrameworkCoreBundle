@@ -11,7 +11,7 @@
     &:focus {
       background: var(--bs-primary-text-emphasis);
       border-color: var(--bs-primary-text-emphasis);
-      color: color-contrast(var(--bs-primary-text-emphasis));
+      color: color-contrast($primary);
     }
   }
 
@@ -61,6 +61,13 @@
     .flatpickr-months .flatpickr-next-month {
       color: $white;
       fill: $white;
+    }
+
+    .flatpickr-day {
+      &:hover,
+      &:focus {
+        color: color-contrast($primary-text-emphasis-dark);
+      }
     }
 
     .flatpickr-day.flatpickr-disabled,

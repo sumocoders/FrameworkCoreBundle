@@ -114,10 +114,6 @@
     position: sticky;
     top: 0;
 
-    @include color-mode(dark) {
-      background-color: $top-color-dark;
-    }
-
     .breadcrumb {
       border-bottom: 0;
       overflow: hidden;
@@ -187,6 +183,29 @@
 
       &::before {
         padding: 5px 15px 0;
+      }
+    }
+  }
+}
+
+@include color-mode(dark) {
+  @include media-breakpoint-up(md) {
+    .main-header {
+      background-color: $top-color-dark;
+    }
+  }
+
+  .user-nav {
+    background-color: $user-bg-dark;
+
+    .btn-group {
+      .btn-default {
+        color: color-contrast($user-bg-dark);
+
+        &:hover,
+        &:focus {
+          background-color: shade-color($user-bg-dark, 10%);
+        }
       }
     }
   }

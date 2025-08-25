@@ -755,7 +755,7 @@ $table-th-font-weight:        null !default;
 
 $table-striped-color:         $table-color !default;
 $table-striped-bg-factor:     0.05 !default;
-$table-striped-bg:            $light !default;
+$table-striped-bg:            var(--#{$prefix}emphasis-color) !default;
 
 $table-active-color:          $table-color !default;
 $table-active-bg-factor:      0.75 !default;
@@ -1255,7 +1255,7 @@ $dropdown-border-color:             var(--#{$prefix}border-color-translucent) !d
 $dropdown-border-radius:            var(--#{$prefix}border-radius) !default;
 $dropdown-border-width:             var(--#{$prefix}border-width) !default;
 $dropdown-inner-border-radius:      calc(#{$dropdown-border-radius} - #{$dropdown-border-width}) !default;
-$dropdown-divider-bg:               $gray-200 !default;
+$dropdown-divider-bg:               var(--#{$prefix}border-color) !default;
 $dropdown-divider-margin-y:         $spacer * 0.5 !default;
 $dropdown-box-shadow:               0 0.5rem 1rem rgba($black, 0.175) !default;
 

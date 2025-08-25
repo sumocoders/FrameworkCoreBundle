@@ -446,9 +446,19 @@ body.no-scroll {
 }
 
 @include color-mode(dark) {
+  .navbar-brand {
+    background-color: $logo-bg-dark;
+  }
+
+  .navbar {
+    background-color: $logo-bg-dark;
+  }
+
   .main-menu {
     .navbar-collapse {
       .nav-item {
+        background-color: $menu-bg-dark;
+
         &.current {
           background-color: shade-color($menu-bg-dark, 50%);
         }

@@ -4,7 +4,7 @@
 
 .form-group abbr[title] {
   border-bottom: 0;
-  color: $primary;
+  color: var(--bs-primary-text-emphasis);
   margin-left: 5px;
   text-decoration: none;
 }

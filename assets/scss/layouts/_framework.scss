@@ -46,7 +46,7 @@
   padding: 14px 15px 10px 20px;
 
   .btn-info {
-    background-color: $info;
+    background-color: var(--bs-info-text-emphasis);
     border-color: transparent;
     -webkit-font-smoothing: antialiased;
     font-style: normal;
@@ -54,7 +54,7 @@
 
     &:hover,
     &:focus {
-      background-color: shade-color($info, 15%);
+      background-color: color-mix(in srgb, var(--bs-info-text-emphasis), black 15%);
     }
   }
 
@@ -76,7 +76,7 @@
 }
 
 .collapse-actions-toggle {
-  color: $body-color;
+  color: var(--bs-body-color);
   padding: ($spacer * 0.3) $spacer;
 }
 

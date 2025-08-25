@@ -1,11 +1,11 @@
 @each $color, $value in $theme-colors {
   .alert-#{$color} {
     a {
-      color: shift-color($value, $alert-color-scale);
+      color: var(--bs-#{$color}-text-emphasis);
     }
 
     &::before {
-      color: shift-color($value, $alert-color-scale);
+      color: var(--bs-#{$color}-text-emphasis);
     }
   }
 }
@@ -44,5 +44,5 @@
 }
 
 .alert-dismissible .close {
-  color: $gray-400;
+  color: var(--bs-gray-400);
 }

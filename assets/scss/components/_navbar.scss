@@ -137,6 +137,10 @@ body.no-scroll {
 
       &.current {
         background-color: shade-color($menu-bg, 50%);
+
+        @include color-mode(dark) {
+          background-color: shade-color($menu-bg-dark, 50%);
+        }
       }
 
       &.current .nav-link,
@@ -151,6 +155,14 @@ body.no-scroll {
         &:hover::before,
         &:focus::before {
           animation: none;
+        }
+
+        @include color-mode(dark) {
+          color: color-contrast(shade-color($menu-bg-dark, 50%));
+
+          &::before {
+            background-color: color-contrast(shade-color($menu-bg-dark, 50%));
+          }
         }
       }
 
@@ -188,6 +200,24 @@ body.no-scroll {
         &.dropdown-toggle::after {
           display: none;
         }
+
+        @include color-mode(dark) {
+          color: color-contrast($menu-bg-dark);
+
+          &::before {
+            background-color: color-contrast($menu-bg-dark);
+          }
+
+          &:hover,
+          &:focus {
+            background-color: shade-color($menu-bg-dark, 50%);
+            color: color-contrast(shade-color($menu-bg-dark, 50%));
+
+            &::before {
+              background-color: color-contrast(shade-color($menu-bg-dark, 50%));
+            }
+          }
+        }
       }
 
       &.dropdown.show:not(.open) .fa-chevron-down {
@@ -206,6 +236,10 @@ body.no-scroll {
       padding: 0;
       position: relative;
       top: auto;
+
+      @include color-mode(dark) {
+        background-color: shade-color($menu-bg-dark, 8%);
+      }
 
       li {
         a.dropdown-item {
@@ -234,6 +268,19 @@ body.no-scroll {
               transform: translateX(7px);
             }
           }
+
+          @include color-mode(dark) {
+            color: color-contrast($menu-bg-dark);
+
+            &::before {
+              background-color: color-contrast($menu-bg-dark);
+            }
+
+            &:hover,
+            &:focus {
+              background-color: shade-color($menu-bg-dark, 10%);
+            }
+          }
         }
 
         &.current a.dropdown-item {
@@ -246,6 +293,10 @@ body.no-scroll {
           &:hover::before,
           &:focus::before {
             animation: none;
+          }
+
+          @include color-mode(dark) {
+            background-color: shade-color($menu-bg-dark, 10%);
           }
         }
       }
@@ -269,6 +320,11 @@ body.no-scroll {
       li a:hover {
         background-color: shade-color($menu-bg, 10%);
         color: color-contrast($menu-bg);
+
+        @include color-mode(dark) {
+          background-color: shade-color($menu-bg-dark, 10%);
+          color: color-contrast($menu-bg-dark);
+        }
       }
     }
 
@@ -290,6 +346,17 @@ body.no-scroll {
           &:hover,
           &:focus {
             background-color: shade-color($top-color, 10%);
+          }
+        }
+
+        @include color-mode(dark) {
+          background-color: $top-color-dark;
+
+          .nav-link {
+            &:hover,
+            &:focus {
+              background-color: shade-color($top-color-dark, 10%);
+            }
           }
         }
       }
@@ -339,6 +406,10 @@ body.no-scroll {
     width: $sidebar-width-open;
     z-index: 950;
 
+    @include color-mode(dark) {
+      background-color: $menu-bg-dark;
+    }
+
     .nav-link {
       height: 79px;
     }
@@ -377,6 +448,10 @@ body.no-scroll {
 
       &.collapsing {
         height: auto !important;
+      }
+
+      @include color-mode(dark) {
+        background-color: $menu-bg-dark;
       }
     }
   }

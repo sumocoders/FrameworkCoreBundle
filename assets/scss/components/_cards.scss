@@ -37,6 +37,10 @@
   .card-body {
     //flex-grow: 1;
     background-color: $white;
+
+    @include color-mode(dark) {
+      background-color: $gray-900;
+    }
   }
 
   .card-footer {
@@ -54,8 +58,8 @@
     }
 
     .btn-light {
-      background-color: $gray-100;
-      color: $primary;
+      background-color: var(--bs-gray-100);
+      color: var(--bs-primary-text-emphasis);
     }
   }
 
@@ -86,7 +90,7 @@
     }
 
     a {
-      color: $body-color;
+      color: var(--bs-body-color);
 
       &::after {
         bottom: 0;
@@ -109,8 +113,8 @@
 }
 
 .card-collection {
-  background: $body-bg;
-  border: 1px dashed $gray-400;
+  background: var(--bs-body-bg);
+  border: 1px dashed var(--bs-gray-400);
   padding-right: map_get($spacers, 4);
 
   &.card-collection-drag {
@@ -126,7 +130,7 @@
   background-color: $white;
 
   &:hover, &:focus, &:active {
-    background-color: $danger;
+    background-color: var(--bs-danger-text-emphasis);
   }
 }
 

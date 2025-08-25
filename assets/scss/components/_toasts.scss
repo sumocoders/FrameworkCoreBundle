@@ -45,12 +45,12 @@
 
 .toast-progress {
   height: 5px;
-  background-color: $gray-300;
+  background-color: var(--bs-gray-300);
   width: 100%;
 
   &--inner {
     width: 0;
-    background-color: $gray-600;
+    background-color: var(--bs-gray-600);
     animation-name: progress;
     animation-fill-mode: forwards;
     animation-delay: 0.5s;

@@ -3,7 +3,6 @@
 @import 'base/images';
 @import 'base/theme-transitions';
 @import 'base/type';
-@import 'base/no-sidebar';
 
 // Components
 @import 'components/accordion';
@@ -36,3 +35,6 @@
 @import 'layouts/search';
 @import 'layouts/header';
 @import 'layouts/actions';
+
+// Last for overrides
+@import 'base/no-sidebar';

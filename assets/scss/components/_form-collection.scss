@@ -36,3 +36,13 @@
 .collection-items {
   margin-bottom: 0;
 }
+
+@include color-mode(dark) {
+  .collection-item-delete {
+    background-color: $gray-850;
+
+    &:hover, &:focus, &:active {
+      background-color: $danger;
+    }
+  }
+}

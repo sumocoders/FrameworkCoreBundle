@@ -1,0 +1,5 @@
+@include color-mode(dark) {
+  .accordion-button:not(.collapsed) {
+    background: $gray-850;
+  }
+}

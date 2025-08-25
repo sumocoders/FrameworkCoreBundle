@@ -1,0 +1,5 @@
+@include color-mode(dark) {
+  .fa-inverse {
+    color: $body-color;
+  }
+}

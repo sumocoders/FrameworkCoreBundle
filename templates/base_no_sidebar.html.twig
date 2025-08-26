@@ -23,14 +23,22 @@
       </div>
     </div>
     <div class="navbar-header d-md-none d-flex">
-      <button class="navbar-toggler navbar-toggler-right ms-auto collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-collapse-1" aria-controls="navbar-collapse-1" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
+      <button class="btn btn-default d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasUser" aria-controls="offcanvasResponsive">
+        <i class="fa-solid fa-gear"></i>
       </button>
     </div>
-    <div class="d-none d-md-flex ms-auto">
-      {{ include('@SumoCodersFrameworkCore/usermenu.html.twig', {mobile: false}) }}
-      {{ include('@SumoCodersFrameworkCore/themetoggler.html.twig', {mobile: false}) }}
-      {% if locales|length > 1 %}{{ include('@SumoCodersFrameworkCore/languagetoggler.html.twig', {mobile: false}) }}{% endif %}
+    <div class="ms-auto">
+      <div class="offcanvas-lg offcanvas-end" tabindex="-1" id="offcanvasUser" aria-labelledby="offcanvasUserLabel">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="offcanvasUserLabel">{{ 'Settings'|trans }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#offcanvasUser" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body d-flex flex-column flex-lg-row justify-content-start justify-content-lg-end px-0">
+          {{ include('@SumoCodersFrameworkCore/usermenu.html.twig', {mobile: false}) }}
+          {{ include('@SumoCodersFrameworkCore/themetoggler.html.twig', {mobile: false}) }}
+          {% if locales|length > 1 %}{{ include('@SumoCodersFrameworkCore/languagetoggler.html.twig', {mobile: false}) }}{% endif %}
+        </div>
+      </div>
     </div>
   </div>
 </div>

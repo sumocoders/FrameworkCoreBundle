@@ -5,6 +5,7 @@
   font-weight: 600;
   margin: 0;
   width: 100%;
+  background-color: $top-color;
 
   .btn-group {
     -webkit-font-smoothing: antialiased;
@@ -35,7 +36,6 @@
 
   .fa-chevron-down {
     font-size: $font-size-sm;
-    padding: 0 0 2px 0;
     transform: rotate(0deg);
     transition-property: transform, padding;
     transition-duration: 0.4s;
@@ -91,6 +91,10 @@
   .navbar-header {
     padding: 5px 10px;
   }
+
+  .breadcrumb {
+    margin-bottom: 0;
+  }
 }
 
 .main-menu .navbar-collapse .user-nav .dropdown-menu {
@@ -120,7 +124,6 @@
       padding: 0;
       text-overflow: ellipsis;
       white-space: nowrap;
-      margin-bottom: 0;
     }
 
     .alert {
@@ -173,7 +176,7 @@
         padding: 0 0 0 10px;
       }
 
-      .show .fa-chevron-down {
+      .btn.show .fa-chevron-down {
         padding: 0 10px 0 0;
       }
     }
@@ -193,6 +196,10 @@
     .main-header {
       background-color: $top-color-dark;
     }
+  }
+
+  .sub-nav {
+    background-color: $top-color-dark;
   }
 
   .user-nav {

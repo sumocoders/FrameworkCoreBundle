@@ -30,6 +30,7 @@
     <div class="d-none d-md-flex ms-auto">
       {{ include('@SumoCodersFrameworkCore/usermenu.html.twig', {mobile: false}) }}
       {{ include('@SumoCodersFrameworkCore/themetoggler.html.twig', {mobile: false}) }}
+      {% if locales|length > 1 %}{{ include('@SumoCodersFrameworkCore/languagetoggler.html.twig', {mobile: false}) }}{% endif %}
     </div>
   </div>
 </div>

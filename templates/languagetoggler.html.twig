@@ -1,0 +1,18 @@
+<div class="user-nav theme-toggler d-flex h-100">
+  <div class="user btn-group dropdown">
+    <button class="btn btn-default dropdown-toggle d-flex align-items-center" id="bd-theme" type="button" aria-expanded="false" data-bs-toggle="dropdown" data-bs-display="static" aria-label="Toggle language">
+      {{ app.request.locale|upper }}
+      <span class="d-lg-none ms-2" id="bd-language-text">Toggle language</span>
+      <span class="fas fa-chevron-down fa-w-16"></span>
+    </button>
+    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-user" aria-labelledby="bd-language-text">
+      {% for locale in locales %}
+        {% if not loop.first %}
+          <li class="dropdown-divider"></li>{% endif %}
+        <li>
+          <a class="dropdown-item {{ locale == app.request.locale ? 'active' : '' }}" href="{{ path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')|merge({"_locale": locale})) }}">{{ locale != '' ? locale|upper : 'NL' }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>

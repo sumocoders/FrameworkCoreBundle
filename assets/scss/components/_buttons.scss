@@ -1,0 +1,8 @@
+@include color-mode(dark) {
+  @each $state, $value in $theme-colors {
+    .btn-#{$state} {
+      background-color:  rgba($value, 0.8);
+      border-color:  rgba($value, 0.8);
+    }
+  }
+}

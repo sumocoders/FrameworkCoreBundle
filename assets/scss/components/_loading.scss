@@ -23,7 +23,7 @@
     animation: loading-effect 3s infinite linear;
     background-color: yellow;
     background-size: 50px 50px;
-    background-image: linear-gradient(-45deg, tint-color($loading-indicator-color, 15%) 25%, $body-bg 25%, $body-bg 50%, lighten($loading-indicator-color, 15%) 50%, lighten($loading-indicator-color, 15%) 75%, $body-bg 75%, $body-bg);
+    background-image: linear-gradient(-45deg, tint-color($loading-indicator-color, 15%) 25%, var(--bs-body-bg) 25%, var(--bs-body-bg) 50%, lighten($loading-indicator-color, 15%) 50%, lighten($loading-indicator-color, 15%) 75%, var(--bs-body-bg) 75%, var(--bs-body-bg));
     border: 1px solid tint-color($loading-indicator-color, 15%);
     border-radius: 50px;
     height: 20px;

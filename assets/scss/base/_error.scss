@@ -1,5 +1,5 @@
 .error-page {
-  color: #444;
+  color: var(--bs-body-color);
   background-color: #b2cadd;
 
   #content {
@@ -48,5 +48,17 @@
     background-size: contain;
     margin: 20px auto auto auto;
     padding-bottom: 30px;
+  }
+}
+
+@include color-mode(dark) {
+  .error-page {
+    background-color: #4B6376;
+
+    #content {
+      &::before {
+        background-color: #81919F;
+      }
+    }
   }
 }

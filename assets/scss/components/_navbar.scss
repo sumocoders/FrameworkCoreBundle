@@ -42,7 +42,7 @@ body.no-scroll {
   padding: 0;
 
   img {
-    margin: 5px 0 5px $spacer;
+    margin: 5px 0 5px 5px;
     height: 50px;
   }
 }
@@ -106,15 +106,12 @@ body.no-scroll {
 }
 
 .main-menu {
-  left: 0;
-  position: fixed;
-  top: 0;
-  right: 0;
   z-index: 1040;
+  border-top: 1px var(--bs-border-color) solid;
 
   .navbar {
     align-items: stretch;
-    height: 60px;
+    height: 0;
 
     .navbar-header {
       padding: 5px 10px;
@@ -314,7 +311,6 @@ body.no-scroll {
   .navbar-brand {
     height: $topbar-height-md;
     margin-left: 0;
-    width: 100%;
 
     img {
       margin-left: auto;
@@ -338,6 +334,7 @@ body.no-scroll {
     background-color: $menu-bg;
     height: 100%;
     left: 0;
+    top: $topbar-height-md;
     position: fixed;
     width: $sidebar-width-open;
     z-index: 950;
@@ -443,6 +440,109 @@ body.no-scroll {
             }
           }
         }
+      }
+    }
+  }
+}
+
+@include color-mode(dark) {
+  .navbar-brand {
+    background-color: $logo-bg-dark;
+  }
+
+  .navbar {
+    background-color: $logo-bg-dark;
+  }
+
+  .main-menu {
+    .navbar-collapse {
+      .nav-item {
+        background-color: $menu-bg-dark;
+
+        &.current {
+          background-color: shade-color($menu-bg-dark, 50%);
+        }
+
+        &.current .nav-link,
+        &.dropdown.show .nav-link {
+          color: color-contrast(shade-color($menu-bg-dark, 50%));
+
+          &::before {
+            background-color: color-contrast(shade-color($menu-bg-dark, 50%));
+          }
+        }
+
+        .nav-link {
+          color: color-contrast($menu-bg-dark);
+
+          &::before {
+            background-color: color-contrast($menu-bg-dark);
+          }
+
+          &:hover,
+          &:focus {
+            background-color: shade-color($menu-bg-dark, 50%);
+            color: color-contrast(shade-color($menu-bg-dark, 50%));
+
+            &::before {
+              background-color: color-contrast(shade-color($menu-bg-dark, 50%));
+            }
+          }
+        }
+      }
+
+      .dropdown-menu:not(.dropdown-menu-user) {
+        background-color: shade-color($menu-bg-dark, 8%);
+
+        li {
+          a.dropdown-item {
+            color: color-contrast($menu-bg-dark);
+
+            &::before {
+              background-color: color-contrast($menu-bg-dark);
+            }
+
+            &:hover,
+            &:focus {
+              background-color: shade-color($menu-bg-dark, 10%);
+            }
+          }
+
+          &.current a.dropdown-item {
+            background-color: shade-color($menu-bg-dark, 10%);
+          }
+        }
+      }
+
+      .open .dropdown-menu {
+        .current .dropdown-item,
+        li a:hover {
+          background-color: shade-color($menu-bg-dark, 10%);
+          color: color-contrast($menu-bg-dark);
+        }
+      }
+
+      .toggle-menu-visibility {
+        .nav-item {
+          background-color: $top-color-dark;
+
+          .nav-link {
+            &:hover,
+            &:focus {
+              background-color: shade-color($top-color-dark, 10%);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  @include media-breakpoint-up(md) {
+    .main-menu {
+      background-color: $menu-bg-dark;
+
+      .navbar-collapse {
+        background-color: $menu-bg-dark;
       }
     }
   }

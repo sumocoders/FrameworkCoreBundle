@@ -1,0 +1,51 @@
+#offcanvasUser {
+  .btn-close {
+    padding: 12px;
+  }
+
+  @include media-breakpoint-down(lg) {
+    .user-nav {
+      margin-bottom: 1rem;
+
+      .user {
+        border: none
+      }
+    }
+
+    .btn-group {
+      width: 100%;
+    }
+
+    .dropdown-toggle {
+      padding-top: 8px;
+      padding-bottom: 8px;
+      background-color: $gray-200;
+      border-top: 1px solid $gray-400;
+      border-bottom: 1px solid $gray-400;
+
+      .fa-chevron-down {
+        display: none;
+      }
+    }
+
+    .dropdown-menu {
+      display: block;
+      position: static;
+      border: none;
+      width: 100%;
+      border-radius: 0;
+    }
+  }
+}
+
+@include color-mode(dark) {
+  #offcanvasUser {
+    @include media-breakpoint-down(lg) {
+      .dropdown-toggle {
+        background-color: rgba($gray-900, 0.5);
+        border-top: 1px solid rgba($gray-800, 0.3);
+        border-bottom: 1px solid rgba($gray-900, 0.3);
+      }
+    }
+  }
+}

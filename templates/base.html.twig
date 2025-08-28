@@ -56,37 +56,28 @@
     {% endblock %}
   </div>
   <div id="content-wrapper">
-    <div class="d-flex flex-column align-items-end">
-      <div class="d-md-none">
-        {% if block('header_navigation') is defined and block('header_navigation') is not empty %}
-          <button type="button" class="navbar-toggler h-100 collapse-actions-toggle"  data-bs-toggle="collapse" data-bs-target="#action-buttons-collapse" aria-expanded="false" aria-controls="action-buttons-collapse">
-            <i class="fas fa-ellipsis-v"></i>
-          </button>
-        {% endif %}
-      </div>
-      {% if block('header_navigation') is defined and block('header_navigation') is not empty %}
-        <div class="collapse collapse-actions" id="action-buttons-collapse">
-          <div class="action-buttons action-buttons-mobile">
-            {{ block('header_navigation') }}
-          </div>
-        </div>
-      {% endif %}
-    </div>
     <section id="main" role="main">
       <div class="header-subbar">
         {{ include('@SumoCodersFrameworkCore/notifications.html.twig') }}
         {% if block('header_navigation') is defined and block('header_navigation') is not empty %}
           <div class="header-title-bar d-none d-md-flex justify-content-md-between align-items-md-center flex-column flex-md-row flex-wrap">
             <div class="ms-md-auto">
-              <div class="d-flex gap-2 align-items-center">
+              <div class="d-flex flex-wrap gap-2 align-items-center">
                 {{ block('header_navigation') }}
               </div>
             </div>
           </div>
         {% endif %}
+        {% if has_header_actions %}
+          <div class="buttons-fixed{% if not sidebarIsOpen() %} sidebar-collapsed{% endif %}" data-sidebar-collapsable-target="toggleable">
+            <div class="order-1 order-lg-0">{{ block('header_actions_left') }}</div>
+            <div class="order-0 order-lg-1 d-flex flex-wrap justify-content-center gap-1 buttons-fixed-center">{{ block('header_actions_center') }}</div>
+            <div class="order-2">{{ block('header_actions_right') }}</div>
+          </div>
+        {% endif %}
       </div>
       <div class="container-fluid">
-        <div class="main-content">
+        <div class="main-content{% if has_header_actions %} has-buttons-fixed{% endif %}">
           {% block main %}
 
           {% endblock %}

@@ -1,4 +1,12 @@
+{% use 'bootstrap_5_layout.html.twig' %}
 {% import _self as formMacros %}
+
+{%- block form_start -%}
+    {% if attr.id is not defined %}
+        {% set attr = attr|merge({'id': form.vars.id}) %}
+    {% endif %}
+    {{ parent() }}
+{%- endblock form_start -%}
 
 {%- block form_label -%}
   {% if label is not same as(false) -%}

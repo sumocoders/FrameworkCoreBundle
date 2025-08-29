@@ -1,3 +1,13 @@
+{% set has_header_actions_left = (block('header_actions_left') is defined) ? block('header_actions_left') : '' %}
+{% set has_header_actions_center = (block('header_actions_center') is defined) ? block('header_actions_center') : '' %}
+{% set has_header_actions_right  = (block('header_actions_right') is defined) ? block('header_actions_right') : '' %}
+
+{% set has_header_actions =
+  has_header_actions_left|trim is not empty
+  or has_header_actions_center|trim is not empty
+  or has_header_actions_right|trim is not empty
+%}
+
 {% block head %}
   {{ include('@SumoCodersFrameworkCore/head.html.twig', {title: block('title') is defined ? block('title') : page_title}) }}
 {% endblock %}

@@ -33,3 +33,18 @@ There are three positions:
     
 {% endblock %}
 ```
+
+## Submit forms with buttons in the fixed toolbar
+
+When using a form, you can place the submit button in the fixed toolbar by adding the `form` attribute to the button.
+
+```twig
+{% block header_actions_right %}
+    <button class="btn btn-primary" type="submit" form="{{ form.vars.id }}" data-turbo="true">
+        <i class="fas fa-save mr-2"></i>
+        {{ 'Save'|trans }}
+    </button>
+{% endblock %}
+```
+
+The important part is `form="{{ form.vars.id }}"` which links the button to the form.

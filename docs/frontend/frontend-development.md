@@ -8,12 +8,18 @@ We use Symfony AssetMapper to manage our assets. See the [documentation](https:/
 ## Sass
 All Sass sources are included in `framework-core-bundle` bundle under `assets/scss/`.
 
-While developing, you can run `symfony console sass:build --watch` to automatically compile on change. If you are migrating from Webpack Encore, remove any stale files from `public/build` to avoid confusion.
+While developing, you can run `symfony console sass:build --watch` to automatically compile on change.
 
 ### Overriding Bootstrap variables
 Use `assets/scss/_bootstrap-variables.scss` to override Bootstrap variables. Import this file in `assets/scss/style.scss` before the Bootstrap imports so your overrides take effect.
 
 Use Bootstrap variables as much as possible to customize styling — this makes the code easier to maintain.
+
+#### Variables
+- `$top-color` sets the top navbar background color
+- `$menu-bg` sets the sidebar background color
+- `$primary` sets the primary color used in buttons, links, etc.
+- `$secondary` sets the secondary color used in buttons, links, etc.
 
 ### Dark mode
 We use Bootstrap’s dark mode implementation. See the
@@ -66,6 +72,12 @@ Don’t forget to add a new entry in `config/packages/symfonycasts_sass.yaml` fo
 ### Separate JavaScript
 
 This works the same way as Sass. Create a new entry and a new collector file (for example: `app-frontend.js`) in a separate frontend JavaScript folder in your app. Load the correct entry in your frontend templates.
+
+## Upgrading from separate dark mode stylesheet
+
+- Remove the style-dark.scss stylesheet
+- Remove the import from style.scss
+- Remove the style-dark entry from config/packages/symfonycasts_sass.yaml
 
 ## Extra
 

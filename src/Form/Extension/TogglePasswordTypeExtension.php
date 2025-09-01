@@ -25,7 +25,7 @@ final class TogglePasswordTypeExtension extends AbstractTypeExtension
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'toggle' => false,
+            'toggle' => true,
             'hidden_label' => 'Hide',
             'visible_label' => 'Show',
             'hidden_icon' => 'Default',

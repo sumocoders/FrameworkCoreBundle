@@ -6,7 +6,6 @@ use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
-use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Translation\TranslatableMessage;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -32,14 +31,8 @@ final class TogglePasswordTypeExtension extends AbstractTypeExtension
             'visible_icon' => 'Default',
             'button_classes' => ['toggle-password-button'],
             'toggle_container_classes' => ['toggle-password-container'],
-            'toggle_translation_domain' => null,
             'use_toggle_form_theme' => true,
         ]);
-
-        $resolver->setNormalizer(
-            'toggle_translation_domain',
-            static fn (Options $options, $labelTranslationDomain) => $labelTranslationDomain ?? $options['translation_domain'],
-        );
 
         $resolver->setAllowedTypes('toggle', ['bool']);
         $resolver->setAllowedTypes('hidden_label', ['string', TranslatableMessage::class, 'null']);
@@ -48,7 +41,6 @@ final class TogglePasswordTypeExtension extends AbstractTypeExtension
         $resolver->setAllowedTypes('visible_icon', ['string', 'null']);
         $resolver->setAllowedTypes('button_classes', ['string[]']);
         $resolver->setAllowedTypes('toggle_container_classes', ['string[]']);
-        $resolver->setAllowedTypes('toggle_translation_domain', ['string', 'bool', 'null']);
         $resolver->setAllowedTypes('use_toggle_form_theme', ['bool']);
     }
 
@@ -67,13 +59,8 @@ final class TogglePasswordTypeExtension extends AbstractTypeExtension
         $controllerName = 'toggle-password';
         $view->vars['attr']['data-controller'] = trim(\sprintf('%s %s', $view->vars['attr']['data-controller'] ?? '', $controllerName));
 
-        if (false !== $options['toggle_translation_domain']) {
-            $controllerValues['hidden-label'] = $this->translateLabel($options['hidden_label'], $options['toggle_translation_domain']);
-            $controllerValues['visible-label'] = $this->translateLabel($options['visible_label'], $options['toggle_translation_domain']);
-        } else {
-            $controllerValues['hidden-label'] = $options['hidden_label'];
-            $controllerValues['visible-label'] = $options['visible_label'];
-        }
+        $controllerValues['hidden-label'] = $this->translateLabel($options['hidden_label'], $options['translation_domain']);
+        $controllerValues['visible-label'] = $this->translateLabel($options['visible_label'], $options['translation_domain']);
 
         $controllerValues['hidden-icon'] = $options['hidden_icon'];
         $controllerValues['visible-icon'] = $options['visible_icon'];

@@ -25,7 +25,7 @@
         </li>
         <div class="dropdown-divider"></div>
           {% if is_granted('IS_IMPERSONATOR') %}
-              <li><a href="{{ impersonation_exit_path(path('user_overview')) }}" class="dropdown-item" data-turbo-prefetch="false">{{ 'user.actions.switchback'|trans|ucfirst }}</a></li>
+              <li><a href="{{ impersonation_exit_path(path('user_admin_overview')) }}" class="dropdown-item" data-turbo-prefetch="false">{{ 'user.actions.switchback'|trans|ucfirst }}</a></li>
           {% else %}
               <li><a href="{{ path('_logout_main') }}" class="dropdown-item" data-turbo-prefetch="false">{{ 'user.actions.logout'|trans|ucfirst }}</a></li>
           {% endif %}

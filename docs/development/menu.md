@@ -50,7 +50,7 @@ use SumoCoders\FrameworkCoreBundle\Event\ConfigureMenuEvent;
 use SumoCoders\FrameworkCoreBundle\EventListener\DefaultMenuListener;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class MenuListener extends DefaultMenuListener implements EventSubscirberInterface
+class MenuListener extends DefaultMenuListener implements EventSubscriberInterface
 {
     public function onConfigureMenu(ConfigureMenuEvent $event): void
     {

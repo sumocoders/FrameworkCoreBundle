@@ -48,6 +48,7 @@ namespace App\EventListener;
 
 use SumoCoders\FrameworkCoreBundle\Event\ConfigureMenuEvent;
 use SumoCoders\FrameworkCoreBundle\EventListener\DefaultMenuListener;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class MenuListener extends DefaultMenuListener
 {

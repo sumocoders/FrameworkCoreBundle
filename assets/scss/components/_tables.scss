@@ -3,7 +3,7 @@ table.table {
 
   thead {
     background-color: $white;
-    color: $body-color;
+    color: var(--bs-body-color);
     font-style: normal;
     font-weight: $font-weight-bold;
 

@@ -1,18 +1,18 @@
 .ui-autocomplete.ui-widget-content {
-  border-color: $gray-700;
+  border-color: var(--bs-gray-700);
   z-index: 100000;
 
   .ui-menu-item a {
-    color: $gray-100;
+    color: var(--bs-gray-100);
   }
 
   .ui-state-focus a {
-    color: $white;
+    color: var(--bs-white);
   }
 
   .ui-state-focus {
-    background: $primary;
-    border-color: $primary;
+    background: var(--bs-primary-text-emphasis);
+    border-color: var(--bs-primary-text-emphasis);
     color: $white;
   }
 }
@@ -23,7 +23,7 @@
 }
 
 .ui-state-focus {
-  background: $primary;
+  background: var(--bs-primary-text-emphasis);
   border: 0;
   color: $white;
   margin: 0;

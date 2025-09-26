@@ -1,0 +1,87 @@
+@include color-mode(dark) {
+  // Partial dark mode for EditorJs
+  // From: https://github.com/codex-team/editor.js/issues/1537#issuecomment-912073080
+  /* stylelint-disable selector-class-pattern -- disable kebab-case check */
+
+  .ce-inline-tool,
+  .ce-conversion-toolbar__label,
+  .ce-toolbar__settings-btn,
+  .ce-toolbox__button,
+  .cdx-settings-button,
+  .ce-toolbar__plus {
+    color: inherit;
+  }
+
+  .ce-block--selected .ce-block__content,
+  .ce-inline-toolbar,
+  .codex-editor--narrow .ce-toolbox,
+  .ce-conversion-toolbar,
+  .ce-settings,
+  .ce-settings__button,
+  .cdx-button,
+  .ce-popover,
+  .ce-toolbar__plus:hover {
+    background-color: $primary;
+    color: inherit;
+  }
+
+  .codex-editor ::selection {
+    background-color: $primary;
+  }
+
+  .cdx-settings-button:hover,
+  .ce-settings__button:hover,
+  .ce-toolbox__button--active,
+  .ce-toolbox__button:hover,
+  .cdx-button:hover,
+  .ce-inline-toolbar__dropdown:hover,
+  .ce-inline-tool:hover,
+  .ce-popover__item:hover,
+  .ce-toolbar__settings-btn:hover {
+    background-color: $primary;
+    color: inherit;
+  }
+
+  .ce-inline-tool-input {
+    color: var(--color-text-primary);
+  }
+
+  .cdx-notify--error {
+    background: $danger !important;
+  }
+
+  .cdx-notify__cross::after,
+  .cdx-notify__cross::before {
+    background: $body-color;
+  }
+
+  .cdx-input {
+    &:empty::before {
+      color: $gray-400 !important;
+    }
+  }
+
+  input {
+    background-color: transparent;
+  }
+
+  .ce-popover__container {
+    background-color: var(--bs-body-bg);
+    border-color:  var(--bs-body-bg) !important;
+    color: var(--bs-body-color);
+  }
+
+  .ce-popover-item {
+    color: var(--bs-body-color);
+
+    &:hover, &:focus {
+      background-color: $gray-800;
+      color: var(--bs-body-color);
+    }
+  }
+
+  .ce-popover__search {
+    background-color: var(--bs-body-bg);
+    color: var(--bs-body-color);
+  }
+}

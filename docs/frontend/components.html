@@ -154,3 +154,89 @@
   <img src="{{ asset('images/no-results.svg') }}" alt="">
   {{ 'quotation.empty.items'|trans }}
 </div>
+
+<!-- Card layout -->
+<div class="row g-3">
+
+<!--  Card with one button-->
+  <div class="col-md-6 col-lg-4 col-xl-3">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Card title</h5>
+        <p class="card-text">
+          Card body text
+        </p>
+      </div>
+      <div class="card-footer">
+<!--        You can use text in the button when there is only one action, or use an icon when there are multiple actions. Only use stretched-link class when there is only one button. -->
+        <a href="#" data-bs-toggle="modal" data-bs-target="#confirmReminderModal" data-id="{{ dossier.id }}" class="btn btn-light stretched-link">
+          <i class="fas fa-envelope me-2" aria-hidden="true"></i>
+          {{ 'Send reminder'|trans }}
+        </a>
+      </div>
+    </div>
+  </div>
+
+<!--  Card with multiple buttons-->
+  <div class="col-md-6 col-lg-4 col-xl-3">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">{{ dossier.id }}</h5>
+        {% if dossier.trader and dossier.trader.traderContact %}
+        <p class="card-text">
+          {{ dossier.trader.traderContact.firstName }} {{ dossier.trader.traderContact.lastName }}
+        </p>
+        {% endif %}
+      </div>
+      <div class="card-footer">
+        <a href="#" data-bs-toggle="modal" data-bs-target="#confirmReminderModal" data-id="{{ dossier.id }}" class="btn btn-light" data-controller="tooltip" data-turbo="false" title="{{ 'Send reminder'|trans }}">
+          <i class="fas fa-envelope" aria-hidden="true"></i>
+        </a>
+        <a href="{{ path('permanence_update', {dossier: dossier.id, permanence: dossier.permanence.id}) }}" data-controller="tooltip" title="{{ 'View dossier'|trans }}" data-turbo="false" class="btn btn-light btn-square">
+          <i class="fas fa-eye" aria-hidden="true"></i>
+          <span class="visually-hidden">{{ 'View permanence'|trans }}</span>
+        </a>
+        <a href="{{ path('permanence_update', {dossier: dossier.id, permanence: dossier.permanence.id}) }}" data-controller="tooltip" title="{{ 'View dossier'|trans }}" data-turbo="false" class="btn btn-light btn-square">
+          <i class="fas fa-eye" aria-hidden="true"></i>
+          <span class="visually-hidden">{{ 'View permanence'|trans }}</span>
+        </a>
+        <a href="{{ path('permanence_update', {dossier: dossier.id, permanence: dossier.permanence.id}) }}" data-controller="tooltip" title="{{ 'View dossier'|trans }}" data-turbo="false" class="btn btn-light btn-square">
+          <i class="fas fa-eye" aria-hidden="true"></i>
+          <span class="visually-hidden">{{ 'View permanence'|trans }}</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+<!--  Card with image-->
+  <div class="col-md-6 col-lg-4 col-xxl-3">
+    <div class="card-light">
+      <img src="https://placehold.co/600x400" class="card-img-top" alt="">
+      <div class="card-body flex-grow-0">
+        <h4 class="card-title mb-0">Card title</h4>
+      </div>
+      <hr class="m-0">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-4"><strong>{{ 'Location'|trans }}:</strong></div>
+          <div class="col">AB | Brussel</div>
+        </div>
+        <div class="row">
+          <div class="col-4"><strong>{{ 'Dates'|trans }}:</strong></div>
+          <div class="col">18/08</div>
+        </div>
+        <div class="row">
+          <div class="col-4"><strong>{{ 'Genre'|trans }}:</strong></div>
+          <div class="col">Rock</div>
+        </div>
+      </div>
+      <div class="card-footer justify-content-between">
+        <i class="fa-solid fa-star text-warning" data-bs-toggle="tooltip" data-bs-title="{{ 'Humo tip'|trans }}"></i>
+
+        <a class="text-nowrap btn btn-outline-primary btn-square stretched-link ms-auto" href="#">
+          <i class="fas fa-edit" title="{{ 'Edit'|trans }}" data-toggle="tooltip" data-placement="top"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

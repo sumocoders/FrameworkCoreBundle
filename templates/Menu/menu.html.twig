@@ -2,9 +2,9 @@
 
 {% block label %}
   {% if item.labelAttributes.icon is defined %}
-    <i class="{{ item.labelAttributes.icon }} fa-fw menu-item-icon"></i>
+    <i class="{{ item.labelAttributes.icon }} fa-width-auto menu-item-icon"></i>
   {% else %}
-    <i class="fas fa-circle fa-fw menu-item-icon"></i>
+    <i class="fas fa-circle fa-width-auto menu-item-icon"></i>
   {% endif %}
   {% if item.parent.name == 'root' and item.hasChildren %}
     <i class="fas fa-chevron-down"></i>

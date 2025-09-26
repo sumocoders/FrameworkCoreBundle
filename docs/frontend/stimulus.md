@@ -129,6 +129,30 @@ This works automatically when you use the `RepeatedPasswordStrengthType` in your
         );
 ```
 
+## Password Visibility Toggle
+
+This works automatically when you use the `PasswordType` or `RepeatedPasswordStrengthType` in your form type.
+
+It allows visitors to switch the type of password field to text and vice versa.
+
+Options for customizing:
+
+```php
+    $builder->add('password', PasswordType::class, [
+        // Turn off the visibility toggle
+        'toggle' => false,
+
+        // Disable custom form theme
+        'use_toggle_form_theme' => false
+
+        // Customizing labels and icons
+        'hidden_label' => 'Masquer',
+        'visible_label' => 'Afficher',
+        'visible_icon' => null,
+        'hidden_icon' => null,
+    ]);
+```
+
 ## DateTime pickers
 
 This works automatically when you use the `DateType`, `DateTimeType` or `TimeType` in your form type.

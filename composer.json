@@ -38,7 +38,6 @@
     "doctrine/orm": "^3.3",
     "symfony/doctrine-messenger": "^7.3",
     "symfony/intl": "^7.3",
-    "symfony/ux-toggle-password": "^2.22",
     "nelmio/security-bundle": "^3.5"
   },
   "require-dev": {

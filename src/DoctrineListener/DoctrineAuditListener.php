@@ -4,33 +4,20 @@ namespace SumoCoders\FrameworkCoreBundle\DoctrineListener;
 
 use DateTimeInterface;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Proxy\Proxy;
-use Doctrine\Common\Util\ClassUtils;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Event\PostPersistEventArgs;
-use Doctrine\ORM\Event\PostRemoveEventArgs;
-use Doctrine\ORM\Event\PostUpdateEventArgs;
-use Doctrine\ORM\Event\PreRemoveEventArgs;
-use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\Embedded;
-use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToOne;
 use Doctrine\ORM\UnitOfWork;
-use PhpParser\Node\Stmt\PropertyProperty;
 use ReflectionClass;
 use ReflectionProperty;
 use SumoCoders\FrameworkCoreBundle\Attribute\AuditTrail\AuditTrail;
 use SumoCoders\FrameworkCoreBundle\Attribute\AuditTrail\SensitiveData;
 use SumoCoders\FrameworkCoreBundle\Enum\EventAction;
 use SumoCoders\FrameworkCoreBundle\Logger\AuditLogger;
-use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
-use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
-use Symfony\Component\Serializer\SerializerInterface;
 
 #[AsDoctrineListener(event: Events::postPersist, priority: 500)]
 #[AsDoctrineListener(event: Events::onFlush, priority: 500)]

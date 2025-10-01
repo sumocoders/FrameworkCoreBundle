@@ -4,40 +4,28 @@ namespace SumoCoders\FrameworkCoreBundle\DoctrineListener;
 
 use DateTimeInterface;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Proxy\Proxy;
-use Doctrine\Common\Util\ClassUtils;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Event\PostPersistEventArgs;
-use Doctrine\ORM\Event\PostRemoveEventArgs;
-use Doctrine\ORM\Event\PostUpdateEventArgs;
-use Doctrine\ORM\Event\PreRemoveEventArgs;
-use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\Embedded;
-use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToOne;
 use Doctrine\ORM\UnitOfWork;
-use PhpParser\Node\Stmt\PropertyProperty;
+use Doctrine\Persistence\Proxy;
 use ReflectionClass;
 use ReflectionProperty;
 use SumoCoders\FrameworkCoreBundle\Attribute\AuditTrail\AuditTrail;
 use SumoCoders\FrameworkCoreBundle\Attribute\AuditTrail\SensitiveData;
 use SumoCoders\FrameworkCoreBundle\Enum\EventAction;
 use SumoCoders\FrameworkCoreBundle\Logger\AuditLogger;
-use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
-use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
-use Symfony\Component\Serializer\SerializerInterface;
 
 #[AsDoctrineListener(event: Events::postPersist, priority: 500)]
 #[AsDoctrineListener(event: Events::onFlush, priority: 500)]
-class DoctrineAuditListener
+final readonly class DoctrineAuditListener
 {
     public function __construct(
-        private readonly AuditLogger $auditLogger,
+        private AuditLogger $auditLogger,
     ) {
     }
 
@@ -46,9 +34,18 @@ class DoctrineAuditListener
         $unitOfWork = $args->getObjectManager()->getUnitOfWork();
 
         foreach ($unitOfWork->getScheduledEntityUpdates() as $entityUpdate) {
-            $auditTrailAttributes = (new ReflectionClass($entityUpdate))->getAttributes(AuditTrail::class);
+            $entityUpdateReflectionClass = new ReflectionClass($entityUpdate);
+            if ($entityUpdate instanceof Proxy) {
+                $entityUpdateReflectionClass = $entityUpdateReflectionClass->getParentClass();
+
+                if ($entityUpdateReflectionClass === false) {
+                    continue;
+                }
+            }
+
+            $auditTrailAttributes = $entityUpdateReflectionClass->getAttributes(AuditTrail::class);
             if (empty($auditTrailAttributes)) {
-                return;
+                continue;
             }
 
             $propertiesToTrack = $auditTrailAttributes[0]->getArguments()['fields'] ?? [];
@@ -59,14 +56,15 @@ class DoctrineAuditListener
                     continue;
                 }
 
-                if ($auditTrailAttributes[0]->getArguments()['withData'] ?? true === false) {
+                $withData = $auditTrailAttributes[0]->getArguments()['withData'] ?? true;
+                if ($withData === false) {
                     continue;
                 }
 
                 if (str_contains($field, '.')) {
                     [$property, $subProperty] = explode('.', $field);
 
-                    $fieldReflection = new ReflectionProperty($entityUpdate, $property);
+                    $fieldReflection = new ReflectionProperty($entityUpdateReflectionClass->getName(), $property);
                     $embeddedAttributes = $fieldReflection->getAttributes(Embedded::class);
                     if (empty($embeddedAttributes)) {
                         continue;
@@ -75,7 +73,7 @@ class DoctrineAuditListener
                     $embedded = $entityUpdate->{'get' . ucfirst($property)}();
                     $fieldReflection = new ReflectionProperty($embedded, $subProperty);
                 } else {
-                    $fieldReflection = new ReflectionProperty($entityUpdate, $field);
+                    $fieldReflection = new ReflectionProperty($entityUpdateReflectionClass->getName(), $field);
                 }
 
                 $sensitiveDataAttributes = $fieldReflection->getAttributes(SensitiveData::class);
@@ -91,13 +89,28 @@ class DoctrineAuditListener
                 ];
             }
 
-            $this->auditLogger->log($entityUpdate::class, $unitOfWork->getSingleIdentifierValue($entityUpdate), EventAction::UPDATE, array_keys($changes), $changes);
+            $this->auditLogger->log(
+                $entityUpdate::class,
+                $unitOfWork->getSingleIdentifierValue($entityUpdate),
+                EventAction::UPDATE,
+                array_keys($changes),
+                $changes
+            );
         }
 
         foreach ($unitOfWork->getScheduledEntityDeletions() as $entityDeletion) {
-            $auditTrailAttributes = (new ReflectionClass($entityDeletion))->getAttributes(AuditTrail::class);
+            $entityDeletionReflectionClass = new ReflectionClass($entityDeletion);
+            if ($entityDeletion instanceof Proxy) {
+                $entityDeletionReflectionClass = $entityDeletionReflectionClass->getParentClass();
+
+                if ($entityDeletionReflectionClass === false) {
+                    continue;
+                }
+            }
+
+            $auditTrailAttributes = $entityDeletionReflectionClass->getAttributes(AuditTrail::class);
             if (empty($auditTrailAttributes)) {
-                return;
+                continue;
             }
 
             $properties = $this->getProperties(
@@ -107,7 +120,13 @@ class DoctrineAuditListener
                 $auditTrailAttributes[0]->getArguments()['withData'] ?? true
             );
 
-            $this->auditLogger->log($entityDeletion::class, $unitOfWork->getSingleIdentifierValue($entityDeletion), EventAction::DELETE, [], $properties);
+            $this->auditLogger->log(
+                $entityDeletion::class,
+                $unitOfWork->getSingleIdentifierValue($entityDeletion),
+                EventAction::DELETE,
+                [],
+                $properties
+            );
         }
     }
 
@@ -115,7 +134,16 @@ class DoctrineAuditListener
     {
         $entity = $args->getObject();
 
-        $auditTrailAttributes = (new ReflectionClass($entity))->getAttributes(AuditTrail::class);
+        $entityReflectionClass = new ReflectionClass($entity);
+        if ($entity instanceof Proxy) {
+            $entityReflectionClass = $entityReflectionClass->getParentClass();
+
+            if ($entityReflectionClass === false) {
+                return;
+            }
+        }
+
+        $auditTrailAttributes = $entityReflectionClass->getAttributes(AuditTrail::class);
         if (empty($auditTrailAttributes)) {
             return;
         }
@@ -129,12 +157,34 @@ class DoctrineAuditListener
             $auditTrailAttributes[0]->getArguments()['withData'] ?? true
         );
 
-        $this->auditLogger->log($entity::class, $unitOfWork->getSingleIdentifierValue($entity), EventAction::CREATE, [], $properties);
+        $this->auditLogger->log(
+            $entity::class,
+            $unitOfWork->getSingleIdentifierValue($entity),
+            EventAction::CREATE,
+            [],
+            $properties
+        );
     }
 
-    public function getProperties(object $entity, UnitOfWork $unitOfWork, array $fields = [], bool $withData = false): array
-    {
+    /**
+     * @param array{}|array<string> $fields
+     *
+     * @return array{}|array<string, string|int|array<mixed>|null>
+     */
+    public function getProperties(
+        object $entity,
+        UnitOfWork $unitOfWork,
+        array $fields = [],
+        bool $withData = false
+    ): array {
         $reflection = new ReflectionClass($entity);
+        if ($entity instanceof Proxy) {
+            $reflection = $reflection->getParentClass();
+
+            if ($reflection === false) {
+                return [];
+            }
+        }
         $entityProperties = $reflection->getProperties();
 
         $properties = [];
@@ -167,10 +217,20 @@ class DoctrineAuditListener
         return $properties;
     }
 
-    public function transform(UnitOfWork $unitOfWork, ReflectionProperty $reflectionProperty, mixed $value): string|array|null
-    {
-        if ($value instanceof \UnitEnum) {
+    /**
+     * @return string|int|array<mixed>|null
+     */
+    public function transform(
+        UnitOfWork $unitOfWork,
+        ReflectionProperty $reflectionProperty,
+        mixed $value
+    ): string|int|array|null {
+        if ($value instanceof \BackedEnum) {
             return $value->value;
+        }
+
+        if ($value instanceof \UnitEnum) {
+            return $value->name;
         }
 
         if (!is_object($value)) {
@@ -197,9 +257,11 @@ class DoctrineAuditListener
         }
 
         if ($value::class === 'Money\\Money') {
+            // @phpstan-ignore-next-line
             return $value->getCurrency()->getCode() . ' ' . $value->getAmount();
         }
 
+        // @phpstan-ignore-next-line cast.string
         return (string) $value;
     }
 }

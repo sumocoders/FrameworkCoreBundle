@@ -45,7 +45,7 @@ final readonly class DoctrineAuditListener
 
             $auditTrailAttributes = $entityUpdateReflectionClass->getAttributes(AuditTrail::class);
             if (empty($auditTrailAttributes)) {
-                return;
+                continue;
             }
 
             $propertiesToTrack = $auditTrailAttributes[0]->getArguments()['fields'] ?? [];
@@ -110,7 +110,7 @@ final readonly class DoctrineAuditListener
 
             $auditTrailAttributes = $entityDeletionReflectionClass->getAttributes(AuditTrail::class);
             if (empty($auditTrailAttributes)) {
-                return;
+                continue;
             }
 
             $properties = $this->getProperties(

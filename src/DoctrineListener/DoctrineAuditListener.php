@@ -21,10 +21,10 @@ use SumoCoders\FrameworkCoreBundle\Logger\AuditLogger;
 
 #[AsDoctrineListener(event: Events::postPersist, priority: 500)]
 #[AsDoctrineListener(event: Events::onFlush, priority: 500)]
-class DoctrineAuditListener
+final readonly class DoctrineAuditListener
 {
     public function __construct(
-        private readonly AuditLogger $auditLogger,
+        private AuditLogger $auditLogger,
     ) {
     }
 
@@ -33,7 +33,7 @@ class DoctrineAuditListener
         $unitOfWork = $args->getObjectManager()->getUnitOfWork();
 
         foreach ($unitOfWork->getScheduledEntityUpdates() as $entityUpdate) {
-            $auditTrailAttributes = (new ReflectionClass($entityUpdate))->getAttributes(AuditTrail::class);
+            $auditTrailAttributes = new ReflectionClass($entityUpdate)->getAttributes(AuditTrail::class);
             if (empty($auditTrailAttributes)) {
                 return;
             }
@@ -82,7 +82,7 @@ class DoctrineAuditListener
         }
 
         foreach ($unitOfWork->getScheduledEntityDeletions() as $entityDeletion) {
-            $auditTrailAttributes = (new ReflectionClass($entityDeletion))->getAttributes(AuditTrail::class);
+            $auditTrailAttributes = new ReflectionClass($entityDeletion)->getAttributes(AuditTrail::class);
             if (empty($auditTrailAttributes)) {
                 return;
             }
@@ -102,7 +102,7 @@ class DoctrineAuditListener
     {
         $entity = $args->getObject();
 
-        $auditTrailAttributes = (new ReflectionClass($entity))->getAttributes(AuditTrail::class);
+        $auditTrailAttributes = new ReflectionClass($entity)->getAttributes(AuditTrail::class);
         if (empty($auditTrailAttributes)) {
             return;
         }

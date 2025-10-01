@@ -46,7 +46,8 @@ final readonly class DoctrineAuditListener
                     continue;
                 }
 
-                if ($auditTrailAttributes[0]->getArguments()['withData'] ?? true === false) {
+                $withData = $auditTrailAttributes[0]->getArguments()['withData'] ?? true;
+                if ($withData === false) {
                     continue;
                 }
 
@@ -78,7 +79,13 @@ final readonly class DoctrineAuditListener
                 ];
             }
 
-            $this->auditLogger->log($entityUpdate::class, $unitOfWork->getSingleIdentifierValue($entityUpdate), EventAction::UPDATE, array_keys($changes), $changes);
+            $this->auditLogger->log(
+                $entityUpdate::class,
+                $unitOfWork->getSingleIdentifierValue($entityUpdate),
+                EventAction::UPDATE,
+                array_keys($changes),
+                $changes
+            );
         }
 
         foreach ($unitOfWork->getScheduledEntityDeletions() as $entityDeletion) {
@@ -94,7 +101,13 @@ final readonly class DoctrineAuditListener
                 $auditTrailAttributes[0]->getArguments()['withData'] ?? true
             );
 
-            $this->auditLogger->log($entityDeletion::class, $unitOfWork->getSingleIdentifierValue($entityDeletion), EventAction::DELETE, [], $properties);
+            $this->auditLogger->log(
+                $entityDeletion::class,
+                $unitOfWork->getSingleIdentifierValue($entityDeletion),
+                EventAction::DELETE,
+                [],
+                $properties
+            );
         }
     }
 
@@ -116,11 +129,26 @@ final readonly class DoctrineAuditListener
             $auditTrailAttributes[0]->getArguments()['withData'] ?? true
         );
 
-        $this->auditLogger->log($entity::class, $unitOfWork->getSingleIdentifierValue($entity), EventAction::CREATE, [], $properties);
+        $this->auditLogger->log(
+            $entity::class,
+            $unitOfWork->getSingleIdentifierValue($entity),
+            EventAction::CREATE,
+            [],
+            $properties
+        );
     }
 
-    public function getProperties(object $entity, UnitOfWork $unitOfWork, array $fields = [], bool $withData = false): array
-    {
+    /**
+     * @param array{}|array<string> $fields
+     *
+     * @return array{}|array<string, string|int|array<mixed>|null>
+     */
+    public function getProperties(
+        object $entity,
+        UnitOfWork $unitOfWork,
+        array $fields = [],
+        bool $withData = false
+    ): array {
         $reflection = new ReflectionClass($entity);
         $entityProperties = $reflection->getProperties();
 
@@ -154,10 +182,20 @@ final readonly class DoctrineAuditListener
         return $properties;
     }
 
-    public function transform(UnitOfWork $unitOfWork, ReflectionProperty $reflectionProperty, mixed $value): string|array|null
-    {
-        if ($value instanceof \UnitEnum) {
+    /**
+     * @return string|int|array<mixed>|null
+     */
+    public function transform(
+        UnitOfWork $unitOfWork,
+        ReflectionProperty $reflectionProperty,
+        mixed $value
+    ): string|int|array|null {
+        if ($value instanceof \BackedEnum) {
             return $value->value;
+        }
+
+        if ($value instanceof \UnitEnum) {
+            return $value->name;
         }
 
         if (!is_object($value)) {
@@ -184,9 +222,11 @@ final readonly class DoctrineAuditListener
         }
 
         if ($value::class === 'Money\\Money') {
+            // @phpstan-ignore-next-line
             return $value->getCurrency()->getCode() . ' ' . $value->getAmount();
         }
 
+        // @phpstan-ignore-next-line cast.string
         return (string) $value;
     }
 }

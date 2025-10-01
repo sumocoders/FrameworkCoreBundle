@@ -12,6 +12,7 @@ use Doctrine\ORM\Mapping\Embedded;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToOne;
 use Doctrine\ORM\UnitOfWork;
+use Doctrine\Persistence\Proxy;
 use ReflectionClass;
 use ReflectionProperty;
 use SumoCoders\FrameworkCoreBundle\Attribute\AuditTrail\AuditTrail;
@@ -33,7 +34,16 @@ final readonly class DoctrineAuditListener
         $unitOfWork = $args->getObjectManager()->getUnitOfWork();
 
         foreach ($unitOfWork->getScheduledEntityUpdates() as $entityUpdate) {
-            $auditTrailAttributes = new ReflectionClass($entityUpdate)->getAttributes(AuditTrail::class);
+            $entityUpdateReflectionClass = new ReflectionClass($entityUpdate);
+            if ($entityUpdate instanceof Proxy) {
+                $entityUpdateReflectionClass = $entityUpdateReflectionClass->getParentClass();
+
+                if ($entityUpdateReflectionClass === false) {
+                    continue;
+                }
+            }
+
+            $auditTrailAttributes = $entityUpdateReflectionClass->getAttributes(AuditTrail::class);
             if (empty($auditTrailAttributes)) {
                 return;
             }
@@ -54,7 +64,7 @@ final readonly class DoctrineAuditListener
                 if (str_contains($field, '.')) {
                     [$property, $subProperty] = explode('.', $field);
 
-                    $fieldReflection = new ReflectionProperty($entityUpdate, $property);
+                    $fieldReflection = new ReflectionProperty($entityUpdateReflectionClass->getName(), $property);
                     $embeddedAttributes = $fieldReflection->getAttributes(Embedded::class);
                     if (empty($embeddedAttributes)) {
                         continue;
@@ -63,7 +73,7 @@ final readonly class DoctrineAuditListener
                     $embedded = $entityUpdate->{'get' . ucfirst($property)}();
                     $fieldReflection = new ReflectionProperty($embedded, $subProperty);
                 } else {
-                    $fieldReflection = new ReflectionProperty($entityUpdate, $field);
+                    $fieldReflection = new ReflectionProperty($entityUpdateReflectionClass->getName(), $field);
                 }
 
                 $sensitiveDataAttributes = $fieldReflection->getAttributes(SensitiveData::class);
@@ -89,7 +99,16 @@ final readonly class DoctrineAuditListener
         }
 
         foreach ($unitOfWork->getScheduledEntityDeletions() as $entityDeletion) {
-            $auditTrailAttributes = new ReflectionClass($entityDeletion)->getAttributes(AuditTrail::class);
+            $entityDeletionReflectionClass = new ReflectionClass($entityDeletion);
+            if ($entityDeletion instanceof Proxy) {
+                $entityDeletionReflectionClass = $entityDeletionReflectionClass->getParentClass();
+
+                if ($entityDeletionReflectionClass === false) {
+                    continue;
+                }
+            }
+
+            $auditTrailAttributes = $entityDeletionReflectionClass->getAttributes(AuditTrail::class);
             if (empty($auditTrailAttributes)) {
                 return;
             }
@@ -115,7 +134,16 @@ final readonly class DoctrineAuditListener
     {
         $entity = $args->getObject();
 
-        $auditTrailAttributes = new ReflectionClass($entity)->getAttributes(AuditTrail::class);
+        $entityReflectionClass = new ReflectionClass($entity);
+        if ($entity instanceof Proxy) {
+            $entityReflectionClass = $entityReflectionClass->getParentClass();
+
+            if ($entityReflectionClass === false) {
+                return;
+            }
+        }
+
+        $auditTrailAttributes = $entityReflectionClass->getAttributes(AuditTrail::class);
         if (empty($auditTrailAttributes)) {
             return;
         }
@@ -150,6 +178,13 @@ final readonly class DoctrineAuditListener
         bool $withData = false
     ): array {
         $reflection = new ReflectionClass($entity);
+        if ($entity instanceof Proxy) {
+            $reflection = $reflection->getParentClass();
+
+            if ($reflection === false) {
+                return [];
+            }
+        }
         $entityProperties = $reflection->getProperties();
 
         $properties = [];

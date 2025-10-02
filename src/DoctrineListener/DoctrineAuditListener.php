@@ -355,13 +355,18 @@ final readonly class DoctrineAuditListener
     }
 
     /**
+     * @param PersistentCollection<int, mixed> $collection
+     *
      * @return array{from: string|int|array<mixed>|null, to: string|int|array<mixed>|null}
      */
-    private function getChangesForCollection(UnitOfWork $unitOfWork, string $className, mixed $collectionUpdate): array
-    {
-        $mapping = $collectionUpdate->getMapping();
-        $originalData = $this->getOriginalCollectionData($collectionUpdate);
-        $newData = new ArrayCollection($collectionUpdate->getValues());
+    private function getChangesForCollection(
+        UnitOfWork $unitOfWork,
+        string $className,
+        PersistentCollection $collection
+    ): array {
+        $mapping = $collection->getMapping();
+        $originalData = $this->getOriginalCollectionData($collection);
+        $newData = new ArrayCollection($collection->getValues());
 
         $reflectionProperty = new ReflectionProperty(
             $className,

@@ -50,7 +50,7 @@
   position: fixed;
   bottom: 0;
   right: 0;
-  background-color: $top-color;
+  background-color: var(--top-color);
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;

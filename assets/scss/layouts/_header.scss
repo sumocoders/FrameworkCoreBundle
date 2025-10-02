@@ -5,7 +5,7 @@
   font-weight: 600;
   margin: 0;
   width: 100%;
-  background-color: $top-color;
+  background-color: var(--top-color);
 
   .btn-group {
     -webkit-font-smoothing: antialiased;
@@ -111,7 +111,7 @@
   }
 
   .main-header {
-    background-color: $top-color;
+    background-color: var(--top-color);
     border-bottom: 1px var(--bs-border-color) solid;
     width: 100%;
     z-index: 900;
@@ -186,33 +186,6 @@
 
       &::before {
         padding: 5px 15px 0;
-      }
-    }
-  }
-}
-
-@include color-mode(dark) {
-  @include media-breakpoint-up(md) {
-    .main-header {
-      background-color: $top-color-dark;
-    }
-  }
-
-  .sub-nav {
-    background-color: $top-color-dark;
-  }
-
-  .user-nav {
-    background-color: $user-bg-dark;
-
-    .btn-group {
-      .btn-default {
-        color: color-contrast($user-bg-dark);
-
-        &:hover,
-        &:focus {
-          background-color: shade-color($user-bg-dark, 10%);
-        }
       }
     }
   }

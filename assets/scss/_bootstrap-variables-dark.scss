@@ -107,15 +107,12 @@ $btn-close-filter-dark:             $btn-close-white-filter !default;
 
 // Colors
 
-$top-color-dark:                 $gray-850 !default;
-$menu-bg-dark:                   $gray-850 !default;
-$loading-indicator-color-dark:   $gray-600 !default;
-$logo-bg-dark:                   $top-color-dark !default;
-$user-bg-dark:                   $top-color-dark !default;
-$user-dropdown-bg-dark:          $dropdown-bg !default;
-$menu-bg:                        $primary-text-emphasis-dark !default;
-$loading-indicator-color:        $primary-text-emphasis-dark !default;
-
-// Back to top
-
-$back-to-top-bg-dark:            $gray-700 !default;
+@include color-mode(dark) {
+  :root {
+    --top-color: $gray-850;
+    --error-bg: #4B6376;
+    --error-content-bg: #81919F;
+    --back-to-top-bg: $gray-700;
+    --menu-bg: $gray-850;
+  }
+}

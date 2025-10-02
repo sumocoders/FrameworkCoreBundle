@@ -1,5 +1,5 @@
 .back-to-top {
-  background-color: $back-to-top-bg;
+  background-color: var(--back-to-top-bg);
   bottom: 75px;
   box-shadow: $box-shadow;
   display: none;
@@ -19,11 +19,5 @@
   &.show {
     animation: show 0.35s 1 forwards;
     display: block;
-  }
-}
-
-@include color-mode(dark) {
-  .back-to-top {
-    background-color: $back-to-top-bg-dark;
   }
 }

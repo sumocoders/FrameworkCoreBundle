@@ -1764,6 +1764,7 @@ $pre-color:                         null !default;
 // Sidebar
 
 $sidebar-width-sizer:     5.5rem;
+$sidebar-width-sizer:     5.5rem;
 $sidebar-width-closed:    $sidebar-width-sizer !default;
 $sidebar-width-open:      $sidebar-width-sizer * 2.75 !default;
 
@@ -1775,13 +1776,17 @@ $topbar-height-md:        74px !default;
 // Colors
 
 $top-color:               $white !default;
-$logo-bg:                 $top-color !default;
-$user-bg:                 $top-color !default;
+$menu-bg:                 $primary !default;
+$logo-bg:                 var(--top-color) !default;
+$user-bg:                 var(--top-color) !default;
 $user-dropdown-bg:        $dropdown-bg !default;
 $navbar-toggler-color:    var(--bs-body-color) !default;
-$menu-bg:                 $primary !default;
-$loading-indicator-color: $primary !default;
+$loading-indicator-color: var(--bs-primary) !default;
 
-// Back to top
-
-$back-to-top-bg:          $white !default;
+:root {
+  --top-color: $top-color;
+  --error-bg: #b2cadd;
+  --error-content-bg: #ebf3f9;
+  --back-to-top-bg: $white;
+  --menu-bg: $menu-bg;
+}

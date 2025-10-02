@@ -14,19 +14,20 @@
 <div class="container">
   <div class="row justify-content-center">
     <div class="col-md-7 col-lg-6 col-xl-4">
-      <div class="card p-4 mt-5">
-        <div class="text-center mb-3 py-5 px-sm-4 px-md-5">
-          {% block logo_image %}
-            <img class="img-responsive{% if theme() != 'theme-dark' %} d-none{% endif %}" data-navbar-logo-dark src="{{ asset('images/logo-application-dark.svg') }}" alt="{{ fallbacks.get('site_title') }}">
-            <img class="img-responsive{% if theme() == 'theme-dark' %} d-none{% endif %}" data-navbar-logo src="{{ asset('images/logo-application.svg') }}" alt="{{ fallbacks.get('site_title') }}">
+      <div class="card mt-5">
+        <div class="card-body">
+          <div class="text-center mb-3 py-5 px-sm-4 px-md-5">
+            {% block logo_image %}
+              <img class="img-responsive{% if theme() != 'theme-dark' %} d-none{% endif %}" data-navbar-logo-dark src="{{ asset('images/logo-application-dark.svg') }}" alt="{{ fallbacks.get('site_title') }}">
+              <img class="img-responsive{% if theme() == 'theme-dark' %} d-none{% endif %}" data-navbar-logo src="{{ asset('images/logo-application.svg') }}" alt="{{ fallbacks.get('site_title') }}">
+            {% endblock %}
+          </div>
+
+          {{ include('@SumoCodersFrameworkCore/notifications.html.twig') }}
+
+          {% block main %}
           {% endblock %}
         </div>
-
-        {{ include('@SumoCodersFrameworkCore/notifications.html.twig') }}
-
-        {% block main %}
-        {% endblock %}
-
       </div>
     </div>
   </div>

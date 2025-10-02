@@ -1777,16 +1777,16 @@ $topbar-height-md:        74px !default;
 
 $top-color:               $white !default;
 $menu-bg:                 $primary !default;
-$logo-bg:                 var(--top-color) !default;
-$user-bg:                 var(--top-color) !default;
+$logo-bg:                 $top-color !default;
+$user-bg:                 $top-color !default;
 $user-dropdown-bg:        $dropdown-bg !default;
 $navbar-toggler-color:    var(--bs-body-color) !default;
-$loading-indicator-color: var(--bs-primary) !default;
+$loading-indicator-color: $primary !default;
 
 :root {
-  --top-color: $top-color;
+  --top-color: #{$top-color};
   --error-bg: #b2cadd;
   --error-content-bg: #ebf3f9;
-  --back-to-top-bg: $white;
-  --menu-bg: $menu-bg;
+  --back-to-top-bg: #{$white};
+  --menu-bg: #{$menu-bg};
 }

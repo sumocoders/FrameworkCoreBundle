@@ -106,13 +106,14 @@ $btn-close-filter-dark:             $btn-close-white-filter !default;
 // Custom variables
 
 // Colors
+$user-bg-dark: $gray-850;
+$menu-bg-dark: $gray-850;
+$top-color-dark: $gray-850;
 
-@include color-mode(dark) {
-  :root {
-    --top-color: $gray-850;
-    --error-bg: #4B6376;
-    --error-content-bg: #81919F;
-    --back-to-top-bg: $gray-700;
-    --menu-bg: $gray-850;
-  }
+[data-bs-theme=dark] {
+  --top-color: #{$top-color-dark};
+  --error-bg: #4B6376;
+  --error-content-bg: #81919F;
+  --back-to-top-bg: #{$gray-700};
+  --menu-bg: #{$menu-bg-dark};
 }

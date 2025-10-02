@@ -19,7 +19,7 @@
 }
 
 .user-nav {
-  background-color: $user-bg;
+  background-color: var(--user-bg);
   min-height: 50px;
   padding: 0;
   position: relative;
@@ -186,6 +186,21 @@
 
       &::before {
         padding: 5px 15px 0;
+      }
+    }
+  }
+}
+
+@include color-mode(dark) {
+  .user-nav {
+    .btn-group {
+      .btn-default {
+        color: color-contrast($user-bg-dark);
+
+        &:hover,
+        &:focus {
+          background-color: shade-color($user-bg-dark, 10%);
+        }
       }
     }
   }

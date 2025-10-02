@@ -37,7 +37,7 @@ body.no-scroll {
 }
 
 .navbar-brand {
-  background-color: $logo-bg;
+  background-color: var(--top-color);
   margin-right: 0;
   padding: 0;
 
@@ -49,7 +49,6 @@ body.no-scroll {
 }
 
 .navbar {
-  background-color: $logo-bg;
   border: 0;
   margin-bottom: 0;
   z-index: 1050;
@@ -137,15 +136,15 @@ body.no-scroll {
       position: relative;
 
       &.current {
-        background-color: color-mix(in srgb, white 50%, var(--menu-bg));
+        background-color: shade-color($menu-bg, 50%);
       }
 
       &.current .nav-link,
       &.dropdown.show .nav-link {
-        color: color-mix(in srgb, white 50%, var(--menu-bg));
+        color: color-contrast(shade-color($menu-bg, 50%));
 
         &::before {
-          background-color: color-mix(in srgb, white 50%, var(--menu-bg));
+          background-color: color-contrast(shade-color($menu-bg, 50%));
           transform: translateX(7px);
         }
 
@@ -176,7 +175,7 @@ body.no-scroll {
 
         &:hover,
         &:focus {
-          background-color: color-mix(in srgb, white 50%, var(--menu-bg));
+          background-color: shade-color($menu-bg, 50%);
           color: color-contrast(shade-color($menu-bg, 50%));
 
           &::before {
@@ -202,7 +201,7 @@ body.no-scroll {
     }
 
     .dropdown-menu:not(.dropdown-menu-user) {
-      background-color: color-mix(in srgb, white 8%, var(--menu-bg));
+      background-color: shade-color($menu-bg, 8%);
       margin: 0;
       padding: 0;
       position: relative;
@@ -228,7 +227,7 @@ body.no-scroll {
 
           &:hover,
           &:focus {
-            background-color: color-mix(in srgb, white 10%, var(--menu-bg));
+            background-color: shade-color($menu-bg, 10%);
 
             &::before {
               animation: bounce 1s 1;
@@ -238,7 +237,7 @@ body.no-scroll {
         }
 
         &.current a.dropdown-item {
-          background-color: color-mix(in srgb, white 10%, var(--menu-bg));
+          background-color: shade-color($menu-bg, 10%);
 
           &::before {
             transform: translateX(7px);
@@ -268,7 +267,7 @@ body.no-scroll {
 
       .current .dropdown-item,
       li a:hover {
-        background-color: color-mix(in srgb, white 10%, var(--menu-bg));
+        background-color: shade-color($menu-bg, 10%);
         color: color-contrast($menu-bg);
       }
     }
@@ -290,7 +289,7 @@ body.no-scroll {
 
           &:hover,
           &:focus {
-            background-color: color-mix(in srgb, white 10%, var(--top-color));
+            background-color: shade-color($top-color, 10%);
           }
         }
       }
@@ -478,6 +477,87 @@ body.no-scroll {
       .offcanvas-body {
         padding-left: 0;
         padding-right: 0;
+      }
+    }
+  }
+}
+
+@include color-mode(dark) {
+  .main-menu {
+    .offcanvas-lg {
+      .nav-item {
+        &.current {
+          background-color: shade-color($menu-bg-dark, 50%);
+        }
+
+        &.current .nav-link,
+        &.dropdown.show .nav-link {
+          color: color-contrast(shade-color($menu-bg-dark, 50%));
+
+          &::before {
+            background-color: color-contrast(shade-color($menu-bg-dark, 50%));
+          }
+        }
+
+        .nav-link {
+          color: color-contrast($menu-bg-dark);
+
+          &::before {
+            background-color: color-contrast($menu-bg-dark);
+          }
+
+          &:hover,
+          &:focus {
+            background-color: shade-color($menu-bg-dark, 50%);
+            color: color-contrast(shade-color($menu-bg-dark, 50%));
+
+            &::before {
+              background-color: color-contrast(shade-color($menu-bg-dark, 50%));
+            }
+          }
+        }
+      }
+
+      .dropdown-menu:not(.dropdown-menu-user) {
+        background-color: shade-color($menu-bg-dark, 8%);
+
+        li {
+          a.dropdown-item {
+            color: color-contrast($menu-bg-dark);
+
+            &::before {
+              background-color: color-contrast($menu-bg-dark);
+            }
+
+            &:hover,
+            &:focus {
+              background-color: shade-color($menu-bg-dark, 10%);
+            }
+          }
+
+          &.current a.dropdown-item {
+            background-color: shade-color($menu-bg-dark, 10%);
+          }
+        }
+      }
+
+      .open .dropdown-menu {
+        .current .dropdown-item,
+        li a:hover {
+          background-color: shade-color($menu-bg-dark, 10%);
+          color: color-contrast($menu-bg-dark);
+        }
+      }
+
+      .toggle-menu-visibility {
+        .nav-item {
+          .nav-link {
+            &:hover,
+            &:focus {
+              background-color: shade-color($top-color-dark, 10%);
+            }
+          }
+        }
       }
     }
   }

@@ -32,6 +32,21 @@
     .btn {
       padding: 1.7rem 1rem;
     }
+
+    .user-nav  {
+      background-color: transparent;
+      border: none;
+
+      .btn-group {
+        border: none;
+
+        .btn-default {
+          &:hover, &:focus, &:active {
+            background-color: transparent;
+          }
+        }
+      }
+    }
   }
 
   .fa-chevron-down {

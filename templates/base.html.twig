@@ -80,17 +80,15 @@
         {% endif %}
         {% if has_header_actions %}
           <div class="buttons-fixed{% if not sidebarIsOpen() %} sidebar-collapsed{% endif %}" data-sidebar-collapsable-target="toggleable">
-            <div class="order-1 order-lg-0">{{ block('header_actions_left') }}</div>
-            <div class="order-0 order-lg-1 d-flex flex-wrap justify-content-center gap-1 buttons-fixed-center">{{ block('header_actions_center') }}</div>
-            <div class="order-2">{{ block('header_actions_right') }}</div>
+            <div class="order-1 order-lg-0">{% block header_actions_left %}{% endblock %}</div>
+            <div class="order-0 order-lg-1 d-flex flex-wrap justify-content-center gap-1 buttons-fixed-center">{% block header_actions_center %}{% endblock %}</div>
+            <div class="order-2">{% block header_actions_right %}{% endblock %}</div>
           </div>
         {% endif %}
       </div>
       <div class="container-fluid">
         <div class="main-content{% if has_header_actions %} has-buttons-fixed{% endif %}">
-          {% block main %}
-
-          {% endblock %}
+          {% block main %}{% endblock %}
         </div>
       </div>
     </section>

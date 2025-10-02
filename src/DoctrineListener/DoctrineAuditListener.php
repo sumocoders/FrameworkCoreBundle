@@ -131,7 +131,7 @@ final readonly class DoctrineAuditListener
                 foreach ($collectionUpdatesByOwner[$className][$id] as $collectionUpdate) {
                     $changes[$collectionUpdate->getMapping()->fieldName] = $this->getChangesForCollection(
                         $unitOfWork,
-                        $entityUpdateReflectionClass->getName(),
+                        $className,
                         $collectionUpdate
                     );
                 }
@@ -144,7 +144,7 @@ final readonly class DoctrineAuditListener
                 foreach ($collectionDeletionsByOwner[$className][$id] as $collectionDeletion) {
                     $changes[$collectionDeletion->getMapping()->fieldName] = $this->getChangesForCollection(
                         $unitOfWork,
-                        $entityUpdateReflectionClass->getName(),
+                        $className,
                         $collectionDeletion
                     );
                 }

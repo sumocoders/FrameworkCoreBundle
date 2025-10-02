@@ -1,0 +1,14 @@
+@include color-mode(dark) {
+  .list-group-item {
+    background-color:  $gray-850;;
+    color: $body-color;
+  }
+
+  @each $state, $value in $theme-colors {
+    .list-group-item-#{$state} {
+      background-color:  $gray-850;;
+      color: $body-color;
+      border-left: 3px solid $value;
+    }
+  }
+}

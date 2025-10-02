@@ -1,13 +1,13 @@
 .error-page {
-  color: #444;
-  background-color: #b2cadd;
+  color: var(--bs-body-color);
+  background-color: var(--error-bg);
 
   #content {
     text-align: center;
 
     &::before {
       content: '';
-      background-color: #ebf3f9;
+      background-color: var(--error-content-bg);
       width: 100vw;
       height: 350px;
       position: absolute;

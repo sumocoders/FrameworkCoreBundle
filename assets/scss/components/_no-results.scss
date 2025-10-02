@@ -4,7 +4,7 @@
   align-items: center;
   font-size: $font-size-base * 1.125;
   padding-top: 2rem;
-  color: $gray-600;
+  color: var(--bs-gray-600);
 
   img {
     width: 140px;

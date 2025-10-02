@@ -119,9 +119,9 @@ body.no-scroll {
     }
   }
 
-  .navbar-collapse {
-    &.show {
-      max-height: calc(100vh - 60px);
+  .offcanvas-lg {
+    @include media-breakpoint-up(lg) {
+      max-height: calc(100vh - 75px);
       overflow-y: auto;
     }
 
@@ -366,7 +366,7 @@ body.no-scroll {
       border-top: 0;
     }
 
-    .navbar-collapse {
+    .offcanvas-lg {
       background-color: $menu-bg;
       max-height: calc(100vh - 60px);
       overflow-y: auto;
@@ -391,7 +391,7 @@ body.no-scroll {
     .main-menu {
       width: $sidebar-width-closed;
 
-      .navbar-collapse {
+      .offcanvas-lg {
         .toggle-menu-visibility {
           width: $sidebar-width-closed;
 
@@ -446,6 +446,43 @@ body.no-scroll {
   }
 }
 
+@include media-breakpoint-up(lg) {
+  .main-menu {
+    display: flex;
+    flex-flow: column nowrap;
+
+    .offcanvas-body {
+      flex-flow: column nowrap;
+      flex-grow: 1;
+    }
+
+    .offcanvas-lg {
+      height: 100%;
+      display: flex;
+      flex-flow: column nowrap;
+    }
+
+    .navbar {
+      height: 100%;
+    }
+  }
+
+  #main-menu-inner {
+    flex-grow: 1;
+  }
+}
+
+@include media-breakpoint-down(lg) {
+  .main-menu {
+    .offcanvas-lg {
+      .offcanvas-body {
+        padding-left: 0;
+        padding-right: 0;
+      }
+    }
+  }
+}
+
 @include color-mode(dark) {
   .navbar-brand {
     background-color: $logo-bg-dark;
@@ -456,7 +493,7 @@ body.no-scroll {
   }
 
   .main-menu {
-    .navbar-collapse {
+    .offcanvas-lg {
       .nav-item {
         background-color: $menu-bg-dark;
 
@@ -542,7 +579,7 @@ body.no-scroll {
     .main-menu {
       background-color: $menu-bg-dark;
 
-      .navbar-collapse {
+      .offcanvas-lg {
         background-color: $menu-bg-dark;
       }
     }

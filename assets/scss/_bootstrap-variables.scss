@@ -1144,8 +1144,8 @@ $zindex-sticky:                     1020 !default;
 $zindex-fixed:                      1030 !default;
 $zindex-backtotop:                  1035 !default; // custom for sumocoders
 $zindex-modal-backdrop:             1040 !default;
-$zindex-offcanvas-backdrop:         1100 !default;
-$zindex-offcanvas:                  1105 !default;
+$zindex-offcanvas-backdrop:         2100 !default;
+$zindex-offcanvas:                  2105 !default;
 $zindex-modal:                      1055 !default;
 $zindex-popover:                    1070 !default;
 $zindex-tooltip:                    1080 !default;

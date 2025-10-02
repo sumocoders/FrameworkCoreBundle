@@ -33,15 +33,15 @@
       </div>
     </div>
     <div class="navbar-header d-md-none d-flex">
+      <button class="navbar-toggler navbar-toggler-right ms-auto collapsed" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
       <button class="btn btn-default d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasUser" aria-controls="offcanvasResponsive">
         {% if is_granted('IS_IMPERSONATOR') %}
           <i class="fas fa-exchange-alt"></i>
         {% else %}
           <i class="fas fa-user-circle"></i>
         {% endif %}
-      </button>
-      <button class="navbar-toggler navbar-toggler-right ms-auto collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-collapse-1" aria-controls="navbar-collapse-1" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
       </button>
     </div>
     <div class="ms-auto">

@@ -12,7 +12,9 @@
 }
 
 .header-title {
-  padding: ($spacer * 0.5) ($spacer * 0.5) ($spacer * 0.5) ($spacer * 1.5);
+  padding: ($spacer * 0.5) 0 ($spacer * 0.5) ($spacer * 0.5);
+  word-break: break-word;
+  hyphens: auto;
 
   .progress-bar {
     float: none;

@@ -44,6 +44,7 @@ body.no-scroll {
   img {
     margin: 5px 0 5px 5px;
     height: 50px;
+    flex-shrink: 0;
   }
 }
 

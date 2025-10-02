@@ -43,7 +43,7 @@ $dark-border-subtle-dark:           $gray-800 !default;
 // scss-docs-end theme-border-subtle-dark-variables
 
 $body-color-dark:                   $white !default;
-$body-bg-dark:                      $gray-900 !default;
+$body-bg-dark:                      $gray-800 !default;
 $body-secondary-color-dark:         rgba($body-color-dark, .75) !default;
 $body-secondary-bg-dark:            $gray-800 !default;
 $body-tertiary-color-dark:          rgba($body-color-dark, .5) !default;
@@ -107,8 +107,8 @@ $btn-close-filter-dark:             $btn-close-white-filter !default;
 
 // Colors
 
-$top-color-dark:                 $gray-700 !default;
-$menu-bg-dark:                   $gray-800 !default;
+$top-color-dark:                 $gray-850 !default;
+$menu-bg-dark:                   $gray-850 !default;
 $loading-indicator-color-dark:   $gray-600 !default;
 $logo-bg-dark:                   $top-color-dark !default;
 $user-bg-dark:                   $top-color-dark !default;

@@ -4,6 +4,7 @@ namespace SumoCoders\FrameworkCoreBundle\DoctrineListener;
 
 use DateTimeInterface;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Event\PostPersistEventArgs;
@@ -11,6 +12,7 @@ use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\Embedded;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToOne;
+use Doctrine\ORM\PersistentCollection;
 use Doctrine\ORM\UnitOfWork;
 use Doctrine\Persistence\Proxy;
 use ReflectionClass;
@@ -33,6 +35,36 @@ final readonly class DoctrineAuditListener
     {
         $unitOfWork = $args->getObjectManager()->getUnitOfWork();
 
+        /**
+         * @var array<class-string, array<int, array<int, PersistentCollection<int, mixed>>>> $collectionUpdatesByOwner
+         */
+        $collectionUpdatesByOwner = [];
+        /**
+         * @var array<class-string, array<int, array<int, PersistentCollection<int, mixed>>>> $collectionDeletionsByOwner
+         */
+        $collectionDeletionsByOwner = [];
+
+        $scheduledCollectionUpdates = $unitOfWork->getScheduledCollectionUpdates();
+        foreach ($scheduledCollectionUpdates as $collectionUpdate) {
+            $classAndId = $this->getClassAndIdForCollectionChange($unitOfWork, $collectionUpdate);
+            if ($classAndId === null) {
+                continue;
+            }
+            [$class, $id] = $classAndId;
+
+            $collectionUpdatesByOwner[$class][$id][] = $collectionUpdate;
+        }
+
+        foreach ($unitOfWork->getScheduledCollectionDeletions() as $collectionDeletion) {
+            $classAndId = $this->getClassAndIdForCollectionChange($unitOfWork, $collectionDeletion);
+            if ($classAndId === null) {
+                continue;
+            }
+            [$class, $id] = $classAndId;
+
+            $collectionDeletionsByOwner[$class][$id][] = $collectionDeletion;
+        }
+
         foreach ($unitOfWork->getScheduledEntityUpdates() as $entityUpdate) {
             $entityUpdateReflectionClass = new ReflectionClass($entityUpdate);
             if ($entityUpdate instanceof Proxy) {
@@ -47,6 +79,9 @@ final readonly class DoctrineAuditListener
             if (empty($auditTrailAttributes)) {
                 continue;
             }
+
+            $className = $entityUpdateReflectionClass->getName();
+            $id = $unitOfWork->getSingleIdentifierValue($entityUpdate);
 
             $propertiesToTrack = $auditTrailAttributes[0]->getArguments()['fields'] ?? [];
             $changes = [];
@@ -64,7 +99,7 @@ final readonly class DoctrineAuditListener
                 if (str_contains($field, '.')) {
                     [$property, $subProperty] = explode('.', $field);
 
-                    $fieldReflection = new ReflectionProperty($entityUpdateReflectionClass->getName(), $property);
+                    $fieldReflection = new ReflectionProperty($className, $property);
                     $embeddedAttributes = $fieldReflection->getAttributes(Embedded::class);
                     if (empty($embeddedAttributes)) {
                         continue;
@@ -73,7 +108,7 @@ final readonly class DoctrineAuditListener
                     $embedded = $entityUpdate->{'get' . ucfirst($property)}();
                     $fieldReflection = new ReflectionProperty($embedded, $subProperty);
                 } else {
-                    $fieldReflection = new ReflectionProperty($entityUpdateReflectionClass->getName(), $field);
+                    $fieldReflection = new ReflectionProperty($className, $field);
                 }
 
                 $sensitiveDataAttributes = $fieldReflection->getAttributes(SensitiveData::class);
@@ -89,8 +124,34 @@ final readonly class DoctrineAuditListener
                 ];
             }
 
+            if (
+                array_key_exists($className, $collectionUpdatesByOwner)
+                && array_key_exists($id, $collectionUpdatesByOwner[$className])
+            ) {
+                foreach ($collectionUpdatesByOwner[$className][$id] as $collectionUpdate) {
+                    $changes[$collectionUpdate->getMapping()->fieldName] = $this->getChangesForCollection(
+                        $unitOfWork,
+                        $className,
+                        $collectionUpdate
+                    );
+                }
+            }
+
+            if (
+                array_key_exists($className, $collectionDeletionsByOwner)
+                && array_key_exists($id, $collectionDeletionsByOwner[$className])
+            ) {
+                foreach ($collectionDeletionsByOwner[$className][$id] as $collectionDeletion) {
+                    $changes[$collectionDeletion->getMapping()->fieldName] = $this->getChangesForCollection(
+                        $unitOfWork,
+                        $className,
+                        $collectionDeletion
+                    );
+                }
+            }
+
             $this->auditLogger->log(
-                $entityUpdate::class,
+                $className,
                 $unitOfWork->getSingleIdentifierValue($entityUpdate),
                 EventAction::UPDATE,
                 array_keys($changes),
@@ -263,5 +324,91 @@ final readonly class DoctrineAuditListener
 
         // @phpstan-ignore-next-line cast.string
         return (string) $value;
+    }
+
+    /**
+     * @param PersistentCollection<int, object> $collectionChange
+     *
+     * @return null|array{0: class-string, 1: int|string}
+     */
+    private function getClassAndIdForCollectionChange(
+        UnitOfWork $unitOfWork,
+        PersistentCollection $collectionChange
+    ): ?array {
+        $owner = $collectionChange->getOwner();
+
+        if ($owner === null) {
+            return null;
+        }
+
+        $class = $owner::class;
+        if ($owner instanceof Proxy) {
+            $parentClass = new ReflectionClass($owner)->getParentClass();
+            if ($parentClass === false) {
+                return null;
+            }
+            $class = $parentClass->getName();
+        }
+        $id = $unitOfWork->getSingleIdentifierValue($owner);
+
+        return [$class, $id];
+    }
+
+    /**
+     * @param PersistentCollection<int, mixed> $collection
+     *
+     * @return array{from: string|int|array<mixed>|null, to: string|int|array<mixed>|null}
+     */
+    private function getChangesForCollection(
+        UnitOfWork $unitOfWork,
+        string $className,
+        PersistentCollection $collection
+    ): array {
+        $mapping = $collection->getMapping();
+        $originalData = $this->getOriginalCollectionData($collection);
+        $newData = new ArrayCollection($collection->getValues());
+
+        $reflectionProperty = new ReflectionProperty(
+            $className,
+            $mapping->fieldName
+        );
+
+        return [
+            'from' => $this->transform(
+                $unitOfWork,
+                $reflectionProperty,
+                $originalData
+            ),
+            'to' => $this->transform(
+                $unitOfWork,
+                $reflectionProperty,
+                $newData
+            ),
+        ];
+    }
+
+    /**
+     * @param PersistentCollection<int, mixed> $collection
+     *
+     * @return ArrayCollection<int, mixed>
+     */
+    private function getOriginalCollectionData(PersistentCollection $collection): ArrayCollection
+    {
+        $originalData = new ArrayCollection();
+
+        $inserts = $collection->getInsertDiff();
+        $deletions = $collection->getDeleteDiff();
+
+        foreach ($deletions as $deletion) {
+            $originalData->add($deletion);
+        }
+
+        foreach ($collection as $item) {
+            if (!in_array($item, $inserts, true)) {
+                $originalData->add($item);
+            }
+        }
+
+        return $originalData;
     }
 }

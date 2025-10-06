@@ -143,7 +143,7 @@ Options for customizing:
         'toggle' => false,
 
         // Disable custom form theme
-        'use_toggle_form_theme' => false
+        'use_toggle_form_theme' => false,
 
         // Customizing labels
         'hidden_label' => 'Masquer',

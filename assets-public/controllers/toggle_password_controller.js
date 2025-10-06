@@ -31,7 +31,6 @@ export default class extends Controller {
     const button = document.createElement('button')
     button.type = 'button'
     button.classList.add(...this.buttonClassesValue)
-    button.setAttribute('tabindex', '-1')
     button.addEventListener('click', this.toggle.bind(this))
     button.innerHTML = `${this.visibleIcon} ${this.visibleLabelValue}`
     return button

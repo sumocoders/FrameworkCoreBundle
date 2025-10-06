@@ -83,7 +83,7 @@ return static function (ContainerConfigurator $container): void {
         ->set('framework.collection_type_extension', CollectionTypeExtension::class)
         ->tag('form.type_extension', ['extended_type' => CollectionType::class])
 
-        ->set('framework.collection_type_extension', TogglePasswordTypeExtension::class)
+        ->set('framework.toggle_password_type_extension', TogglePasswordTypeExtension::class)
         ->args([
             service('translator')
         ])

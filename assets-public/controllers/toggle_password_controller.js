@@ -2,8 +2,8 @@ import { Controller } from '@hotwired/stimulus'
 
 export default class extends Controller {
   static values = {
-    visibleLabel: { type: String, default: 'Show' },
-    hiddenLabel: { type: String, default: 'Hide' },
+    visibleLabel: { type: String, default: 'Show password' },
+    hiddenLabel: { type: String, default: 'Hide password' },
     buttonClasses: Array
   }
 

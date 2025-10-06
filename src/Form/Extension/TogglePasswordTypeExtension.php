@@ -12,7 +12,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class TogglePasswordTypeExtension extends AbstractTypeExtension
 {
-    public function __construct(private readonly ?TranslatorInterface $translator)
+    public function __construct(private readonly TranslatorInterface $translator)
     {
     }
 
@@ -69,7 +69,7 @@ final class TogglePasswordTypeExtension extends AbstractTypeExtension
 
     private function translateLabel(string|TranslatableMessage|null $label, ?string $translationDomain): ?string
     {
-        if (null === $this->translator || null === $label) {
+        if (null === $label) {
             return $label;
         }
 

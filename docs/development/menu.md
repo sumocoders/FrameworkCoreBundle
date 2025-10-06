@@ -31,13 +31,12 @@ You can use them like so:
 There is also a helper called `enableChildRoutes`, which takes a prefix string as an argument. Calling this method on a
 menu item, will activate it when a route is visited that starts with the prefix you pass.
 
-In short, if you have a menu item with `user_overview` as the route, and you enable child routes with the `user_`
+In short, if you have a menu item with `user_admin_overview` as the route, and you enable child routes with the `user_admin_`
 prefix, all the following routes will also mark the user menu item as active:
 
-* `user_create`
-* `user_update`
-* `user_export`
-* `user_whatever`
+* `user_admin_add`
+* `user_admin_edit`
+* `user_admin_whatever`
 
 ## The example listener
 

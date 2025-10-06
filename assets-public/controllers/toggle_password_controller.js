@@ -3,9 +3,7 @@ import { Controller } from '@hotwired/stimulus'
 export default class extends Controller {
   static values = {
     visibleLabel: { type: String, default: 'Show' },
-    visibleIcon: { type: String, default: 'Default' },
     hiddenLabel: { type: String, default: 'Hide' },
-    hiddenIcon: { type: String, default: 'Default' },
     buttonClasses: Array
   }
 
@@ -20,14 +18,6 @@ export default class extends Controller {
 </svg>`
 
   connect () {
-    if (this.visibleIconValue !== 'Default') {
-      this.visibleIcon = this.visibleIconValue
-    }
-
-    if (this.hiddenIconValue !== 'Default') {
-      this.hiddenIcon = this.hiddenIconValue
-    }
-
     const button = this.createButton()
 
     this.element.insertAdjacentElement('afterend', button)

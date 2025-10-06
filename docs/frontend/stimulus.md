@@ -145,11 +145,9 @@ Options for customizing:
         // Disable custom form theme
         'use_toggle_form_theme' => false
 
-        // Customizing labels and icons
+        // Customizing labels
         'hidden_label' => 'Masquer',
         'visible_label' => 'Afficher',
-        'visible_icon' => null,
-        'hidden_icon' => null,
     ]);
 ```
 

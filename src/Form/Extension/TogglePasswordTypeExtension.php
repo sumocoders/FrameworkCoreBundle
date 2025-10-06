@@ -27,8 +27,6 @@ final class TogglePasswordTypeExtension extends AbstractTypeExtension
             'toggle' => true,
             'hidden_label' => 'Hide',
             'visible_label' => 'Show',
-            'hidden_icon' => 'Default',
-            'visible_icon' => 'Default',
             'button_classes' => ['toggle-password-button'],
             'toggle_container_classes' => ['toggle-password-container'],
             'use_toggle_form_theme' => true,
@@ -37,8 +35,6 @@ final class TogglePasswordTypeExtension extends AbstractTypeExtension
         $resolver->setAllowedTypes('toggle', ['bool']);
         $resolver->setAllowedTypes('hidden_label', ['string', TranslatableMessage::class, 'null']);
         $resolver->setAllowedTypes('visible_label', ['string', TranslatableMessage::class, 'null']);
-        $resolver->setAllowedTypes('hidden_icon', ['string', 'null']);
-        $resolver->setAllowedTypes('visible_icon', ['string', 'null']);
         $resolver->setAllowedTypes('button_classes', ['string[]']);
         $resolver->setAllowedTypes('toggle_container_classes', ['string[]']);
         $resolver->setAllowedTypes('use_toggle_form_theme', ['bool']);
@@ -62,8 +58,6 @@ final class TogglePasswordTypeExtension extends AbstractTypeExtension
         $controllerValues['hidden-label'] = $this->translateLabel($options['hidden_label'], $options['translation_domain']);
         $controllerValues['visible-label'] = $this->translateLabel($options['visible_label'], $options['translation_domain']);
 
-        $controllerValues['hidden-icon'] = $options['hidden_icon'];
-        $controllerValues['visible-icon'] = $options['visible_icon'];
         $controllerValues['button-classes'] = json_encode($options['button_classes'], \JSON_THROW_ON_ERROR);
 
         foreach ($controllerValues as $name => $value) {

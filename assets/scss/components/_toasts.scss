@@ -18,7 +18,7 @@
 .toasts-wrapper {
   position: fixed;
   right: calc(#{$grid-gutter-width} / 2);
-  bottom: calc(#{$grid-gutter-width} / 2);
+  bottom: 80px;
   width: calc(100% - #{$grid-gutter-width});
   z-index: 1060;
 }

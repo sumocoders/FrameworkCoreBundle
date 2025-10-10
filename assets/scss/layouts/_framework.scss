@@ -69,7 +69,7 @@
   }
 
   @include media-breakpoint-up(xl) {
-    padding: $spacer * 0.5;
+    padding: 22px $spacer * 0.5;
   }
 
   @include media-breakpoint-down(xxl) {
@@ -83,6 +83,12 @@
     @include media-breakpoint-down(lg) {
       flex: 0 0 100%;
     }
+  }
+}
+
+html:has(.sf-toolbar) {
+  .buttons-fixed {
+    margin-bottom: 40px;
   }
 }
 

@@ -2,6 +2,7 @@
   <div class="navbar p-0 navbar-expand-md flex-row flex-md-column" data-role="navbar-wrapper">
     <div class="offcanvas-lg offcanvas-start" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel" data-role="navbar-collapse">
       <div class="offcanvas-header">
+        <h4 class="mb-0">{{ 'core.menu.navigation'|trans|ucfirst }}</h4>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#offcanvasNavbar" aria-label="Close"></button>
         <p id="offcanvasNavbarLabel" class="visually-hidden">{{ 'Navigation'|trans }}</p>
       </div>
@@ -13,9 +14,6 @@
               <i class="fas fa-arrow-left"></i> <div class="nav-link-text">{{ 'core.interface.collapse'|trans|ucfirst }}</div>
             </div>
           </div>
-        </div>
-        <div class="d-md-none mt-4">
-          {% include '@SumoCodersFrameworkCore/usermenu.html.twig' with {'mobile': true} %}
         </div>
       </div>
     </div>

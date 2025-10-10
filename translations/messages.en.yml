@@ -8,9 +8,12 @@ core:
         themes: mode
         dark: dark
         light: light
+        auto: auto
+        'toggle theme': 'toggle theme'
 
     menu:
         home: home
+        navigation: navigation
 
     warnings:
         oldBrowser: <strong>Warning:</strong> You are using an older browser. If you want to see the site as it is intended, you may want to download a new version or a decent browser like <a href="http://www.google.com/chrome‎">Chrome</a>.

@@ -6,8 +6,8 @@ core:
 
     themes:
         themes: modus
-        dark: donkere
-        light: lichte
+        dark: donker
+        light: licht
         auto: auto
         'toggle theme': 'thema wisselen'
 

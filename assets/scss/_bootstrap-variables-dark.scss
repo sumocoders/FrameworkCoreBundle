@@ -106,9 +106,12 @@ $btn-close-filter-dark:             $btn-close-white-filter !default;
 // Custom variables
 
 // Colors
-$user-bg-dark: $gray-850;
-$menu-bg-dark: $gray-850;
-$top-color-dark: $gray-850;
+$user-bg-dark: $gray-850 !default;
+$top-color-dark: $gray-850 !default;
+$menu-bg-dark: $gray-850 !default;
+$menu-color-dark: $white !default;
+$menu-active-bg-dark: rgba($black, 0.3) !default;
+$menu-active-color-dark: $white !default;
 
 [data-bs-theme=dark] {
   --top-color: #{$top-color-dark};
@@ -116,4 +119,7 @@ $top-color-dark: $gray-850;
   --error-content-bg: #81919F;
   --back-to-top-bg: #{$gray-700};
   --menu-bg: #{$menu-bg-dark};
+  --menu-color: #{$menu-color-dark};
+  --menu-active-bg: #{$menu-active-bg-dark};
+  --menu-active-color: #{$menu-active-color-dark};
 }

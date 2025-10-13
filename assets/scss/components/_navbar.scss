@@ -131,20 +131,21 @@ body.no-scroll {
 
     .nav-item {
       background-color: var(--menu-bg);
-      color: $white;
+      color: var(--menu-color);
       overflow: hidden;
       position: relative;
 
       &.current {
-        background-color: shade-color($menu-bg, 50%);
+        background-color: var(--menu-active-bg);
+        color: var(--menu-active-color);
       }
 
       &.current .nav-link,
       &.dropdown.show .nav-link {
-        color: color-contrast(shade-color($menu-bg, 50%));
+        color: var(--menu-active-color);
 
         &::before {
-          background-color: color-contrast(shade-color($menu-bg, 50%));
+          background-color: var(--menu-color);
           transform: translateX(7px);
         }
 
@@ -155,14 +156,14 @@ body.no-scroll {
       }
 
       .nav-link {
-        color: color-contrast($menu-bg);
+        color: var(--menu-color);
         flex-direction: row;
         font-weight: bold;
         padding: 1.7rem 1rem 1.7rem 1.6rem;
         position: relative;
 
         &::before {
-          background-color: color-contrast($menu-bg);
+          background-color: var(--menu-color);
           border-radius: 50%;
           content: '';
           height: 15px;
@@ -175,12 +176,12 @@ body.no-scroll {
 
         &:hover,
         &:focus {
-          background-color: shade-color($menu-bg, 50%);
-          color: color-contrast(shade-color($menu-bg, 50%));
+          background-color: var(--menu-active-bg);
+          color: var(--menu-active-color);
 
           &::before {
             animation: bounce 1s 1;
-            background-color: color-contrast(shade-color($menu-bg, 50%));
+            background-color: var(--menu-active-color);
             transform: translateX(7px);
           }
         }
@@ -201,7 +202,7 @@ body.no-scroll {
     }
 
     .dropdown-menu:not(.dropdown-menu-user) {
-      background-color: shade-color($menu-bg, 8%);
+      background-color: var(--menu-active-bg);
       margin: 0;
       padding: 0;
       position: relative;
@@ -209,13 +210,13 @@ body.no-scroll {
 
       li {
         a.dropdown-item {
-          color: color-contrast($menu-bg);
+          color: var(--menu-color);
           padding: 1.3rem 1rem 1.3rem 2.8rem;
           position: relative;
 
           &::before {
             border-radius: 50%;
-            background-color: color-contrast($menu-bg);
+            background-color: var(--menu-color);
             content: '';
             height: 15px;
             left: -16px;
@@ -227,7 +228,7 @@ body.no-scroll {
 
           &:hover,
           &:focus {
-            background-color: shade-color($menu-bg, 10%);
+            background-color: var(--menu-active-bg);
 
             &::before {
               animation: bounce 1s 1;
@@ -237,7 +238,7 @@ body.no-scroll {
         }
 
         &.current a.dropdown-item {
-          background-color: shade-color($menu-bg, 10%);
+          background-color: var(--menu-active-bg);
 
           &::before {
             transform: translateX(7px);
@@ -267,8 +268,8 @@ body.no-scroll {
 
       .current .dropdown-item,
       li a:hover {
-        background-color: shade-color($menu-bg, 10%);
-        color: color-contrast($menu-bg);
+        background-color: var(--menu-active-bg);
+        color: var(--menu-color);
       }
     }
 
@@ -289,7 +290,7 @@ body.no-scroll {
 
           &:hover,
           &:focus {
-            background-color: shade-color($top-color, 10%);
+            background-color: var(--menu-active-bg);
           }
         }
       }
@@ -478,87 +479,6 @@ body.no-scroll {
         padding-left: 0;
         padding-right: 0;
         padding-top: 0;
-      }
-    }
-  }
-}
-
-@include color-mode(dark) {
-  .main-menu {
-    .offcanvas-lg {
-      .nav-item {
-        &.current {
-          background-color: shade-color($menu-bg-dark, 50%);
-        }
-
-        &.current .nav-link,
-        &.dropdown.show .nav-link {
-          color: color-contrast(shade-color($menu-bg-dark, 50%));
-
-          &::before {
-            background-color: color-contrast(shade-color($menu-bg-dark, 50%));
-          }
-        }
-
-        .nav-link {
-          color: color-contrast($menu-bg-dark);
-
-          &::before {
-            background-color: color-contrast($menu-bg-dark);
-          }
-
-          &:hover,
-          &:focus {
-            background-color: shade-color($menu-bg-dark, 50%);
-            color: color-contrast(shade-color($menu-bg-dark, 50%));
-
-            &::before {
-              background-color: color-contrast(shade-color($menu-bg-dark, 50%));
-            }
-          }
-        }
-      }
-
-      .dropdown-menu:not(.dropdown-menu-user) {
-        background-color: shade-color($menu-bg-dark, 8%);
-
-        li {
-          a.dropdown-item {
-            color: color-contrast($menu-bg-dark);
-
-            &::before {
-              background-color: color-contrast($menu-bg-dark);
-            }
-
-            &:hover,
-            &:focus {
-              background-color: shade-color($menu-bg-dark, 10%);
-            }
-          }
-
-          &.current a.dropdown-item {
-            background-color: shade-color($menu-bg-dark, 10%);
-          }
-        }
-      }
-
-      .open .dropdown-menu {
-        .current .dropdown-item,
-        li a:hover {
-          background-color: shade-color($menu-bg-dark, 10%);
-          color: color-contrast($menu-bg-dark);
-        }
-      }
-
-      .toggle-menu-visibility {
-        .nav-item {
-          .nav-link {
-            &:hover,
-            &:focus {
-              background-color: shade-color($top-color-dark, 10%);
-            }
-          }
-        }
       }
     }
   }

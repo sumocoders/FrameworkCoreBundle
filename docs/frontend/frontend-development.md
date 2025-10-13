@@ -18,6 +18,9 @@ Use Bootstrap variables as much as possible to customize styling — this makes 
 #### Variables
 - `$top-color` sets the top navbar background color
 - `$menu-bg` sets the sidebar background color
+- `$menu-color` sets the sidebar text color
+- `$menu-active-bg` sets the sidebar active background color
+- `$menu-active-color` sets the sidebar active text color
 - `$primary` sets the primary color used in buttons, links, etc.
 - `$secondary` sets the secondary color used in buttons, links, etc.
 
@@ -25,6 +28,13 @@ Use Bootstrap variables as much as possible to customize styling — this makes 
 We use Bootstrap’s dark mode implementation. See the
 [documentation](https://getbootstrap.com/docs/5.3/customize/color-modes/).
 Most importantly, there are no separate dark mode files or stylesheets. Use `@include color-mode(dark) { ... }` to add dark mode styles. This mixin cannot be nested; put all dark mode styles in a single block at the end of the relevant SCSS file.
+
+#### Variables
+- `$top-color-dark` sets the dark mode top navbar background color
+- `$menu-bg-dark` sets the dark mode sidebar background color
+- `$menu-color-dark` sets dark mode the sidebar text color
+- `$menu-active-bg-dark` sets dark mode the sidebar active background color
+- `$menu-active-color-dark` sets dark mode the sidebar active text color
 
 ### Custom components or extensions (Sass)
 Place custom SCSS components in `assets/scss/components/`. Import your components after the Bootstrap imports. Try to base your custom components on Bootstrap components as much as possible.

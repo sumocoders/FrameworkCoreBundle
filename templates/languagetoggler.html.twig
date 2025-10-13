@@ -1,8 +1,8 @@
 <div class="user-nav theme-toggler d-flex h-lg-100">
   <div class="user btn-group dropdown w-100 d-flex flex-column">
-    <button class="btn btn-default dropdown-toggle d-flex align-items-center" id="bd-theme" type="button" aria-expanded="false" data-bs-toggle="dropdown" data-bs-display="static" aria-label="Toggle language">
+    <button class="btn btn-default dropdown-toggle d-flex align-items-center" id="bd-theme" type="button" aria-expanded="false" data-bs-toggle="dropdown" data-bs-display="static" aria-label="{{ 'core.languages.toggle theme'|trans|ucfirst }}">
       {{ app.request.locale|upper }}
-      <span class="d-lg-none ms-2" id="bd-language-text">Toggle language</span>
+      <span class="d-lg-none ms-2" id="bd-language-text">{{ 'core.languages.toggle theme'|trans|ucfirst }}</span>
       <span class="fas fa-chevron-down fa-w-16"></span>
     </button>
     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-user" aria-labelledby="bd-language-text">

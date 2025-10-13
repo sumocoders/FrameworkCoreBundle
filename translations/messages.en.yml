@@ -4,6 +4,9 @@ core:
         loading: loading
         collapse: collapse
 
+    languages:
+      'toggle language': 'toggle language'
+
     themes:
         themes: mode
         dark: dark

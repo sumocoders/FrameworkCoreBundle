@@ -4,6 +4,9 @@ core:
         loading: aan het laden
         collapse: verberg menu
 
+    languages:
+      'toggle language': 'taal wisselen'
+
     themes:
         themes: modus
         dark: donker

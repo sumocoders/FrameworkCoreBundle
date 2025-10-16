@@ -229,6 +229,7 @@ body.no-scroll {
           &:hover,
           &:focus {
             background-color: var(--menu-active-bg);
+            color: var(--menu-active-color);
 
             &::before {
               animation: bounce 1s 1;
@@ -239,6 +240,7 @@ body.no-scroll {
 
         &.current a.dropdown-item {
           background-color: var(--menu-active-bg);
+          color: var(--menu-active-color);
 
           &::before {
             transform: translateX(7px);

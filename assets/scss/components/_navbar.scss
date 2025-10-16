@@ -32,8 +32,8 @@ body.no-scroll {
   min-height: 100px;
 }
 
-.logo-application {
-  background: url('../images/logo-application.svg') no-repeat;
+.logo-application-dark {
+  display: none;
 }
 
 .navbar-brand {
@@ -493,5 +493,15 @@ body.no-scroll {
     .btn {
       padding: 0.75rem !important;
     }
+  }
+}
+
+@include color-mode(dark) {
+  .logo-application {
+    display: none;
+  }
+
+  .logo-application-dark {
+    display: block;
   }
 }

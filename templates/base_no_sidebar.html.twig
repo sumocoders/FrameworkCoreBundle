@@ -9,8 +9,8 @@
   <div class="sub-nav d-flex">
     <a href="/" rel="home" class="navbar-brand d-flex align-items-center justify-content-md-center">
       {% block logo_image %}
-        <img class="img-responsive{% if theme() != 'theme-dark' %} d-none{% endif %}" data-navbar-logo-dark src="{{ asset('images/logo-application-dark.svg') }}" alt="{{ fallbacks.get('site_title') }}">
-        <img class="img-responsive{% if theme() == 'theme-dark' %} d-none{% endif %}" data-navbar-logo src="{{ asset('images/logo-application.svg') }}" alt="{{ fallbacks.get('site_title') }}">
+        <img class="img-responsive logo-application-dark" data-navbar-logo-dark src="{{ asset('images/logo-application-dark.svg') }}" alt="{{ fallbacks.get('site_title') }}">
+        <img class="img-responsive logo-application" data-navbar-logo src="{{ asset('images/logo-application.svg') }}" alt="{{ fallbacks.get('site_title') }}">
       {% endblock %}
     </a>
     <div class="header-title d-flex flex-row justify-content-between w-100 align-items-center">

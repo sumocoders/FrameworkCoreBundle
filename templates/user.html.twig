@@ -18,8 +18,8 @@
         <div class="card-body">
           <div class="text-center mb-3 py-5 px-sm-4 px-md-5">
             {% block logo_image %}
-              <img class="img-responsive{% if theme() != 'theme-dark' %} d-none{% endif %}" data-navbar-logo-dark src="{{ asset('images/logo-application-dark.svg') }}" alt="{{ fallbacks.get('site_title') }}">
-              <img class="img-responsive{% if theme() == 'theme-dark' %} d-none{% endif %}" data-navbar-logo src="{{ asset('images/logo-application.svg') }}" alt="{{ fallbacks.get('site_title') }}">
+              <img class="img-responsive logo-application-dark" data-navbar-logo-dark src="{{ asset('images/logo-application-dark.svg') }}" alt="{{ fallbacks.get('site_title') }}">
+              <img class="img-responsive logo-application" data-navbar-logo src="{{ asset('images/logo-application.svg') }}" alt="{{ fallbacks.get('site_title') }}">
             {% endblock %}
           </div>
 

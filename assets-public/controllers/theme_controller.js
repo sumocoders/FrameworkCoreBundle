@@ -65,7 +65,6 @@ export default class extends Controller {
       const storedTheme = getStoredTheme()
       if (storedTheme !== 'light' && storedTheme !== 'dark') {
         setTheme(getPreferredTheme())
-        this.toggleDarkAssets(getPreferredTheme())
       }
     })
 
@@ -76,25 +75,7 @@ export default class extends Controller {
           setStoredTheme(theme)
           setTheme(theme)
           showActiveTheme(theme, true)
-          this.toggleDarkAssets(theme)
         })
       })
-  }
-
-  toggleDarkAssets (theme) {
-    const logo = document.querySelector('[data-navbar-logo]')
-    const darkLogo = document.querySelector('[data-navbar-logo-dark]')
-
-    if (theme === 'dark') {
-      if (logo) {
-        darkLogo.classList.remove('d-none')
-        logo.classList.add('d-none')
-      }
-    } else {
-      if (logo) {
-        darkLogo.classList.add('d-none')
-        logo.classList.remove('d-none')
-      }
-    }
   }
 }

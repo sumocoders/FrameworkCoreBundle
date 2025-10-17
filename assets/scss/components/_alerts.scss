@@ -1,6 +1,6 @@
 @each $color, $value in $theme-colors {
   .alert-#{$color} {
-    a {
+    a:not([class]) {
       color: var(--bs-#{$color}-text-emphasis);
     }
 
@@ -20,7 +20,7 @@
         color: mix(white, $value, 80%) !important;
       }
 
-      a {
+      a:not([class]) {
         text-decoration: underline;
       }
 

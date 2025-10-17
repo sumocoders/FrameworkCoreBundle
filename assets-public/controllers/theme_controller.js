@@ -4,9 +4,7 @@ import { readCookie } from 'sumocoders/cookie'
 
 export default class extends Controller {
   connect() {
-    // This runs when the controller's element is added to the DOM
     this.showTheme()
-    console.log('Theme controller connected')
   }
 
   showTheme () {
@@ -42,7 +40,13 @@ export default class extends Controller {
       const themeSwitcherText = document.querySelector('#bd-theme-text')
       const activeThemeIcon = document.querySelector('[data-bs-theme-icon]')
       const btnToActive = document.querySelector(`[data-bs-theme-value="${theme}"]`)
+      if (!themeSwitcherText || !activeThemeIcon || !btnToActive) {
+        return
+      }
       const iconOfActiveBtn = btnToActive.querySelector('i')
+      if (!iconOfActiveBtn) {
+        return
+      }
 
       document.querySelectorAll('[data-bs-theme-value]').forEach(element => {
         element.classList.remove('active')

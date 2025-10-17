@@ -40,17 +40,24 @@
     }
 
     .user-nav.theme-toggler {
-      .btn-group {
-        width: auto
+      font-size: 0.95em;
+
+      button, .dropdown-item {
+        font-size: 0.95em;
       }
 
       .dropdown-toggle {
         padding: 8px;
         background-color: $gray-200;
         border-color: $gray-400;
-        flex: 0 0 auto;
-        width: auto;
-        display: inline-block !important;
+      }
+
+      .dropdown-divider {
+        margin: 0.25rem;
+      }
+
+      .dropdown-menu {
+        padding: 0;
       }
     }
   }

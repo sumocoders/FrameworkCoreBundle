@@ -1,0 +1,11 @@
+@include color-mode(dark) {
+  .ql-toolbar {
+    .ql-stroke {
+      stroke: var(--bs-body-color)
+    }
+
+    .ql-fill {
+      fill: var(--bs-body-color)
+    }
+  }
+}

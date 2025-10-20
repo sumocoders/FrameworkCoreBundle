@@ -3,6 +3,8 @@
 {% endblock %}
 
 <body class="body-empty">
+{{ include('@SumoCodersFrameworkCore/settheme.html.twig') }}
+
     {{ include('@SumoCodersFrameworkCore/notifications.html.twig') }}
     <div class="container">
       {% block main %}{% endblock %}

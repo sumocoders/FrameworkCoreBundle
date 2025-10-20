@@ -20,3 +20,9 @@ table.table {
     }
   }
 }
+
+@include color-mode(dark) {
+  table.table {
+    border-color: $gray-700;
+  }
+}

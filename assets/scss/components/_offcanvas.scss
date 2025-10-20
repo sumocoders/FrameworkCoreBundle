@@ -6,6 +6,7 @@
   @include media-breakpoint-down(lg) {
     .user-nav {
       margin-bottom: 1rem;
+      order: 0;
 
       .user {
         border: none
@@ -41,6 +42,7 @@
 
     .user-nav.theme-toggler {
       font-size: 0.95em;
+      order: 1;
 
       button, .dropdown-item {
         font-size: 0.95em;

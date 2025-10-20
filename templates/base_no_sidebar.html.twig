@@ -35,7 +35,7 @@
         </div>
         <div class="offcanvas-body d-flex flex-column flex-lg-row justify-content-start justify-content-lg-end px-0">
           {{ include('@SumoCodersFrameworkCore/usermenu.html.twig', {mobile: false}) }}
-          {{ include('@SumoCodersFrameworkCore/themetoggler.html.twig', {mobile: false}) }}
+          {{ include('@SumoCodersFrameworkCore/themetoggler.html.twig', {dropend: false}) }}
           {% if locales is iterable and locales|length > 1 %}
             {{ include('@SumoCodersFrameworkCore/languagetoggler.html.twig', {mobile: false}) }}
           {% endif %}

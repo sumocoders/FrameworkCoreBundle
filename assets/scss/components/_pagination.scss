@@ -1,40 +1,44 @@
 .pagination {
   .page-item {
     .page-link {
-      border-bottom: 2px solid transparent;
-      border-top: 0;
       min-height: 34px;
       margin: 2px;
+      text-decoration: none;
+      border: 1px solid var(--bs-border-color);
 
       &:hover,
-      &:focus {
-        border-bottom: 2px solid var(--bs-primary-text-emphasis);
+      &:focus, &:active, &.active {
+        border-bottom: none !important;
+        background-color: var(--bs-primary) !important;
+        color: $black !important;
+      }
+    }
+
+    &.prev, &.next {
+      .page-link {
+        border-radius: var(--bs-pagination-border-radius);
       }
     }
 
     &.next.disabled span,
     &.prev.disabled span {
-      border-color: $white;
-      border-bottom: 0;
-      border-top: 0;
+      border: 1px solid var(--bs-border-color);
+
     }
 
     &.disabled span {
-      border-bottom: 0;
-      border-top: 0;
+      border: none;
+      background-color: transparent;
     }
   }
 
   .page-item:first-child > .page-link {
-    border-bottom-left-radius: 0;
-    border-left: 0;
-    border-top-left-radius: 0;
+    border: 1px solid var(--bs-border-color);
+
   }
 
   .page-item:last-child > .page-link {
-    border-bottom-right-radius: 0;
-    border-right: 0;
-    border-top-right-radius: 0;
+    border: 1px solid var(--bs-border-color);
   }
 }
 

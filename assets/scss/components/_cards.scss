@@ -146,6 +146,10 @@
   }
 }
 
+.card-collection-item {
+  overflow: visible;
+}
+
 @include media-breakpoint-up(lg) {
   .card.card-dashboard .card-body {
     padding-bottom: 2rem;

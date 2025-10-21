@@ -2,7 +2,7 @@
     {% include '@SumoCodersFrameworkCore/head.html.twig' with {title: block('title') is defined ? block('title') : page_title} %}
 
     {% block stylesheets %}
-        {{ encore_entry_link_tags('error') }}
+        <link rel="stylesheet" href="{{ asset('styles/error.scss') }}">
     {% endblock %}
 
 {% endblock %}

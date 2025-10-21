@@ -136,7 +136,7 @@
         {{ form_errors(item) }}
         {% if allow_delete is defined and allow_delete %}
           <button type="button" class="btn btn-outline-danger collection-item-delete"  title="{{ 'forms.buttons.removeItem'|trans|ucfirst }}" data-action="form-collection#deleteItem">
-            <i class="fas fa-trash"></i> <span class="sr-only">{{ 'forms.buttons.removeItem'|trans|ucfirst }}</span>
+            <i class="fas fa-trash"></i> <span class="visually-hidden">{{ 'forms.buttons.removeItem'|trans|ucfirst }}</span>
           </button>
         {% endif %}
       </div>
@@ -227,17 +227,17 @@
     {% endif %}
 
     <div class="col-md-3">
-      {%- if label is not same as(false) -%}{{ form_label(form.day, null, { 'label_attr': {'class': 'sr-only'} }) }}{%- endif -%}
+      {%- if label is not same as(false) -%}{{ form_label(form.day, null, { 'label_attr': {'class': 'visually-hidden'} }) }}{%- endif -%}
       {{ form_widget(form.day) }}
     </div>
     <span>{{ divider }}</span>
     <div class="col-md-3">
-      {%- if label is not same as(false) -%}{{ form_label(form.month, null, { 'label_attr': {'class': 'sr-only'} }) }}{%- endif -%}
+      {%- if label is not same as(false) -%}{{ form_label(form.month, null, { 'label_attr': {'class': 'visually-hidden'} }) }}{%- endif -%}
       {{ form_widget(form.month) }}
     </div>
     <span>{{ divider }}</span>
     <div class="col-md-3">
-      {%- if label is not same as(false) -%}{{ form_label(form.year, null, { 'label_attr': {'class': 'sr-only'} }) }}{%- endif -%}
+      {%- if label is not same as(false) -%}{{ form_label(form.year, null, { 'label_attr': {'class': 'visually-hidden'} }) }}{%- endif -%}
       {{ form_widget(form.year) }}
     </div>
 
@@ -295,14 +295,14 @@
     {% endif %}
 
     <div class="col-md-3">
-      {%- if label is not same as(false) -%}{{ form_label(form.hour, null, { 'label_attr': {'class': 'sr-only'} }) }}{%- endif -%}
+      {%- if label is not same as(false) -%}{{ form_label(form.hour, null, { 'label_attr': {'class': 'visually-hidden'} }) }}{%- endif -%}
       {{ form_widget(form.hour) }}
     </div>
     <div class="col-md-1 text-center">
       <span>{{ divider }}</span>
     </div>
     <div class="col-md-3">
-      {%- if label is not same as(false) -%}{{ form_label(form.minute, null, { 'label_attr': {'class': 'sr-only'} }) }}{%- endif -%}
+      {%- if label is not same as(false) -%}{{ form_label(form.minute, null, { 'label_attr': {'class': 'visually-hidden'} }) }}{%- endif -%}
       {{ form_widget(form.minute) }}
     </div>
     {% if with_seconds %}
@@ -310,7 +310,7 @@
         <span>{{ divider }}</span>
       </div>
       <div class="col-md-3">
-        {%- if label is not same as(false) -%}{{ form_label(form.second, null, { 'label_attr': {'class': 'sr-only'} }) }}{%- endif -%}
+        {%- if label is not same as(false) -%}{{ form_label(form.second, null, { 'label_attr': {'class': 'visually-hidden'} }) }}{%- endif -%}
         {{ form_widget(form.second) }}
       </div>
     {% endif %}
@@ -368,12 +368,12 @@
     {% endif %}
 
     <div class="col-md-3">
-      {%- if label is not same as(false) -%}{{ form_label(form.date, null, { 'label_attr': {'class': 'sr-only'} }) }}{%- endif -%}
+      {%- if label is not same as(false) -%}{{ form_label(form.date, null, { 'label_attr': {'class': 'visually-hidden'} }) }}{%- endif -%}
       {{ form_widget(form.date) }}
     </div>
     <span>{{ divider }}</span>
     <div class="col-md-3">
-      {%- if label is not same as(false) -%}{{ form_label(form.time, null, { 'label_attr': {'class': 'sr-only'} }) }}{%- endif -%}
+      {%- if label is not same as(false) -%}{{ form_label(form.time, null, { 'label_attr': {'class': 'visually-hidden'} }) }}{%- endif -%}
       {{ form_widget(form.time) }}
     </div>
 
@@ -460,3 +460,7 @@
   </div>
   {{ form_row(form.second) }}
 {% endblock %}
+
+{%- block toggle_password_widget -%}
+  <div class="{{ toggle_container_classes|join(' ') }}">{{ block('password_widget') }}</div>
+{%- endblock toggle_password_widget -%}

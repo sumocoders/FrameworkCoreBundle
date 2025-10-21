@@ -31,13 +31,12 @@ You can use them like so:
 There is also a helper called `enableChildRoutes`, which takes a prefix string as an argument. Calling this method on a
 menu item, will activate it when a route is visited that starts with the prefix you pass.
 
-In short, if you have a menu item with `user_overview` as the route, and you enable child routes with the `user_`
+In short, if you have a menu item with `user_admin_overview` as the route, and you enable child routes with the `user_admin_`
 prefix, all the following routes will also mark the user menu item as active:
 
-* `user_create`
-* `user_update`
-* `user_export`
-* `user_whatever`
+* `user_admin_add`
+* `user_admin_edit`
+* `user_admin_whatever`
 
 ## The example listener
 
@@ -48,8 +47,9 @@ namespace App\EventListener;
 
 use SumoCoders\FrameworkCoreBundle\Event\ConfigureMenuEvent;
 use SumoCoders\FrameworkCoreBundle\EventListener\DefaultMenuListener;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class MenuListener extends DefaultMenuListener
+class MenuListener extends DefaultMenuListener implements EventSubscriberInterface
 {
     public function onConfigureMenu(ConfigureMenuEvent $event): void
     {
@@ -59,29 +59,29 @@ class MenuListener extends DefaultMenuListener
         if ($this->getSecurity()->isGranted("ROLE_ADMIN")) {
             $menu->addChild(
                 $factory->createItem(
-                    $this->getTranslator()->trans('menu.something_for_admins'),
+                    $this->getTranslator()->trans('Users''),
                     [
-                        'route' => 'route_for_admins',
+                        'route' => 'user_admin_overview',
                         'labelAttributes' => [
-                            'icon' => 'fas fa-lock',
+                            'icon' => 'fas fa-user',
+                        ],
+                        'extras' => [
+                            'routes' => [
+                                'user_admin_add',
+                                'user_admin_edit',
+                            ],
                         ],
                     ],
                 )
             );
         }
-        
-        $userItem = $factory->createItem(
-            $this->getTranslator()->trans('menu.something_regular'),
-            [
-                'route' => 'user_overview',
-                'labelAttributes' => [
-                    'icon' => 'fas fa-user',
-                ],
-            ],
-        );
-        
-        $userMenuItem->enableChildRoutes($userItem, 'user_');
-        
-        $menu->addChild($userMenuItem);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public static function getSubscribedEvents(): array
+    {
+        return [ConfigureMenuEvent::EVENT_NAME => 'onConfigureMenu'];
     }
 }

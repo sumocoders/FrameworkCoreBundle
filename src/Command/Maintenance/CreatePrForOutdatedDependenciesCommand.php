@@ -234,7 +234,7 @@ class CreatePrForOutdatedDependenciesCommand extends Command
             );
         }
 
-        $commitMessage = 'chore(importmap): Update importmap dependencies' .
+        $commitMessage = 'chore(composer): Update composer dependencies' .
                          "\n\n" . implode("\n", $versionMessages);
         $this->runCommand(
             [

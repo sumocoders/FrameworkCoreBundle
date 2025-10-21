@@ -8,6 +8,7 @@ use SumoCoders\FrameworkCoreBundle\DoctrineListener\DoctrineAuditListener;
 use SumoCoders\FrameworkCoreBundle\EventListener\BreadcrumbListener;
 use SumoCoders\FrameworkCoreBundle\EventListener\ResponseSecurer;
 use SumoCoders\FrameworkCoreBundle\EventListener\TitleListener;
+use SumoCoders\FrameworkCoreBundle\Form\Extension\TogglePasswordTypeExtension;
 use SumoCoders\FrameworkCoreBundle\Form\Type\BelgiumPostCodeType;
 use SumoCoders\FrameworkCoreBundle\Form\Type\ImageType;
 use SumoCoders\FrameworkCoreBundle\Form\Type\FileType;
@@ -30,6 +31,7 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -80,6 +82,12 @@ return static function (ContainerConfigurator $container): void {
 
         ->set('framework.collection_type_extension', CollectionTypeExtension::class)
         ->tag('form.type_extension', ['extended_type' => CollectionType::class])
+
+        ->set('framework.toggle_password_type_extension', TogglePasswordTypeExtension::class)
+        ->args([
+            service('translator')
+        ])
+        ->tag('form.type_extension', ['extended_type' => PasswordType::class])
 
         ->set('framework.image_type', ImageType::class)
         ->tag('form.type', ['alias' => 'image'])

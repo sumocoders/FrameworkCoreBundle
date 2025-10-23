@@ -5,6 +5,7 @@
     &.selected {
       background: var(--bs-primary-text-emphasis);
       border-color: var(--bs-primary-text-emphasis);
+      color: color-contrast($primary);
     }
 
     &:hover,
@@ -68,6 +69,12 @@
       &:focus {
         color: color-contrast($primary-text-emphasis-dark);
       }
+
+      &.selected:hover,
+      &.selected:focus,
+      &.selected {
+        color: color-contrast($primary-text-emphasis-dark);
+      }
     }
 
     .flatpickr-day.flatpickr-disabled,
@@ -83,7 +90,7 @@
     .flatpickr-time input,
     .flatpickr-day,
     .flatpickr-weekday {
-      color: $white;
+      color: var(--bs-body-color);
     }
 
     .flatpickr-time input:hover,

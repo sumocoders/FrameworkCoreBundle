@@ -32,23 +32,23 @@ body.no-scroll {
   min-height: 100px;
 }
 
-.logo-application {
-  background: url('../images/logo-application.svg') no-repeat;
+.logo-application-dark {
+  display: none;
 }
 
 .navbar-brand {
-  background-color: $logo-bg;
+  background-color: var(--top-color);
   margin-right: 0;
   padding: 0;
 
   img {
-    margin: 5px 0 5px $spacer;
+    margin: 5px 0 5px 5px;
     height: 50px;
+    flex-shrink: 0;
   }
 }
 
 .navbar {
-  background-color: $logo-bg;
   border: 0;
   margin-bottom: 0;
   z-index: 1050;
@@ -106,25 +106,26 @@ body.no-scroll {
 }
 
 .main-menu {
-  left: 0;
-  position: fixed;
-  top: 0;
-  right: 0;
   z-index: 1040;
+  border-top: 1px var(--bs-border-color) solid;
 
   .navbar {
     align-items: stretch;
-    height: 60px;
+    height: 0;
 
     .navbar-header {
       padding: 5px 10px;
     }
   }
 
-  .navbar-collapse {
-    &.show {
-      max-height: calc(100vh - 60px);
+  .offcanvas-lg {
+    @include media-breakpoint-up(lg) {
+      max-height: calc(100vh - 75px);
       overflow-y: auto;
+    }
+
+    .offcanvas-body {
+      width: 100%;
     }
 
     .nav {
@@ -133,21 +134,22 @@ body.no-scroll {
     }
 
     .nav-item {
-      background-color: $menu-bg;
-      color: $white;
+      background-color: var(--menu-bg);
+      color: var(--menu-color);
       overflow: hidden;
       position: relative;
 
       &.current {
-        background-color: shade-color($menu-bg, 50%);
+        background-color: var(--menu-active-bg);
+        color: var(--menu-active-color);
       }
 
       &.current .nav-link,
       &.dropdown.show .nav-link {
-        color: color-contrast(shade-color($menu-bg, 50%));
+        color: var(--menu-active-color);
 
         &::before {
-          background-color: color-contrast(shade-color($menu-bg, 50%));
+          background-color: var(--menu-color);
           transform: translateX(7px);
         }
 
@@ -158,14 +160,14 @@ body.no-scroll {
       }
 
       .nav-link {
-        color: color-contrast($menu-bg);
+        color: var(--menu-color);
         flex-direction: row;
         font-weight: bold;
         padding: 1.7rem 1rem 1.7rem 1.6rem;
         position: relative;
 
         &::before {
-          background-color: color-contrast($menu-bg);
+          background-color: var(--menu-color);
           border-radius: 50%;
           content: '';
           height: 15px;
@@ -178,12 +180,12 @@ body.no-scroll {
 
         &:hover,
         &:focus {
-          background-color: shade-color($menu-bg, 50%);
-          color: color-contrast(shade-color($menu-bg, 50%));
+          background-color: var(--menu-active-bg);
+          color: var(--menu-active-color);
 
           &::before {
             animation: bounce 1s 1;
-            background-color: color-contrast(shade-color($menu-bg, 50%));
+            background-color: var(--menu-active-color);
             transform: translateX(7px);
           }
         }
@@ -204,7 +206,7 @@ body.no-scroll {
     }
 
     .dropdown-menu:not(.dropdown-menu-user) {
-      background-color: shade-color($menu-bg, 8%);
+      background-color: var(--menu-active-bg);
       margin: 0;
       padding: 0;
       position: relative;
@@ -212,13 +214,13 @@ body.no-scroll {
 
       li {
         a.dropdown-item {
-          color: color-contrast($menu-bg);
+          color: var(--menu-color);
           padding: 1.3rem 1rem 1.3rem 2.8rem;
           position: relative;
 
           &::before {
             border-radius: 50%;
-            background-color: color-contrast($menu-bg);
+            background-color: var(--menu-color);
             content: '';
             height: 15px;
             left: -16px;
@@ -230,7 +232,8 @@ body.no-scroll {
 
           &:hover,
           &:focus {
-            background-color: shade-color($menu-bg, 10%);
+            background-color: var(--menu-active-bg);
+            color: var(--menu-active-color);
 
             &::before {
               animation: bounce 1s 1;
@@ -240,7 +243,8 @@ body.no-scroll {
         }
 
         &.current a.dropdown-item {
-          background-color: shade-color($menu-bg, 10%);
+          background-color: var(--menu-active-bg);
+          color: var(--menu-active-color);
 
           &::before {
             transform: translateX(7px);
@@ -270,8 +274,8 @@ body.no-scroll {
 
       .current .dropdown-item,
       li a:hover {
-        background-color: shade-color($menu-bg, 10%);
-        color: color-contrast($menu-bg);
+        background-color: var(--menu-active-bg);
+        color: var(--menu-color);
       }
     }
 
@@ -283,7 +287,7 @@ body.no-scroll {
       z-index: 1003;
 
       .nav-item {
-        background-color: $top-color;
+        background-color: var(--top-color);
         color: $text-muted;
 
         .nav-link {
@@ -292,7 +296,7 @@ body.no-scroll {
 
           &:hover,
           &:focus {
-            background-color: shade-color($top-color, 10%);
+            background-color: var(--menu-active-bg);
           }
         }
       }
@@ -314,7 +318,6 @@ body.no-scroll {
   .navbar-brand {
     height: $topbar-height-md;
     margin-left: 0;
-    width: 100%;
 
     img {
       margin-left: auto;
@@ -335,9 +338,10 @@ body.no-scroll {
   }
 
   .main-menu {
-    background-color: $menu-bg;
+    background-color: var(--menu-bg);
     height: 100%;
     left: 0;
+    top: $topbar-height-md;
     position: fixed;
     width: $sidebar-width-open;
     z-index: 950;
@@ -368,8 +372,8 @@ body.no-scroll {
       border-top: 0;
     }
 
-    .navbar-collapse {
-      background-color: $menu-bg;
+    .offcanvas-lg {
+      background-color: var(--menu-bg);
       max-height: calc(100vh - 60px);
       overflow-y: auto;
       padding-bottom: 84px;
@@ -393,7 +397,7 @@ body.no-scroll {
     .main-menu {
       width: $sidebar-width-closed;
 
-      .navbar-collapse {
+      .offcanvas-lg {
         .toggle-menu-visibility {
           width: $sidebar-width-closed;
 
@@ -445,5 +449,65 @@ body.no-scroll {
         }
       }
     }
+  }
+}
+
+@include media-breakpoint-up(lg) {
+  .main-menu {
+    display: flex;
+    flex-flow: column nowrap;
+
+    .offcanvas-body {
+      flex-flow: column nowrap;
+      flex-grow: 1;
+    }
+
+    .offcanvas-lg {
+      height: 100%;
+      display: flex;
+      flex-flow: column nowrap;
+    }
+
+    .navbar {
+      height: 100%;
+    }
+  }
+
+  #main-menu-inner {
+    flex-grow: 1;
+  }
+}
+
+@include media-breakpoint-down(lg) {
+  .main-menu {
+    .offcanvas-lg {
+      .offcanvas-body {
+        padding-left: 0;
+        padding-right: 0;
+        padding-top: 0;
+      }
+    }
+  }
+}
+
+@include media-breakpoint-down(lg) {
+  .user-toggles {
+    #bd-theme-text, #bd-language-text {
+      display: none;
+    }
+
+    .btn {
+      padding: 0.75rem !important;
+    }
+  }
+}
+
+@include color-mode(dark) {
+  .logo-application {
+    display: none;
+  }
+
+  .logo-application-dark {
+    display: block;
   }
 }

@@ -1,54 +1,85 @@
 import { Controller } from '@hotwired/stimulus'
 import { setCookie } from 'sumocoders/cookie'
+import { readCookie } from 'sumocoders/cookie'
 
 export default class extends Controller {
-  toggle (event) {
-    let themeToBe = 'light'
-    if (event.target.checked) {
-      themeToBe = 'dark'
-    }
-
-    setCookie('theme', themeToBe)
-
-    this.showTheme(themeToBe)
+  connect() {
+    this.showTheme()
   }
 
-  stopDropdownHiding (event) {
-    if (event.clickEvent.target.closest('[data-controller="theme"]') !== null) {
-      event.preventDefault()
-    }
-  }
+  showTheme () {
+    const getStoredTheme = () => localStorage.getItem('theme')
+    const setStoredTheme = theme => localStorage.setItem('theme', theme)
 
-  showTheme (themeToBe) {
-    const darkThemePath = document.querySelector('body').dataset.themePath
-    const darkStyleLinkTag = document.querySelector('link[rel=stylesheet][href="' + darkThemePath + '"]')
-    const body = document.querySelector('body')
-    const logo = document.querySelector('[data-navbar-logo]')
-    const darkLogo = document.querySelector('[data-navbar-logo-dark]')
-
-    if (themeToBe === 'dark') {
-      if (darkStyleLinkTag === null) {
-        this.addDarkStyleLinkToHead()
+    const getPreferredTheme = () => {
+      const storedTheme = getStoredTheme()
+      if (storedTheme) {
+        return storedTheme
       }
-      darkLogo.classList.remove('d-none')
-      logo.classList.add('d-none')
-      body.setAttribute('data-bs-theme', 'dark')
-    } else {
-      if (darkStyleLinkTag !== null) {
-        darkStyleLinkTag.remove()
-      }
-      darkLogo.classList.add('d-none')
-      logo.classList.remove('d-none')
-      body.setAttribute('data-bs-theme', 'light')
-    }
-  }
 
-  addDarkStyleLinkToHead () {
-    const darkThemePath = document.querySelector('body').dataset.themePath
-    const link = document.createElement('link')
-    link.type = 'text/css'
-    link.rel = 'stylesheet'
-    link.href = darkThemePath
-    document.querySelector('head').appendChild(link)
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+    }
+
+    const setTheme = theme => {
+      if (theme === 'auto') {
+        document.documentElement.setAttribute('data-bs-theme', (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'))
+      } else {
+        document.documentElement.setAttribute('data-bs-theme', theme)
+      }
+    }
+
+    setTheme(getPreferredTheme())
+
+    const showActiveTheme = (theme, focus = false) => {
+      const themeSwitcher = document.querySelector('#bd-theme')
+
+      if (!themeSwitcher) {
+        return
+      }
+
+      const themeSwitcherText = document.querySelector('#bd-theme-text')
+      const activeThemeIcon = document.querySelector('[data-bs-theme-icon]')
+      const btnToActive = document.querySelector(`[data-bs-theme-value="${theme}"]`)
+      if (!themeSwitcherText || !activeThemeIcon || !btnToActive) {
+        return
+      }
+      const iconOfActiveBtn = btnToActive.querySelector('i')
+      if (!iconOfActiveBtn) {
+        return
+      }
+
+      document.querySelectorAll('[data-bs-theme-value]').forEach(element => {
+        element.classList.remove('active')
+        element.setAttribute('aria-pressed', 'false')
+      })
+
+      btnToActive.classList.add('active')
+      btnToActive.setAttribute('aria-pressed', 'true')
+      activeThemeIcon.classList.remove(...activeThemeIcon.classList)
+      activeThemeIcon.classList.add(...iconOfActiveBtn.classList)
+      const themeSwitcherLabel = `${themeSwitcherText.textContent} (${btnToActive.dataset.bsThemeValue})`
+      themeSwitcher.setAttribute('aria-label', themeSwitcherLabel)
+
+      if (focus) {
+        themeSwitcher.focus()
+      }
+    }
+
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+      const storedTheme = getStoredTheme()
+      if (storedTheme !== 'light' && storedTheme !== 'dark') {
+        setTheme(getPreferredTheme())
+      }
+    })
+
+    document.querySelectorAll('[data-bs-theme-value]')
+      .forEach(toggle => {
+        toggle.addEventListener('click', () => {
+          const theme = toggle.getAttribute('data-bs-theme-value')
+          setStoredTheme(theme)
+          setTheme(theme)
+          showActiveTheme(theme, true)
+        })
+      })
   }
 }

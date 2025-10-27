@@ -5,9 +5,18 @@ export default class extends Controller {
   static targets = ['toggleable']
 
   toggle () {
-    this.toggleableTarget.classList.toggle('sidebar-collapsed')
+    const targets = this.toggleableTargets || (this.toggleableTarget ? [this.toggleableTarget] : [])
+    if (!targets.length) return
 
-    // set cookie
-    setCookie('sidebar_is_open', !this.toggleableTarget.classList.contains('sidebar-collapsed'))
+    // Determine the next state: if any target is open, collapse all; otherwise, expand all
+    const nextShouldCollapse = targets.some((el) => !el.classList.contains('sidebar-collapsed'))
+
+    // Apply the state to all targets
+    targets.forEach((el) => {
+      el.classList.toggle('sidebar-collapsed', nextShouldCollapse)
+    })
+
+    // set cookie to reflect whether the sidebar is open (not collapsed)
+    setCookie('sidebar_is_open', !nextShouldCollapse)
   }
 }

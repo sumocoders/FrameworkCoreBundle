@@ -1,79 +1,108 @@
+{% set has_header_actions_left = (block('header_actions_left') is defined) ? block('header_actions_left') : '' %}
+{% set has_header_actions_center = (block('header_actions_center') is defined) ? block('header_actions_center') : '' %}
+{% set has_header_actions_right = (block('header_actions_right') is defined) ? block('header_actions_right') : '' %}
+
+{% set has_header_actions =
+  has_header_actions_left|trim is not empty
+  or has_header_actions_center|trim is not empty
+  or has_header_actions_right|trim is not empty
+%}
+
 {% block head %}
-  {% include '@SumoCodersFrameworkCore/head.html.twig' with {title: block('title') is defined ? block('title') : page_title} %}
+  {{ include('@SumoCodersFrameworkCore/head.html.twig', {title: block('title') is defined ? block('title') : page_title}) }}
 {% endblock %}
 
-<body class="body-base" data-theme-path="{{ asset('styles/style-dark.scss') }}">
-  {% block start_body %}
-  {% endblock %}
-  <div id="main-wrapper" class="main-wrapper{% if not sidebarIsOpen() %} sidebar-collapsed{% endif %}" data-controller="sidebar-collapsable" data-sidebar-collapsable-target="toggleable">
-    <div id="main-menu" class="main-menu" role="navigation">
-      {% block include_navigation %}
-        {{ include('@SumoCodersFrameworkCore/navigation.html.twig') }}
+<body class="body-base">
+{{ include('@SumoCodersFrameworkCore/settheme.html.twig') }}
+
+{% block start_body %}
+{% endblock %}
+<div class="main-header">
+  <div class="sub-nav d-flex">
+    <a href="/" rel="home" class="navbar-brand d-flex align-items-center justify-content-md-center">
+      {% block logo_image %}
+        <img class="img-responsive logo-application-dark" data-navbar-logo-dark src="{{ asset('images/logo-application-dark.svg') }}" alt="{{ fallbacks.get('site_title') }}">
+        <img class="img-responsive logo-application" data-navbar-logo src="{{ asset('images/logo-application.svg') }}" alt="{{ fallbacks.get('site_title') }}">
       {% endblock %}
+    </a>
+    <div class="header-title d-flex flex-row justify-content-between w-100 align-items-center">
+      <div class="d-flex flex-column">
+        <nav aria-label="breadcrumb" class="">
+          {% block header_title %}
+          {% endblock %}
+          {{ block('breadcrumb', '@SumoCodersFrameworkCore/Breadcrumb/breadcrumb.html.twig') }}
+        </nav>
+      </div>
     </div>
-    <div id="content-wrapper">
-      <div class="main-header">
-        <div class="d-md-none breadcrumb-mobile">
-          <nav aria-label="breadcrumb" class="my-2">
-            {{ block('breadcrumb', '@SumoCodersFrameworkCore/Breadcrumb/breadcrumb.html.twig') }}
-          </nav>
+    <div class="navbar-header d-md-none d-flex">
+      <button class="navbar-toggler navbar-toggler-right ms-auto collapsed" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <button class="btn btn-default d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasUser" aria-controls="offcanvasResponsive">
+        {% if is_granted('IS_IMPERSONATOR') %}
+          <i class="fas fa-exchange-alt"></i>
+        {% else %}
+          <i class="fas fa-user-circle"></i>
+        {% endif %}
+      </button>
+    </div>
+    <div class="ms-auto">
+      <div class="offcanvas-lg offcanvas-end" tabindex="-1" id="offcanvasUser" aria-labelledby="offcanvasUserLabel">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="offcanvasUserLabel">{{ 'Settings'|trans }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#offcanvasUser" aria-label="Close"></button>
         </div>
-        <div class="sub-nav d-flex">
-          <div class="header-title d-flex flex-row justify-content-between w-100 align-items-center">
-            {% block header_title %}
-            {% endblock %}
-            <div class="d-md-none">
-              {% if block('header_navigation') is defined and block('header_navigation') is not empty %}
-                <button type="button" class="navbar-toggler h-100 collapse-actions-toggle"  data-bs-toggle="collapse" data-bs-target="#action-buttons-collapse" aria-expanded="false" aria-controls="action-buttons-collapse">
-                  <i class="fas fa-ellipsis-v"></i>
-                </button>
-              {% endif %}
-            </div>
-          </div>
-          <div class="d-none d-md-block ms-auto">
-            {% include '@SumoCodersFrameworkCore/usermenu.html.twig' with {'mobile': false} %}
-          </div>
+        <div class="offcanvas-body d-flex flex-column flex-lg-row justify-content-start justify-content-lg-end px-0">
+          {{ include('@SumoCodersFrameworkCore/themetoggler.html.twig', {dropend: false}) }}
+          {% if locales is iterable and locales|length > 1 %}
+            {{ include('@SumoCodersFrameworkCore/languagetoggler.html.twig', {mobile: false}) }}
+          {% endif %}
+          {{ include('@SumoCodersFrameworkCore/usermenu.html.twig', {mobile: false}) }}
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="main-wrapper" class="main-wrapper{% if not sidebarIsOpen() %} sidebar-collapsed{% endif %}" data-controller="sidebar-collapsable" data-sidebar-collapsable-target="toggleable">
+  <div id="main-menu" class="main-menu" role="navigation">
+    {% block include_navigation %}
+      {{ include('@SumoCodersFrameworkCore/navigation.html.twig') }}
+    {% endblock %}
+  </div>
+  <div id="content-wrapper">
+    <section id="main" role="main">
+      <div class="header-subbar">
+        {{ include('@SumoCodersFrameworkCore/notifications.html.twig') }}
         {% if block('header_navigation') is defined and block('header_navigation') is not empty %}
-          <div class="collapse collapse-actions" id="action-buttons-collapse">
-            <div class="action-buttons action-buttons-mobile">
-              {{ block('header_navigation') }}
+          <div class="header-title-bar d-none d-md-flex justify-content-md-between align-items-md-center flex-column flex-md-row flex-wrap">
+            <div class="ms-md-auto">
+              <div class="d-flex flex-wrap gap-2 align-items-center">
+                {{ block('header_navigation') }}
+              </div>
             </div>
           </div>
         {% endif %}
+        {% if has_header_actions %}
+          <div class="buttons-fixed{% if not sidebarIsOpen() %} sidebar-collapsed{% endif %}" data-sidebar-collapsable-target="toggleable">
+            <div class="order-1 order-lg-0">{% block header_actions_left %}{% endblock %}</div>
+            <div class="order-0 order-lg-1 d-flex flex-wrap justify-content-center gap-1 buttons-fixed-center">{% block header_actions_center %}{% endblock %}</div>
+            <div class="order-2">{% block header_actions_right %}{% endblock %}</div>
+          </div>
+        {% endif %}
       </div>
-
-      <section id="main" role="main">
-        <div class="header-subbar">
-          {{ include('@SumoCodersFrameworkCore/notifications.html.twig') }}
-          <div class="header-title-bar d-none d-md-flex justify-content-md-between align-items-md-center flex-column flex-md-row flex-wrap">
-            <nav aria-label="breadcrumb" class="my-2">
-              {{ block('breadcrumb', '@SumoCodersFrameworkCore/Breadcrumb/breadcrumb.html.twig') }}
-            </nav>
-            <div class="ms-md-auto">
-              {% if block('header_navigation') is defined and block('header_navigation') is not empty %}
-                <div class="d-flex gap-2 align-items-center">
-                  {{ block('header_navigation') }}
-                </div>
-              {% endif %}
-            </div>
-          </div>
+      <div class="container-fluid">
+        <div class="main-content{% if has_header_actions %} has-buttons-fixed{% endif %}">
+          {% block main %}{% endblock %}
         </div>
-        <div class="container-fluid">
-          <div class="main-content">
-            {% block main %}
-
-            {% endblock %}
-          </div>
-        </div>
-      </section>
-    </div>
-    <footer class="footer">
-      {% block footer %}
-        <a href="#main-wrapper" class="back-to-top d-none" data-controller="scroll-to-top" data-action="scroll@window->scroll-to-top#scroll"><i class="fas fa-chevron-up me-3"></i> {{ 'core.interface.backToTop'|trans|ucfirst }}</a>
-      {% endblock %}
-    </footer>
+      </div>
+    </section>
   </div>
+  <footer class="footer">
+    {% block footer %}
+      <a href="#main-wrapper" class="back-to-top d-none" data-controller="scroll-to-top" data-action="scroll@window->scroll-to-top#scroll"><i class="fas fa-chevron-up me-3"></i> {{ 'core.interface.backToTop'|trans|ucfirst }}</a>
+    {% endblock %}
+  </footer>
+</div>
 
 {{ include('@SumoCodersFrameworkCore/dialogs.html.twig') }}
 </body>

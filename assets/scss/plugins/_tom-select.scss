@@ -1,0 +1,11 @@
+@include color-mode(dark) {
+  .ts-wrapper.form-select {
+    .ts-control {
+      box-shadow: none !important;
+    }
+
+    .option, .item {
+      color: var(--bs-body-color);
+    }
+  }
+}

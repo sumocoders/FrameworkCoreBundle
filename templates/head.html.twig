@@ -15,9 +15,6 @@
 
     {% block stylesheets %}
         <link rel="stylesheet" href="{{ asset('styles/style.scss') }}">
-        {% if theme() == 'theme-dark' %}
-            <link rel="stylesheet" href="{{ asset('styles/style-dark.scss') }}">
-        {% endif %}
     {% endblock %}
 
     {% block javascripts %}

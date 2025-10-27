@@ -9,15 +9,21 @@
 }
 
 #content-wrapper {
-  margin-top: 65px;
 }
 
 .header-title {
-  padding: ($spacer * 0.5) $spacer $spacer;
+  padding: ($spacer * 0.5) 0 ($spacer * 0.5) ($spacer * 0.5);
+  word-break: break-word;
+  hyphens: auto;
+  flex-shrink: 1;
 
   .progress-bar {
     float: none;
     width: auto;
+  }
+
+  h1 {
+    font-size: 1.1rem;
   }
 
   h1,
@@ -27,7 +33,7 @@
 }
 
 .header-title-bar {
-  border-bottom: 1px $border-color solid;
+  border-bottom: 1px var(--bs-border-color) solid;
   overflow: hidden;
   padding: 20px 19px;
   transition: border-color $transition-theme-duration $transition-theme-timing-function;
@@ -40,6 +46,52 @@
   }
 }
 
+.buttons-fixed {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  background-color: var(--top-color);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  width: 100vw;
+  padding: 2px;
+  z-index: 2000;
+  gap: 6px;
+  margin-bottom: env(safe-area-inset-bottom);
+
+  @include media-breakpoint-up(md) {
+    width: calc(100% - $sidebar-width-open);
+
+    &.sidebar-collapsed {
+      width: calc(100% - $sidebar-width-closed);
+    }
+  }
+
+  @include media-breakpoint-up(xl) {
+    padding: 22px $spacer * 0.5;
+  }
+
+  @include media-breakpoint-down(xxl) {
+    .btn {
+      padding: 6px;
+      font-size: 14px;
+    }
+  }
+
+  &-center {
+    @include media-breakpoint-down(lg) {
+      flex: 0 0 100%;
+    }
+  }
+}
+
+html:has(.sf-toolbar) {
+  .buttons-fixed {
+    margin-bottom: 40px;
+  }
+}
+
 .actions {
   background-color: $dropdown-bg;
   border-bottom: 1px $gray-500 solid;
@@ -47,7 +99,7 @@
   padding: 14px 15px 10px 20px;
 
   .btn-info {
-    background-color: $info;
+    background-color: var(--bs-info-text-emphasis);
     border-color: transparent;
     -webkit-font-smoothing: antialiased;
     font-style: normal;
@@ -55,7 +107,7 @@
 
     &:hover,
     &:focus {
-      background-color: shade-color($info, 15%);
+      background-color: color-mix(in srgb, var(--bs-info-text-emphasis), black 15%);
     }
   }
 
@@ -65,7 +117,11 @@
 }
 
 .main-content {
-  padding: 40px 0;
+  padding: $spacer 0;
+
+  &.has-buttons-fixed {
+    padding-bottom: 100px;
+  }
 }
 
 .btn[disabled] {
@@ -77,13 +133,13 @@
 }
 
 .collapse-actions-toggle {
-  color: $body-color;
+  color: var(--bs-body-color);
   padding: ($spacer * 0.3) $spacer;
 }
 
 @include media-breakpoint-up(md) {
   .header-title {
-    padding: $spacer;
+    padding: $spacer * 0.5;
   }
 
   #content-wrapper {
@@ -91,7 +147,7 @@
   }
 
   #main {
-    padding-top: $topbar-height-md;
+    //padding-top: $topbar-height-md;
   }
 
   .header-title-bar {

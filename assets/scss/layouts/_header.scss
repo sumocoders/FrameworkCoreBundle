@@ -5,6 +5,7 @@
   font-weight: 600;
   margin: 0;
   width: 100%;
+  background-color: var(--top-color);
 
   .btn-group {
     -webkit-font-smoothing: antialiased;
@@ -18,7 +19,7 @@
 }
 
 .user-nav {
-  background-color: $user-bg;
+  background-color: var(--user-bg);
   min-height: 50px;
   padding: 0;
   position: relative;
@@ -26,7 +27,7 @@
   z-index: 1;
 
   .user {
-    border-bottom: 2px solid $primary;
+    border-bottom: 2px solid var(--bs-primary-text-emphasis);
 
     .btn {
       padding: 1.7rem 1rem;
@@ -35,7 +36,6 @@
 
   .fa-chevron-down {
     font-size: $font-size-sm;
-    padding: 0 0 2px 0;
     transform: rotate(0deg);
     transition-property: transform, padding;
     transition-duration: 0.4s;
@@ -87,15 +87,38 @@
   }
 }
 
+.user {
+  .user-nav  {
+    background-color: transparent;
+    border: none;
+
+    .btn-group {
+      border: none;
+
+      .btn-default {
+        &:hover, &:focus, &:active {
+          background-color: transparent;
+        }
+      }
+    }
+  }
+}
+
+.main-header {
+  .navbar-header {
+    padding: 5px 10px;
+  }
+
+  .breadcrumb {
+    margin-bottom: 0;
+  }
+}
+
 .main-menu .navbar-collapse .user-nav .dropdown-menu {
   border: 0;
   -webkit-font-smoothing: antialiased;
   font-weight: 600;
   margin: 0;
-}
-
-.main-header {
-  border-bottom: 1px $border-color solid;
 }
 
 @include media-breakpoint-up(md) {
@@ -105,18 +128,17 @@
   }
 
   .main-header {
-    background-color: $top-color;
-    border-bottom: 1px $border-color solid;
-    left: 0;
-    padding-left: $sidebar-width-open;
-    position: fixed;
+    background-color: var(--top-color);
+    border-bottom: 1px var(--bs-border-color) solid;
     width: 100%;
     z-index: 900;
+    position: sticky;
+    top: 0;
 
     .breadcrumb {
       border-bottom: 0;
       overflow: hidden;
-      padding: 17px 25px 13px 18px;
+      padding: 0;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
@@ -138,27 +160,12 @@
 
       .dropdown-menu {
         background-color: $user-dropdown-bg;
-        margin-top: 10px;
         transition: background-color $transition-theme-duration $transition-theme-timing-function;
-
-        &::before {
-          border-color: transparent transparent $user-dropdown-bg transparent;
-          border-style: solid;
-          border-width: 10px;
-          content: '';
-          height: 0;
-          left: 50%;
-          position: absolute;
-          top: -20px;
-          transform: translateX(-50%);
-          transition: border-color $transition-theme-duration $transition-theme-timing-function;
-          width: 0;
-        }
       }
     }
 
     .btn-group {
-      border-left: 1px $border-color solid;
+      border-left: 1px var(--bs-border-color) solid;
       border-right: 0;
       transition: border-color $transition-theme-duration $transition-theme-timing-function;
 
@@ -171,7 +178,7 @@
         padding: 0 0 0 10px;
       }
 
-      &.show .fa-chevron-down {
+      .btn.show .fa-chevron-down {
         padding: 0 10px 0 0;
       }
     }
@@ -181,6 +188,21 @@
 
       &::before {
         padding: 5px 15px 0;
+      }
+    }
+  }
+}
+
+@include color-mode(dark) {
+  .user-nav {
+    .btn-group {
+      .btn-default {
+        color: color-contrast($user-bg-dark);
+
+        &:hover,
+        &:focus {
+          background-color: shade-color($user-bg-dark, 10%);
+        }
       }
     }
   }

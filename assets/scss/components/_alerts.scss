@@ -1,11 +1,32 @@
 @each $color, $value in $theme-colors {
   .alert-#{$color} {
-    a {
-      color: shift-color($value, $alert-color-scale);
+    a:not([class]) {
+      color: var(--bs-#{$color}-text-emphasis);
     }
 
     &::before {
-      color: shift-color($value, $alert-color-scale);
+      color: var(--bs-#{$color}-text-emphasis);
+    }
+  }
+}
+
+@include color-mode(dark) {
+  @each $state, $value in $theme-colors {
+    .alert-#{$state} {
+      background-color: rgba($value, 0.25);
+      color: mix(white, $value, 80%);
+
+      * {
+        color: mix(white, $value, 80%) !important;
+      }
+
+      a:not([class]) {
+        text-decoration: underline;
+      }
+
+      &::before {
+        color: mix(white, $value, 80%);
+      }
     }
   }
 }
@@ -44,5 +65,5 @@
 }
 
 .alert-dismissible .close {
-  color: $gray-400;
+  color: var(--bs-gray-400);
 }

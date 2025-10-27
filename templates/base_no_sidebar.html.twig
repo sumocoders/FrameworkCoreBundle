@@ -3,62 +3,63 @@
 {% endblock %}
 
 <body class="body-base" data-theme-path="{{ asset('styles/style-dark.scss') }}">
+{{ include('@SumoCodersFrameworkCore/settheme.html.twig') }}
+
 {% block start_body %}
 {% endblock %}
-<div id="main-wrapper" class="main-wrapper main-wrapper-no-sidebar">
-  <div id="content-wrapper">
-    <div class="main-header d-flex flex-column flex-lg-row">
-      <a href="/" rel="home" class="navbar-brand d-block d-md-inline-flex justify-content-md-center">
-        {% block logo_image %}
-          <img class="img-responsive{% if theme() != 'theme-dark' %} d-none{% endif %}" data-navbar-logo-dark src="{{ asset('images/logo-application-dark.svg') }}" alt="{{ fallbacks.get('site_title') }}">
-          <img class="img-responsive{% if theme() == 'theme-dark' %} d-none{% endif %}" data-navbar-logo src="{{ asset('images/logo-application.svg') }}" alt="{{ fallbacks.get('site_title') }}">
-        {% endblock %}
-      </a>
-      <div class="d-md-none breadcrumb-mobile">
-        <nav aria-label="breadcrumb" class="my-2">
+<div class="main-header">
+  <div class="sub-nav d-flex">
+    <a href="/" rel="home" class="navbar-brand d-flex align-items-center justify-content-md-center">
+      {% block logo_image %}
+        <img class="img-responsive logo-application-dark" data-navbar-logo-dark src="{{ asset('images/logo-application-dark.svg') }}" alt="{{ fallbacks.get('site_title') }}">
+        <img class="img-responsive logo-application" data-navbar-logo src="{{ asset('images/logo-application.svg') }}" alt="{{ fallbacks.get('site_title') }}">
+      {% endblock %}
+    </a>
+    <div class="header-title d-flex flex-row justify-content-between w-100 align-items-center">
+      <div class="d-flex flex-column">
+        <nav aria-label="breadcrumb" class="">
+          {% block header_title %}
+          {% endblock %}
           {{ block('breadcrumb', '@SumoCodersFrameworkCore/Breadcrumb/breadcrumb.html.twig') }}
         </nav>
       </div>
-      <div class="sub-nav d-flex">
-        <div class="header-title d-flex flex-row justify-content-between w-100 align-items-center">
-          {% block header_title %}
-          {% endblock %}
-          <div class="d-md-none">
-            {% if block('header_navigation') is defined and block('header_navigation') is not empty %}
-              <button type="button" class="navbar-toggler h-100 collapse-actions-toggle"  data-bs-toggle="collapse" data-bs-target="#action-buttons-collapse" aria-expanded="false" aria-controls="action-buttons-collapse">
-                <i class="fas fa-ellipsis-v"></i>
-              </button>
-            {% endif %}
-          </div>
+    </div>
+    <div class="navbar-header d-md-none d-flex">
+      <button class="btn btn-default d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasUser" aria-controls="offcanvasResponsive">
+        <i class="fa-solid fa-gear"></i>
+      </button>
+    </div>
+    <div class="ms-auto">
+      <div class="offcanvas-lg offcanvas-end" tabindex="-1" id="offcanvasUser" aria-labelledby="offcanvasUserLabel">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="offcanvasUserLabel">{{ 'Settings'|trans }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#offcanvasUser" aria-label="Close"></button>
         </div>
-        <div class="d-none d-md-block ms-auto">
-          {% include '@SumoCodersFrameworkCore/usermenu.html.twig' with {'mobile': false} %}
+        <div class="offcanvas-body d-flex flex-column flex-lg-row justify-content-start justify-content-lg-end px-0">
+          {{ include('@SumoCodersFrameworkCore/usermenu.html.twig', {mobile: false}) }}
+          {{ include('@SumoCodersFrameworkCore/themetoggler.html.twig', {dropend: false}) }}
+          {% if locales is iterable and locales|length > 1 %}
+            {{ include('@SumoCodersFrameworkCore/languagetoggler.html.twig', {mobile: false}) }}
+          {% endif %}
         </div>
       </div>
-      {% if block('header_navigation') is defined and block('header_navigation') is not empty %}
-        <div class="collapse collapse-actions" id="action-buttons-collapse">
-          <div class="action-buttons action-buttons-mobile">
-            {{ block('header_navigation') }}
-          </div>
-        </div>
-      {% endif %}
     </div>
-
+  </div>
+</div>
+<div id="main-wrapper" class="main-wrapper main-wrapper-no-sidebar">
+  <div id="content-wrapper">
     <section id="main" role="main">
       <div class="header-subbar">
         {{ include('@SumoCodersFrameworkCore/notifications.html.twig') }}
-        <div class="header-title-bar d-none d-md-flex justify-content-md-between align-items-md-center flex-column flex-md-row flex-wrap">
-          <nav aria-label="breadcrumb" class="my-2">
-            {{ block('breadcrumb', '@SumoCodersFrameworkCore/Breadcrumb/breadcrumb.html.twig') }}
-          </nav>
-          <div class="ms-md-auto">
-            {% if block('header_navigation') is defined and block('header_navigation') is not empty %}
+        {% if block('header_navigation') is defined and block('header_navigation') is not empty %}
+          <div class="header-title-bar d-none d-md-flex justify-content-md-between align-items-md-center flex-column flex-md-row flex-wrap">
+            <div class="ms-md-auto">
               <div class="d-flex gap-2 align-items-center">
                 {{ block('header_navigation') }}
               </div>
-            {% endif %}
+            </div>
           </div>
-        </div>
+        {% endif %}
       </div>
       <div class="container-fluid">
         <div class="main-content">

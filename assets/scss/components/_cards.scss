@@ -1,27 +1,61 @@
+.btn-square {
+  padding: 4px;
+  width: 34px;
+  height: 34px;
+  border-radius: $card-border-radius;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  background-color: $white;
+}
+
 .card {
-  margin-bottom: 30px;
+  height: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+  margin-bottom: 0;
+  overflow: hidden;
 
   .card-header {
-    color: color-contrast($primary);
-    background-color: $primary;
+    background-color: $white;
     padding: $card-spacer-x;
+  }
 
-    .card-title {
+  .card-title {
+    margin-bottom: 0;
+
+    h1:last-child,
+    h2:last-child,
+    h3:last-child,
+    h4:last-child,
+    h5:last-child,
+    h6:last-child {
       margin-bottom: 0;
-
-      h1:last-child,
-      h2:last-child,
-      h3:last-child,
-      h4:last-child,
-      h5:last-child,
-      h6:last-child {
-        margin-bottom: 0;
-      }
     }
   }
 
+  .card-body {
+    background-color: $white;
+  }
+
   .card-footer {
-    background-color: $gray-200;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    background-color: $white;
+    padding-left: 6px;
+    padding-right: 6px;
+    gap: 4px;
+
+    .btn {
+      padding: 4px 8px;
+    }
+
+    .btn-light {
+      background-color: var(--bs-gray-100);
+      color: var(--bs-primary-text-emphasis);
+    }
   }
 
   &.card-dashboard {
@@ -51,7 +85,7 @@
     }
 
     a {
-      color: $body-color;
+      color: var(--bs-body-color);
 
       &::after {
         bottom: 0;
@@ -74,8 +108,8 @@
 }
 
 .card-collection {
-  background: $body-bg;
-  border: 1px dashed $gray-400;
+  background: var(--bs-body-bg);
+  border: 1px dashed var(--bs-gray-400);
   padding-right: map_get($spacers, 4);
 
   &.card-collection-drag {
@@ -91,7 +125,7 @@
   background-color: $white;
 
   &:hover, &:focus, &:active {
-    background-color: $danger;
+    background-color: var(--bs-danger-text-emphasis);
   }
 }
 
@@ -112,9 +146,32 @@
   }
 }
 
+.card-collection-item {
+  overflow: visible;
+}
+
 @include media-breakpoint-up(lg) {
   .card.card-dashboard .card-body {
     padding-bottom: 2rem;
     padding-top: 2rem;
+  }
+}
+
+@include color-mode(dark) {
+  .card {
+    border-color: $gray-800;
+
+    .card-header {
+      background-color: $gray-850;
+      padding: $card-spacer-x;
+    }
+
+    .card-body {
+      background-color: $gray-850;
+    }
+
+    .card-footer {
+      background-color: $gray-850;
+    }
   }
 }

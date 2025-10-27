@@ -1,0 +1,31 @@
+<div class="user-nav theme-toggler d-flex h-lg-100" data-controller="theme">
+  <div class="user btn-group dropdown w-100 d-flex flex-column">
+    <button class="btn btn-default dropdown-toggle d-flex align-items-center" id="bd-theme" type="button" aria-expanded="false" data-bs-toggle="dropdown" data-bs-display="static" aria-label="{{ 'core.themes.toggle theme'|trans|ucfirst }}">
+      <i class="fa-solid fa-circle-half-stroke me-2" data-bs-theme-icon></i>
+      <span class="d-lg-none ms-2" id="bd-theme-text">{{ 'core.themes.toggle theme'|trans|ucfirst }}</span>
+      <span class="fas fa-chevron-down fa-w-16"></span>
+    </button>
+    <ul class="dropdown-menu {% if dropend %}dropdown-menu-end{% else %}dropdown-menu-start dropdown-menu-lg-end{% endif %} dropdown-menu-user" aria-labelledby="bd-theme-text">
+      <li>
+        <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="light" aria-pressed="false">
+          <i class="fa-regular fa-sun me-2"></i>
+          {{ 'core.themes.light'|trans|ucfirst }}
+        </button>
+      </li>
+      <li class="dropdown-divider"></li>
+      <li>
+        <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark" aria-pressed="false">
+          <i class="fa-solid fa-moon me-2"></i>
+          {{ 'core.themes.dark'|trans|ucfirst }}
+        </button>
+      </li>
+      <li class="dropdown-divider"></li>
+      <li>
+        <button type="button" class="dropdown-item d-flex align-items-center active" data-bs-theme-value="auto" aria-pressed="true">
+          <i class="fa-solid fa-circle-half-stroke me-2"></i>
+          {{ 'core.themes.auto'|trans|ucfirst }}
+        </button>
+      </li>
+    </ul>
+  </div>
+</div>

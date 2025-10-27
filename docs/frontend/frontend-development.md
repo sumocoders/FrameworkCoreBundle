@@ -1,137 +1,95 @@
 # Frontend development
 
+## Quick start
+We use Symfony AssetMapper to manage our assets. See the [documentation](https://symfony.com/doc/current/frontend/asset_mapper.html) for more information.
+- Install assets with `symfony console importmap:install`
+- Build assets with `symfony console asset-map:compile`
+
 ## Sass
+All Sass sources are included in `framework-core-bundle` bundle under `assets/scss/`.
 
-The styling of the FrameworkCoreBundle is base in a separated npm package,
-namely [FrameworkStylepackage](https://github.com/sumocoders/frameworkStylePackage).
+While developing, you can run `symfony console sass:build --watch` to automatically compile on change.
 
-The base scss file is `style.scss` and is placed in `/assets/styles` in the FrameworkCoreBundle.
-There is also `style-dark.scss` for the dark theme. The last default file in this folder is `mail.scss`.
-These 3 files import the appropriate file from
-the [FrameworkStylepackage](https://github.com/sumocoders/frameworkStylePackage).
+### Overriding Bootstrap variables
+Use `assets/scss/_bootstrap-variables.scss` to override Bootstrap variables. Import this file in `assets/scss/style.scss` before the Bootstrap imports so your overrides take effect.
 
-The layout is based on [Bootstrap5](https://getbootstrap.com/docs/5.1/getting-started/introduction/), so don't create
-new components when there's
-already a Bootstrap component available. Also try to customize as much of the
-components as possible through the variables file. This makes the code easier to maintain.
+Use Bootstrap variables as much as possible to customize styling — this makes the code easier to maintain.
 
-### Overwrite variables
+#### Variables
+- `$top-color` sets the top navbar background color
+- `$menu-bg` sets the sidebar background color
+- `$menu-color` sets the sidebar text color
+- `$menu-active-bg` sets the sidebar active background color
+- `$menu-active-color` sets the sidebar active text color
+- `$primary` sets the primary color used in buttons, links, etc.
+- `$secondary` sets the secondary color used in buttons, links, etc.
 
-Make a file `_variables.scss` in the folder styles. In this file you can set all bootstrap variables you want to
-override.
-Import this file in `style.scss` and in `style-dark.scss`.
+### Dark mode
+We use Bootstrap’s dark mode implementation. See the
+[documentation](https://getbootstrap.com/docs/5.3/customize/color-modes/).
+Most importantly, there are no separate dark mode files or stylesheets. Use `@include color-mode(dark) { ... }` to add dark mode styles. This mixin cannot be nested; put all dark mode styles in a single block at the end of the relevant SCSS file.
 
-#### Differences in variables for dark mode
+#### Variables
+- `$top-color-dark` sets the dark mode top navbar background color
+- `$menu-bg-dark` sets the dark mode sidebar background color
+- `$menu-color-dark` sets dark mode the sidebar text color
+- `$menu-active-bg-dark` sets dark mode the sidebar active background color
+- `$menu-active-color-dark` sets dark mode the sidebar active text color
 
-Make an extra file `_variables-dark.scss` in the folder styles and import this file in `style-dark.scss`.
+### Custom components or extensions (Sass)
+Place custom SCSS components in `assets/scss/components/`. Import your components after the Bootstrap imports. Try to base your custom components on Bootstrap components as much as possible.
+You can find frequently used components in the documentation file [components.html](https://github.com/sumocoders/FrameworkCoreBundle/blob/master/docs/frontend/components.html).
 
-### Custom components or extensions
+### Folder overview
 
-Create a folder `components` in the styles folder. Add your new component sass file in the new folder.
-To make it easy on yourself, make a `_components.scss` file in de styles folder. In this file you can import all your
-new components.
-Example: `@import 'components/component-name';`
-
-Now you can just easily import the `_conponents.scss` in your `style.scss` and `style-dark.scss`.
-In the future you can just add the new component into `_components.scss` instead of adding it in both `style.scss` and
-`style-dark.scss`.
-
-#### Differences in custom component for dark mode
-
-Make a extra folder, for example `components-dark`, and add your `_your-component.scss` file with the same name in this
-folder.
-
-You can again make a collector file for all dark components and import that file in `style-dark.scss`,
-but in this scenario it's overkill.
-You can just import your custom dark mode component file in `style-dark.scss` after the import of `_components.scss`.
-
-Example: `@import 'components-dark/component-name';`
-
-### Overview folder structure
-
-```$xslt
+```text
 - assets
-    - styles
+    - scss
         - components
             - _component-name.scss
         - _variables.scss
-        - mail.scss
         - style.scss
-        - style-dark.scss
+        - mail.scss
 ```
 
-You can always fall back on the folder structure or existing components
-in [FrameworkStylepackage](https://github.com/sumocoders/FrameworkStylePackage/tree/master/src/sass).
+## JavaScript
 
-## JS
+Most JavaScript in this bundle is provided as Stimulus controllers under `assets-public/controllers/` and utility modules under `assets-public/js/`. In your application, import the controllers in `assets/bootstrap.js`. Your `assets/app.js` typically acts as the main JavaScript entry.
 
-You can find `app.js` in the folder `assets/`. This is the main collector for the Javascript.
-The file `imports.js` is imported in `app.js`.
-These imports are the default components from
-our [FrameworkStylepackage](https://github.com/sumocoders/frameworkStylePackage).
+### Custom components or extensions (JavaScript)
+Create a `components/` folder under your app’s JavaScript directory. Add your new component module (ES6 class/module) there and import it in `app.js`.
 
-We use ES6 classes for each Javascript component. More
-info [here](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes)
+If you want to extend or replace an existing module, update the import in `bootstrap.js` to point to your new class. The new class can be completely different or extend a class from the existing assets.
 
-### Custom components or extensions
+## Separate layout for the application’s frontend
 
-Create a folder `components` in the js folder. Add your new component js file in the new folder.
-Build your ES6 class in a new file that has the same name as your component. Do not forgot to import you new component
-file in `app.js`.
+For a separate public/frontend layout, use a Bootstrap 5 setup.
 
-If you want to extend or change an existing ES6 class from the FrameworkStylepackage you can update the path to the
-import in `imports.js`
-to a new class you made yourself. The new class can be totally different of based on the class in de
-FrameworkStylepackage.
+Create a file `style-frontend.scss` in `assets/scss/`. You can import Bootstrap as explained in the Bootstrap [documentation](https://getbootstrap.com/docs/5.3/customize/sass/#importing).
 
-## Separate layout for frontend of application
+Don’t forget to add a new entry in `config/packages/symfonycasts_sass.yaml` for `style-frontend.scss` and include that entry in your frontend templates.
 
-For a basic frontend layout of the application you can use a basic Bootstrap5 setup.
-We do not need FrameworkStylepackage here.
+#### Import Bootstrap yourself
 
-Create a file `style-frontend.scss` in de folder styles.
-You can import Bootstrap in here in the way they do it in
-there [documentation](https://getbootstrap.com/docs/5.1/getting-started/webpack/#importing-styles)
-or you can import the Bootstrap components yourself and copy the bootstrap variables.
-Both work fine.
+- Create a `frontend/` folder under `assets/scss/`.
+- Create a `components/` folder under `frontend/` for your custom/extended components.
+- Create `bootstrap-variables.scss` in the `frontend/` folder for your Bootstrap variable overrides.
+- Create `bootstrap-imports.scss` in the `frontend/` folder for the Bootstrap imports.
+- Import your variables file before the Bootstrap imports.
+- Import your components after the Bootstrap imports.
+- You can copy starter files from `vendor/sumocoders/framework-core-bundle/assets/scss/` into your new `frontend/` folder. Update variables as needed or copy them from the original Bootstrap `_variables.scss` (found in `vendor/twbs/bootstrap/scss/`). If you copy these, remove the `!default` modifiers so your overrides take effect.
 
-Do not forget to add a new entry in `webpack.config.js` for `style-fronted.scss` and load you entry in the head.
-More info about how wepback works in this project can be found in
-our [documentation](https://github.com/sumocoders/FrameworkCoreBundle/blob/master/docs/frontend/webpack.md)
+### Separate JavaScript
 
-#### import Bootstrap yourself
+This works the same way as Sass. Create a new entry and a new collector file (for example: `app-frontend.js`) in a separate frontend JavaScript folder in your app. Load the correct entry in your frontend templates.
 
-- Create a `frontend` folder under folder styles
-- Create a `components` folder under folder frontend for your custom/extended components
-- Create a `_bootstrap-imports.scss` file under frontend folder.
-    - Copy/Paste the content of `node_modules/bootstrap/scss/bootstrap.scss` in it.
-    - Update the paths from `@import "...` to `@import "~bootstrap/scss/...`.
-    - Comment the first 2 imports, namely functions and variables
-- Create a `_bootstrap_variables.scss` file under frontend folder.
-    - Copy/Paste the content of `node_modules/bootstrap/scss/variables.scss` in it
-    - Remove the ` !default` from every line in the file.
-- Add imports to `style-frontend.scss`, should look like this:
+## Upgrading from separate dark mode stylesheet
 
-```$xslt
-@charset 'UTF-8';
-
-// bootstrap
-@import '~bootstrap/scss/functions';
-@import '~bootstrap/scss/variables';
-@import 'frontend/bootstrap-variables';
-@import 'frontend/bootstrap-imports';
-
-// components
-@import 'frontend/components/component-name';
-```
-
-### Separate JS
-
-Works the same way as the Sass. Create a new entry, a new collector js file, example: `app-frontend.js`, in a separated
-js frontend folder.
-Load the correct entry in you frontend templates.
+- Remove the style-dark.scss stylesheet
+- Remove the import from style.scss
+- Remove the style-dark entry from config/packages/symfonycasts_sass.yaml
 
 ## Extra
 
-- You can also group all the backend sass files and put them in a folder named backend. So the 2 are totally separated.
-- Make a common `components` folder for components that are used in frontend and backend.
+- You can group all backend Sass files into a folder named `backend` so frontend and backend are fully separated.
+- Create a common `components/` folder for components shared between frontend and backend.

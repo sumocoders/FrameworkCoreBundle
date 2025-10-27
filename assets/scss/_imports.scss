@@ -1,14 +1,14 @@
 // Base
 @import 'base/fonts';
 @import 'base/images';
-@import 'base/theme-transitions';
 @import 'base/type';
-@import 'base/no-sidebar';
 
 // Components
+@import 'components/accordion';
 @import 'components/alerts';
 @import 'components/autocomplete';
 @import 'components/back-to-top';
+@import 'components/buttons';
 @import 'components/cards';
 @import 'components/datagrids';
 @import 'components/datepicker';
@@ -16,10 +16,12 @@
 @import 'components/empty-state';
 @import 'components/forms';
 @import 'components/form-collection';
+@import 'components/list-group';
 @import 'components/loading';
 @import 'components/modal';
 @import 'components/navbar';
 @import 'components/navs';
+@import 'components/offcanvas';
 @import 'components/page-header';
 @import 'components/pagination';
 @import 'components/scrolling';
@@ -34,3 +36,10 @@
 @import 'layouts/search';
 @import 'layouts/header';
 @import 'layouts/actions';
+
+// Plugins
+@import "plugins/tom-select";
+@import "plugins/quill";
+
+// Last for overrides
+@import 'base/no-sidebar';

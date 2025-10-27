@@ -27,7 +27,7 @@ With `data-clipboard-success-content-value` you can temporarily change the butto
 
 2. Directly on text
 
-The only differnce is that you add the event `data-action="click->clipboard#copy"` directly on the text.
+The only difference is that you add the event `data-action="click->clipboard#copy"` directly on the text.
 
 ```html
 

@@ -62,7 +62,7 @@ export default class extends Controller {
       const modalTitle = document.createElement('h5')
       modalTitle.className = 'modal-title'
       modalTitle.id = 'confirmModalTitle'
-      modalTitle.textContent = this.modalTitleValue || 'Confirm'
+      modalTitle.textContent = this.modalTitleValue
       modalHeader.appendChild(modalTitle)
     }
     const closeButton = document.createElement('button')

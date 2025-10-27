@@ -205,7 +205,7 @@ Set the `data-controller='busy-submit'` on the form tag or in your form type:
 
 ## Confirm modal
 
-This controller allows to show a confirmation modal before submitting form or clicking a link.
+This controller allows you to show a confirmation modal before submitting a form or clicking a link.
 
 For example when you have a form to delete an entity:
 

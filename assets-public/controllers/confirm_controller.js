@@ -35,7 +35,7 @@ export default class extends Controller {
     return this.elementTarget && this.elementTarget.tagName.toLowerCase() === 'a'
   }
 
-  createModal () {
+  showModal () {
     // remove existing modal
     const existingModal = document.querySelector('div[data-role="confirm-modal"]')
     if (existingModal) {
@@ -107,11 +107,6 @@ export default class extends Controller {
       this.handleConfirm()
       bootstrapModal.hide()
     })
-  }
-
-  showModal () {
-    this.createModal()
-    return
   }
 
   handleConfirm () {

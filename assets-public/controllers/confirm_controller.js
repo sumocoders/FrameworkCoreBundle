@@ -102,7 +102,7 @@ export default class extends Controller {
     })
 
     // bind on confirm button click
-    const confirmBtn = document.querySelector('[data-role="confirm-button"]')
+    const confirmBtn = modal.querySelector('[data-role="confirm-button"]')
     confirmBtn.addEventListener('click', () => {
       this.handleConfirm()
       bootstrapModal.hide()

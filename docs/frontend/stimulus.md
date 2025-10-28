@@ -214,7 +214,7 @@ For example when you have a form to delete an entity:
         {{ stimulus_controller(
             'confirm',
             {
-                confirmationMessage: 'Are you sure you want to delete this ' ~ entity.title ~ '?'|trans,
+                confirmationMessage: 'Are you sure you want to delete this {entity}?'|trans({entity: entity.title}),
                 cancelButtonText: 'Cancel'|trans,
                 confirmButtonText: 'Delete'|trans,
             }

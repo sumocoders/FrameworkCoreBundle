@@ -1,5 +1,5 @@
 <div id="main-menu-inner">
-  <div class="navbar p-0 navbar-expand-md flex-row flex-md-column" data-role="navbar-wrapper">
+  <div class="navbar p-0 navbar-expand-lg flex-row flex-lg-column" data-role="navbar-wrapper">
     <div class="offcanvas-lg offcanvas-start" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel" data-role="navbar-collapse">
       <div class="offcanvas-header">
         <h4 class="mb-0">{{ 'core.menu.navigation'|trans|ucfirst }}</h4>
@@ -8,7 +8,7 @@
       </div>
       <div class="offcanvas-body">
         {{ knp_menu_render('side_menu', {'template': '@SumoCodersFrameworkCore/Menu/menu.html.twig', 'ancestorClass': 'open active'}) }}
-        <div class="d-none d-md-block toggle-menu-visibility mt-md-auto" data-action="click->sidebar-collapsable#toggle">
+        <div class="d-none d-lg-block toggle-menu-visibility mt-lg-auto" data-action="click->sidebar-collapsable#toggle">
           <div class="nav-item">
             <div class="nav-link d-flex align-items-center">
               <i class="fas fa-arrow-left"></i> <div class="nav-link-text">{{ 'core.interface.collapse'|trans|ucfirst }}</div>

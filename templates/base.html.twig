@@ -19,7 +19,7 @@
 {% endblock %}
 <div class="main-header">
   <div class="sub-nav d-flex">
-    <a href="/" rel="home" class="navbar-brand d-flex align-items-center justify-content-md-center">
+    <a href="/" rel="home" class="navbar-brand d-flex align-items-center justify-content-lg-center">
       {% block logo_image %}
         <img class="img-responsive logo-application-dark" data-navbar-logo-dark src="{{ asset('images/logo-application-dark.svg') }}" alt="{{ fallbacks.get('site_title') }}">
         <img class="img-responsive logo-application" data-navbar-logo src="{{ asset('images/logo-application.svg') }}" alt="{{ fallbacks.get('site_title') }}">
@@ -34,7 +34,7 @@
         </nav>
       </div>
     </div>
-    <div class="navbar-header d-md-none d-flex">
+    <div class="navbar-header d-lg-none d-flex">
       <button class="navbar-toggler navbar-toggler-right ms-auto collapsed" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>

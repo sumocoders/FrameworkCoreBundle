@@ -121,7 +121,7 @@
   margin: 0;
 }
 
-@include media-breakpoint-up(md) {
+@include media-breakpoint-up(lg) {
   .main-wrapper {
     padding-left: $sidebar-width-open;
     width: 100%;

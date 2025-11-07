@@ -314,7 +314,7 @@ body.no-scroll {
   }
 }
 
-@include media-breakpoint-up(md) {
+@include media-breakpoint-up(lg) {
   .navbar-brand {
     height: $topbar-height-md;
     margin-left: 0;

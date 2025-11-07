@@ -60,7 +60,7 @@
   gap: 6px;
   margin-bottom: env(safe-area-inset-bottom);
 
-  @include media-breakpoint-up(md) {
+  @include media-breakpoint-up(lg) {
     width: calc(100% - $sidebar-width-open);
 
     &.sidebar-collapsed {
@@ -137,17 +137,13 @@ html:has(.sf-toolbar) {
   padding: ($spacer * 0.3) $spacer;
 }
 
-@include media-breakpoint-up(md) {
+@include media-breakpoint-up(lg) {
   .header-title {
     padding: $spacer * 0.5;
   }
 
   #content-wrapper {
     margin-top: 0;
-  }
-
-  #main {
-    //padding-top: $topbar-height-md;
   }
 
   .header-title-bar {

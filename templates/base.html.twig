@@ -73,7 +73,8 @@
     <section id="main" role="main">
       <div class="header-subbar">
         {{ include('@SumoCodersFrameworkCore/notifications.html.twig') }}
-        {% if block('header_navigation') is defined and block('header_navigation') is not empty %}
+        {% set header_block = block('header_navigation') %}
+        {% if header_block is defined and header_block is not empty %}
           <div class="header-title-bar d-none d-md-flex justify-content-md-between align-items-md-center flex-column flex-md-row flex-wrap">
             <div class="ms-md-auto">
               <div class="d-flex flex-wrap gap-2 align-items-center">

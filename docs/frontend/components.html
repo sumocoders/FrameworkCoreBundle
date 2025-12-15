@@ -2,19 +2,19 @@
 
 <!-- LINKS AND BUTTONS -->
 <!-- Button -->
-<!-- Always add mr-2 to icon classes -->
-<button class="btn btn-primary"><i class="fas fa-ice-cream mr-2"></i>Button text</button>
+<!-- Always add me-2 to icon classes -->
+<button class="btn btn-primary"><i class="bi bi-download me-2"></i>Button text</button>
 <!-- Outline button -->
-<button class="btn btn-outline-primary"><i class="fas fa-ice-cream mr-2"></i>Button text</button>
+<button class="btn btn-outline-primary"><i class="bi bi-download me-2"></i>Button text</button>
 <!-- Loading button -- disabled -->
-<button class="btn btn-primary" disabled><i class="fas fa-spinner fa-spin mr-2"></i>Button text</button>
+<button class="btn btn-primary" disabled><i class="bi bi-arrow-clockwise bi-spin me-2"></i>Button text</button>
 <!-- Button with icon at the end -->
-<button class="btn btn-primary">Button text<i class="fas fa-ice-cream ml-2"></i></button>
+<button class="btn btn-primary">Button text<i class="bi bi-download ml-2"></i></button>
 
 <!-- Icon -->
 <!-- Use a tooltip for icon-only links -->
 <a href="" data-controller="tooltip" data-bs-placement="top" title="Tooltip message">
-  <i class="fas fa-exchange-alt"></i>
+  <i class="bi bi-arrow-left-right"></i>
 </a>
 
 <!-- CARDS -->
@@ -23,7 +23,7 @@
   <li class="col-6 col-md-4 col-lg-3">
     <div class="card card-dashboard text-center">
       <div class="card-body">
-        <i class="fas fa-ice-cream"></i>
+        <i class="bi bi-download"></i>
         <div class="card-text">
           <h2><a href="">Ice-cream</a></h2>
         </div>
@@ -77,8 +77,8 @@
         </dl>
       </div>
       <div class="card-footer">
-        <a href="/" class="btn btn-outline-primary btn-sm mb-1"><i class="fas fa-exchange-alt mr-2"></i>Inloggen als</a>
-        <a href="/" class="btn btn-primary btn-sm mb-1"><i class="fas fa-pencil-alt mr-2"></i>Aanpassen</a>
+        <a href="/" class="btn btn-outline-primary btn-sm mb-1"><i class="bi bi-arrow-left-right me-2"></i>Inloggen als</a>
+        <a href="/" class="btn btn-primary btn-sm mb-1"><i class="bi bi-pencil-fill me-2"></i>Aanpassen</a>
       </div>
     </div>
   </li>
@@ -107,17 +107,9 @@
 
 <!-- EMPTY STATE -->
 <!-- If there are no items in a table / on a page, there should be a note for it, instead of just an empty page. You can use the following code -->
-<div class="row">
-  <div class="col-sm-6 col-lg-5 mx-auto">
-    <div class="text-center mt-5">
-      <span class="fa-stack no-items-icons">
-        <i class="fas fa-circle fa-stack-2x"></i>
-        <i class="fas fa-satellite fa-stack-1x fa-inverse"></i> <!-- Change this to a better icon, p.ex. enveloppe for no messages -->
-      </span>
-      <h3 class="mt-3 mt-lg-5">Geen planning gevonden</h3>
-      <p><a href="...">Voeg een taak toe</a></p> <!-- Add a *call to action* -->
-    </div>
-  </div>
+<div class="data-no-results">
+  <img src="{{ asset('images/no-results.svg') }}" alt="">
+  {{ 'filter.empty.users'|trans }}
 </div>
 
 <!-- BADGES -->
@@ -129,7 +121,7 @@
   <ul class="pagination justify-content-center">
     <li class="page-item disabled"> <!-- class disabled when not clickable -->
       <a class="page-link" href="#" aria-label="Previous">
-        <span aria-hidden="true"><i class="fas fa-chevron-left"></i></span>
+        <span aria-hidden="true"><i class="bi bi-chevron-left"></i></span>
         <span class="sr-only">Previous</span>
       </a>
     </li>
@@ -142,7 +134,7 @@
 
     <li class="page-item">
       <a class="page-link" href="#" aria-label="Next">
-        <span aria-hidden="true"><i class="fas fa-chevron-right"></i></span>
+        <span aria-hidden="true"><i class="bi bi-chevron-right"></i></span>
         <span class="sr-only">Next</span>
       </a>
     </li>
@@ -170,7 +162,7 @@
       <div class="card-footer">
 <!--        You can use text in the button when there is only one action, or use an icon when there are multiple actions. Only use stretched-link class when there is only one button. -->
         <a href="#" data-bs-toggle="modal" data-bs-target="#confirmReminderModal" data-id="{{ dossier.id }}" class="btn btn-light stretched-link">
-          <i class="fas fa-envelope me-2" aria-hidden="true"></i>
+          <i class="bi bi-envelope-fill me-2" aria-hidden="true"></i>
           {{ 'Send reminder'|trans }}
         </a>
       </div>
@@ -190,18 +182,18 @@
       </div>
       <div class="card-footer">
         <a href="#" data-bs-toggle="modal" data-bs-target="#confirmReminderModal" data-id="{{ dossier.id }}" class="btn btn-light" data-controller="tooltip" data-turbo="false" title="{{ 'Send reminder'|trans }}">
-          <i class="fas fa-envelope" aria-hidden="true"></i>
+          <i class="bi bi-envelope-fill" aria-hidden="true"></i>
         </a>
         <a href="{{ path('permanence_update', {dossier: dossier.id, permanence: dossier.permanence.id}) }}" data-controller="tooltip" title="{{ 'View dossier'|trans }}" data-turbo="false" class="btn btn-light btn-square">
-          <i class="fas fa-eye" aria-hidden="true"></i>
+          <i class="bi bi-eye-fill" aria-hidden="true"></i>
           <span class="visually-hidden">{{ 'View permanence'|trans }}</span>
         </a>
         <a href="{{ path('permanence_update', {dossier: dossier.id, permanence: dossier.permanence.id}) }}" data-controller="tooltip" title="{{ 'View dossier'|trans }}" data-turbo="false" class="btn btn-light btn-square">
-          <i class="fas fa-eye" aria-hidden="true"></i>
+          <i class="bi bi-eye-fill" aria-hidden="true"></i>
           <span class="visually-hidden">{{ 'View permanence'|trans }}</span>
         </a>
         <a href="{{ path('permanence_update', {dossier: dossier.id, permanence: dossier.permanence.id}) }}" data-controller="tooltip" title="{{ 'View dossier'|trans }}" data-turbo="false" class="btn btn-light btn-square">
-          <i class="fas fa-eye" aria-hidden="true"></i>
+          <i class="bi bi-eye-fill" aria-hidden="true"></i>
           <span class="visually-hidden">{{ 'View permanence'|trans }}</span>
         </a>
       </div>
@@ -231,10 +223,10 @@
         </div>
       </div>
       <div class="card-footer justify-content-between">
-        <i class="fa-solid fa-star text-warning" data-bs-toggle="tooltip" data-bs-title="{{ 'Humo tip'|trans }}"></i>
+        <i class="bi bi-star-fill text-warning" data-bs-toggle="tooltip" data-bs-title="{{ 'Humo tip'|trans }}"></i>
 
         <a class="text-nowrap btn btn-outline-primary btn-square stretched-link ms-auto" href="#">
-          <i class="fas fa-edit" title="{{ 'Edit'|trans }}" data-toggle="tooltip" data-placement="top"></i>
+          <i class="bi bi-pencil-fill" title="{{ 'Edit'|trans }}" data-toggle="tooltip" data-placement="top"></i>
         </a>
       </div>
     </div>

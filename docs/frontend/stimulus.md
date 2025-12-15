@@ -64,9 +64,9 @@ To use tooltips, you can use `data-controller="tooltip"` with the default bootst
 
 ```html
   <span data-controller="tooltip" data-bs-title="Default tooltip">
-    <i class="fa fa-exclamation-triangle"></i>
+    <i class="bi bi-exclamation-triangle"></i>
   </span>
-<i class="fa fa-info-circle" data-controller="tooltip" data-bs-title="Little secret tip"></i>
+<i class="bi bi-info-circle" data-controller="tooltip" data-bs-title="Little secret tip"></i>
 ```
 
 ## Popover

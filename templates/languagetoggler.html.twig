@@ -3,7 +3,7 @@
     <button class="btn btn-default dropdown-toggle d-flex align-items-center" id="bd-theme" type="button" aria-expanded="false" data-bs-toggle="dropdown" data-bs-display="static" aria-label="{{ 'core.languages.toggle theme'|trans|ucfirst }}">
       {{ app.request.locale|upper }}
       <span class="d-lg-none ms-2" id="bd-language-text">{{ 'core.languages.toggle theme'|trans|ucfirst }}</span>
-      <span class="fas fa-chevron-down fa-w-16"></span>
+      <span class="bi bi-chevron-down"></span>
     </button>
     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-user" aria-labelledby="bd-language-text">
       {% for locale in locales %}

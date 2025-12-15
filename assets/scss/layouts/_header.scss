@@ -34,14 +34,14 @@
     }
   }
 
-  .fa-chevron-down {
+  .bi-chevron-down {
     font-size: $font-size-sm;
     transform: rotate(0deg);
     transition-property: transform, padding;
     transition-duration: 0.4s;
   }
 
-  .show .fa-chevron-down {
+  .show .bi-chevron-down {
     transform: rotate(180deg);
   }
 
@@ -78,12 +78,6 @@
     border: 0;
     border-radius: 0;
     margin: 0;
-  }
-
-  .fa-user-circle-o {
-    display: inline-block;
-    font-size: $font-size-base;
-    padding: 5px 15px 9px;
   }
 }
 
@@ -173,21 +167,13 @@
         padding: 5px 0;
       }
 
-      .fa-chevron-down {
+      .bi-chevron-down {
         margin: 5px 0;
         padding: 0 0 0 10px;
       }
 
-      .btn.show .fa-chevron-down {
+      .btn.show .bi-chevron-down {
         padding: 0 10px 0 0;
-      }
-    }
-
-    .fa-user-circle-o {
-      padding: 14px 0 11px;
-
-      &::before {
-        padding: 5px 15px 0;
       }
     }
   }

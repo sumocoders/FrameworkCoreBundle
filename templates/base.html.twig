@@ -40,9 +40,9 @@
       </button>
       <button class="btn btn-default d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasUser" aria-controls="offcanvasResponsive">
         {% if is_granted('IS_IMPERSONATOR') %}
-          <i class="fas fa-exchange-alt"></i>
+          <i class="bi bi-arrow-left-right"></i>
         {% else %}
-          <i class="fas fa-user-circle"></i>
+          <i class="bi bi-person-circle"></i>
         {% endif %}
       </button>
     </div>
@@ -99,7 +99,7 @@
   </div>
   <footer class="footer">
     {% block footer %}
-      <a href="#main-wrapper" class="back-to-top d-none" data-controller="scroll-to-top" data-action="scroll@window->scroll-to-top#scroll"><i class="fas fa-chevron-up me-3"></i> {{ 'core.interface.backToTop'|trans|ucfirst }}</a>
+      <a href="#main-wrapper" class="back-to-top d-none" data-controller="scroll-to-top" data-action="scroll@window->scroll-to-top#scroll"><i class="bi bi-chevron-up me-3"></i> {{ 'core.interface.backToTop'|trans|ucfirst }}</a>
     {% endblock %}
   </footer>
 </div>

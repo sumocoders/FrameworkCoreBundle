@@ -195,7 +195,7 @@ body.no-scroll {
         }
       }
 
-      &.dropdown.show:not(.open) .fa-chevron-down {
+      &.dropdown.show:not(.open) .bi-chevron-down {
         transform: rotate(180deg);
       }
     }
@@ -258,7 +258,7 @@ body.no-scroll {
       }
     }
 
-    .fa-chevron-down {
+    .bi-chevron-down {
       margin-top: -8px;
       position: absolute;
       right: 25px;
@@ -415,7 +415,7 @@ body.no-scroll {
           min-width: $sidebar-width-closed;
         }
 
-        .nav-item.dropdown .fa-chevron-down {
+        .nav-item.dropdown .bi-chevron-down {
           font-size: $font-size-base * 0.7;
           right: 8px;
           top: initial;

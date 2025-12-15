@@ -2,12 +2,12 @@
 
 {% block label %}
   {% if item.labelAttributes.icon is defined %}
-    <i class="{{ item.labelAttributes.icon }} fa-width-auto menu-item-icon"></i>
+    <i class="{{ item.labelAttributes.icon }} menu-item-icon"></i>
   {% else %}
-    <i class="fas fa-circle fa-width-auto menu-item-icon"></i>
+    <i class="bi bi-circle-fill menu-item-icon"></i>
   {% endif %}
   {% if item.parent.name == 'root' and item.hasChildren %}
-    <i class="fas fa-chevron-down"></i>
+    <i class="bi bi-chevron-down"></i>
   {% endif %}
   <div
     class="nav-link-text">{{ item.label|trans(item.getExtra('translation_params', {}), item.getExtra('translation_domain', 'messages'))|ucfirst }}</div>

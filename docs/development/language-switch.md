@@ -12,7 +12,7 @@ You can add a language switch to navigation.html.twig by using the following sni
     <a class="dropdown-toggle d-flex align-items-center" href="#" id="dropdown-language" role="button"
       data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
       {{ app.request.locale|upper }}
-      <span class="fas fa-chevron-down fa-w-16"></span>
+      <span class="bi bi-chevron-down"></span>
     </a>
     <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown-language">
       {% for locale in locales %}

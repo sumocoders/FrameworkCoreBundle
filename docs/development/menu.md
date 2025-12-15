@@ -63,7 +63,7 @@ class MenuListener extends DefaultMenuListener implements EventSubscriberInterfa
                     [
                         'route' => 'user_admin_overview',
                         'labelAttributes' => [
-                            'icon' => 'fas fa-user',
+                            'icon' => 'bi bi-person-fill',
                         ],
                         'extras' => [
                             'routes' => [

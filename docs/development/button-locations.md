@@ -41,7 +41,7 @@ When using a form, you can place the submit button in the fixed toolbar by addin
 ```twig
 {% block header_actions_right %}
     <button class="btn btn-primary" type="submit" form="{{ form.vars.id }}" data-turbo="true">
-        <i class="fas fa-save mr-2"></i>
+        <i class="bi bi-floppy-fill mr-2"></i>
         {{ 'Save'|trans }}
     </button>
 {% endblock %}

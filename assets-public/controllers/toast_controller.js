@@ -16,13 +16,13 @@ export default class extends Controller {
     this.element['aria-atomic'] = 'true'
     this.element.dataset.bsAutohide = this.autohideValue ? 'true' : 'false'
     this.element.id = 'toast-' + Math.random().toString(36).substring(2, 15)
-    let icon = 'fas fa-info-circle'
+    let icon = 'bi bi-info-circle-fill'
     if (this.typeValue === 'success') {
-      icon = 'fas fa-check'
+      icon = 'bi bi-check2'
     } else if (this.typeValue === 'danger') {
-      icon = 'fas fa-exclamation-triangle'
+      icon = 'bi bi-exclamation-triangle-fill'
     } else if (this.typeValue === 'warning') {
-      icon = 'fas fa-exclamation'
+      icon = 'bi bi-exclamation-lg'
     }
     this.element.innerHTML = `
        <div class="toast-body">

@@ -32,19 +32,6 @@
       width: 15%;
     }
 
-    .fa-search {
-      color: $gray-700;
-      float: right;
-      font-size: $font-size-sm;
-      width: 0;
-
-      &:hover,
-      &:focus {
-        background-color: $gray-700;
-        color: $white;
-      }
-    }
-
     .toggle-searchbar {
       display: none;
     }

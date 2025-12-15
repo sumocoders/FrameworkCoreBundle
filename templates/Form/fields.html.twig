@@ -115,7 +115,7 @@
 
   {% if allow_add %}
     <button type="button" class="btn btn-success btn-sm" data-action="form-collection#addItem" data-form-collection-target="addButton">
-      <i class="fas fa-plus me-2"></i> {{ add_button_label|trans|ucfirst }}
+      <i class="bi bi-plus-lg me-2"></i> {{ add_button_label|trans|ucfirst }}
     </button>
   {% endif %}
 {%- endblock collection_rows -%}
@@ -129,14 +129,14 @@
              title="{{ 'forms.buttons.changeOrder'|trans|ucfirst }}"
              data-role="collection-item-change-order"
           >
-            <i class="fas fa-ellipsis-v"></i>
+            <i class="bi bi-three-dots-vertical"></i>
           </span>
         {% endif %}
         {{ form_widget(item) }}
         {{ form_errors(item) }}
         {% if allow_delete is defined and allow_delete %}
           <button type="button" class="btn btn-outline-danger collection-item-delete"  title="{{ 'forms.buttons.removeItem'|trans|ucfirst }}" data-action="form-collection#deleteItem">
-            <i class="fas fa-trash"></i> <span class="visually-hidden">{{ 'forms.buttons.removeItem'|trans|ucfirst }}</span>
+            <i class="bi bi-trash"></i> <span class="visually-hidden">{{ 'forms.buttons.removeItem'|trans|ucfirst }}</span>
           </button>
         {% endif %}
       </div>
@@ -173,7 +173,7 @@
     <div class="form-group">
       {% if show_preview and preview_url %}
         <a href="{{ preview_url }}" class="btn btn-xs btn-default" target="_blank">
-          <span class="fas fa-eye" aria-hidden="true"></span>
+          <span class="bi bi-eye-fill" aria-hidden="true"></span>
           {{ preview_label|trans|ucfirst }}
         </a>
       {% endif %}
@@ -214,7 +214,7 @@
 
     <div class="input-group">
       <div class="input-group-text">
-        <i class="fas fa-calendar"></i>
+        <i class="bi bi-calendar-fill"></i>
       </div>
       {{- block('form_widget_simple') -}}
     </div>
@@ -278,12 +278,12 @@
 
     <div class="input-group">
       <div class="input-group-text">
-        <i class="fas fa-clock"></i>
+        <i class="bi bi-clock-fill"></i>
       </div>
       {{- block('form_widget_simple') -}}
       {% if not required %}
         <button class="btn btn-outline-secondary" type="button" data-flatpicker-clear>
-          <i class="fas fa-times"></i>
+          <i class="bi bi-x-lg"></i>
         </button>
       {% endif %}
 
@@ -355,7 +355,7 @@
 
     <div class="input-group">
       <div class="input-group-text">
-        <i class="fas fa-calendar"></i>
+        <i class="bi bi-calendar-fill"></i>
       </div>
       {{- block('form_widget_simple') -}}
     </div>

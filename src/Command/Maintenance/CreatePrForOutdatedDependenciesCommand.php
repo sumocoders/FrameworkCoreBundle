@@ -17,7 +17,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
     name: 'sumo:maintenance:create-pr-for-outdated-dependencies',
     description: 'Create PR for outdated dependencies (Importmap and Composer)',
 )]
-class CreatePrForOutdatedDependenciesCommand extends Command
+class CreatePrForOutdatedDependenciesCommand
 {
     private SymfonyStyle $io;
 
@@ -35,14 +35,9 @@ class CreatePrForOutdatedDependenciesCommand extends Command
     public function __construct(
         private readonly HttpClientInterface $httpClient
     ) {
-        parent::__construct();
     }
 
-    protected function configure(): void
-    {
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function __invoke(InputInterface $input, OutputInterface $output): int
     {
         $this->io = new SymfonyStyle($input, $output);
         $this->openMergeRequests = $this->listOpenMergeRequests();

@@ -2,38 +2,38 @@
 
 namespace SumoCoders\FrameworkCoreBundle\Command;
 
+use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
-#[AsCommand(
-    name: 'sumo:translate'
-)]
-class TranslateCommand extends Command
+#[AsCommand(name: 'sumo:translate')]
+final class TranslateCommand
 {
-    public function __construct(private readonly ParameterBagInterface $parameters)
-    {
-        parent::__construct();
+    public function __construct(
+        private readonly ParameterBagInterface $parameters,
+    ) {
     }
 
-    public function __invoke(OutputInterface $output): int
-    {
+    public function __invoke(
+        OutputInterface $output,
+        Application $application,
+    ): int {
         $locales = $this->parameters->get('locales');
 
-        $command = $this->getApplication()->find('translation:extract');
-
         foreach ($locales as $locale) {
-            $arguments = [
+            $input = new ArrayInput([
+                'command' => 'translation:extract',
                 'locale' => $locale,
                 '--force' => true,
                 '--format' => 'yaml',
-            ];
+            ]);
 
-            $translationInput = new ArrayInput($arguments);
+            $input->setInteractive(false);
 
-            $command->run($translationInput, $output);
+            $application->doRun($input, $output);
         }
 
         return Command::SUCCESS;

@@ -34,7 +34,7 @@
     "twig/cssinliner-extra": "^3.16",
     "twig/extra-bundle": "^3.16",
     "symfony/ux-autocomplete": "^2.22",
-    "doctrine/doctrine-bundle": "^2.13",
+    "doctrine/doctrine-bundle": "^3.2",
     "doctrine/orm": "^3.3",
     "symfony/doctrine-messenger": "^8.0",
     "symfony/intl": "^8.0",

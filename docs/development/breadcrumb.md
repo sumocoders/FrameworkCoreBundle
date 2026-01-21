@@ -26,7 +26,7 @@ class Controller
 }
 ```
 
-Adding multiple attributes wil chain the breadcrumb.
+Adding multiple attributes will chain the breadcrumb.
 
 Example: single > multiple
 ```php

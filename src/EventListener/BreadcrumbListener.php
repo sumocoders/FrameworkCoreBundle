@@ -71,7 +71,7 @@ class BreadcrumbListener
             );
         }
 
-        $methods = $class->getMethods();
+        $methods = $class->getMethods(\ReflectionMethod::IS_PUBLIC);
 
         foreach ($methods as $method) {
             $this->processAttributeFromMethod($method, $class);

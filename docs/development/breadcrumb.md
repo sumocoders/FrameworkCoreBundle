@@ -14,6 +14,18 @@ public function __invoke(): Response
 }
 ```
 
+Example: attributes on the class
+```php
+#[Route('single', name:'single')]
+#[Breadcrumb('single')]
+class Controller
+{
+    public function __invoke(): Response
+    {
+    }
+}
+```
+
 Adding multiple attributes wil chain the breadcrumb.
 
 Example: single > multiple

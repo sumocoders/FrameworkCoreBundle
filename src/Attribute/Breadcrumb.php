@@ -5,7 +5,7 @@ namespace SumoCoders\FrameworkCoreBundle\Attribute;
 use Attribute;
 use SumoCoders\FrameworkCoreBundle\ValueObject\Route;
 
-#[Attribute(Attribute::IS_REPEATABLE | Attribute::TARGET_METHOD)]
+#[Attribute(Attribute::IS_REPEATABLE | Attribute::TARGET_METHOD | Attribute::TARGET_CLASS)]
 final class Breadcrumb
 {
     private string $title;

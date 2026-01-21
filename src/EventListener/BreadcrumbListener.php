@@ -74,15 +74,19 @@ class BreadcrumbListener
         $methods = $class->getMethods();
 
         foreach ($methods as $method) {
-            $this->processAttributeFromMethod($method);
+            $this->processAttributeFromMethod($method, $class);
         }
     }
 
     private function processAttributeFromMethod(
         \Reflectionmethod $method,
+        \ReflectionClass $class,
         ?Route $route = null
     ): void {
         $attributes = $method->getAttributes(BreadcrumbAttribute::class, \ReflectionAttribute::IS_INSTANCEOF);
+        if ($method->name === '__invoke' || $attributes !== []) {
+            $attributes = array_merge($attributes, $class->getAttributes(BreadcrumbAttribute::class, \ReflectionAttribute::IS_INSTANCEOF));
+        }
 
         foreach ($attributes as $attribute) {
             /** @var BreadcrumbAttribute $attributeInstance */
@@ -272,7 +276,7 @@ class BreadcrumbListener
             $method = $class->getMethod($routeInformation['method']);
         }
 
-        $this->processAttributeFromMethod($method, new Route($routeName));
+        $this->processAttributeFromMethod($method, $class, new Route($routeName));
     }
 
     private function getRouteInformation(string $name): ?array

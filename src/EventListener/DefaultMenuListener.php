@@ -42,12 +42,12 @@ class DefaultMenuListener
     {
         $request = $this->requestStack->getCurrentRequest();
 
-        if (str_contains($request->get('_route'), $prefix)) {
+        if (str_contains($request->attributes->get('_route'), $prefix)) {
             $item->setExtra(
                 'routes',
                 [
                     [
-                        'route' => $request->get('_route'),
+                        'route' => $request->attributes->get('_route'),
                     ],
                 ]
             );

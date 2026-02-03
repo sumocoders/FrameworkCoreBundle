@@ -2,6 +2,7 @@
 
 namespace SumoCoders\FrameworkCoreBundle\Command\Maintenance;
 
+use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -32,13 +33,16 @@ class CreatePrForOutdatedDependenciesCommand
 
     private ?string $originalBranch = null;
 
+    private Application $application;
+
     public function __construct(
         private readonly HttpClientInterface $httpClient
     ) {
     }
 
-    public function __invoke(InputInterface $input, OutputInterface $output): int
+    public function __invoke(InputInterface $input, OutputInterface $output, Application $application): int
     {
+        $this->application = $application;
         $this->io = new SymfonyStyle($input, $output);
         $this->openMergeRequests = $this->listOpenMergeRequests();
 
@@ -352,7 +356,7 @@ class CreatePrForOutdatedDependenciesCommand
         $output = new BufferedOutput(OutputInterface::VERBOSITY_NORMAL, true);
         $input = new ArrayInput($command);
         $input->setInteractive(false);
-        $this->getApplication()->doRun($input, $output);
+        $this->application->doRun($input, $output);
         $rawOutput = $output->fetch();
 
         if ($showOutput) {

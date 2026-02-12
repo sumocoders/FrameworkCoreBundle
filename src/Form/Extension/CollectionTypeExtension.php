@@ -14,6 +14,10 @@ use Symfony\Component\Form\FormError;
 
 final class CollectionTypeExtension extends AbstractTypeExtension
 {
+    public function __construct(private readonly TranslatorInterface $translator)
+    {
+    }
+
     public static function getExtendedTypes(): iterable
     {
         return [CollectionType::class];
@@ -54,7 +58,7 @@ final class CollectionTypeExtension extends AbstractTypeExtension
 
             if ($form->count() < $min) {
                 $error = new FormError(
-                    message: 'You must add at least '.$min.' items',
+                    message: $this->translator->trans('You must add at least %count% items', ['%count%' => $min], 'validators'),
                     messageTemplate: 'You must add at least %count% items',
                     messageParameters: ['%count%' => $min]
                 );
@@ -64,7 +68,7 @@ final class CollectionTypeExtension extends AbstractTypeExtension
 
             if ($max !== null && $form->count() > $max) {
                 $error = new FormError(
-                    message: 'You can add a maximum of '.$max.' items',
+                    message: $this->translator->trans('You can add a maximum of %count% items', ['%count%' => $max], 'validators'),
                     messageTemplate: 'You can add a maximum of %count% items',
                     messageParameters: ['%count%' => $max]
                 );

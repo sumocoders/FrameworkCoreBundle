@@ -85,3 +85,38 @@ class MenuListener extends DefaultMenuListener implements EventSubscriberInterfa
         return [ConfigureMenuEvent::EVENT_NAME => 'onConfigureMenu'];
     }
 }
+
+```
+
+# Nested menu items
+
+To create a dropdown menu with child items, create a parent item with `uri => #` instead of a route, and call addChild on it before adding it to the menu.
+
+## Example nested menu item
+
+```php
+$paymentsMenuItem = $factory->createItem(
+    $this->getTranslator()->trans('Payments'),
+    [
+        'uri' => '#',
+        'labelAttributes' => [
+            'icon' => 'fa-regular fa-credit-card',
+        ],
+    ],
+);
+
+$paymentsMenuItem->addChild(
+    $factory->createItem(
+        $this->getTranslator()->trans('Overview'),
+        [
+            'route' => 'payments_overview',
+            'labelAttributes' => [
+                'icon' => 'fa-solid fa-money-bill',
+            ],
+        ],
+    )
+);
+
+$menu->addChild($paymentsMenuItem);
+
+```

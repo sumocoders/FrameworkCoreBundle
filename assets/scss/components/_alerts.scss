@@ -36,10 +36,10 @@
   padding-left: $spacer * 2.5;
 
   &::before {
-    content: '\f071';
+    content: '\f33a';
     display: inline-block;
-    font-family: 'Font Awesome 5 Free', sans-serif;
-    font-weight: 900;
+    font-family: 'bootstrap-icons', sans-serif;
+    font-weight: normal;
     height: 100%;
     left: 0.7rem;
     position: absolute;
@@ -47,7 +47,7 @@
   }
 
   &.alert-success::before {
-    content: '\f00c';
+    content: '\f633';
   }
 
   &.alert-primary::before,
@@ -55,7 +55,7 @@
   &.alert-light::before,
   &.alert-dark::before,
   &.alert-info::before {
-    content: '\f05a';
+    content: '\f430';
   }
 }
 

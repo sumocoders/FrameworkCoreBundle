@@ -29,7 +29,7 @@ export default class extends Controller {
   }
 
   updateMeter (strength) {
-    const classes = ['weak', 'medium', 'strong', 'very-strong', 'very-strong']
+    const classes = ['weak', 'medium', 'medium', 'strong', 'very-strong']
     const meterSections = this.meterSectionsTarget.querySelectorAll('.meter-section')
 
     // Remove all strength classes

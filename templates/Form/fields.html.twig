@@ -257,8 +257,8 @@
   {%- if help is not empty -%}
     {%- set widget_attr = {attr: {'aria-describedby': id ~ "_help"}} -%}
   {%- endif -%}
-  {% set row_classes = ['form-group']|merge(form.vars.row_attr.class|split(' ')) -%}
-  <{{ element|default('div') }} class="{{ classes|join(' ') }}">
+  {% set row_classes = ['form-group']|merge(form.vars.row_attr.class|default('')|split(' ')) -%}
+  <{{ element|default('div') }} class="{{ row_classes|join(' ') }}">
   {{- form_label(form) -}}
   {{- form_widget(form, widget_attr) -}}
   </{{ element|default('div') }}>

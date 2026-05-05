@@ -224,7 +224,7 @@ class CreatePrForOutdatedDependenciesCommand
                 true
             );
 
-            $this->runCommand(['git', 'add', 'composer.json', 'composer.lock', 'symfony.lock']);
+            $this->runCommand(['git', 'add', 'composer.json', 'composer.lock', 'symfony.lock', 'config/reference.php']);
             $versionMessages[] = sprintf(
                 '  * %1$s (%2$s → %3$s)',
                 $package['name'],

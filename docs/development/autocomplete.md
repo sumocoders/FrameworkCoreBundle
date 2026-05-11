@@ -43,7 +43,7 @@ If you want to use ajax to fetch the autocomplete options, you need to create a 
 ```php
 use Symfony\Component\Security\Core\Security;
 use Symfony\UX\Autocomplete\Form\AsEntityAutocompleteField;
-use Symfony\UX\Autocomplete\Form\ParentEntityAutocompleteType;
+use Symfony\UX\Autocomplete\Form\BaseEntityAutocompleteType;
 
 #[AsEntityAutocompleteField]
 class FoodAutocompleteField extends AbstractType
@@ -68,7 +68,7 @@ class FoodAutocompleteField extends AbstractType
 
     public function getParent(): string
     {
-        return ParentEntityAutocompleteType::class;
+        return BaseEntityAutocompleteType::class;
     }
 }
 ```

@@ -28,8 +28,6 @@ export default class extends Controller {
       }
     }
 
-    setTheme(getPreferredTheme())
-
     const showActiveTheme = (theme, focus = false) => {
       const themeSwitcher = document.querySelector('#bd-theme')
 
@@ -64,6 +62,9 @@ export default class extends Controller {
         themeSwitcher.focus()
       }
     }
+
+    setTheme(getPreferredTheme())
+    showActiveTheme(getPreferredTheme())
 
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
       const storedTheme = getStoredTheme()

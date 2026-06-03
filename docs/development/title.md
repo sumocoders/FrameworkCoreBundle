@@ -1,57 +1,132 @@
-# The page title
-By default no page title should be set. This is because by default the `fallback.site_title` is used. This is a configuration value that can be set in the `services.yaml` file.
-In case there are breadcrumbs configured, the reverse order of the breadcrumbs will be used as the page title.
+# Page title
 
-## The `Title` attribute
+## Resolution order
 
-The `Title` attribute is a custom attribute used in the framework. It is used to set the title of a page dynamically based on the controller method that is being executed. Here's a step-by-step guide on how to use it:
+The `PageTitle` service resolves the title in this order:
 
-1. Import the `Title` attribute at the top of your controller file:
+1. A title set explicitly via `#[Title]` on the controller method.
+2. The breadcrumb trail in reverse order, joined with ` - `, appended with the site title.
+3. The `fallback.site_title` value alone if no breadcrumbs are present.
+
+## Configuring the site title
+
+Set `fallback.site_title` in your `services.yaml`:
+
+```yaml
+parameters:
+    fallbacks:
+        site_title: 'My Application'
+```
+
+## The `#[Title]` attribute
 
 ```php
 use SumoCoders\FrameworkCoreBundle\Attribute\Title;
 ```
 
-2. Apply the `Title` attribute to a controller method. The `Title` attribute takes a string as its first argument, which is the title you want to set for the page when this method is executed.
+### Basic usage
 
 ```php
 #[Title('My Page Title')]
-public function myMethod()
+public function __invoke(): Response
 {
-    // Your code here
+    // ...
 }
 ```
 
-3. If you want the title to be extended with the parent's title, you can pass a second argument to the `Title` attribute. This argument should be an array with a `name` key that corresponds to the route name of the parent.
+Output: `My Page Title - My Application`
+
+The title string is passed through the translator, so translation keys work:
+
+```yaml
+# translations/messages.en.yaml
+page.my_page: 'My Page Title'
+```
 
 ```php
-#[Title('My Page Title', ['name' => 'parent_route'])]
-public function myMethod()
+#[Title('page.my_page')]
+public function __invoke(): Response
 {
-    // Your code here
+    // ...
 }
 ```
 
-4. If you want to prevent the title from being extended with the parent's title, you can pass a third argument to the `Title` attribute. This argument should be a boolean that indicates whether the title should be extended (`true`) or not (`false`).
+### With a parent route
+
+Pass `['name' => 'route_name']` to append the parent route's title to the chain:
 
 ```php
-#[Title('My Page Title', ['name' => 'parent_route'], false)]
-public function myMethod()
+#[Title('Detail', ['name' => 'overview_route'])]
+public function __invoke(): Response
 {
-    // Your code here
+    // ...
 }
 ```
 
-5. The `Title` attribute can also handle dynamic titles. If you want to include a parameter in the title, you can do so by including it in curly braces `{}` in the title string. The parameter should be available in the request attributes.
+Output: `Detail - Overview - My Application`
+
+The parent chain is resolved recursively: if the parent route also has a `#[Title]` with its own parent, that is included too.
+
+### Dynamic titles
+
+Reference a controller argument by name using `{param}`:
 
 ```php
-#[Title('My Page Title for {id}')]
-public function myMethod($id)
+#[Title('Edit {name}')]
+public function __invoke(string $name): Response
 {
-    // Your code here
+    // ...
 }
 ```
 
-6. The `TitleListener` class will automatically handle the `Title` attribute. It listens to the kernel controller event, fetches the `Title` attribute from the controller method being executed, and sets the page title accordingly.
+Access a property of an object argument using `{object.property}`:
 
-Remember to clear the Symfony cache after adding or changing attributes, as Symfony compiles and caches the attributes when the cache is built. You can clear the cache by running `bin/console cache:clear` in your terminal.
+```php
+#[Title('{blog.title}')]
+public function __invoke(
+    #[MapEntity(mapping: ['slug' => 'slug'])]
+    Blog $blog,
+): Response {
+    // ...
+}
+```
+
+Dynamic parameters are resolved from the named controller arguments. If a placeholder is not found, an exception is thrown.
+
+### Disable automatic appending
+
+Pass `extend: false` to set the title verbatim, with no translation, no parent chain, and no site title appended:
+
+```php
+#[Title('Exact Title', extend: false)]
+public function __invoke(): Response
+{
+    // ...
+}
+```
+
+Output: `Exact Title`
+
+## Using `PageTitle` directly
+
+Inject `PageTitle` to set or get the title from a service or Twig template:
+
+```php
+use SumoCoders\FrameworkCoreBundle\Service\PageTitle;
+
+class MyService
+{
+    public function __construct(private PageTitle $pageTitle) {}
+
+    public function doSomething(): void
+    {
+        $this->pageTitle->setTitle('Custom Title');
+    }
+}
+```
+
+In Twig, `PageTitle` is available as a string (via `__toString`):
+
+```twig
+<title>{{ pageTitle }}</title>
+```

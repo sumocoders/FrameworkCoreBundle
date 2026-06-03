@@ -1,10 +1,11 @@
 # The page title
 By default no page title should be set. This is because by default the `fallback.site_title` is used. This is a configuration value that can be set in the `services.yaml` file.
+
 In case there are breadcrumbs configured, the reverse order of the breadcrumbs will be used as the page title.
 
 ## The `Title` attribute
 
-The `Title` attribute is a custom attribute used in the framework. It is used to set the title of a page dynamically based on the controller method that is being executed. Here's a step-by-step guide on how to use it:
+The `Title` attribute is a custom attribute used in the framework. It is used to set the title of a page dynamically based on the controller that is being executed. Here's a step-by-step guide on how to use it:
 
 1. Import the `Title` attribute at the top of your controller file:
 
@@ -16,7 +17,7 @@ use SumoCoders\FrameworkCoreBundle\Attribute\Title;
 
 ```php
 #[Title('My Page Title')]
-public function myMethod()
+public function __invoke(): Response {
 {
     // Your code here
 }
@@ -26,7 +27,7 @@ public function myMethod()
 
 ```php
 #[Title('My Page Title', ['name' => 'parent_route'])]
-public function myMethod()
+public function __invoke(): Response {
 {
     // Your code here
 }
@@ -36,7 +37,7 @@ public function myMethod()
 
 ```php
 #[Title('My Page Title', ['name' => 'parent_route'], false)]
-public function myMethod()
+public function __invoke(): Response {
 {
     // Your code here
 }
@@ -46,12 +47,23 @@ public function myMethod()
 
 ```php
 #[Title('My Page Title for {id}')]
-public function myMethod($id)
+public function __invoke(int $id): Response {
 {
+    // Your code here
+}
+```
+
+or
+
+```php
+#[Title('{blog.title}')]
+public function __invoke(
+    #[MapEntity(mapping: ['slug' => 'slug'])]
+    Blog $blog,
+): Response {
     // Your code here
 }
 ```
 
 6. The `TitleListener` class will automatically handle the `Title` attribute. It listens to the kernel controller event, fetches the `Title` attribute from the controller method being executed, and sets the page title accordingly.
 
-Remember to clear the Symfony cache after adding or changing attributes, as Symfony compiles and caches the attributes when the cache is built. You can clear the cache by running `bin/console cache:clear` in your terminal.

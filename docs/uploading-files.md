@@ -1,6 +1,7 @@
 # Uploading files
 
-The bundle provides `AbstractFile` — a value object that handles file storage, naming, and lifecycle hooks for Doctrine entities. Used with `FileType` for forms and a custom DBAL type for database persistence.
+The bundle provides `AbstractFile`, a value object that handles file storage, naming, and lifecycle hooks for Doctrine
+entities. Used with `FileType` for forms and a custom DBAL type for database persistence.
 
 ## Prerequisites
 
@@ -9,7 +10,8 @@ The bundle provides `AbstractFile` — a value object that handles file storage,
 
 ## Step 1: Create the value object
 
-Create a class that extends `AbstractFile` and implements `getUploadDir()`. The upload directory is relative to `public/files/`.
+Create a class that extends `AbstractFile` and implements `getUploadDir()`. The upload directory is relative to
+`public/files/`.
 
 ```php
 <?php
@@ -57,9 +59,9 @@ Register it in `config/packages/doctrine.yaml`:
 
 ```yaml
 doctrine:
-    dbal:
-        types:
-            user_document: App\DBALType\UserDocumentType
+  dbal:
+    types:
+      user_document: App\DBALType\UserDocumentType
 ```
 
 ## Step 3: Add to entity
@@ -142,22 +144,26 @@ See [forms.md](forms.md) for the full `FileType` options reference.
 {% endif %}
 ```
 
-`AbstractFile` implements `__toString()` returning the web path (`/files/user/documents/<filename>`), or an empty string if no file exists.
+`AbstractFile` implements `__toString()` returning the web path (`/files/user/documents/<filename>`), or an empty string
+if no file exists.
 
 ## `AbstractFile` API
 
-| Method | Description |
-|--------|-------------|
-| `getFileName()` | Raw stored filename |
-| `getWebPath()` | Public URL path, or empty string if file missing |
-| `getAbsolutePath()` | Absolute filesystem path |
-| `hasFile()` | Whether a new `UploadedFile` is pending |
-| `markForDeletion()` | Schedules the file for removal on next flush |
-| `setNamePrefix(string)` | Prepends a slug to the generated filename |
+| Method                  | Description                                      |
+|-------------------------|--------------------------------------------------|
+| `getFileName()`         | Raw stored filename                              |
+| `getWebPath()`          | Public URL path, or empty string if file missing |
+| `getAbsolutePath()`     | Absolute filesystem path                         |
+| `hasFile()`             | Whether a new `UploadedFile` is pending          |
+| `markForDeletion()`     | Schedules the file for removal on next flush     |
+| `setNamePrefix(string)` | Prepends a slug to the generated filename        |
 
 ## Troubleshooting
 
-- **File not uploaded after form submit** — verify the three lifecycle methods (`prepareToUpload`, `upload`, `remove`) are present on the entity with the correct `#[ORM\*]` attributes
-- **`public/files/` directory missing** — create it and ensure it is web-accessible; check your web server configuration
-- **Old file not deleted on replace** — the `upload()` method deletes the old file; this only works if `prepareToUpload()` was called first in `PreUpdate`
-- **Form always shows file as required** — `FileType` uses `required` based on whether the value object has an existing file; pass `'required' => false` to disable the constraint
+- **File not uploaded after form submit**: verify the three lifecycle methods (`prepareToUpload`, `upload`, `remove`)
+  are present on the entity with the correct `#[ORM\*]` attributes
+- **`public/files/` directory missing**: create it and ensure it is web-accessible; check your web server configuration
+- **Old file not deleted on replace**: the `upload()` method deletes the old file; this only works if
+  `prepareToUpload()` was called first in `PreUpdate`
+- **Form always shows file as required**: `FileType` uses `required` based on whether the value object has an existing
+  file; pass `'required' => false` to disable the constraint

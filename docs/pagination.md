@@ -1,12 +1,13 @@
 # Pagination
 
-`Paginator` wraps a Doctrine `QueryBuilder` and handles page math, result slicing, and iteration. The default page size is 30.
+`Paginator` wraps a Doctrine `QueryBuilder` and handles page math, result slicing, and iteration. The default page size
+is 30.
 
 ## Usage
 
 ### Repository
 
-Return a `Paginator` from the repository method. Do not call `paginate()` here — the controller does that.
+Return a `Paginator` from the repository method. Do not call `paginate()` here, the controller does that.
 
 ```php
 <?php
@@ -87,22 +88,22 @@ The `Paginator` is iterable and countable. Use the `pagination()` Twig function 
 
 ## `Paginator` API reference
 
-| Method | Return type | Description |
-|--------|-------------|-------------|
-| `paginate(int $page = 1)` | `self` | Executes the query for the given page; returns `$this` |
-| `getCurrentPage()` | `int` | Current page number |
-| `getLastPage()` | `int` | Last page number (= total pages) |
-| `getPageSize()` | `int` | Items per page (default 30) |
-| `hasPreviousPage()` | `bool` | Whether a previous page exists |
-| `getPreviousPage()` | `int` | Previous page number (minimum 1) |
-| `hasNextPage()` | `bool` | Whether a next page exists |
-| `getNextPage()` | `int` | Next page number (maximum last page) |
-| `hasToPaginate()` | `bool` | Whether there is more than one page |
-| `getNumResults()` | `int` | Total number of results across all pages |
-| `getResults()` | `Traversable` | Results for the current page |
-| `calculateStartAndEndPage()` | `void` | Populates `startPage`/`endPage` (±3 around current page) for pager UI |
-| `getStartPage()` | `int` | First page number in the pager window (after `calculateStartAndEndPage()`) |
-| `getEndPage()` | `int` | Last page number in the pager window (after `calculateStartAndEndPage()`) |
+| Method                       | Return type   | Description                                                                |
+|------------------------------|---------------|----------------------------------------------------------------------------|
+| `paginate(int $page = 1)`    | `self`        | Executes the query for the given page; returns `$this`                     |
+| `getCurrentPage()`           | `int`         | Current page number                                                        |
+| `getLastPage()`              | `int`         | Last page number (= total pages)                                           |
+| `getPageSize()`              | `int`         | Items per page (default 30)                                                |
+| `hasPreviousPage()`          | `bool`        | Whether a previous page exists                                             |
+| `getPreviousPage()`          | `int`         | Previous page number (minimum 1)                                           |
+| `hasNextPage()`              | `bool`        | Whether a next page exists                                                 |
+| `getNextPage()`              | `int`         | Next page number (maximum last page)                                       |
+| `hasToPaginate()`            | `bool`        | Whether there is more than one page                                        |
+| `getNumResults()`            | `int`         | Total number of results across all pages                                   |
+| `getResults()`               | `Traversable` | Results for the current page                                               |
+| `calculateStartAndEndPage()` | `void`        | Populates `startPage`/`endPage` (±3 around current page) for pager UI      |
+| `getStartPage()`             | `int`         | First page number in the pager window (after `calculateStartAndEndPage()`) |
+| `getEndPage()`               | `int`         | Last page number in the pager window (after `calculateStartAndEndPage()`)  |
 
 Custom page size:
 
@@ -140,7 +141,8 @@ $users = $userRepository->getPaginated(
 
 ## Filters with session persistence
 
-Without session storage, the filter resets when the user navigates to page 2. Store filter data in the session to persist it across page requests.
+Without session storage, the filter resets when the user navigates to page 2. Store filter data in the session to
+persist it across page requests.
 
 ```php
 <?php
@@ -172,6 +174,8 @@ $request->getSession()->remove('user_filter');
 
 ## Troubleshooting
 
-- **Total count is wrong with JOINs** — the paginator sets `HINT_DISTINCT => false` when no JOINs are present. With JOINs, ensure your query does not produce duplicate root entities
-- **`paginate()` not called** — always call `paginate()` before passing the paginator to the template; calling only the constructor does not execute the query
-- **Page parameter missing** — use `$request->query->getInt('page', 1)` so an absent `?page=` defaults to page 1
+- **Total count is wrong with JOINs**: the paginator sets `HINT_DISTINCT => false` when no JOINs are present. With
+  JOINs, ensure your query does not produce duplicate root entities
+- **`paginate()` not called**: always call `paginate()` before passing the paginator to the template; calling only the
+  constructor does not execute the query
+- **Page parameter missing**: use `$request->query->getInt('page', 1)` so an absent `?page=` defaults to page 1

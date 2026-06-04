@@ -1,6 +1,7 @@
 # No-results state
 
-Use this component when a list, datagrid, or page has no data to display — including after filtering produces zero results.
+Use this component when a list, datagrid, or page has no data to display, including after filtering produces zero
+results.
 
 ## Usage
 
@@ -11,7 +12,8 @@ Use this component when a list, datagrid, or page has no data to display — inc
 </div>
 ```
 
-Replace `'your.translation.key'` with a translation key appropriate to the context (e.g. `'users.empty'`, `'orders.no_results'`).
+Replace `'your.translation.key'` with a translation key appropriate to the context (e.g. `'users.empty'`,
+`'orders.no_results'`).
 
 ## With a filter hint
 

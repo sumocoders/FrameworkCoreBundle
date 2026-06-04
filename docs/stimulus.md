@@ -1,19 +1,21 @@
 # Stimulus controllers
 
-The bundle provides pre-built Stimulus controllers for common UI patterns. These are registered automatically when the frontend assets are installed.
+The bundle provides pre-built Stimulus controllers for common UI patterns. These are registered automatically when the
+frontend assets are installed.
 
 ## Prerequisites
 
-Assets installed: see [installation.md](installation.md). Import the bundle's controllers in your `assets/controllers.json` or `assets/bootstrap.js`.
+Assets installed: see [installation.md](installation.md). Import the bundle's controllers in your
+`assets/controllers.json` or `assets/bootstrap.js`.
 
 ## Lifecycle hooks
 
 Every Stimulus controller supports:
 
-| Method | When it runs |
-|--------|-------------|
-| `connect()` | When the controller's element is connected to the DOM |
-| `disconnect()` | When the element is removed from the DOM |
+| Method         | When it runs                                          |
+|----------------|-------------------------------------------------------|
+| `connect()`    | When the controller's element is connected to the DOM |
+| `disconnect()` | When the element is removed from the DOM              |
 
 Custom controllers should call `super.connect()` if they extend a bundle controller.
 
@@ -214,7 +216,6 @@ Set the `data-controller='busy-submit'` on the form tag or in your form type:
         'attr' => ['data-controller' => 'busy-submit'],
     ]);
 ```
-
 
 ## Confirm modal
 

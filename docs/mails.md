@@ -32,6 +32,15 @@ template.html.twig
 {% endblock %}
 ```
 
+## Template styling
+
+Mail templates use [Foundation for Emails](https://get.foundation/emails/docs/global.html) for responsive table-based layouts. Consult the Foundation docs for available components and helpers.
+
+### Logo
+
+Use a logo with fixed width (182px) set directly on the `img` tag. Some mail clients cannot handle CSS-based image sizing. Use `.gif` extension for the broadest compatibility.
+
+When you change the logo width, update the `width` attribute on the `img` tag to match.
 ```php
 <?php
 

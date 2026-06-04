@@ -1,44 +1,14 @@
-# Adding items into the menu/navigation
+# Menu
 
-To create a menu & add items to it, you'll need to set up an event listener that listens to the
-`framework_core.configure_menu` event.
+The bundle builds navigation using [KnpMenu](https://symfony.com/bundles/KnpMenuBundle/current/index.html). `MenuBuilder` dispatches a `ConfigureMenuEvent` — consuming apps listen to this event to add items.
 
-In short, you'll need to add the following:
+## Prerequisites
 
-* In src/EventListener, create a file called MenuListener just like the example below.
-* In config/services.yaml, add the following configuration snippet:
+`knplabs/knp-menu-bundle` must be installed (included in the application skeleton).
 
-```yml
-services:
-  App\EventListener\MenuListener:
-    tags:
-      - { name: kernel.event_listener, event: framework_core.configure_menu, method: onConfigureMenu }
-```
+## Usage
 
-To make things easier, there's a DefaultMenuListener to extend your MenuListener from. This base class already has three
-autowired arguments:
-
-* TranslatorInterface
-* Security
-* RequestStack
-
-You can use them like so:
-
-* `$this->getTranslator()->trans('some text')` to translate stuff
-* `$this->getSecurity()->isGranted('ROLE_ADMIN');` to check for roles
-* `$this->getRequestStack()->getCurrentRequest()->...` to access the current request.
-
-There is also a helper called `enableChildRoutes`, which takes a prefix string as an argument. Calling this method on a
-menu item, will activate it when a route is visited that starts with the prefix you pass.
-
-In short, if you have a menu item with `user_admin_overview` as the route, and you enable child routes with the `user_admin_`
-prefix, all the following routes will also mark the user menu item as active:
-
-* `user_admin_add`
-* `user_admin_edit`
-* `user_admin_whatever`
-
-## The example listener
+Create an event listener in `src/EventListener/`:
 
 ```php
 <?php
@@ -55,14 +25,14 @@ class MenuListener extends DefaultMenuListener implements EventSubscriberInterfa
     {
         $factory = $event->getFactory();
         $menu = $event->getMenu();
-        
-        if ($this->getSecurity()->isGranted("ROLE_ADMIN")) {
+
+        if ($this->getSecurity()->isGranted('ROLE_ADMIN')) {
             $menu->addChild(
                 $factory->createItem(
-                    $this->getTranslator()->trans('Users''),
+                    $this->getTranslator()->trans('Users'),
                     [
-                        'route' => 'user_admin_overview',
-                        'labelAttributes' => [
+                        'route'            => 'user_admin_overview',
+                        'labelAttributes'  => [
                             'icon' => 'bi bi-person-fill',
                         ],
                         'extras' => [
@@ -77,46 +47,89 @@ class MenuListener extends DefaultMenuListener implements EventSubscriberInterfa
         }
     }
 
-    /**
-     * @return array<string, mixed>
-     */
     public static function getSubscribedEvents(): array
     {
         return [ConfigureMenuEvent::EVENT_NAME => 'onConfigureMenu'];
     }
 }
-
 ```
 
-# Nested menu items
+Register the listener in `config/services.yaml`:
 
-To create a dropdown menu with child items, create a parent item with `uri => #` instead of a route, and call addChild on it before adding it to the menu.
+```yaml
+services:
+    App\EventListener\MenuListener:
+        tags:
+            - { name: kernel.event_listener, event: framework_core.configure_menu, method: onConfigureMenu }
+```
 
-## Example nested menu item
+## DefaultMenuListener helpers
+
+Extending `DefaultMenuListener` gives you three autowired services:
+
+| Method | Returns | Purpose |
+|--------|---------|---------|
+| `$this->getTranslator()` | `TranslatorInterface` | Translate menu item labels |
+| `$this->getSecurity()` | `Security` | Check roles/permissions |
+| `$this->getRequestStack()` | `RequestStack` | Access current request |
+
+## Active state for child routes
+
+`enableChildRoutes($prefix)` marks a menu item as active when the current route starts with `$prefix`:
 
 ```php
-$paymentsMenuItem = $factory->createItem(
+$usersItem = $factory->createItem('Users', ['route' => 'user_admin_overview']);
+$this->enableChildRoutes($usersItem, 'user_admin_');
+$menu->addChild($usersItem);
+```
+
+All routes starting with `user_admin_` (e.g. `user_admin_add`, `user_admin_edit`) will mark the item as active.
+
+Alternatively, list specific routes in `extras.routes`:
+
+```php
+'extras' => [
+    'routes' => ['user_admin_add', 'user_admin_edit'],
+],
+```
+
+## Icons
+
+The bundle supports Bootstrap Icons (`bi bi-*`) and Font Awesome (`fa-* fa-*`) in `labelAttributes.icon`:
+
+```php
+'labelAttributes' => ['icon' => 'bi bi-house-fill'],    // Bootstrap Icons
+'labelAttributes' => ['icon' => 'fa-solid fa-house'],   // Font Awesome
+```
+
+## Nested items (dropdown)
+
+Create a parent item with `uri => '#'` and add children to it before adding to the root menu:
+
+```php
+$paymentsItem = $factory->createItem(
     $this->getTranslator()->trans('Payments'),
     [
-        'uri' => '#',
-        'labelAttributes' => [
-            'icon' => 'fa-regular fa-credit-card',
-        ],
-    ],
+        'uri'            => '#',
+        'labelAttributes' => ['icon' => 'fa-regular fa-credit-card'],
+    ]
 );
 
-$paymentsMenuItem->addChild(
+$paymentsItem->addChild(
     $factory->createItem(
         $this->getTranslator()->trans('Overview'),
         [
-            'route' => 'payments_overview',
-            'labelAttributes' => [
-                'icon' => 'fa-solid fa-money-bill',
-            ],
-        ],
+            'route'            => 'payments_overview',
+            'labelAttributes'  => ['icon' => 'fa-solid fa-money-bill'],
+        ]
     )
 );
 
-$menu->addChild($paymentsMenuItem);
-
+$menu->addChild($paymentsItem);
 ```
+
+## Troubleshooting
+
+- **Menu item not highlighted** — add the route to `extras.routes` or use `enableChildRoutes` with the correct prefix
+- **Item visible to wrong roles** — `isGranted` checks happen at render time; wrap the `addChild` call in a role check
+- **Menu not rendering** — verify the listener is registered and tagged with `framework_core.configure_menu`

@@ -1,5 +1,17 @@
 # Page title
 
+Sets the page `<title>` and `<h1>` from `#[Title]` attributes or, when absent, from the breadcrumb trail. Available in all Twig templates as the `pageTitle` variable.
+
+## `#[Title]` options
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `title` | `string` | required | Page title. Supports `{param}` (scalar) and `{object.property}` (object) interpolation. Passed through the translator |
+| `parent` | `array\|null` | `null` | Prepends the title of another route. Keys: `name` (required), `parameters` (optional array) |
+| `extend` | `bool` | `true` | When `true`, appends ` - <site_title>`. When `false`, uses the string verbatim |
+
+The attribute targets **methods only** and is **not repeatable**.
+
 ## Resolution order
 
 The `PageTitle` service resolves the title in this order:
@@ -129,4 +141,12 @@ In Twig, `PageTitle` is available as a string (via `__toString`):
 
 ```twig
 <title>{{ pageTitle }}</title>
+<h1>{{ pageTitle }}</h1>
 ```
+
+## Troubleshooting
+
+- **`{param}` not resolving** — the placeholder must match the exact name of a controller argument. For objects, use `{object.property}` not `{object}`
+- **Title missing site name** — verify `fallbacks.site_title` is set in `parameters` in `config/services.yaml`
+- **Parent chain not working** — each route in the chain must exist and have `#[Title]` or `#[Breadcrumb]` attributes; the chain resolves by dispatching a subrequest to fetch the parent's title
+- **`extend: false` still appends site title** — check that `extend:` is passed as a named argument: `#[Title('My Title', extend: false)]`

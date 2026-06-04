@@ -1,237 +1,165 @@
 # Uploading images
 
-You can find a base value object that you can use to upload images.
+The bundle provides `AbstractImage` — extends `AbstractFile` with image-specific features: fallback images and web path resolution. Used with `ImageType` for forms and a custom DBAL type for database persistence.
 
-It can be used in combination with the form type `SumoCoders\FrameworkCoreBundle\Form\Type\ImageType`
+## Prerequisites
 
-While most of the things you need to do are already written for you, you will still need to add some configuration for
-each implementation.
+- A writable `public/files/` directory in your project
+- The entity must have `#[ORM\HasLifecycleCallbacks]`
 
-## Basic implementation
+## Step 1: Create the value object
 
-### Create a value object
-
-Not all images are created equal. The image you want to upload has a specific meaning in your application and therefor
-your implementation should reflect that.
-
-* Create a new class
-* Extend the class `SumoCoders\FrameworkCoreBundle\ValueObject\AbstractImage`
-* Implement the `getUploadDir()` method (for documentation about this see the phpdoc)
-* If you want a fallback image you can overwrite the constant `FALLBACK_IMAGE`
-
-After implementing this your value object will be transformed into the web path of your file when it is sent to the
-template.
-
-This way you can just use it like `myEntity.myImage`
-
-#### Example
+Create a class that extends `AbstractImage` and implements `getUploadDir()`. Optionally override `FALLBACK_IMAGE` to return a web path for when no image is set.
 
 ```php
 <?php
 
-namespace SumoCoders\FrameworkUserBundle\ValueObject;
+namespace App\ValueObject;
 
 use SumoCoders\FrameworkCoreBundle\ValueObject\AbstractImage;
 
-final class Avatar extends AbstractImage
+final class UserAvatar extends AbstractImage
 {
-    const FALLBACK_IMAGE = 'no-avatar.png';
+    public const FALLBACK_IMAGE = '/images/no-avatar.png';
 
-    /**
-     * @return string
-     */
-    protected function getUploadDir()
+    protected function getUploadDir(): string
     {
-        return 'user/avatar';
+        return 'user/avatars';
     }
 }
 ```
 
-### Create a DBALType
+Files are stored in `public/files/user/avatars/`. `getWebPath()` returns the fallback image path when no file exists.
 
-In order to save the file to the database using doctrine we need a DBALType
-
-* Create a new class
-* Extend the class `SumoCoders\FrameworkCoreBundle\DBALType\AbstractImageType`
-* Implement the methods `createFromString()` and `getName()`
-* Register your DBALType (doctrine.dbal.types)
-
-#### Example
+## Step 2: Create the DBAL type
 
 ```php
 <?php
 
-namespace SumoCoders\FrameworkUserBundle\DBALType;
+namespace App\DBALType;
 
+use App\ValueObject\UserAvatar;
 use SumoCoders\FrameworkCoreBundle\DBALType\AbstractImageType;
-use SumoCoders\FrameworkUserBundle\ValueObject\Avatar;
 
-final class AvatarType extends AbstractImageType
+final class UserAvatarType extends AbstractImageType
 {
-    /**
-     * @param string $fileName
-     *
-     * @return Avatar
-     */
-    protected function createFromString($imageName)
+    protected function createFromString(string $imageName): UserAvatar
     {
-        return Avatar::fromString($imageName);
+        return UserAvatar::fromString($imageName);
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
-        return 'avatar';
+        return 'user_avatar';
     }
 }
 ```
 
-**app/config/config.yml**
+Register it in `config/packages/doctrine.yaml`:
 
 ```yaml
 doctrine:
-  dbal:
-    types:
-      user_avatar_type: SumoCoders\FrameworkUserBundle\DBALType\AvatarType
+    dbal:
+        types:
+            user_avatar: App\DBALType\UserAvatarType
 ```
 
-### Update your entity
-
-Now that we have our DBAL type and our value object we can add it to our entity
-
-* Add a property to your class for your value object
-* Set the column type to the name your DBAL type is registered on
-* Add the `@ORM\HasLifecycleCallbacks` annotation to the entity
-* Add the lifecycle callbacks to your entity as described in the phpdoc of the
-  `SumoCoders\FrameworkCoreBundle\ValueObject\AbstractImage` class
-
-#### Example
+## Step 3: Add to entity
 
 ```php
 <?php
 
-namespace SumoCoders\FrameworkUserBundle\Entity;
+namespace App\Entity;
 
+use App\ValueObject\UserAvatar;
 use Doctrine\ORM\Mapping as ORM;
-use FOS\UserBundle\Model\User as BaseUser;
-use SumoCoders\FrameworkUserBundle\ValueObject\Avatar;
 
-/**
- * User
- *
- * @ORM\Table()
- * @ORM\Entity
- * @ORM\HasLifecycleCallbacks()
- */
-class User extends BaseUser
+#[ORM\Entity]
+#[ORM\HasLifecycleCallbacks]
+class User
 {
-    /**
-     * @var Avatar
-     *
-     * @ORM\Column(type="user_avatar_type")
-     */
-    protected $avatar;
+    #[ORM\Column(type: 'user_avatar', nullable: true)]
+    private ?UserAvatar $avatar = null;
 
-    /**
-     * @return Avatar
-     */
-    public function getAvatar()
+    public function getAvatar(): ?UserAvatar
     {
         return $this->avatar;
     }
 
-    /**
-     * @param Avatar $avatar
-     * @return self
-     */
-    public function setAvatar($avatar)
+    public function setAvatar(?UserAvatar $avatar): void
     {
         $this->avatar = $avatar;
-
-        return $this;
     }
 
-    /**
-     * @ORM\PreUpdate()
-     * @ORM\PrePersist()
-     */
-    public function prepareToUploadAvatar()
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
+    public function prepareAvatar(): void
     {
-        $this->avatar->prepareToUpload();
+        $this->avatar?->prepareToUpload();
     }
 
-    /**
-     * @ORM\PostUpdate()
-     * @ORM\PostPersist()
-     */
-    public function uploadAvatar()
+    #[ORM\PostPersist]
+    #[ORM\PostUpdate]
+    public function uploadAvatar(): void
     {
-        $this->avatar->upload();
+        $this->avatar?->upload();
     }
 
-    /**
-     * @ORM\PostRemove()
-     */
-    public function removeAvatar()
+    #[ORM\PostRemove]
+    public function removeAvatar(): void
     {
-        $this->avatar->remove();
+        $this->avatar?->remove();
     }
 }
 ```
 
-### Update your form type
-
-For the last step you need to add your file to your form.
-
-* Use `SumoCoders\FrameworkCoreBundle\Form\Type\ImageType` as the form type
-* Set the fully qualified class name (FQCN) of your value object in the option `image_class` (tip: you can use
-  `MyImage::class` for that)
-
-#### Example
+## Step 4: Add to form
 
 ```php
 <?php
 
-namespace SumoCoders\FrameworkUserBundle\Form;
-
-use FOS\UserBundle\Form\Type\RegistrationFormType;
+use App\ValueObject\UserAvatar;
 use SumoCoders\FrameworkCoreBundle\Form\Type\ImageType;
-use SumoCoders\FrameworkUserBundle\ValueObject\Avatar;
-use Symfony\Component\Form\FormBuilderInterface;
 
-class UserType extends RegistrationFormType
-{
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return 'sumocoders_frameworkuserbundle_user';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-        parent::buildForm($builder, $options);
-
-        $builder->add('avatar', ImageType::class, ['image_class' => Avatar::class]);
-    }
-}
+$builder->add('avatar', ImageType::class, [
+    'image_class'          => UserAvatar::class,
+    'label'                => 'forms.labels.avatar',
+    'help'                 => 'forms.help.avatar',
+    'accept'               => 'image/jpeg,image/png,image/webp',
+    'show_preview'         => true,
+    'show_remove_image'    => true,
+    'remove_image_label'   => 'forms.labels.removeImage',
+    'required_image_error' => 'forms.not_blank',
+]);
 ```
 
-## Extra configuration options
+See [forms.md](forms.md) for the full `ImageType` options reference.
 
-To make your life even easier, the form FileType has some interesting configuration options on top of the default
-options that the Symfony FileType already has.
+## Template
 
-* `show_preview`: By default we will show a preview of the current image if there is one. You can disable this using
-  this option.
-* `preview_class`: You can use this option to add an extra class to the preview image, for example you could add
-  `img-circle` to make the preview image round
-* `show_remove_image`: If your image is not required we will automatically add the option for the user to remove the
-  image, You can disable this using this option.
-* `remove_image_label`: You can use it to change the translation label of the remove image checkbox.
+```twig
+<img src="{{ user.avatar.webPath }}" alt="{{ user.name }}">
+```
+
+`getWebPath()` returns the uploaded image URL or `FALLBACK_IMAGE` if no image has been uploaded. Returns an empty string if no fallback is defined and no file exists.
+
+## `AbstractImage` API
+
+Inherits all `AbstractFile` methods plus:
+
+| Method | Description |
+|--------|-------------|
+| `getWebPath()` | Public image URL, or `FALLBACK_IMAGE` if file missing |
+| `getFallbackImage()` | Returns the value of `FALLBACK_IMAGE` constant |
+
+## Notes
+
+- The bundle does not resize or optimize images. Handle resizing in the entity lifecycle callbacks or a post-upload event if needed.
+- EXIF data is not stripped. For user-uploaded images consider stripping EXIF in the lifecycle callback before calling `upload()`.
+
+## Troubleshooting
+
+- **Image not uploaded after form submit** — verify the three lifecycle methods (`prepareToUpload`, `upload`, `remove`) are present on the entity
+- **Fallback image not showing** — `FALLBACK_IMAGE` must be an absolute public path (e.g. `/images/no-avatar.png`), not a relative path
+- **Old image not deleted on replace** — ensure `prepareToUpload()` is called in `PreUpdate`; it stores the old filename for deletion during `upload()`
+- **Preview not showing in form** — the `ImageType` calls `getWebPath()` on the current value; check the file exists at the returned path

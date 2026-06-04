@@ -1,233 +1,163 @@
 # Uploading files
 
-You can find a base value object that you can use to upload files.
+The bundle provides `AbstractFile` — a value object that handles file storage, naming, and lifecycle hooks for Doctrine entities. Used with `FileType` for forms and a custom DBAL type for database persistence.
 
-It can be used in combination with the form type `SumoCoders\FrameworkCoreBundle\Form\Type\FileType`
+## Prerequisites
 
-While most of the things you need to do are already written for you, you will still need to add some configuration for
-each implementation.
+- A writable `public/files/` directory in your project
+- The entity must have `#[ORM\HasLifecycleCallbacks]`
 
-## Basic implementation
+## Step 1: Create the value object
 
-### Create a value object
-
-Not all files are created equal. The file you want to upload has a specific meaning in your application and therefor
-your implementation should reflect that.
-
-* Create a new class
-* Extend the class `SumoCoders\FrameworkCoreBundle\ValueObject\AbstractFile`
-* Implement the `getUploadDir()` method (for documentation about this see the phpdoc)
-
-After implementing this your value object will be transformed into the web path of your file when it is sent to the
-template.
-
-This way you can just use it like `myEntity.myFile`
-
-#### Example
+Create a class that extends `AbstractFile` and implements `getUploadDir()`. The upload directory is relative to `public/files/`.
 
 ```php
 <?php
 
-namespace SumoCoders\FrameworkUserBundle\ValueObject;
+namespace App\ValueObject;
 
 use SumoCoders\FrameworkCoreBundle\ValueObject\AbstractFile;
 
-final class CV extends AbstractFile
+final class UserDocument extends AbstractFile
 {
-    /**
-     * @return string
-     */
-    protected function getUploadDir()
+    protected function getUploadDir(): string
     {
-        return 'user/cv';
+        return 'user/documents';
     }
 }
 ```
 
-### Create a DBALType
+Files are stored in `public/files/user/documents/` and served from `/files/user/documents/<filename>`.
 
-In order to save the file to the database using doctrine we need a DBALType
-
-* Create a new class
-* Extend the class `SumoCoders\FrameworkCoreBundle\DBALType\AbstractFileType`
-* Implement the methods `createFromString()` and `getName()`
-* Register your DBALType (doctrine.dbal.types)
-
-#### Example
+## Step 2: Create the DBAL type
 
 ```php
 <?php
 
-namespace SumoCoders\FrameworkUserBundle\DBALType;
+namespace App\DBALType;
 
+use App\ValueObject\UserDocument;
 use SumoCoders\FrameworkCoreBundle\DBALType\AbstractFileType;
-use SumoCoders\FrameworkUserBundle\ValueObject\CV;
 
-final class CVType extends AbstractFileType
+final class UserDocumentType extends AbstractFileType
 {
-    /**
-     * @param string $fileName
-     *
-     * @return CV
-     */
-    protected function createFromString($fileName)
+    protected function createFromString(string $fileName): UserDocument
     {
-        return CV::fromString($fileName);
+        return UserDocument::fromString($fileName);
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
-        return 'cv';
+        return 'user_document';
     }
 }
 ```
 
-**app/config/config.yml**
+Register it in `config/packages/doctrine.yaml`:
 
 ```yaml
 doctrine:
-  dbal:
-    types:
-      user_cv_type: SumoCoders\FrameworkUserBundle\DBALType\CVType
+    dbal:
+        types:
+            user_document: App\DBALType\UserDocumentType
 ```
 
-### Update your entity
-
-Now that we have our DBAL type and our value object we can add it to our entity
-
-* Add a property to your class for your value object
-* Set the column type to the name your DBAL type is registered on
-* Add the `@ORM\HasLifecycleCallbacks` annotation to the entity
-* Add the lifecycle callbacks to your entity as described in the phpdoc of the
-  `SumoCoders\FrameworkCoreBundle\ValueObject\AbstractFile` class
-
-#### Example
+## Step 3: Add to entity
 
 ```php
 <?php
 
-namespace SumoCoders\FrameworkUserBundle\Entity;
+namespace App\Entity;
 
+use App\ValueObject\UserDocument;
 use Doctrine\ORM\Mapping as ORM;
-use FOS\UserBundle\Model\User as BaseUser;
-use SumoCoders\FrameworkUserBundle\ValueObject\CV;
 
-/**
- * User
- *
- * @ORM\Table()
- * @ORM\Entity
- * @ORM\HasLifecycleCallbacks()
- */
-class User extends BaseUser
+#[ORM\Entity]
+#[ORM\HasLifecycleCallbacks]
+class User
 {
-    /**
-     * @var CV
-     *
-     * @ORM\Column(type="user_cv_type")
-     */
-    protected $cv;
+    #[ORM\Column(type: 'user_document', nullable: true)]
+    private ?UserDocument $document = null;
 
-    /**
-     * @return CV
-     */
-    public function getCv()
+    public function getDocument(): ?UserDocument
     {
-        return $this->cv;
+        return $this->document;
     }
 
-    /**
-     * @param CV $cv
-     * @return self
-     */
-    public function setCv($cv)
+    public function setDocument(?UserDocument $document): void
     {
-        $this->cv = $cv;
-
-        return $this;
+        $this->document = $document;
     }
 
-    /**
-     * @ORM\PreUpdate()
-     * @ORM\PrePersist()
-     */
-    public function prepareToUploadCV()
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
+    public function prepareDocument(): void
     {
-        $this->cv->prepareToUpload();
+        $this->document?->prepareToUpload();
     }
 
-    /**
-     * @ORM\PostUpdate()
-     * @ORM\PostPersist()
-     */
-    public function uploadCV()
+    #[ORM\PostPersist]
+    #[ORM\PostUpdate]
+    public function uploadDocument(): void
     {
-        $this->cv->upload();
+        $this->document?->upload();
     }
 
-    /**
-     * @ORM\PostRemove()
-     */
-    public function removeCV()
+    #[ORM\PostRemove]
+    public function removeDocument(): void
     {
-        $this->cv->remove();
+        $this->document?->remove();
     }
 }
 ```
 
-### Update your form type
-
-For the last step you need to add your file to your form.
-
-* Use `SumoCoders\FrameworkCoreBundle\Form\Type\FileType` as the form type
-* Set the fully qualified class name (FQCN) of your value object in the option `file_class` (tip: you can use
-  `MyFile::class` for that)
-
-#### Example
+## Step 4: Add to form
 
 ```php
 <?php
 
-namespace SumoCoders\FrameworkUserBundle\Form;
-
-use FOS\UserBundle\Form\Type\RegistrationFormType;
+use App\ValueObject\UserDocument;
 use SumoCoders\FrameworkCoreBundle\Form\Type\FileType;
-use SumoCoders\FrameworkUserBundle\ValueObject\CV;
-use Symfony\Component\Form\FormBuilderInterface;
 
-class UserType extends RegistrationFormType
-{
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return 'sumocoders_frameworkuserbundle_user';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-        parent::buildForm($builder, $options);
-
-        $builder->add('cv', FileType::class, ['file_class' => CV::class]);
-    }
-}
+$builder->add('document', FileType::class, [
+    'file_class'          => UserDocument::class,
+    'label'               => 'forms.labels.document',
+    'help'                => 'forms.help.document',
+    'accept'              => 'application/pdf',
+    'show_preview'        => true,
+    'preview_label'       => 'forms.labels.viewCurrentFile',
+    'show_remove_file'    => true,
+    'remove_file_label'   => 'forms.labels.removeFile',
+    'required_file_error' => 'forms.not_blank',
+]);
 ```
 
-## Extra configuration options
+See [forms.md](forms.md) for the full `FileType` options reference.
 
-To make your life even easier, the form FileType has some interesting configuration options on top of the default
-options that the Symfony FileType already has.
+## Template
 
-* `show_preview`: By default we will show a link to view the current file if there is one. You can disable this using
-  this option.
-* `preview_label`: You can use it to change the translation label that will be in the link to view your current file.
-* `show_remove_file`: If your file is not required we will automatically add the option for the user to remove the file,
-  You can disable this using this option.
-* `remove_file_label`: You can use it to change the translation label of the remove file checkbox.
+```twig
+{% if user.document %}
+    <a href="{{ user.document }}">Download document</a>
+{% endif %}
+```
+
+`AbstractFile` implements `__toString()` returning the web path (`/files/user/documents/<filename>`), or an empty string if no file exists.
+
+## `AbstractFile` API
+
+| Method | Description |
+|--------|-------------|
+| `getFileName()` | Raw stored filename |
+| `getWebPath()` | Public URL path, or empty string if file missing |
+| `getAbsolutePath()` | Absolute filesystem path |
+| `hasFile()` | Whether a new `UploadedFile` is pending |
+| `markForDeletion()` | Schedules the file for removal on next flush |
+| `setNamePrefix(string)` | Prepends a slug to the generated filename |
+
+## Troubleshooting
+
+- **File not uploaded after form submit** — verify the three lifecycle methods (`prepareToUpload`, `upload`, `remove`) are present on the entity with the correct `#[ORM\*]` attributes
+- **`public/files/` directory missing** — create it and ensure it is web-accessible; check your web server configuration
+- **Old file not deleted on replace** — the `upload()` method deletes the old file; this only works if `prepareToUpload()` was called first in `PreUpdate`
+- **Form always shows file as required** — `FileType` uses `required` based on whether the value object has an existing file; pass `'required' => false` to disable the constraint

@@ -1,4 +1,41 @@
-# Using the breadcrumb
+# Breadcrumbs
+
+Populates a `BreadcrumbTrail` service from `#[Breadcrumb]` attributes on controller classes and methods. The trail is available for rendering in Twig on every request.
+
+## Prerequisites
+
+No additional configuration required. `BreadcrumbListener` fires automatically on `kernel.controller_arguments`.
+
+## `#[Breadcrumb]` options
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `title` | `string` | required | Crumb label. Supports `{object.property}` interpolation. Passed through the translator |
+| `route` | `array\|null` | `null` | Makes the crumb a link. Keys: `name` (required), `parameters` (optional array) |
+| `parent` | `array\|null` | `null` | Prepends the full trail of another route. Keys: `name` (required), `parameters` (optional array) |
+| `parameters` | `array` | `[]` | Translation parameters. Values are `object.property` paths resolved from controller arguments |
+
+The attribute targets both **methods** and **classes**, and is **repeatable** — multiple `#[Breadcrumb]` on the same element are added in declaration order.
+
+## Rendering in Twig
+
+```twig
+{% for crumb in breadcrumbTrail %}
+    {% if loop.last %}
+        <li class="breadcrumb-item active">{{ crumb.title|trans }}</li>
+    {% else %}
+        <li class="breadcrumb-item">
+            {% if crumb.hasRoute %}
+                <a href="{{ path(crumb.route.name, crumb.route.parameters ?? {}) }}">{{ crumb.title|trans }}</a>
+            {% else %}
+                {{ crumb.title|trans }}
+            {% endif %}
+        </li>
+    {% endif %}
+{% endfor %}
+```
+
+`breadcrumbTrail` is available automatically in all templates via the bundle's Twig extension.
 
 ## Basics
 
@@ -169,3 +206,10 @@ public function __invoke(Author $author, Book $book): Response
 ```yaml
 breadcrumb.authors: 'Authors'
 ```
+
+## Troubleshooting
+
+- **Breadcrumb not appearing** — verify the controller method has `#[Breadcrumb]` (not the class alone, unless it is an invokable controller)
+- **`{object.property}` shows literally** — scalars (e.g. `string $name`) cannot be interpolated; only object arguments with accessible properties work
+- **Parent chain stops early** — every route in the chain must have its own `#[Breadcrumb]` attribute; missing one breaks the recursive resolution
+- **Translation key not found** — breadcrumb titles are translated using the default domain; add the key to `translations/messages.<locale>.yaml`

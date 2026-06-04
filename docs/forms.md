@@ -1,6 +1,7 @@
 # Forms
 
-The bundle provides custom form types for images, files, and Belgium postcodes, plus type extensions that enhance the built-in Symfony form types.
+The bundle provides custom form types for images, files, and Belgium postcodes, plus type extensions that enhance the
+built-in Symfony form types.
 
 ---
 
@@ -8,7 +9,8 @@ The bundle provides custom form types for images, files, and Belgium postcodes, 
 
 ### ImageType
 
-Renders a file input for an `AbstractImage` subclass with an optional preview and a remove checkbox. The form field expects the entity property to be typed as your `AbstractImage` subclass.
+Renders a file input for an `AbstractImage` subclass with an optional preview and a remove checkbox. The form field
+expects the entity property to be typed as your `AbstractImage` subclass.
 
 See [uploading-images.md](uploading-images.md) for creating the required `AbstractImage` subclass.
 
@@ -31,16 +33,16 @@ $builder->add('photo', ImageType::class, [
 
 **Options:**
 
-| Option | Type | Default | Required | Description |
-|--------|------|---------|----------|-------------|
-| `image_class` | `string` | — | yes | FQCN of your `AbstractImage` subclass |
-| `label` | `string` | — | yes | Form field label |
-| `help` | `string` | — | yes | Help text below the field |
-| `accept` | `string` | `'image/*'` | yes | Accepted MIME types for the file input |
-| `show_preview` | `bool` | `true` | yes | Show current image as a preview |
-| `show_remove_image` | `bool` | `true` | yes | Show a checkbox to delete the current image |
-| `remove_image_label` | `string` | `'forms.labels.removeImage'` | yes | Label for the remove checkbox |
-| `required_image_error` | `string` | `'forms.not_blank'` | yes | Validation message when a required image is missing |
+| Option                 | Type     | Default                      | Required | Description                                         |
+|------------------------|----------|------------------------------|----------|-----------------------------------------------------|
+| `image_class`          | `string` |                              | yes      | FQCN of your `AbstractImage` subclass               |
+| `label`                | `string` |                              | yes      | Form field label                                    |
+| `help`                 | `string` |                              | yes      | Help text below the field                           |
+| `accept`               | `string` | `'image/*'`                  | yes      | Accepted MIME types for the file input              |
+| `show_preview`         | `bool`   | `true`                       | yes      | Show current image as a preview                     |
+| `show_remove_image`    | `bool`   | `true`                       | yes      | Show a checkbox to delete the current image         |
+| `remove_image_label`   | `string` | `'forms.labels.removeImage'` | yes      | Label for the remove checkbox                       |
+| `required_image_error` | `string` | `'forms.not_blank'`          | yes      | Validation message when a required image is missing |
 
 ---
 
@@ -70,17 +72,17 @@ $builder->add('document', FileType::class, [
 
 **Options:**
 
-| Option | Type | Default | Required | Description |
-|--------|------|---------|----------|-------------|
-| `file_class` | `string` | — | yes | FQCN of your `AbstractFile` subclass |
-| `label` | `string` | — | yes | Form field label |
-| `help` | `string` | — | yes | Help text below the field |
-| `accept` | `string\|null` | `null` | yes | Accepted MIME types for the file input (`null` = any) |
-| `show_preview` | `bool` | `true` | yes | Show a link to the current file |
-| `preview_label` | `string` | `'forms.labels.viewCurrentFile'` | yes | Link text for the current file preview |
-| `show_remove_file` | `bool` | `true` | yes | Show a checkbox to delete the current file |
-| `remove_file_label` | `string` | `'forms.labels.removeFile'` | yes | Label for the remove checkbox |
-| `required_file_error` | `string` | `'forms.not_blank'` | yes | Validation message when a required file is missing |
+| Option                | Type           | Default                          | Required | Description                                           |
+|-----------------------|----------------|----------------------------------|----------|-------------------------------------------------------|
+| `file_class`          | `string`       |                                  | yes      | FQCN of your `AbstractFile` subclass                  |
+| `label`               | `string`       |                                  | yes      | Form field label                                      |
+| `help`                | `string`       |                                  | yes      | Help text below the field                             |
+| `accept`              | `string\|null` | `null`                           | yes      | Accepted MIME types for the file input (`null` = any) |
+| `show_preview`        | `bool`         | `true`                           | yes      | Show a link to the current file                       |
+| `preview_label`       | `string`       | `'forms.labels.viewCurrentFile'` | yes      | Link text for the current file preview                |
+| `show_remove_file`    | `bool`         | `true`                           | yes      | Show a checkbox to delete the current file            |
+| `remove_file_label`   | `string`       | `'forms.labels.removeFile'`      | yes      | Label for the remove checkbox                         |
+| `required_file_error` | `string`       | `'forms.not_blank'`              | yes      | Validation message when a required file is missing    |
 
 ---
 
@@ -117,11 +119,12 @@ class AddressData
 
 ## Type extensions
 
-These extensions apply automatically to the listed Symfony form types — no explicit registration needed.
+These extensions apply automatically to the listed Symfony form types. No explicit registration needed.
 
 ### Date, Time, DateTime, Birthday
 
-Activates [Flatpickr](https://flatpickr.js.org/) on `DateType`, `TimeType`, `DateTimeType`, and `BirthdayType`. The `widget` defaults to `single_text` and `html5` defaults to `false`.
+Activates [Flatpickr](https://flatpickr.js.org/) on `DateType`, `TimeType`, `DateTimeType`, and `BirthdayType`. The
+`widget` defaults to `single_text` and `html5` defaults to `false`.
 
 See [using-date-pickers.md](using-date-pickers.md) for options and examples.
 
@@ -131,12 +134,12 @@ Adds drag-and-drop reordering and minimum/maximum item count validation to `Coll
 
 **Added options:**
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `allow_drag_and_drop` | `bool` | `true` | Enable drag-and-drop row reordering |
-| `add_button_label` | `string` | `'forms.buttons.addItem'` | Translation key for the "Add item" button |
-| `minimum_required_items` | `int` | `0` | Minimum number of items required |
-| `maximum_required_items` | `int\|null` | `null` | Maximum number of items allowed (`null` = unlimited) |
+| Option                   | Type        | Default                   | Description                                          |
+|--------------------------|-------------|---------------------------|------------------------------------------------------|
+| `allow_drag_and_drop`    | `bool`      | `true`                    | Enable drag-and-drop row reordering                  |
+| `add_button_label`       | `string`    | `'forms.buttons.addItem'` | Translation key for the "Add item" button            |
+| `minimum_required_items` | `int`       | `0`                       | Minimum number of items required                     |
+| `maximum_required_items` | `int\|null` | `null`                    | Maximum number of items allowed (`null` = unlimited) |
 
 ```php
 $builder->add('contacts', CollectionType::class, [
@@ -154,13 +157,13 @@ Adds a show/hide toggle button to `PasswordType` fields.
 
 **Added options:**
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `toggle` | `bool` | `true` | Enable the show/hide toggle |
-| `hidden_label` | `string\|null` | `'Hide password'` | Tooltip/label when password is visible |
-| `visible_label` | `string\|null` | `'Show password'` | Tooltip/label when password is hidden |
-| `button_classes` | `string[]` | `['toggle-password-button']` | CSS classes on the toggle button |
-| `toggle_container_classes` | `string[]` | `['toggle-password-container']` | CSS classes on the wrapper element |
+| Option                     | Type           | Default                         | Description                            |
+|----------------------------|----------------|---------------------------------|----------------------------------------|
+| `toggle`                   | `bool`         | `true`                          | Enable the show/hide toggle            |
+| `hidden_label`             | `string\|null` | `'Hide password'`               | Tooltip/label when password is visible |
+| `visible_label`            | `string\|null` | `'Show password'`               | Tooltip/label when password is hidden  |
+| `button_classes`           | `string[]`     | `['toggle-password-button']`    | CSS classes on the toggle button       |
+| `toggle_container_classes` | `string[]`     | `['toggle-password-container']` | CSS classes on the wrapper element     |
 
 To disable the toggle on a specific field:
 
@@ -174,7 +177,8 @@ $builder->add('apiKey', PasswordType::class, [
 
 ## Translations
 
-Form field labels are translated automatically using the form's translation domain. The label key is derived from the field name (e.g. field `username` → key `Username`).
+Form field labels are translated automatically using the form's translation domain. The label key is derived from the
+field name (e.g. field `username` → key `Username`).
 
 To provide a custom translation, add a key to your translation file:
 

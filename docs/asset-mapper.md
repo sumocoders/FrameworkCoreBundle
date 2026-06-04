@@ -1,6 +1,7 @@
 # Asset mapper
 
-We use Symfony asset mapper for our css and js packages. See Symfony documentation for more information: https://symfony.com/doc/current/frontend/asset_mapper.html
+We use Symfony asset mapper for our css and js packages. See Symfony documentation for more
+information: https://symfony.com/doc/current/frontend/asset_mapper.html
 
 ## Add package
 
@@ -44,8 +45,8 @@ symfony console importmap:install
 
 ## Our CSS
 
-Our main CSS is currently located in the framework-core-bundle as this still needs to be compile with scss for Bootstrap.
-This CSS is included in the `assets/styles/style.scss` file.
+Our main CSS is located in the framework-core-bundle as this still needs to be compile with scss for Bootstrap. This CSS
+is included in the `assets/styles/style.scss` file.
 
 To compile the CSS with SASS, you can run the following command:
 

@@ -1,14 +1,15 @@
 # Page title
 
-Sets the page `<title>` and `<h1>` from `#[Title]` attributes or, when absent, from the breadcrumb trail. Available in all Twig templates as the `pageTitle` variable.
+Sets the page `<title>` and `<h1>` from `#[Title]` attributes or, when absent, from the breadcrumb trail. Available in
+all Twig templates as the `pageTitle` variable.
 
 ## `#[Title]` options
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `title` | `string` | required | Page title. Supports `{param}` (scalar) and `{object.property}` (object) interpolation. Passed through the translator |
-| `parent` | `array\|null` | `null` | Prepends the title of another route. Keys: `name` (required), `parameters` (optional array) |
-| `extend` | `bool` | `true` | When `true`, appends ` - <site_title>`. When `false`, uses the string verbatim |
+| Parameter | Type          | Default  | Description                                                                                                           |
+|-----------|---------------|----------|-----------------------------------------------------------------------------------------------------------------------|
+| `title`   | `string`      | required | Page title. Supports `{param}` (scalar) and `{object.property}` (object) interpolation. Passed through the translator |
+| `parent`  | `array\|null` | `null`   | Prepends the title of another route. Keys: `name` (required), `parameters` (optional array)                           |
+| `extend`  | `bool`        | `true`   | When `true`, appends ` - <site_title>`. When `false`, uses the string verbatim                                        |
 
 The attribute targets **methods only** and is **not repeatable**.
 
@@ -26,8 +27,8 @@ Set `fallback.site_title` in your `services.yaml`:
 
 ```yaml
 parameters:
-    fallbacks:
-        site_title: 'My Application'
+  fallbacks:
+    site_title: 'My Application'
 ```
 
 ## The `#[Title]` attribute
@@ -77,7 +78,8 @@ public function __invoke(): Response
 
 Output: `Detail - Overview - My Application`
 
-The parent chain is resolved recursively: if the parent route also has a `#[Title]` with its own parent, that is included too.
+The parent chain is resolved recursively: if the parent route also has a `#[Title]` with its own parent, that is
+included too.
 
 ### Dynamic titles
 
@@ -103,7 +105,8 @@ public function __invoke(
 }
 ```
 
-Dynamic parameters are resolved from the named controller arguments. If a placeholder is not found, an exception is thrown.
+Dynamic parameters are resolved from the named controller arguments. If a placeholder is not found, an exception is
+thrown.
 
 ### Disable automatic appending
 
@@ -146,7 +149,10 @@ In Twig, `PageTitle` is available as a string (via `__toString`):
 
 ## Troubleshooting
 
-- **`{param}` not resolving** — the placeholder must match the exact name of a controller argument. For objects, use `{object.property}` not `{object}`
-- **Title missing site name** — verify `fallbacks.site_title` is set in `parameters` in `config/services.yaml`
-- **Parent chain not working** — each route in the chain must exist and have `#[Title]` or `#[Breadcrumb]` attributes; the chain resolves by dispatching a subrequest to fetch the parent's title
-- **`extend: false` still appends site title** — check that `extend:` is passed as a named argument: `#[Title('My Title', extend: false)]`
+- **`{param}` not resolving**: the placeholder must match the exact name of a controller argument. For objects, use
+  `{object.property}` not `{object}`
+- **Title missing site name**: verify `fallbacks.site_title` is set in `parameters` in `config/services.yaml`
+- **Parent chain not working**: each route in the chain must exist and have `#[Title]` or `#[Breadcrumb]` attributes;
+  the chain resolves by dispatching a subrequest to fetch the parent's title
+- **`extend: false` still appends site title**: check that `extend:` is passed as a named argument:
+  `#[Title('My Title', extend: false)]`

@@ -1,6 +1,7 @@
 # Breadcrumbs
 
-Populates a `BreadcrumbTrail` service from `#[Breadcrumb]` attributes on controller classes and methods. The trail is available for rendering in Twig on every request.
+Populates a `BreadcrumbTrail` service from `#[Breadcrumb]` attributes on controller classes and methods. The trail is
+available for rendering in Twig on every request.
 
 ## Prerequisites
 
@@ -8,14 +9,15 @@ No additional configuration required. `BreadcrumbListener` fires automatically o
 
 ## `#[Breadcrumb]` options
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `title` | `string` | required | Crumb label. Supports `{object.property}` interpolation. Passed through the translator |
-| `route` | `array\|null` | `null` | Makes the crumb a link. Keys: `name` (required), `parameters` (optional array) |
-| `parent` | `array\|null` | `null` | Prepends the full trail of another route. Keys: `name` (required), `parameters` (optional array) |
-| `parameters` | `array` | `[]` | Translation parameters. Values are `object.property` paths resolved from controller arguments |
+| Parameter    | Type          | Default  | Description                                                                                      |
+|--------------|---------------|----------|--------------------------------------------------------------------------------------------------|
+| `title`      | `string`      | required | Crumb label. Supports `{object.property}` interpolation. Passed through the translator           |
+| `route`      | `array\|null` | `null`   | Makes the crumb a link. Keys: `name` (required), `parameters` (optional array)                   |
+| `parent`     | `array\|null` | `null`   | Prepends the full trail of another route. Keys: `name` (required), `parameters` (optional array) |
+| `parameters` | `array`       | `[]`     | Translation parameters. Values are `object.property` paths resolved from controller arguments    |
 
-The attribute targets both **methods** and **classes**, and is **repeatable** — multiple `#[Breadcrumb]` on the same element are added in declaration order.
+The attribute targets both **methods** and **classes**, and is **repeatable**. Multiple `#[Breadcrumb]` on the same
+element are added in declaration order.
 
 ## Rendering in Twig
 
@@ -39,7 +41,7 @@ The attribute targets both **methods** and **classes**, and is **repeatable** �
 
 ## Basics
 
-Add a `#[Breadcrumb]` attribute to a controller method to register a crumb. The attribute is repeatable — each one
+Add a `#[Breadcrumb]` attribute to a controller method to register a crumb. The attribute is repeatable. Each one
 appends a crumb to the trail in declaration order.
 
 ```php
@@ -85,7 +87,7 @@ class BooksController
 ## Linked breadcrumbs (`route:`)
 
 Pass `route:` to make the crumb a link. Required route parameters are automatically resolved from the current
-controller's named arguments and request attributes — you do not need to specify them manually.
+controller's named arguments and request attributes. You do not need to specify them manually.
 
 ```php
 #[Route('/books/genres', name: 'genres_overview')]
@@ -148,7 +150,7 @@ public function __invoke(Author $author, Book $book): Response
 }
 ```
 
-> Scalar parameters (e.g. `string $name`) cannot be used with the `{name}` syntax — only objects with a property path
+> Scalar parameters (e.g. `string $name`) cannot be used with the `{name}` syntax. Only objects with a property path
 > are supported. Using a scalar silently omits the breadcrumb.
 
 ## Translations
@@ -209,7 +211,11 @@ breadcrumb.authors: 'Authors'
 
 ## Troubleshooting
 
-- **Breadcrumb not appearing** — verify the controller method has `#[Breadcrumb]` (not the class alone, unless it is an invokable controller)
-- **`{object.property}` shows literally** — scalars (e.g. `string $name`) cannot be interpolated; only object arguments with accessible properties work
-- **Parent chain stops early** — every route in the chain must have its own `#[Breadcrumb]` attribute; missing one breaks the recursive resolution
-- **Translation key not found** — breadcrumb titles are translated using the default domain; add the key to `translations/messages.<locale>.yaml`
+- **Breadcrumb not appearing**: verify the controller method has `#[Breadcrumb]` (not the class alone, unless it is an
+  invokable controller)
+- **`{object.property}` shows literally**: scalars (e.g. `string $name`) cannot be interpolated; only object arguments
+  with accessible properties work
+- **Parent chain stops early**: every route in the chain must have its own `#[Breadcrumb]` attribute; missing one
+  breaks the recursive resolution
+- **Translation key not found**: breadcrumb titles are translated using the default domain; add the key to
+  `translations/messages.<locale>.yaml`

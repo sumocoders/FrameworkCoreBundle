@@ -1,6 +1,7 @@
 # Date and time pickers
 
-The bundle uses [Flatpickr](https://flatpickr.js.org/) for date and time inputs. Flatpickr activates automatically on any field using these Symfony form types — no extra configuration required:
+The bundle uses [Flatpickr](https://flatpickr.js.org/) for date and time inputs. Flatpickr activates automatically on
+any field using these Symfony form types — no extra configuration required:
 
 - `DateType`
 - `TimeType`
@@ -27,11 +28,11 @@ $builder->add('date', DateType::class, [
 
 The bundle adds two convenience options to the date/time types:
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `minimum_date` | `string\|null` | `null` | Earliest selectable date, formatted as `d/m/Y` |
-| `maximum_date` | `string\|null` | `null` | Latest selectable date, formatted as `d/m/Y` |
-| `format` | `string` | `'dd/MM/yyyy'` | Display format (Flatpickr format string) |
+| Option         | Type           | Default        | Description                                    |
+|----------------|----------------|----------------|------------------------------------------------|
+| `minimum_date` | `string\|null` | `null`         | Earliest selectable date, formatted as `d/m/Y` |
+| `maximum_date` | `string\|null` | `null`         | Latest selectable date, formatted as `d/m/Y`   |
+| `format`       | `string`       | `'dd/MM/yyyy'` | Display format (Flatpickr format string)       |
 
 ```php
 $builder->add('date', DateType::class, [
@@ -43,7 +44,8 @@ $builder->add('date', DateType::class, [
 
 ## Passing additional Flatpickr options
 
-Pass any [Flatpickr option](https://flatpickr.js.org/options/) as a `data-date-*` attribute, converting camelCase to kebab-case:
+Pass any [Flatpickr option](https://flatpickr.js.org/options/) as a `data-date-*` attribute, converting camelCase to
+kebab-case:
 
 - `minDate` → `data-date-min-date`
 - `showMonths` → `data-date-show-months`
@@ -62,6 +64,8 @@ $builder->add('date', DateType::class, [
 
 ## Troubleshooting
 
-- **Picker does not open** — verify `widget` is not set to `choice` and `html5` is not `true`
-- **Date format mismatch on submit** — the `format` option controls the display format; the form submits the underlying ISO value regardless of display format
-- **`minimum_date`/`maximum_date` ignored** — these options must be a string in `d/m/Y` format matching the `format` option
+- **Picker does not open**: verify `widget` is not set to `choice` and `html5` is not `true`
+- **Date format mismatch on submit**: the `format` option controls the display format; the form submits the underlying
+  ISO value regardless of display format
+- **`minimum_date`/`maximum_date` ignored**: these options must be a string in `d/m/Y` format matching the `format`
+  option

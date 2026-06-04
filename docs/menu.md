@@ -1,6 +1,7 @@
 # Menu
 
-The bundle builds navigation using [KnpMenu](https://symfony.com/bundles/KnpMenuBundle/current/index.html). `MenuBuilder` dispatches a `ConfigureMenuEvent` — consuming apps listen to this event to add items.
+The bundle builds navigation using [KnpMenu](https://symfony.com/bundles/KnpMenuBundle/current/index.html).
+`MenuBuilder` dispatches a `ConfigureMenuEvent`, consuming apps listen to this event to add items.
 
 ## Prerequisites
 
@@ -58,20 +59,20 @@ Register the listener in `config/services.yaml`:
 
 ```yaml
 services:
-    App\EventListener\MenuListener:
-        tags:
-            - { name: kernel.event_listener, event: framework_core.configure_menu, method: onConfigureMenu }
+  App\EventListener\MenuListener:
+    tags:
+      - { name: kernel.event_listener, event: framework_core.configure_menu, method: onConfigureMenu }
 ```
 
 ## DefaultMenuListener helpers
 
 Extending `DefaultMenuListener` gives you three autowired services:
 
-| Method | Returns | Purpose |
-|--------|---------|---------|
-| `$this->getTranslator()` | `TranslatorInterface` | Translate menu item labels |
-| `$this->getSecurity()` | `Security` | Check roles/permissions |
-| `$this->getRequestStack()` | `RequestStack` | Access current request |
+| Method                     | Returns               | Purpose                    |
+|----------------------------|-----------------------|----------------------------|
+| `$this->getTranslator()`   | `TranslatorInterface` | Translate menu item labels |
+| `$this->getSecurity()`     | `Security`            | Check roles/permissions    |
+| `$this->getRequestStack()` | `RequestStack`        | Access current request     |
 
 ## Active state for child routes
 
@@ -130,6 +131,6 @@ $menu->addChild($paymentsItem);
 
 ## Troubleshooting
 
-- **Menu item not highlighted** — add the route to `extras.routes` or use `enableChildRoutes` with the correct prefix
-- **Item visible to wrong roles** — `isGranted` checks happen at render time; wrap the `addChild` call in a role check
-- **Menu not rendering** — verify the listener is registered and tagged with `framework_core.configure_menu`
+- **Menu item not highlighted**: add the route to `extras.routes` or use `enableChildRoutes` with the correct prefix
+- **Item visible to wrong roles**: `isGranted` checks happen at render time; wrap the `addChild` call in a role check
+- **Menu not rendering**: verify the listener is registered and tagged with `framework_core.configure_menu`

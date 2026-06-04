@@ -1,6 +1,7 @@
 # Language switch
 
-The bundle supports multi-locale navigation. The active locale is part of the route URL via the `{_locale}` parameter. A dropdown in the navigation lets users switch language.
+The bundle supports multi-locale navigation. The active locale is part of the route URL via the `{_locale}` parameter. A
+dropdown in the navigation lets users switch language.
 
 ## Prerequisites
 
@@ -12,7 +13,7 @@ Extend the `locales` parameter in `config/services.yaml`:
 
 ```yaml
 parameters:
-    locales: ['nl', 'fr', 'en']
+  locales: [ 'nl', 'fr', 'en' ]
 ```
 
 The `locales` parameter is passed to Twig and used in the language switcher dropdown.
@@ -50,6 +51,9 @@ Add the following to `templates/navigation.html.twig`, between the logo and the 
 
 ## Troubleshooting
 
-- **Locale not changing on click** — verify your routes include `{_locale}` as a parameter or prefix; without it, `_locale` in `_route_params` has no effect
-- **`locales` variable undefined in Twig** — ensure the `locales` parameter is defined in `config/services.yaml` under `parameters:`
-- **Wrong locale active after switch** — check that the Symfony locale listener is active (`framework.translator.enabled_locales` in `config/packages/translation.yaml`)
+- **Locale not changing on click**: verify your routes include `{_locale}` as a parameter or prefix; without it,
+  `_locale` in `_route_params` has no effect
+- **`locales` variable undefined in Twig**: ensure the `locales` parameter is defined in `config/services.yaml` under
+  `parameters:`
+- **Wrong locale active after switch**: check that the Symfony locale listener is active (
+  `framework.translator.enabled_locales` in `config/packages/translation.yaml`)

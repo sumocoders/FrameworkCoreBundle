@@ -1,139 +1,81 @@
-# Using pagination
+# Pagination
 
-Pagination is a nice way to handle large amounts of data over multiple pages. The core bundle has a Paginator class (similar to Pagerfanta), that does most of the heavy lifting.
+`Paginator` wraps a Doctrine `QueryBuilder` and handles page math, result slicing, and iteration. The default page size is 30.
 
 ## Usage
-Define the Paginator object in your repository, where you pass the QueryBuilder object straight to it.
+
 ### Repository
 
-```php
-    use SumoCoders\FrameworkCoreBundle\Pagination\Paginator;
-    
-    public function getPaginatedItems(): Paginator
-    {
-        $queryBuilder = $this->createQueryBuilder('i')
-                ->where('i.name LIKE :term')
-                ->setParameter('term', 'foo')
-                ->orderBy('i.name');
-
-        return new Paginator($queryBuilder);
-    }
-```
-## Controller
-
-In your controller, use the `paginate` method on it to set the correct page. You can also extend this with sorting GET parameters that you pass to your method in the repository. Since the pagination works on a QueryBuilder object, al sorting must be done with orderBy's.
+Return a `Paginator` from the repository method. Do not call `paginate()` here — the controller does that.
 
 ```php
 <?php
 
-namespace SumoCoders\FrameworkCoreBundle\Controller;
+namespace App\Repository;
+
+use App\Entity\Item;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
+use SumoCoders\FrameworkCoreBundle\Pagination\Paginator;
+
+class ItemRepository extends ServiceEntityRepository
+{
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, Item::class);
+    }
+
+    public function getPaginated(): Paginator
+    {
+        $queryBuilder = $this->createQueryBuilder('i')
+            ->orderBy('i.name', 'ASC');
+
+        return new Paginator($queryBuilder);
+    }
+}
+```
+
+### Controller
+
+Call `paginate()` with the current page number from the query string:
+
+```php
+<?php
+
+namespace App\Controller\Item;
 
 use App\Repository\ItemRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
-final class ItemController extends AbstractController
+#[Route('/items', name: 'item_index')]
+final class Index extends AbstractController
 {
-    /**
-      * @Route("/items", name="item_index")
-      */
-     public function __invoke(
-        Request $request,
-        ItemRepository $itemRepository
-    ): Response {
-        $paginatedItems = $itemRepository->getPaginatedItems();
+    public function __invoke(Request $request, ItemRepository $itemRepository): Response
+    {
+        $items = $itemRepository->getPaginated()
+            ->paginate($request->query->getInt('page', 1));
 
-        $paginatedItems->paginate($request->query->getInt('page', 1));
-
-        return $this->render('items/index.html.twig', [
-            'items' => $paginatedItems,
+        return $this->render('item/index.html.twig', [
+            'items' => $items,
         ]);
     }
 }
 ```
 
-### Filters
+### Template
 
-In a lot of projects, you'll have to integrate the pagination with some sort of filter/search. 
-
-To do so, create a form, render it on the overview page where you have the pagination, and pass the form values to your repository where you can use them in your querybuilder.
-
-In your controller, this would look something like:
-```php
-$form = $this->createForm(
-    FilterType::class,
-    new FilterDataTransferObject()
-);
-
-$form->handleRequest($request);
-
-$paginatedUsers = $userRepository->getAllFilteredUsers($form->getData());
-
-$paginatedUsers->paginate($request->query->getInt('page', 1));
-```
-with the following matching method in the repository:
-```php
-public function getAllFilteredUsers(FilterDataTransferObject $filter): Paginator
-{
-    $queryBuilder = $this->createQueryBuilder('u');
-
-    if (isset($filter->term) && $filter->term !== null) {
-        $queryBuilder
-            ->where('u.email LIKE :term')
-            ->setParameter('term', '%' . $filter->term . '%');
-    }
-
-    return new Paginator($queryBuilder);
-}
-```
-Note that this approach will **not perists across page requests**, since the form will POST again (with empty values) when you move to the next page. If we want to keep the result set, we'll have to provide the entered data back to the form. The easiest way to do this is to use the session.
-```php
-// If a filter is active, use it
-if ($request->getSession()->has('user_filter')) {
-    $userFilterFormData = unserialize($request->getSession()->get('user_filter'));
-} else {
-// If not, create a blank one
-    $userFilterFormData = new FilterDataTransferObject();
-}
-
-$form = $this->createForm(
-    FilterType::class,
-    $userFilterFormData
-);
-
-$form->handleRequest($request);
-
-if ($form->isSubmitted() && $form->isValid()) {
-// If a filter form is submitted, store the values in the session
-    $request->getSession()->set('vegetation_filter', serialize($form->getData()));
-}
-
-/*
- * The user can clear the filter by submitting the form with a blank value
- * or you could provide a way for him to "clear the filter", where you 
- * remove the session variable
- */
-$paginatedUsers = $userRepository->getAllFilteredUsers($form->getData());
-
-$paginatedUsers->paginate($request->query->getInt('page', 1));
-```
-
-
-## Template
-
-In your template, you have access to a Twig extension called `pagination` to render a clean pagination widget.
-
-The paginated object, in this case `items` is an iterator, so you can count it/loop over it to get the results of the query.
+The `Paginator` is iterable and countable. Use the `pagination()` Twig function to render the pager widget:
 
 ```twig
 {% if items|length > 0 %}
     {% for item in items %}
-        <ul>
-            <li>{{ item.id }}</li>
-        </ul>
+        <div>{{ item.name }}</div>
     {% endfor %}
+{% else %}
+    {% include 'partials/no-results.html.twig' %}
 {% endif %}
 
 {% if items.hasToPaginate %}
@@ -142,3 +84,94 @@ The paginated object, in this case `items` is an iterator, so you can count it/l
     </div>
 {% endif %}
 ```
+
+## `Paginator` API reference
+
+| Method | Return type | Description |
+|--------|-------------|-------------|
+| `paginate(int $page = 1)` | `self` | Executes the query for the given page; returns `$this` |
+| `getCurrentPage()` | `int` | Current page number |
+| `getLastPage()` | `int` | Last page number (= total pages) |
+| `getPageSize()` | `int` | Items per page (default 30) |
+| `hasPreviousPage()` | `bool` | Whether a previous page exists |
+| `getPreviousPage()` | `int` | Previous page number (minimum 1) |
+| `hasNextPage()` | `bool` | Whether a next page exists |
+| `getNextPage()` | `int` | Next page number (maximum last page) |
+| `hasToPaginate()` | `bool` | Whether there is more than one page |
+| `getNumResults()` | `int` | Total number of results across all pages |
+| `getResults()` | `Traversable` | Results for the current page |
+| `calculateStartAndEndPage()` | `void` | Populates `startPage`/`endPage` (±3 around current page) for pager UI |
+| `getStartPage()` | `int` | First page number in the pager window (after `calculateStartAndEndPage()`) |
+| `getEndPage()` | `int` | Last page number in the pager window (after `calculateStartAndEndPage()`) |
+
+Custom page size:
+
+```php
+return new Paginator($queryBuilder, pageSize: 10);
+```
+
+## Sorting
+
+Add an `orderBy` to the query builder and pass the sort direction from the request:
+
+```php
+public function getPaginated(string $sortField = 'name', string $sortDirection = 'ASC'): Paginator
+{
+    $allowedFields = ['name', 'email', 'createdAt'];
+    if (!in_array($sortField, $allowedFields, true)) {
+        $sortField = 'name';
+    }
+
+    $queryBuilder = $this->createQueryBuilder('u')
+        ->orderBy('u.' . $sortField, $sortDirection === 'DESC' ? 'DESC' : 'ASC');
+
+    return new Paginator($queryBuilder);
+}
+```
+
+Controller:
+
+```php
+$users = $userRepository->getPaginated(
+    $request->query->get('sort', 'name'),
+    $request->query->get('direction', 'ASC'),
+)->paginate($request->query->getInt('page', 1));
+```
+
+## Filters with session persistence
+
+Without session storage, the filter resets when the user navigates to page 2. Store filter data in the session to persist it across page requests.
+
+```php
+<?php
+
+use App\Form\UserFilterType;
+use App\Form\UserFilterData;
+
+$filterData = $request->getSession()->has('user_filter')
+    ? unserialize($request->getSession()->get('user_filter'))
+    : new UserFilterData();
+
+$form = $this->createForm(UserFilterType::class, $filterData);
+$form->handleRequest($request);
+
+if ($form->isSubmitted() && $form->isValid()) {
+    $filterData = $form->getData();
+    $request->getSession()->set('user_filter', serialize($filterData));
+}
+
+$users = $userRepository->getFiltered($filterData)
+    ->paginate($request->query->getInt('page', 1));
+```
+
+To reset the filter, remove the session key:
+
+```php
+$request->getSession()->remove('user_filter');
+```
+
+## Troubleshooting
+
+- **Total count is wrong with JOINs** — the paginator sets `HINT_DISTINCT => false` when no JOINs are present. With JOINs, ensure your query does not produce duplicate root entities
+- **`paginate()` not called** — always call `paginate()` before passing the paginator to the template; calling only the constructor does not execute the query
+- **Page parameter missing** — use `$request->query->getInt('page', 1)` so an absent `?page=` defaults to page 1

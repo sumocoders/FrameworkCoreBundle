@@ -1,11 +1,35 @@
 # Dark mode
 
-We use bootstrap color themes for dark mode styling. See the [documentation](https://getbootstrap.com/docs/5.3/customize/color-modes/) for more information.
-Color variables are defined in `assets/scss/_bootstrap-variables-dark.scss`.
+The bundle uses Bootstrap 5.3 color themes for dark mode. The active theme is stored in a cookie (`theme`) and applied via the `data-bs-theme` attribute on `<html>`. The Twig function `theme()` reads the cookie and returns the correct class.
+
+Color variables are defined in `assets/scss/_bootstrap-variables-dark.scss`. See the [Bootstrap color modes documentation](https://getbootstrap.com/docs/5.3/customize/color-modes/) for all available CSS variables.
+
+## How it works
+
+1. `FrameworkExtension` (Twig) provides `theme()` — returns `'theme-light'` or `'theme-{cookieValue}'`
+2. A Stimulus controller (`dark-mode`) toggles the cookie and updates `data-bs-theme` on `<html>` without a page reload
+3. `templates/partials/themetoggler.html.twig` renders the toggle button
+
+## Customize variables
+
+Override Bootstrap dark-mode CSS variables in `assets/scss/_bootstrap-variables-dark.scss`:
+
+```scss
+// assets/scss/_bootstrap-variables-dark.scss
+[data-bs-theme="dark"] {
+    --bs-body-bg: #1a1a2e;
+    --bs-body-color: #e0e0e0;
+}
+```
 
 ## Disable dark mode
 
-Set `$enable-dark-mode` to false in `assets/scss/_bootstrap-variables.scss` to disable dark mode completely.
+1. Set `$enable-dark-mode: false` in `assets/scss/_bootstrap-variables.scss`
+2. Remove or comment out the dark mode logo and its `{% if %}` block in `templates/navigation.html.twig`
+3. Remove `{% include 'partials/themetoggler.html.twig' %}` from your base layout
 
-- Remove dark mode logo and if statements on the light mode logo in `templates/navigation.html.twig`
-- Hide or remove themetoggler.html.twig from your base layout
+## Troubleshooting
+
+- **Toggle button not visible** — check that `themetoggler.html.twig` is included in your base template
+- **Theme resets on page reload** — the Stimulus controller writes a `theme` cookie; verify cookies are not blocked and the domain matches
+- **Dark variables not applying** — confirm `_bootstrap-variables-dark.scss` is imported after the Bootstrap variables file in your main SCSS entry point

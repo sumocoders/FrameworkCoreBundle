@@ -38,7 +38,7 @@ Most importantly, there are no separate dark mode files or stylesheets. Use `@in
 
 ### Custom components or extensions (Sass)
 Place custom SCSS components in `assets/scss/components/`. Import your components after the Bootstrap imports. Try to base your custom components on Bootstrap components as much as possible.
-You can find frequently used components in the documentation file [components.html](https://github.com/sumocoders/FrameworkCoreBundle/blob/master/docs/frontend/components.html).
+
 
 ### Folder overview
 

@@ -17,6 +17,7 @@ Requirements:
 
 | Doc                                                | What it does                                                                           |
 |----------------------------------------------------|----------------------------------------------------------------------------------------|
+| [crud.md](crud.md)                                 | Standard CRUD pattern: controllers, DTO, form type, templates, translations            |
 | [breadcrumb.md](breadcrumb.md)                     | `#[Breadcrumb]` attribute, builds breadcrumb trails from controller annotations        |
 | [title.md](title.md)                               | `#[Title]` attribute, sets the page `<title>` and `<h1>`                               |
 | [audit-trail.md](audit-trail.md)                   | `#[AuditTrail]` attribute, logs entity creates/updates/deletes                         |

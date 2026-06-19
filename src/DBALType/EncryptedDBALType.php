@@ -15,7 +15,7 @@ class EncryptedDBALType extends Type
         return 'TEXT COMMENT \'(Encrypted)\'';
     }
 
-    public function convertToPHPValue($value, AbstractPlatform $platform): ?string
+    public function convertToPHPValue(mixed $value, AbstractPlatform $platform): mixed
     {
         if ($value === null) {
             return null;
@@ -40,7 +40,7 @@ class EncryptedDBALType extends Type
         return $decrypted;
     }
 
-    public function convertToDatabaseValue($value, AbstractPlatform $platform)
+    public function convertToDatabaseValue(mixed $value, AbstractPlatform $platform): mixed
     {
         if ($value === null) {
             return null;

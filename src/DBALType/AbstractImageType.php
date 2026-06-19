@@ -9,36 +9,36 @@ use SumoCoders\FrameworkCoreBundle\ValueObject\AbstractImage;
 abstract class AbstractImageType extends Type
 {
     /**
-     * @param array $fieldDeclaration
+     * @param array $column
      * @param AbstractPlatform $platform
      *
      * @return string
      */
-    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
+    public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {
         return 'VARCHAR(255)';
     }
 
     /**
-     * @param string $imageName
+     * @param string $value
      * @param AbstractPlatform $platform
      *
      * @return AbstractImage|null
      */
-    public function convertToPHPValue($imageName, AbstractPlatform $platform): ?AbstractImage
+    public function convertToPHPValue(mixed $value, AbstractPlatform $platform): mixed
     {
-        return $this->createFromString($imageName);
+        return $this->createFromString($value);
     }
 
     /**
-     * @param AbstractImage $image
+     * @param AbstractImage $value
      * @param AbstractPlatform $platform
      *
      * @return string|null
      */
-    public function convertToDatabaseValue($image, AbstractPlatform $platform): ?string
+    public function convertToDatabaseValue(mixed $value, AbstractPlatform $platform): mixed
     {
-        return $image !== null ? (string) $image : null;
+        return $value !== null ? (string) $value : null;
     }
 
     abstract protected function createFromString(string $imageName): ?AbstractImage;

@@ -8,31 +8,31 @@ use SumoCoders\FrameworkCoreBundle\ValueObject\AbstractFile;
 
 abstract class AbstractFileType extends Type
 {
-    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform): string
+    public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {
         return 'VARCHAR(255)';
     }
 
     /**
-     * @param string $fileName
+     * @param string $value
      * @param AbstractPlatform $platform
      *
      * @return AbstractFile|null
      */
-    public function convertToPHPValue($fileName, AbstractPlatform $platform): ?AbstractFile
+    public function convertToPHPValue(mixed $value, AbstractPlatform $platform): mixed
     {
-        return $this->createFromString($fileName);
+        return $this->createFromString($value);
     }
 
     /**
-     * @param AbstractFile $file
+     * @param AbstractFile $value
      * @param AbstractPlatform $platform
      *
      * @return string|null
      */
-    public function convertToDatabaseValue($file, AbstractPlatform $platform): ?string
+    public function convertToDatabaseValue(mixed $value, AbstractPlatform $platform): mixed
     {
-        return $file !== null ? (string) $file : null;
+        return $value !== null ? (string) $value : null;
     }
 
     abstract protected function createFromString(string $fileName): ?AbstractFile;

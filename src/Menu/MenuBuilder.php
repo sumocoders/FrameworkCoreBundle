@@ -52,8 +52,10 @@ class MenuBuilder
 
             $orderNumber = $menuItem->getExtra('orderNumber');
 
+            // @mago-expect lint:no-else-clause
             if ($orderNumber !== null) {
-                if (!isset($menuOrderArray[$orderNumber])) {
+                // @mago-expect lint:no-else-clause
+                if (!array_key_exists($orderNumber, $menuOrderArray) || is_null($menuOrderArray[$orderNumber])) {
                     $menuOrderArray[$orderNumber] = $menuItem->getName();
                 } else {
                     $alreadyTaken[$orderNumber] = $menuItem->getName();
@@ -65,10 +67,10 @@ class MenuBuilder
 
         ksort($menuOrderArray);
 
-        if (!empty($alreadyTaken)) {
+        if (count($alreadyTaken) > 0) {
             foreach ($alreadyTaken as $key => $value) {
                 $keysArray = array_keys($menuOrderArray);
-                $position = array_search($key, $keysArray);
+                $position = array_search($key, $keysArray, true);
 
                 if ($position === false) {
                     continue;
@@ -84,13 +86,13 @@ class MenuBuilder
 
         ksort($menuOrderArray);
 
-        if (!empty($addLast)) {
+        if (count($addLast) > 0) {
             foreach ($addLast as $value) {
                 $menuOrderArray[] = $value;
             }
         }
 
-        if (!empty($menuOrderArray)) {
+        if (count($menuOrderArray) > 0) {
             $menu->reorderChildren($menuOrderArray);
         }
     }

@@ -38,8 +38,8 @@ class FileType extends AbstractType
         $builder
             ->addEventListener(
                 FormEvents::PRE_SET_DATA,
-                function (FormEvent $event) use ($options) {
-                    $fileIsEmpty = $event->getData() === null || empty($event->getData()->getFileName());
+                static function (FormEvent $event) use ($options) {
+                    $fileIsEmpty = $event->getData() === null || $event->getData()->getFileName() === null;
                     $required = $fileIsEmpty && $options['required'];
                     $fileFieldOptions = [
                         'label' => false,
@@ -58,10 +58,8 @@ class FileType extends AbstractType
             )
             ->addModelTransformer(
                 new CallbackTransformer(
-                    function (?AbstractFile $file = null) {
-                        return $file;
-                    },
-                    function ($file) use ($options) {
+                    static fn (?AbstractFile $file = null) => $file,
+                    static function ($file) use ($options) {
                         if (!$file instanceof AbstractFile && !$file instanceof stdClass) {
                             throw new TransformationFailedException('Invalid class for the file');
                         }
@@ -99,7 +97,8 @@ class FileType extends AbstractType
                 'data_class' => AbstractFile::class,
                 'preview_label' => 'forms.labels.viewCurrentFile',
                 'remove_file_label' => 'forms.labels.removeFile',
-                'empty_data' => function () {
+                // @mago-expect lint:prefer-arrow-function
+                'empty_data' => static function () {
                     return new class extends StdClass {
                         /** @var UploadedFile */
                         protected $file;
@@ -132,7 +131,7 @@ class FileType extends AbstractType
                 'show_remove_file' => true,
                 'required_file_error' => 'forms.not_blank',
                 'accept' => null,
-                'constraints' => array(new Valid()),
+                'constraints' => [new Valid()],
                 'error_bubbling' => false,
             ],
         );
@@ -147,12 +146,12 @@ class FileType extends AbstractType
     {
         $view->vars['show_preview'] = $options['show_preview'];
         $view->vars['show_remove_file'] =
-            $options['show_remove_file'] && $form->getData() !== null && !empty($form->getData()->getFileName());
+            $options['show_remove_file'] && $form->getData() !== null && $form->getData()->getFileName() !== null;
         // if you need to have an file you shouldn't be allowed to remove it
         if ($options['required']) {
             $view->vars['show_remove_file'] = false;
         }
-        $imageIsEmpty = $form->getData() === null || empty($form->getData()->getFileName());
+        $imageIsEmpty = $form->getData() === null || $form->getData()->getFileName() === null;
         $view->vars['required'] = $imageIsEmpty && $options['required'];
 
         $view->vars['preview_url'] = false;
@@ -160,8 +159,8 @@ class FileType extends AbstractType
             $view->vars['preview_url'] = $form->getData()->getWebPath();
         }
         array_map(
-            function ($optionName) use ($options, &$view) {
-                if (array_key_exists($optionName, $options) && !empty($options[$optionName])) {
+            static function ($optionName) use ($options, &$view) {
+                if (array_key_exists($optionName, $options) && $options[$optionName] !== null) {
                     $view->vars[$optionName] = $options[$optionName];
                 }
             },

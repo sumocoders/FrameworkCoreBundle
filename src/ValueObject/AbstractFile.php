@@ -3,10 +3,6 @@
 namespace SumoCoders\FrameworkCoreBundle\ValueObject;
 
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Annotation\Slug;
-use Gedmo\Mapping\Annotation\SlugHandler;
-use Gedmo\Sluggable\Sluggable;
-use Gedmo\Sluggable\SluggableListener;
 use Gedmo\Sluggable\Util\Urlizer;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -19,6 +15,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  * upload for PostPersist() and PostUpdate()
  * remove for PostRemove()
  */
+// @mago-expect lint:cyclomatic-complexity
 abstract class AbstractFile
 {
     protected ?UploadedFile $file = null;
@@ -219,9 +216,9 @@ abstract class AbstractFile
     }
 
     /**
+     * @param bool $isPendingDeletion
      * @internal Used by the form types
      *
-     * @param bool $isPendingDeletion
      */
     public function setPendingDeletion($isPendingDeletion): void
     {
@@ -231,13 +228,13 @@ abstract class AbstractFile
     }
 
     /**
+     * @return bool
      * @internal Used by the form types
      *
-     * @return bool
      */
     public function isPendingDeletion(): bool
     {
-        return !empty($this->oldFileName) && $this->fileName === null;
+        return $this->oldFileName !== null && $this->fileName === null;
     }
 
     public function jsonSerialize(): string

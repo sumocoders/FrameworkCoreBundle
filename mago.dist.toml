@@ -49,6 +49,7 @@ integrations = [
 [linter.rules]
 literal-named-argument = { enabled = false }
 strict-types = { enabled = false }
+too-many-methods = { threshold = 20 }
 
 [analyzer]
 find-unused-expressions = true
@@ -62,29 +63,6 @@ check-arrow-function-missing-type-hints = true
 register-super-globals = true
 check-use-statements = true
 check-name-casing = true
-
-ignore = [
-    {
-        code = "excess-template-parameter",
-        in = "src/Form/",
-    },
-    {
-        code = "mixed-return-statement",
-        in = "src/Repository/",
-    },
-    {
-        code = "property-type-coercion",
-        in = "tests/",
-    },
-    {
-        code = "possible-method-access-on-null",
-        in = "tests/",
-    },
-    {
-        code = "ambiguous-object-method-access",
-        in = "tests/",
-    }
-]
 
 [guard]
 mode = "structural"

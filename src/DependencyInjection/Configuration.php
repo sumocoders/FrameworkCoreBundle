@@ -9,8 +9,6 @@ class Configuration implements ConfigurationInterface
 {
     public function getConfigTreeBuilder(): TreeBuilder
     {
-        $treeBuilder = new TreeBuilder('sumo_coders_framework_core');
-
-        return $treeBuilder;
+        return new TreeBuilder('sumo_coders_framework_core');
     }
 }

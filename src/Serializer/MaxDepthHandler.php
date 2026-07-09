@@ -10,7 +10,7 @@ class MaxDepthHandler
         $innerObject,
         $outerObject,
         string $attributeName,
-        string $format = null,
+        ?string $format = null,
         array $context = [],
     ) {
         return $this->getId($innerObject);
@@ -22,6 +22,7 @@ class MaxDepthHandler
         $properties = $reflectionClass->getProperties();
 
         foreach ($properties as $property) {
+            // @mago-expect lint:prefer-early-continue
             if ($property->getAttributes(Id::class)) {
                 $property->setAccessible(true);
 

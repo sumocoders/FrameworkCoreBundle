@@ -18,6 +18,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+// @mago-expect lint:halstead,kan-defect,cyclomatic-complexity
 class BreadcrumbListener
 {
     private RouterInterface $router;
@@ -110,6 +111,8 @@ class BreadcrumbListener
                         $method,
                     ),
                 );
+
+                // @mago-expect lint:no-empty-catch-clause
             } catch (EntityNotFoundException $e) {
             }
         }
@@ -126,6 +129,7 @@ class BreadcrumbListener
         if ($title[0] === '{' && $title[-1] === '}') {
             $expression = substr($title, 1, strlen($title) - 2);
 
+            // @mago-expect lint:no-else-clause
             if (str_contains($expression, '.')) {
                 $split = explode('.', $expression, 2);
                 $attributeName = $split[0];
@@ -150,7 +154,9 @@ class BreadcrumbListener
             foreach ($method->getParameters() as $parameter) {
                 if ($parameter->name === $attributeName) {
                     $name = $parameter->getType()->getName();
+                    // @mago-expect lint:prefer-early-continue
                     foreach ($parameter->getAttributes() as $attribute) {
+                        // @mago-expect lint:prefer-early-continue
                         if ($attribute->getName() === MapEntity::class) {
                             $mapping = $attribute->newInstance()->mapping;
                         }
@@ -167,6 +173,7 @@ class BreadcrumbListener
                 );
             }
 
+            // @mago-expect lint:no-isset,no-else-clause
             if ($mapping !== null && isset($mapping[$attributeName])) {
                 $attribute = $this->manager
                     ->getRepository($name)
@@ -181,6 +188,7 @@ class BreadcrumbListener
                 );
             }
 
+            // @mago-expect lint:no-isset
             if (!isset($propertyPath)) {
                 throw new RuntimeException(
                     'When using objects in a breadcrumb, you have to specify which method to read.'
@@ -206,6 +214,7 @@ class BreadcrumbListener
 
         if (count($parameters)) {
             foreach ($parameters as $key => $parameterValue) {
+                // @mago-expect lint:no-else-clause
                 if (str_contains($parameterValue, '.')) {
                     $split = explode('.', $parameterValue, 2);
                     $attributeName = $split[0];
@@ -227,6 +236,7 @@ class BreadcrumbListener
 
                 $name = null;
                 foreach ($method->getParameters() as $parameter) {
+                    // @mago-expect lint:prefer-early-continue
                     if ($parameter->name === $attributeName) {
                         $name = $parameter->getType()->getName();
                     }
@@ -249,6 +259,7 @@ class BreadcrumbListener
                     );
                 }
 
+                // @mago-expect lint:no-isset
                 if (!isset($propertyPath)) {
                     throw new RuntimeException(
                         'When using objects in a breadcrumb, you have to specify which method to read.'
@@ -278,6 +289,7 @@ class BreadcrumbListener
         }
 
         // If class contains :: in the name, we're dealing with a static method
+        // @mago-expect lint:no-else-clause
         if (strpos($routeInformation['controller'], '::') > 0) {
             $parts = explode('::', $routeInformation['controller']);
             $class = new \ReflectionClass($parts[0]);
@@ -306,6 +318,7 @@ class BreadcrumbListener
              * In the case of multiple methods defined per controller,
              * explode the controller name and method
              */
+            // @mago-expect lint:no-else-clause
             if (strpos($route->getDefault('_controller'), '::') > 0) {
                 $chunk = explode('::', $route->getDefault('_controller'));
                 $controller = $chunk[0];
@@ -321,6 +334,7 @@ class BreadcrumbListener
             // Loop each parameter and check if a default exists for it
             $requiredParameters = [];
             foreach ($parameters as $parameter) {
+                // @mago-expect lint:prefer-early-continue
                 if ($route->getDefault($parameter) === null) {
                     $requiredParameters[] = $parameter;
                 }
@@ -354,7 +368,9 @@ class BreadcrumbListener
              * If we're currently in the child route, we can check the URI
              * for the author parameter and already fill it in.
              */
+            // @mago-expect lint:prefer-early-continue
             if (\array_key_exists($requiredParentParameter, $currentAttributes)) {
+                // @mago-expect lint:no-else-clause
                 if (is_object($currentAttributes[$requiredParentParameter])) {
                     $parentParameters[$requiredParentParameter] = $currentAttributes[$requiredParentParameter]->getId();
                 } else {

@@ -28,7 +28,7 @@ class PageTitle
 
         $breadcrumbs = array_reverse($this->breadcrumbTrail->all());
 
-        if (empty($breadcrumbs)) {
+        if (count($breadcrumbs) === 0) {
             return $this->fallbacks->get('site_title');
         }
 

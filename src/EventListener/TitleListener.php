@@ -20,8 +20,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * This class is responsible for handling the title of the page.
  * It listens to the kernel controller event and sets the title based on the Title attribute.
  */
+// @mago-expect lint:kan-defect,cyclomatic-complexity
 class TitleListener
 {
+    // @mago-expect lint:excessive-parameter-list
     public function __construct(
         private PageTitle $pageTitleService,
         private Fallbacks $fallbacks,
@@ -47,7 +49,7 @@ class TitleListener
         foreach ($methods as $method) {
             $attributes = $method->getAttributes(Title::class, \ReflectionAttribute::IS_INSTANCEOF);
 
-            if (empty($attributes)) {
+            if (count($attributes) === 0) {
                 continue;
             }
 
@@ -79,7 +81,7 @@ class TitleListener
      * Process the parameters of a method.
      *
      * @param array<\ReflectionParameter> $reflextionParameters
-     * @param array<mixed> $parameters
+     * @param array<mixed>                $parameters
      * @return array<mixed>
      */
     private function processParameters(array $reflextionParameters, array $parameters): array
@@ -93,19 +95,22 @@ class TitleListener
             }
 
             $parameterAttributes = $reflextionParameter->getAttributes(MapEntity::class);
-            if (empty($parameterAttributes)) {
+            if (count($parameterAttributes) === 0) {
                 continue;
             }
 
             // Get the mapping and value of the parameter
             $mapping = $parameterAttributes[0]->getArguments()['mapping'] ?? null;
-            $value = $mapping !== null && isset($parameters[$parameterName])
-                ? $this->manager
+            // @mago-expect lint:no-else-clause
+            if ($mapping !== null && $parameters[$parameterName] !== null) {
+                $value = $this->manager
                     ->getRepository($reflextionParameter->getType()->getName())
-                    ->findOneBy([$mapping[$parameterName] => $parameters[$parameterName]])
-                : $this->manager
+                    ->findOneBy([$mapping[$parameterName] => $parameters[$parameterName]]);
+            } else {
+                $value = $this->manager
                     ->getRepository($reflextionParameter->getType()->getName())
                     ->find($parameters[$parameterName]);
+            }
 
             $parameters[$parameterName] = $value;
         }
@@ -147,7 +152,7 @@ class TitleListener
     private function processTitle(string $title, array $parameters = []): string
     {
         // Replace the placeholders in the title with the actual parameters
-        if (strpos($title, '{') !== false) {
+        if (str_contains($title, '{')) {
             preg_match_all('/\{(.*?)\}/', $title, $matches);
 
             foreach ($matches[1] as $match) {
@@ -192,7 +197,7 @@ class TitleListener
             // Get the required parameters of the route
             $requiredParameters = array_filter(
                 $route->compile()->getVariables(),
-                fn ($parameter) => $route->getDefault($parameter) === null,
+                static fn ($parameter) => $route->getDefault($parameter) === null,
             );
 
             return [

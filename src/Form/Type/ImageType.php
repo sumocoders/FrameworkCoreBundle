@@ -38,8 +38,8 @@ class ImageType extends AbstractType
         $builder
             ->addEventListener(
                 FormEvents::PRE_SET_DATA,
-                function (FormEvent $event) use ($options) {
-                    $imageIsEmpty = $event->getData() === null || empty($event->getData()->getFileName());
+                static function (FormEvent $event) use ($options) {
+                    $imageIsEmpty = $event->getData() === null || $event->getData()->getFileName() === null;
                     $required = $imageIsEmpty && $options['required'];
                     $fileFieldOptions = [
                         'label' => false,
@@ -58,10 +58,8 @@ class ImageType extends AbstractType
             )
             ->addModelTransformer(
                 new CallbackTransformer(
-                    function (?AbstractImage $image = null) {
-                        return $image;
-                    },
-                    function ($image) use ($options) {
+                    static fn (?AbstractImage $image = null) => $image,
+                    static function ($image) use ($options) {
                         if (!$image instanceof AbstractImage && !$image instanceof stdClass) {
                             throw new TransformationFailedException('Invalid class for the image');
                         }
@@ -96,7 +94,8 @@ class ImageType extends AbstractType
         $resolver->setDefaults(
             [
                 'data_class' => AbstractImage::class,
-                'empty_data' => function () {
+                // @mago-expect lint:prefer-arrow-function
+                'empty_data' => static function () {
                     return new class extends StdClass {
                         /** @var UploadedFile */
                         protected $file;
@@ -146,12 +145,12 @@ class ImageType extends AbstractType
     {
         $view->vars['show_preview'] = $options['show_preview'];
         $view->vars['show_remove_image'] =
-            $options['show_remove_image'] && $form->getData() !== null && !empty($form->getData()->getFileName());
+            $options['show_remove_image'] && $form->getData() !== null && $form->getData()->getFileName() !== null;
         // if you need to have an image you shouldn't be allowed to remove it
         if ($options['required']) {
             $view->vars['show_remove_image'] = false;
         }
-        $imageIsEmpty = $form->getData() === null || empty($form->getData()->getFileName());
+        $imageIsEmpty = $form->getData() === null || $form->getData()->getFileName() === null;
         $view->vars['required'] = $imageIsEmpty && $options['required'];
 
         $view->vars['preview_url'] = false;
@@ -160,8 +159,8 @@ class ImageType extends AbstractType
         }
 
         array_map(
-            function ($optionName) use ($options, &$view) {
-                if (array_key_exists($optionName, $options) && !empty($options[$optionName])) {
+            static function ($optionName) use ($options, &$view) {
+                if (array_key_exists($optionName, $options) && $options[$optionName] !== null) {
                     $view->vars[$optionName] = $options[$optionName];
                 }
             },

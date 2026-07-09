@@ -2,7 +2,6 @@
 
 namespace SumoCoders\FrameworkCoreBundle\Form\Extension;
 
-use DateTime;
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormInterface;
@@ -44,7 +43,7 @@ final class DateTypeExtension extends AbstractTypeExtension
         $view->vars['maximum_date'] = $options['maximum_date'] ?? null;
         $view->vars['minimum_date'] = $options['minimum_date'] ?? null;
         $view->vars['format'] = $options['format'];
-        $view->vars['divider'] = strpos($options['format'], '-') !== false ? '-' : '/';
+        $view->vars['divider'] = str_contains($options['format'], '-') ? '-' : '/';
         $view->vars['datepicker'] = $options['datepicker'] ?? false;
         $view->vars['helper_text'] = $options['helper_text'] ?? null;
     }

@@ -20,6 +20,7 @@ final class Title
     ) {
         $this->title = $title;
 
+        // @mago-expect lint:no-else-clause
         if ($parent !== null) {
             $this->parent = new Route(
                 $parent['name'],

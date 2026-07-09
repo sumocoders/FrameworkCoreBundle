@@ -58,6 +58,7 @@ class MatchAgainst extends FunctionNode
 
         $query = 'MATCH(' . $haystack . ') AGAINST (' . $this->needle->dispatch($sqlWalker);
 
+        // @mago-expect lint:no-else-clause
         if ($this->mode) {
             $query .= ' ' . $this->mode->value . ' )';
         } else {

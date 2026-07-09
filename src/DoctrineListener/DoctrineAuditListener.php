@@ -24,6 +24,7 @@ use SumoCoders\FrameworkCoreBundle\Logger\AuditLogger;
 
 #[AsDoctrineListener(event: Events::postPersist, priority: 500)]
 #[AsDoctrineListener(event: Events::onFlush, priority: 500)]
+// @mago-expect lint:kan-defect,cyclomatic-complexity
 final readonly class DoctrineAuditListener
 {
     public function __construct(
@@ -31,6 +32,7 @@ final readonly class DoctrineAuditListener
     ) {
     }
 
+    // @mago-expect lint:halstead
     public function onFlush(OnFlushEventArgs $args): void
     {
         $unitOfWork = $args->getObjectManager()->getUnitOfWork();
@@ -76,7 +78,7 @@ final readonly class DoctrineAuditListener
             }
 
             $auditTrailAttributes = $entityUpdateReflectionClass->getAttributes(AuditTrail::class);
-            if (empty($auditTrailAttributes)) {
+            if (count($auditTrailAttributes) === 0) {
                 continue;
             }
 
@@ -87,7 +89,7 @@ final readonly class DoctrineAuditListener
             $changes = [];
             $changeSet = $unitOfWork->getEntityChangeSet($entityUpdate);
             foreach ($changeSet as $field => $change) {
-                if (!empty($propertiesToTrack) && !in_array($field, $propertiesToTrack, true)) {
+                if (count($propertiesToTrack) > 0 && !in_array($field, $propertiesToTrack, true)) {
                     continue;
                 }
 
@@ -101,18 +103,20 @@ final readonly class DoctrineAuditListener
 
                     $fieldReflection = new ReflectionProperty($className, $property);
                     $embeddedAttributes = $fieldReflection->getAttributes(Embedded::class);
-                    if (empty($embeddedAttributes)) {
+                    if (count($embeddedAttributes) === 0) {
                         continue;
                     }
 
                     $embedded = $entityUpdate->{'get' . ucfirst($property)}();
                     $fieldReflection = new ReflectionProperty($embedded, $subProperty);
+
+                    // @mago-expect lint:no-else-clause
                 } else {
                     $fieldReflection = new ReflectionProperty($className, $field);
                 }
 
                 $sensitiveDataAttributes = $fieldReflection->getAttributes(SensitiveData::class);
-                if (!empty($sensitiveDataAttributes)) {
+                if (count($sensitiveDataAttributes) > 0) {
                     $changes[$field] = ['from' => '*****', 'to' => '*****'];
 
                     continue;
@@ -170,7 +174,7 @@ final readonly class DoctrineAuditListener
             }
 
             $auditTrailAttributes = $entityDeletionReflectionClass->getAttributes(AuditTrail::class);
-            if (empty($auditTrailAttributes)) {
+            if (count($auditTrailAttributes) === 0) {
                 continue;
             }
 
@@ -205,7 +209,7 @@ final readonly class DoctrineAuditListener
         }
 
         $auditTrailAttributes = $entityReflectionClass->getAttributes(AuditTrail::class);
-        if (empty($auditTrailAttributes)) {
+        if (count($auditTrailAttributes) === 0) {
             return;
         }
 
@@ -236,6 +240,7 @@ final readonly class DoctrineAuditListener
         object $entity,
         UnitOfWork $unitOfWork,
         array $fields = [],
+        // @mago-expect lint:no-boolean-flag-parameter
         bool $withData = false,
     ): array {
         $reflection = new ReflectionClass($entity);
@@ -259,7 +264,7 @@ final readonly class DoctrineAuditListener
             }
 
             $sensitiveDataAttributes = $property->getAttributes(SensitiveData::class);
-            if (!empty($sensitiveDataAttributes)) {
+            if (count($sensitiveDataAttributes) > 0) {
                 $properties[$property->getName()] = '*****';
 
                 continue;
@@ -268,10 +273,10 @@ final readonly class DoctrineAuditListener
             $properties[$property->getName()] = $this->transform($unitOfWork, $property, $property->getValue($entity));
         }
 
-        if (!empty($fields)) {
+        if (count($fields) > 0) {
             $properties = array_filter(
                 $properties,
-                fn ($key) => in_array($key, $fields, true),
+                static fn ($key) => in_array($key, $fields, true),
                 ARRAY_FILTER_USE_KEY,
             );
         }
@@ -304,17 +309,17 @@ final readonly class DoctrineAuditListener
         }
 
         if ($value instanceof Collection) {
-            return $value->map(fn ($item) => $item->getId())->toArray();
+            return $value->map(static fn ($item) => $item->getId())->toArray();
         }
 
         $manyToOneAttributes = $reflectionProperty->getAttributes(ManyToOne::class);
         $oneToOneAttributes = $reflectionProperty->getAttributes(OneToOne::class);
-        if (!empty($manyToOneAttributes) || !empty($oneToOneAttributes)) {
+        if (count($manyToOneAttributes) > 0 || count($oneToOneAttributes) > 0) {
             return $unitOfWork->getSingleIdentifierValue($value);
         }
 
         $embeddedAttributes = $reflectionProperty->getAttributes(Embedded::class);
-        if (!empty($embeddedAttributes)) {
+        if (count($embeddedAttributes) > 0) {
             return $this->getProperties($value, $unitOfWork);
         }
 
@@ -404,6 +409,7 @@ final readonly class DoctrineAuditListener
             $originalData->add($deletion);
         }
 
+        // @mago-expect lint:prefer-early-continue
         foreach ($collection as $item) {
             if (!in_array($item, $inserts, true)) {
                 $originalData->add($item);

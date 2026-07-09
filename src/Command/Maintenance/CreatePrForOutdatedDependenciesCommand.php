@@ -18,6 +18,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
     name: 'sumo:maintenance:create-pr-for-outdated-dependencies',
     description: 'Create PR for outdated dependencies (Importmap and Composer)',
 )]
+// @mago-expect lint:kan-defect,cyclomatic-complexity
 class CreatePrForOutdatedDependenciesCommand
 {
     private SymfonyStyle $io;
@@ -81,7 +82,7 @@ class CreatePrForOutdatedDependenciesCommand
             static fn ($package) => $package['latest-status'] === 'semver-safe-update',
         );
 
-        if (empty($semverSafeUpdatePackages)) {
+        if (count($semverSafeUpdatePackages) === 0) {
             return;
         }
 
@@ -174,7 +175,7 @@ class CreatePrForOutdatedDependenciesCommand
             },
         );
 
-        if (empty($semverSafeUpdatePackages)) {
+        if (count($semverSafeUpdatePackages) === 0) {
             return;
         }
 
@@ -292,6 +293,7 @@ class CreatePrForOutdatedDependenciesCommand
     /**
      * @param array<mixed,mixed> $command
      */
+    // @mago-expect lint:no-boolean-flag-parameter
     private function runCommand(
         array $command,
         bool $showInput = true,
@@ -304,8 +306,9 @@ class CreatePrForOutdatedDependenciesCommand
         }
 
         $process = new Process($command);
+        // @mago-expect lint:no-else-clause
         if ($showOutput) {
-            $output = function ($type, $buffer) use ($io) {
+            $output = static function ($type, $buffer) use ($io) {
                 $buffer = trim($buffer);
                 $lines = explode("\n", $buffer);
                 foreach ($lines as $line) {
@@ -331,6 +334,7 @@ class CreatePrForOutdatedDependenciesCommand
     /**
      * @param array<mixed,mixed> $command
      */
+    // @mago-expect lint:no-boolean-flag-parameter
     private function runConsoleCommand(
         array $command,
         bool $showInput = true,
@@ -407,7 +411,7 @@ class CreatePrForOutdatedDependenciesCommand
             $matches = [];
             preg_match('/.*:(.+)\.git$/', $output, $matches);
 
-            if (!isset($matches[1])) {
+            if (!array_key_exists(1, $matches)) {
                 throw new \RuntimeException(
                     'Could not determine project ID from git remote URL.',
                 );
@@ -445,11 +449,12 @@ class CreatePrForOutdatedDependenciesCommand
 
         $data = json_decode($response->getContent(), false, 512, JSON_THROW_ON_ERROR);
 
-        if (empty($data)) {
+        if (count($data) === 0) {
             return [];
         }
 
-        return array_map(function ($mergeRequest) {
+        // @mago-expect lint:prefer-arrow-function
+        return array_map(static function ($mergeRequest) {
             return [
                 'id' => $mergeRequest->id,
                 'title' => $mergeRequest->title,
@@ -461,10 +466,12 @@ class CreatePrForOutdatedDependenciesCommand
     private function hasMergeRequest(string $title, string $targetBranch): bool
     {
         foreach ($this->openMergeRequests as $mergeRequest) {
-            if ($mergeRequest['target_branch'] === $targetBranch) {
-                if (stripos($mergeRequest['title'], $title) !== false) {
-                    return true;
-                }
+            if ($mergeRequest['target_branch'] !== $targetBranch) {
+                continue;
+            }
+
+            if (stripos($mergeRequest['title'], $title) !== false) {
+                return true;
             }
         }
 

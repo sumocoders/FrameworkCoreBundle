@@ -21,7 +21,7 @@ class EncryptedDBALType extends Type
             return null;
         }
 
-        if (!isset($_ENV['ENCRYPTION_KEY'])) {
+        if (!array_key_exists('ENCRYPTION_KEY', $_ENV) || trim($_ENV['ENCRYPTION_KEY']) === '') {
             throw new \RuntimeException('ENCRYPTION_KEY should be a valid 64 character key in your .env.local');
         }
 
@@ -46,7 +46,7 @@ class EncryptedDBALType extends Type
             return null;
         }
 
-        if (!isset($_ENV['ENCRYPTION_KEY'])) {
+        if (!array_key_exists('ENCRYPTION_KEY', $_ENV) || trim($_ENV['ENCRYPTION_KEY']) === '') {
             throw new \RuntimeException('ENCRYPTION_KEY should be a valid 64 character key in your .env.local');
         }
 

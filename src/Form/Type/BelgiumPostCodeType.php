@@ -21,10 +21,10 @@ class BelgiumPostCodeType extends AbstractType
     {
         $builder->addModelTransformer(
             new CallbackTransformer(
-                function (?BelgiumPostCode $object): ?string {
-                    return $object ? $object->postcode . '|' . $object->municipality : null;
-                },
-                function (?string $postcodeKey): ?BelgiumPostCode {
+                static fn (?BelgiumPostCode $object): ?string => $object
+                    ? $object->postcode . '|' . $object->municipality
+                    : null,
+                static function (?string $postcodeKey): ?BelgiumPostCode {
                     if ($postcodeKey === null || $postcodeKey === '') {
                         return null;
                     }

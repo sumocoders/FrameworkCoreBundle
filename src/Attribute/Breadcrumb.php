@@ -21,6 +21,7 @@ final class Breadcrumb
     ) {
         $this->title = $title;
 
+        // @mago-expect lint:no-else-clause
         if ($route !== null) {
             $this->route = new Route(
                 $route['name'],
@@ -30,6 +31,7 @@ final class Breadcrumb
             $this->route = $route;
         }
 
+        // @mago-expect lint:no-else-clause
         if ($parent !== null) {
             $this->parent = new Route(
                 $parent['name'],
@@ -39,6 +41,7 @@ final class Breadcrumb
             $this->parent = $parent;
         }
 
+        // @mago-expect lint:no-else-clause
         if ($parameters !== null) {
             $this->parameters = $parameters;
         } else {

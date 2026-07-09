@@ -2,8 +2,6 @@
 
 namespace SumoCoders\FrameworkCoreBundle\ValueObject;
 
-use Doctrine\ORM\Mapping as ORM;
-
 /**
  * The following things are mandatory to use this class.
  *

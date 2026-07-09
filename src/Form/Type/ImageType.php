@@ -48,6 +48,7 @@ class ImageType extends AbstractType
                     ];
                     if ($required) {
                         $fileFieldOptions['constraints'] = [
+                            // @phpstan-ignore class.notFound
                             new NotBlank(
                                 ['message' => $options['required_image_error']],
                             ),
@@ -67,6 +68,7 @@ class ImageType extends AbstractType
                         $imageClass = $options['image_class'];
 
                         if (!$image instanceof AbstractImage) {
+                            // @phpstan-ignore method.nonObject
                             $image = $imageClass::fromUploadedFile($image->getFile());
                         }
 
@@ -103,11 +105,12 @@ class ImageType extends AbstractType
                         /** @var bool */
                         protected $pendingDeletion = false;
 
-                        public function setFile(?UploadedFile $file = null)
+                        public function setFile(?UploadedFile $file = null): void
                         {
                             $this->file = $file;
                         }
 
+                        // @phpstan-ignore return.unusedType
                         public function getFile(): ?UploadedFile
                         {
                             return $this->file;
@@ -118,7 +121,7 @@ class ImageType extends AbstractType
                             return $this->pendingDeletion;
                         }
 
-                        public function setPendingDeletion(bool $pendingDeletion)
+                        public function setPendingDeletion(bool $pendingDeletion): void
                         {
                             $this->pendingDeletion = $pendingDeletion;
                         }
@@ -130,6 +133,7 @@ class ImageType extends AbstractType
                 'remove_image_label' => 'forms.labels.removeImage',
                 'required_image_error' => 'forms.not_blank',
                 'accept' => 'image/*',
+                // @phpstan-ignore class.notFound
                 'constraints' => [new Valid()],
                 'error_bubbling' => false,
             ],

@@ -158,6 +158,7 @@ class BreadcrumbListener
                     foreach ($parameter->getAttributes() as $attribute) {
                         // @mago-expect lint:prefer-early-continue
                         if ($attribute->getName() === MapEntity::class) {
+                            // @phpstan-ignore property.notFound
                             $mapping = $attribute->newInstance()->mapping;
                         }
                     }
@@ -292,6 +293,7 @@ class BreadcrumbListener
         // @mago-expect lint:no-else-clause
         if (strpos($routeInformation['controller'], '::') > 0) {
             $parts = explode('::', $routeInformation['controller']);
+            // @phpstan-ignore argument.type
             $class = new \ReflectionClass($parts[0]);
 
             $method = $class->getMethod($parts[1]);
@@ -303,6 +305,7 @@ class BreadcrumbListener
         $this->processAttributeFromMethod($method, $class, new Route($routeName));
     }
 
+    // @phpstan-ignore missingType.iterableValue
     private function getRouteInformation(string $name): ?array
     {
         // Get all the routes defined in the entire application

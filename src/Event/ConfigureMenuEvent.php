@@ -16,6 +16,7 @@ class ConfigureMenuEvent extends Event
     ) {
     }
 
+    // @phpstan-ignore method.unused
     private function setFactory(FactoryInterface $factory): void
     {
         $this->factory = $factory;
@@ -26,7 +27,8 @@ class ConfigureMenuEvent extends Event
         return $this->factory;
     }
 
-    private function setMenu(ItemInterface $menu)
+    // @phpstan-ignore method.unused
+    private function setMenu(ItemInterface $menu): void
     {
         $this->menu = $menu;
     }

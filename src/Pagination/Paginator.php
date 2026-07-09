@@ -11,6 +11,11 @@ use Iterator;
 use IteratorAggregate;
 use Traversable;
 
+/**
+ * @template TKey of int
+ * @template TValue of object
+ * @implements IteratorAggregate<TKey, TValue>
+ */
 class Paginator implements Countable, IteratorAggregate
 {
     public const PAGE_SIZE = 30;
@@ -133,7 +138,9 @@ class Paginator implements Countable, IteratorAggregate
         return count($this->getResults());
     }
 
-    /** @return ArrayIterator<int, object> */
+    /**
+     * @return ArrayIterator<TKey, TValue>
+     */
     public function getIterator(): Traversable
     {
         $results = $this->getResults();
@@ -168,22 +175,22 @@ class Paginator implements Countable, IteratorAggregate
         $this->endPage = $endPage;
     }
 
-    private function startPageUnderflow($startPage): bool
+    private function startPageUnderflow(int $startPage): bool
     {
         return $startPage < 1;
     }
 
-    private function endPageOverflow($endPage): bool
+    private function endPageOverflow(int $endPage): bool
     {
         return $endPage > $this->getNumberOfPages();
     }
 
-    private function calculateEndPageForStartPageUnderflow($startPage, $endPage): int
+    private function calculateEndPageForStartPageUnderflow(int $startPage, int $endPage): int
     {
         return min($endPage + (1 - $startPage), $this->getNumberOfPages());
     }
 
-    private function calculateStartPageForEndPageOverflow($startPage, $endPage): int
+    private function calculateStartPageForEndPageOverflow(int $startPage, int $endPage): int
     {
         return max($startPage - ($endPage - $this->getNumberOfPages()), 1);
     }

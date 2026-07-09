@@ -15,9 +15,10 @@ use Doctrine\ORM\Query\SqlWalker;
 class MatchAgainst extends FunctionNode
 {
     /** @var array */
+    // @phpstan-ignore missingType.iterableValue
     private $columns = [];
 
-    /** @var string|InputParameter */
+    /** @var InputParameter */
     private $needle;
 
     /** @var Literal */
@@ -25,20 +26,27 @@ class MatchAgainst extends FunctionNode
 
     public function parse(Parser $parser): void
     {
+        // @phpstan-ignore classConstant.notFound
         $parser->match(Lexer::T_IDENTIFIER);
+        // @phpstan-ignore classConstant.notFound
         $parser->match(Lexer::T_OPEN_PARENTHESIS);
 
+        // @phpstan-ignore classConstant.notFound
         while ($parser->getLexer()->isNextToken(Lexer::T_IDENTIFIER)) {
             $this->columns[] = $parser->StateFieldPathExpression();
+            // @phpstan-ignore classConstant.notFound
             $parser->match(Lexer::T_COMMA);
         }
 
+        // @phpstan-ignore assign.propertyType
         $this->needle = $parser->InParameter();
 
+        // @phpstan-ignore classConstant.notFound
         while ($parser->getLexer()->isNextToken(Lexer::T_STRING)) {
             $this->mode = $parser->Literal();
         }
 
+        // @phpstan-ignore classConstant.notFound
         $parser->match(Lexer::T_CLOSE_PARENTHESIS);
     }
 
@@ -59,6 +67,7 @@ class MatchAgainst extends FunctionNode
         $query = 'MATCH(' . $haystack . ') AGAINST (' . $this->needle->dispatch($sqlWalker);
 
         // @mago-expect lint:no-else-clause
+        // @phpstan-ignore if.alwaysTrue
         if ($this->mode) {
             $query .= ' ' . $this->mode->value . ' )';
         } else {

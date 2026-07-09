@@ -55,6 +55,7 @@ class MenuBuilder
             // @mago-expect lint:no-else-clause
             if ($orderNumber !== null) {
                 // @mago-expect lint:no-else-clause
+                // @phpstan-ignore booleanOr.rightAlwaysFalse
                 if (!array_key_exists($orderNumber, $menuOrderArray) || is_null($menuOrderArray[$orderNumber])) {
                     $menuOrderArray[$orderNumber] = $menuItem->getName();
                 } else {

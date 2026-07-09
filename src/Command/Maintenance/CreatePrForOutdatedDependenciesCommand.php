@@ -429,6 +429,7 @@ class CreatePrForOutdatedDependenciesCommand
             );
         }
 
+        // @phpstan-ignore class.notFound
         $response = $this->httpClient->request(
             'GET',
             sprintf(

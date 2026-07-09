@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping\Id;
 
 class CircularReferenceHandler
 {
-    public function __invoke($object)
+    public function __invoke($object): ?string
     {
         return $this->getId($object);
     }

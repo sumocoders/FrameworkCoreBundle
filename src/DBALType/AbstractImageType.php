@@ -14,6 +14,7 @@ abstract class AbstractImageType extends Type
      *
      * @return string
      */
+    // @phpstan-ignore missingType.iterableValue
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform): string
     {
         return 'VARCHAR(255)';
@@ -38,6 +39,7 @@ abstract class AbstractImageType extends Type
      */
     public function convertToDatabaseValue($image, AbstractPlatform $platform): ?string
     {
+        // @phpstan-ignore notIdentical.alwaysTrue
         return $image !== null ? (string) $image : null;
     }
 

@@ -110,6 +110,7 @@ final readonly class DoctrineAuditListener
 
                     $embedded = $entityUpdate->{'get' . ucfirst($property)}();
                     $fieldReflection = new ReflectionProperty($embedded, $subProperty);
+
                     // @mago-expect lint:no-else-clause
                 } else {
                     $fieldReflection = new ReflectionProperty($className, $field);
@@ -276,7 +277,7 @@ final readonly class DoctrineAuditListener
         if (count($fields) > 0) {
             $properties = array_filter(
                 $properties,
-                static fn($key) => in_array($key, $fields, true),
+                static fn ($key) => in_array($key, $fields, true),
                 ARRAY_FILTER_USE_KEY,
             );
         }
@@ -309,7 +310,7 @@ final readonly class DoctrineAuditListener
         }
 
         if ($value instanceof Collection) {
-            return $value->map(static fn($item) => $item->getId())->toArray();
+            return $value->map(static fn ($item) => $item->getId())->toArray();
         }
 
         $manyToOneAttributes = $reflectionProperty->getAttributes(ManyToOne::class);
@@ -323,6 +324,7 @@ final readonly class DoctrineAuditListener
             return $this->getProperties($value, $unitOfWork);
         }
 
+        // @phpstan-ignore identical.alwaysFalse
         if ($value::class === 'Money\\Money') {
             // @phpstan-ignore-next-line
             return $value->getCurrency()->getCode() . ' ' . $value->getAmount();
@@ -374,10 +376,8 @@ final readonly class DoctrineAuditListener
         $originalData = $this->getOriginalCollectionData($collection);
         $newData = new ArrayCollection($collection->getValues());
 
-        $reflectionProperty = new ReflectionProperty(
-            $className,
-            $mapping->fieldName,
-        );
+        // @phpstan-ignore argument.type
+        $reflectionProperty = new ReflectionProperty($className, $mapping->fieldName);
 
         return [
             'from' => $this->transform(

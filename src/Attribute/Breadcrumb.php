@@ -49,7 +49,7 @@ final class Breadcrumb
         }
     }
 
-    public function getTitle(): ?string
+    public function getTitle(): string
     {
         return $this->title;
     }

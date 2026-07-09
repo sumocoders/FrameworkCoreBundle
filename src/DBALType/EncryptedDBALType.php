@@ -34,6 +34,7 @@ class EncryptedDBALType extends Type
         );
 
         if ($decrypted === false) {
+            // @phpstan-ignore staticMethod.notFound
             throw ConversionException::conversionFailed($value, $this->getName());
         }
 

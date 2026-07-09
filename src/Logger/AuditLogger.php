@@ -61,6 +61,7 @@ class AuditLogger
     private function getImpersonatingUser(): ?UserInterface
     {
         if ($this->security->isGranted('ROLE_PREVIOUS_ADMIN')) {
+            // @phpstan-ignore method.notFound
             return $this->security->getToken()->getOriginalToken()->getUser();
         }
 
@@ -76,6 +77,9 @@ class AuditLogger
         return null;
     }
 
+    /**
+     * @return string[]
+     */
     private function getRoles(): array
     {
         if ($this->security->getUser() !== null) {

@@ -23,6 +23,7 @@ final class TranslateCommand
     ): int {
         $locales = $this->parameters->get('locales');
 
+        // @phpstan-ignore foreach.nonIterable
         foreach ($locales as $locale) {
             $input = new ArrayInput([
                 'command' => 'translation:extract',

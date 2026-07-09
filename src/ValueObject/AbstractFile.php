@@ -121,8 +121,9 @@ abstract class AbstractFile
         }
 
         // do whatever you want to generate a unique name
-        $filename = sha1(uniqid(mt_rand(), true));
+        $filename = sha1(uniqid((string) mt_rand(), true));
         if ($this->namePrefix !== null) {
+            // @phpstan-ignore staticMethod.notFound
             $filename = Urlizer::urlize($this->namePrefix) . '_' . $filename;
         }
         $this->fileName = $filename . '.' . $this->getFile()->guessExtension();

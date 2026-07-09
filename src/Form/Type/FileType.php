@@ -48,6 +48,7 @@ class FileType extends AbstractType
                     ];
                     if ($required) {
                         $fileFieldOptions['constraints'] = [
+                            // @phpstan-ignore class.notFound
                             new NotBlank(
                                 ['message' => $options['required_file_error']],
                             ),
@@ -67,6 +68,7 @@ class FileType extends AbstractType
                         $fileClass = $options['file_class'];
 
                         if (!$file instanceof AbstractFile) {
+                            // @phpstan-ignore method.nonObject
                             $file = $fileClass::fromUploadedFile($file->getFile());
                         }
 
@@ -106,11 +108,12 @@ class FileType extends AbstractType
                         /** @var bool */
                         protected $pendingDeletion = false;
 
-                        public function setFile(?UploadedFile $file = null)
+                        public function setFile(?UploadedFile $file = null): void
                         {
                             $this->file = $file;
                         }
 
+                        // @phpstan-ignore return.unusedType
                         public function getFile(): ?UploadedFile
                         {
                             return $this->file;
@@ -121,7 +124,7 @@ class FileType extends AbstractType
                             return $this->pendingDeletion;
                         }
 
-                        public function setPendingDeletion(bool $pendingDeletion)
+                        public function setPendingDeletion(bool $pendingDeletion): void
                         {
                             $this->pendingDeletion = $pendingDeletion;
                         }
@@ -131,6 +134,7 @@ class FileType extends AbstractType
                 'show_remove_file' => true,
                 'required_file_error' => 'forms.not_blank',
                 'accept' => null,
+                // @phpstan-ignore class.notFound
                 'constraints' => [new Valid()],
                 'error_bubbling' => false,
             ],

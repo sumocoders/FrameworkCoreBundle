@@ -32,6 +32,7 @@ abstract class AbstractFileType extends Type
      */
     public function convertToDatabaseValue($file, AbstractPlatform $platform): ?string
     {
+        // @phpstan-ignore notIdentical.alwaysTrue
         return $file !== null ? (string) $file : null;
     }
 

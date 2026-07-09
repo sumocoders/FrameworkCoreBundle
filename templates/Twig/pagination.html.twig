@@ -63,7 +63,7 @@
 {% endblock %}
 
 {% block page_link %}
-    <li class="page-item"><a class="page-link" href="{{ path(route, routeParams|merge({'page': page})) }}">{{ page }}</a></li>
+    <li class="page-item"><a class="page-link" href="{{ path(route, routeParams|merge({page: page})) }}">{{ page }}</a></li>
 {% endblock %}
 
 {% block current_page_link %}
@@ -71,7 +71,7 @@
 {% endblock %}
 
 {% block previous_page_link %}
-    <li class="page-item previous"><a class="page-link" href="{{ path(route, routeParams|merge({'page': paginator.getPreviousPage})) }}" rel="previous">«</a></li>
+    <li class="page-item previous"><a class="page-link" href="{{ path(route, routeParams|merge({page: paginator.getPreviousPage})) }}" rel="previous">«</a></li>
 {% endblock %}
 
 {% block previous_page_link_disabled %}
@@ -79,7 +79,7 @@
 {% endblock %}
 
 {% block next_page_link %}
-    <li class="page-item next"><a class="page-link" href="{{ path(route, routeParams|merge({'page': paginator.getNextPage})) }}" rel="next">»</a></li>
+    <li class="page-item next"><a class="page-link" href="{{ path(route, routeParams|merge({page: paginator.getNextPage})) }}" rel="next">»</a></li>
 {% endblock %}
 
 {% block next_page_link_disabled %}

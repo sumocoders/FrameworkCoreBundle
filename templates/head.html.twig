@@ -18,7 +18,7 @@
     {% endblock %}
 
     {% block javascripts %}
-        {{ importmap('app', {'nonce': csp_nonce('script')}) }}
+        {{ importmap('app', {nonce: csp_nonce('script')}) }}
     {% endblock %}
 
     {% block icons %}

@@ -10,7 +10,7 @@
         {% if not loop.first %}
           <li class="dropdown-divider"></li>{% endif %}
         <li>
-          <a class="dropdown-item {{ locale == app.request.locale ? 'active' : '' }}" href="{{ path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')|merge({"_locale": locale})) }}">{{ locale != '' ? locale|upper : 'NL' }}</a>
+          <a class="dropdown-item {{ locale == app.request.locale ? 'active' : '' }}" href="{{ path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')|merge({_locale: locale})) }}">{{ locale != '' ? locale|upper : 'NL' }}</a>
         </li>
       {% endfor %}
     </ul>

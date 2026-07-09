@@ -2,6 +2,7 @@ import { Controller } from '@hotwired/stimulus'
 import flatpickr from 'flatpickr'
 
 // import the most common languages
+/* eslint-disable no-unused-vars */
 import { Austria } from 'flatpickr/dist/l10n/at.js'
 import { Czech } from 'flatpickr/dist/l10n/cs.js'
 import { Danish } from 'flatpickr/dist/l10n/da.js'
@@ -21,6 +22,7 @@ import { Slovak } from 'flatpickr/dist/l10n/sk.js'
 import { Swedish } from 'flatpickr/dist/l10n/sv.js'
 import { Spanish } from 'flatpickr/dist/l10n/es.js'
 import { Slovenian } from 'flatpickr/dist/l10n/sl.js'
+/* eslint-enable no-unused-vars */
 
 export default class extends Controller {
   static values = {

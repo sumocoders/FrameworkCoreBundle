@@ -1,15 +1,13 @@
 import { Controller } from '@hotwired/stimulus'
-import { setCookie } from 'sumocoders/cookie'
-import { readCookie } from 'sumocoders/cookie'
 
 export default class extends Controller {
-  connect() {
+  connect () {
     this.showTheme()
   }
 
   showTheme () {
-    const getStoredTheme = () => localStorage.getItem('theme')
-    const setStoredTheme = theme => localStorage.setItem('theme', theme)
+    const getStoredTheme = () => localStorage.getItem('theme') // eslint-disable-line no-undef
+    const setStoredTheme = theme => localStorage.setItem('theme', theme) // eslint-disable-line no-undef
 
     const getPreferredTheme = () => {
       const storedTheme = getStoredTheme()

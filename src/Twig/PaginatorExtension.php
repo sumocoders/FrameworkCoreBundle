@@ -41,7 +41,7 @@ readonly class PaginatorExtension
                 'start_page' => $paginator->getStartPage(),
                 'end_page' => $paginator->getEndPage(),
                 'page_count' => $paginator->getNumberOfPages(),
-            ]
+            ],
         );
     }
 

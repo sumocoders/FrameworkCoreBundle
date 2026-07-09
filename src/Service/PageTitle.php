@@ -32,7 +32,7 @@ class PageTitle
             return $this->fallbacks->get('site_title');
         }
 
-        $titles = array_map(fn($breadcrumb) => $this->translator->trans($breadcrumb->getTitle()), $breadcrumbs);
+        $titles = array_map(fn ($breadcrumb) => $this->translator->trans($breadcrumb->getTitle()), $breadcrumbs);
         $titles[] = $this->fallbacks->get('site_title');
 
         return implode(' - ', $titles);

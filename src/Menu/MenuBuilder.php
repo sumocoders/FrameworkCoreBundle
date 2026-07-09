@@ -14,7 +14,7 @@ class MenuBuilder
 
     public function __construct(
         FactoryInterface $factory,
-        EventDispatcherInterface $eventDispatcher
+        EventDispatcherInterface $eventDispatcher,
     ) {
         $this->factory = $factory;
         $this->eventDispatcher = $eventDispatcher;
@@ -29,9 +29,9 @@ class MenuBuilder
         $this->eventDispatcher->dispatch(
             new ConfigureMenuEvent(
                 $this->factory,
-                $menu
+                $menu,
             ),
-            ConfigureMenuEvent::EVENT_NAME
+            ConfigureMenuEvent::EVENT_NAME,
         );
 
         $this->reorderMenuItems($menu);
@@ -77,7 +77,7 @@ class MenuBuilder
                 $menuOrderArray = array_merge(
                     array_slice($menuOrderArray, 0, $position),
                     [$value],
-                    array_slice($menuOrderArray, $position)
+                    array_slice($menuOrderArray, $position),
                 );
             }
         }

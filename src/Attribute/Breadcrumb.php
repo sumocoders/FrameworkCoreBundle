@@ -17,14 +17,14 @@ final class Breadcrumb
         string $title,
         ?array $parameters = null,
         ?array $route = null,
-        ?array $parent = null
+        ?array $parent = null,
     ) {
         $this->title = $title;
 
         if ($route !== null) {
             $this->route = new Route(
                 $route['name'],
-                \array_key_exists('parameters', $route) ? $route['parameters'] : null
+                \array_key_exists('parameters', $route) ? $route['parameters'] : null,
             );
         } else {
             $this->route = $route;
@@ -33,7 +33,7 @@ final class Breadcrumb
         if ($parent !== null) {
             $this->parent = new Route(
                 $parent['name'],
-                \array_key_exists('parameters', $parent) ? $parent['parameters'] : null
+                \array_key_exists('parameters', $parent) ? $parent['parameters'] : null,
             );
         } else {
             $this->parent = $parent;

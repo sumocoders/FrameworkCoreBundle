@@ -2,9 +2,9 @@
 
 namespace SumoCoders\FrameworkCoreBundle\DBALType;
 
-use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\ConversionException;
+use Doctrine\DBAL\Types\Type;
 
 class EncryptedDBALType extends Type
 {
@@ -27,10 +27,10 @@ class EncryptedDBALType extends Type
 
         [$nonce, $encryptedValue] = explode('|', $value);
 
-        $decrypted =  sodium_crypto_secretbox_open(
+        $decrypted = sodium_crypto_secretbox_open(
             sodium_hex2bin($encryptedValue),
             sodium_hex2bin($nonce),
-            sodium_hex2bin($_ENV['ENCRYPTION_KEY'])
+            sodium_hex2bin($_ENV['ENCRYPTION_KEY']),
         );
 
         if ($decrypted === false) {

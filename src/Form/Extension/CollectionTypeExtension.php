@@ -3,20 +3,21 @@
 namespace SumoCoders\FrameworkCoreBundle\Form\Extension;
 
 use Symfony\Component\Form\AbstractTypeExtension;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormError;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class CollectionTypeExtension extends AbstractTypeExtension
 {
-    public function __construct(private readonly TranslatorInterface $translator)
-    {
+    public function __construct(
+        private readonly TranslatorInterface $translator,
+    ) {
     }
 
     public static function getExtendedTypes(): iterable
@@ -36,7 +37,7 @@ final class CollectionTypeExtension extends AbstractTypeExtension
                 'minimum_required_items' => 0,
                 'maximum_required_items' => null,
                 'error_bubbling' => false,
-            ]
+            ],
         );
     }
 
@@ -48,20 +49,27 @@ final class CollectionTypeExtension extends AbstractTypeExtension
             throw new \InvalidArgumentException('minimum_required_items cannot be lower than 0');
         }
 
-        if ($options['maximum_required_items'] !== null && $options['maximum_required_items'] < $options['minimum_required_items']) {
+        if (
+            $options['maximum_required_items'] !== null
+            && $options['maximum_required_items'] < $options['minimum_required_items']
+        ) {
             throw new \InvalidArgumentException('maximum_required_items cannot be lower than minimum_required_items');
         }
 
-        $builder->addEventListener(FormEvents::POST_SUBMIT, function(FormEvent $event) {
+        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
             $form = $event->getForm();
             $min = $form->getConfig()->getOption('minimum_required_items');
             $max = $form->getConfig()->getOption('maximum_required_items');
 
             if ($form->count() < $min) {
                 $error = new FormError(
-                    message: $this->translator->trans('You must add at least %count% items', ['%count%' => $min], 'validators'),
+                    message: $this->translator->trans(
+                        'You must add at least %count% items',
+                        ['%count%' => $min],
+                        'validators',
+                    ),
                     messageTemplate: 'You must add at least %count% items',
-                    messageParameters: ['%count%' => $min]
+                    messageParameters: ['%count%' => $min],
                 );
                 $error->setOrigin($form);
                 $form->addError($error);
@@ -69,9 +77,13 @@ final class CollectionTypeExtension extends AbstractTypeExtension
 
             if ($max !== null && $form->count() > $max) {
                 $error = new FormError(
-                    message: $this->translator->trans('You can add a maximum of %count% items', ['%count%' => $max], 'validators'),
+                    message: $this->translator->trans(
+                        'You can add a maximum of %count% items',
+                        ['%count%' => $max],
+                        'validators',
+                    ),
                     messageTemplate: 'You can add a maximum of %count% items',
-                    messageParameters: ['%count%' => $max]
+                    messageParameters: ['%count%' => $max],
                 );
                 $error->setOrigin($form);
                 $form->addError($error);

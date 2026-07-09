@@ -12,8 +12,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class TogglePasswordTypeExtension extends AbstractTypeExtension
 {
-    public function __construct(private readonly TranslatorInterface $translator)
-    {
+    public function __construct(
+        private readonly TranslatorInterface $translator,
+    ) {
     }
 
     public static function getExtendedTypes(): iterable
@@ -53,10 +54,20 @@ final class TogglePasswordTypeExtension extends AbstractTypeExtension
         }
 
         $controllerName = 'toggle-password';
-        $view->vars['attr']['data-controller'] = trim(\sprintf('%s %s', $view->vars['attr']['data-controller'] ?? '', $controllerName));
+        $view->vars['attr']['data-controller'] = trim(\sprintf(
+            '%s %s',
+            $view->vars['attr']['data-controller'] ?? '',
+            $controllerName,
+        ));
 
-        $controllerValues['hidden-label'] = $this->translateLabel($options['hidden_label'], $options['translation_domain']);
-        $controllerValues['visible-label'] = $this->translateLabel($options['visible_label'], $options['translation_domain']);
+        $controllerValues['hidden-label'] = $this->translateLabel(
+            $options['hidden_label'],
+            $options['translation_domain'],
+        );
+        $controllerValues['visible-label'] = $this->translateLabel(
+            $options['visible_label'],
+            $options['translation_domain'],
+        );
 
         $controllerValues['button-classes'] = json_encode($options['button_classes'], \JSON_THROW_ON_ERROR);
 

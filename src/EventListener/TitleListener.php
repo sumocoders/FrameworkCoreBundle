@@ -2,6 +2,7 @@
 
 namespace SumoCoders\FrameworkCoreBundle\EventListener;
 
+use Doctrine\ORM\EntityManagerInterface;
 use ReflectionClass;
 use SumoCoders\FrameworkCoreBundle\Attribute\Title;
 use SumoCoders\FrameworkCoreBundle\Service\Fallbacks;
@@ -12,7 +13,6 @@ use Symfony\Component\HttpKernel\Event\KernelEvent;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Class TitleListener
@@ -41,7 +41,7 @@ class TitleListener
     {
         // Get the controller and its methods
         $controller = is_array($event->getController()) ? $event->getController()[0] : $event->getController();
-        $methods = (new ReflectionClass($controller))->getMethods();
+        $methods = new ReflectionClass($controller)->getMethods();
 
         // Loop through the methods and process the Title attributes
         foreach ($methods as $method) {
@@ -60,6 +60,7 @@ class TitleListener
 
                 if (!$titleAttribute->isExtend()) {
                     $this->pageTitleService->setTitle($titleAttribute->getTitle());
+
                     return;
                 }
 
@@ -99,8 +100,12 @@ class TitleListener
             // Get the mapping and value of the parameter
             $mapping = $parameterAttributes[0]->getArguments()['mapping'] ?? null;
             $value = $mapping !== null && isset($parameters[$parameterName])
-                ? $this->manager->getRepository($reflextionParameter->getType()->getName())->findOneBy([$mapping[$parameterName] => $parameters[$parameterName]])
-                : $this->manager->getRepository($reflextionParameter->getType()->getName())->find($parameters[$parameterName]);
+                ? $this->manager
+                    ->getRepository($reflextionParameter->getType()->getName())
+                    ->findOneBy([$mapping[$parameterName] => $parameters[$parameterName]])
+                : $this->manager
+                    ->getRepository($reflextionParameter->getType()->getName())
+                    ->find($parameters[$parameterName]);
 
             $parameters[$parameterName] = $value;
         }
@@ -185,7 +190,10 @@ class TitleListener
             $method = strpos($controller, '::') > 0 ? explode('::', $controller)[1] : '__invoke';
 
             // Get the required parameters of the route
-            $requiredParameters = array_filter($route->compile()->getVariables(), fn($parameter) => $route->getDefault($parameter) === null);
+            $requiredParameters = array_filter(
+                $route->compile()->getVariables(),
+                fn ($parameter) => $route->getDefault($parameter) === null,
+            );
 
             return [
                 'controller' => $controller,

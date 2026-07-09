@@ -36,7 +36,7 @@ class CreatePrForOutdatedDependenciesCommand
     private Application $application;
 
     public function __construct(
-        private readonly HttpClientInterface $httpClient
+        private readonly HttpClientInterface $httpClient,
     ) {
     }
 
@@ -68,7 +68,7 @@ class CreatePrForOutdatedDependenciesCommand
             ],
             true,
             false,
-            true
+            true,
         );
 
         if ($output === '') {
@@ -78,7 +78,7 @@ class CreatePrForOutdatedDependenciesCommand
         $outdatedPackages = json_decode($output, true, 512, JSON_THROW_ON_ERROR);
         $semverSafeUpdatePackages = array_filter(
             $outdatedPackages,
-            static fn($package) => $package['latest-status'] === 'semver-safe-update'
+            static fn ($package) => $package['latest-status'] === 'semver-safe-update',
         );
 
         if (empty($semverSafeUpdatePackages)) {
@@ -89,7 +89,7 @@ class CreatePrForOutdatedDependenciesCommand
             date('YmdHi') . '-update-importmap-dependencies',
             date('d/m/Y') . ' Update importmap dependencies',
             [$this, 'runImportmapUpdateCommands'],
-            [$semverSafeUpdatePackages]
+            [$semverSafeUpdatePackages],
         );
 
         $this->io->success('Created a merge request for updating importmap dependencies.');
@@ -114,7 +114,7 @@ class CreatePrForOutdatedDependenciesCommand
                     '--ansi' => true,
                 ],
                 true,
-                true
+                true,
             );
 
             $this->runCommand(['git', 'add', 'importmap.php']);
@@ -122,12 +122,11 @@ class CreatePrForOutdatedDependenciesCommand
                 '  * %1$s (%2$s → %3$s)',
                 $package['name'],
                 $package['current'],
-                $package['latest']
+                $package['latest'],
             );
         }
 
-        $commitMessage = 'chore(importmap): Update importmap dependencies' .
-                         "\n\n" . implode("\n", $versionMessages);
+        $commitMessage = 'chore(importmap): Update importmap dependencies' . "\n\n" . implode("\n", $versionMessages);
         $this->runCommand(
             [
                 'git',
@@ -136,7 +135,7 @@ class CreatePrForOutdatedDependenciesCommand
                 '--no-verify',
                 '--message',
                 $commitMessage,
-            ]
+            ],
         );
     }
 
@@ -152,7 +151,7 @@ class CreatePrForOutdatedDependenciesCommand
             ['composer', 'outdated', '--direct', '--minor-only', '--no-scripts', '--format=json'],
             true,
             false,
-            true
+            true,
         );
 
         if ($outdatedPackages === '') {
@@ -172,7 +171,7 @@ class CreatePrForOutdatedDependenciesCommand
                 }
 
                 return $package['latest-status'] === 'semver-safe-update';
-            }
+            },
         );
 
         if (empty($semverSafeUpdatePackages)) {
@@ -183,7 +182,7 @@ class CreatePrForOutdatedDependenciesCommand
             date('YmdHi') . '-update-composer-dependencies',
             date('d/m/Y') . ' Update composer dependencies',
             [$this, 'runComposerUpdateCommands'],
-            [$semverSafeUpdatePackages]
+            [$semverSafeUpdatePackages],
         );
 
         $this->io->success('Created a merge request for updating composer dependencies.');
@@ -221,7 +220,7 @@ class CreatePrForOutdatedDependenciesCommand
             $this->runCommand(
                 $command,
                 true,
-                true
+                true,
             );
 
             $this->runCommand(['git', 'add', 'composer.json', 'composer.lock', 'symfony.lock', 'config/reference.php']);
@@ -229,12 +228,11 @@ class CreatePrForOutdatedDependenciesCommand
                 '  * %1$s (%2$s → %3$s)',
                 $package['name'],
                 $package['version'],
-                $package['latest']
+                $package['latest'],
             );
         }
 
-        $commitMessage = 'chore(composer): Update composer dependencies' .
-                         "\n\n" . implode("\n", $versionMessages);
+        $commitMessage = 'chore(composer): Update composer dependencies' . "\n\n" . implode("\n", $versionMessages);
         $this->runCommand(
             [
                 'git',
@@ -243,7 +241,7 @@ class CreatePrForOutdatedDependenciesCommand
                 '--no-verify',
                 '--message',
                 $commitMessage,
-            ]
+            ],
         );
     }
 
@@ -255,7 +253,7 @@ class CreatePrForOutdatedDependenciesCommand
         string $newBranchName,
         string $pullRequestTitle,
         callable|array $commandsToRun,
-        array $arguments = []
+        array $arguments = [],
     ): void {
         // create new branch
         $this->runCommand(
@@ -298,7 +296,7 @@ class CreatePrForOutdatedDependenciesCommand
         array $command,
         bool $showInput = true,
         bool $showOutput = false,
-        bool $returnOutput = false
+        bool $returnOutput = false,
     ): mixed {
         $io = $this->io;
         if ($showInput) {
@@ -337,7 +335,7 @@ class CreatePrForOutdatedDependenciesCommand
         array $command,
         bool $showInput = true,
         bool $showOutput = false,
-        bool $returnOutput = false
+        bool $returnOutput = false,
     ): mixed {
         $io = $this->io;
         if ($showInput) {
@@ -404,14 +402,14 @@ class CreatePrForOutdatedDependenciesCommand
                 ['git', 'config', '--get', 'remote.origin.url'],
                 false,
                 false,
-                true
+                true,
             );
             $matches = [];
             preg_match('/.*:(.+)\.git$/', $output, $matches);
 
             if (!isset($matches[1])) {
                 throw new \RuntimeException(
-                    'Could not determine project ID from git remote URL.'
+                    'Could not determine project ID from git remote URL.',
                 );
             }
 
@@ -423,7 +421,7 @@ class CreatePrForOutdatedDependenciesCommand
         }
         if ($gitlabToken === false) {
             throw new \RuntimeException(
-                'You need to set the SUMO_GITLAB_ACCESS_TOKEN environment variable.'
+                'You need to set the SUMO_GITLAB_ACCESS_TOKEN environment variable.',
             );
         }
 
@@ -432,7 +430,7 @@ class CreatePrForOutdatedDependenciesCommand
             sprintf(
                 '%1$s/projects/%2$s/merge_requests',
                 $gitlabUrl,
-                $projectId
+                $projectId,
             ),
             [
                 'headers' => [
@@ -442,7 +440,7 @@ class CreatePrForOutdatedDependenciesCommand
                     'state' => 'opened',
                     'per_page' => 100,
                 ],
-            ]
+            ],
         );
 
         $data = json_decode($response->getContent(), false, 512, JSON_THROW_ON_ERROR);
@@ -485,7 +483,7 @@ class CreatePrForOutdatedDependenciesCommand
                 ['git', 'rev-parse', '--abbrev-ref', 'HEAD'],
                 false,
                 false,
-                true
+                true,
             );
         }
         $this->originalBranch = trim($branch);

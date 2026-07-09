@@ -6,8 +6,13 @@ use Doctrine\ORM\Mapping\Id;
 
 class MaxDepthHandler
 {
-    public function __invoke($innerObject, $outerObject, string $attributeName, string $format = null, array $context = [])
-    {
+    public function __invoke(
+        $innerObject,
+        $outerObject,
+        string $attributeName,
+        string $format = null,
+        array $context = [],
+    ) {
         return $this->getId($innerObject);
     }
 
@@ -19,6 +24,7 @@ class MaxDepthHandler
         foreach ($properties as $property) {
             if ($property->getAttributes(Id::class)) {
                 $property->setAccessible(true);
+
                 return (string) $property->getValue($entity);
             }
         }

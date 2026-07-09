@@ -19,7 +19,7 @@ class DoctrineExtensionListener
         TokenStorageInterface $tokenStorage,
         AuthorizationCheckerInterface $authorizationChecker,
         LoggableListener $loggableListener,
-        BlameableListener $blamableListener
+        BlameableListener $blamableListener,
     ) {
         $this->tokenStorage = $tokenStorage;
         $this->authorizationChecker = $authorizationChecker;

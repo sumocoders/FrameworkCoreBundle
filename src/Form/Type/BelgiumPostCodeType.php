@@ -22,7 +22,7 @@ class BelgiumPostCodeType extends AbstractType
         $builder->addModelTransformer(
             new CallbackTransformer(
                 function (?BelgiumPostCode $object): ?string {
-                    return $object ? ($object->postcode . '|' . $object->municipality) : null;
+                    return $object ? $object->postcode . '|' . $object->municipality : null;
                 },
                 function (?string $postcodeKey): ?BelgiumPostCode {
                     if ($postcodeKey === null || $postcodeKey === '') {
@@ -30,12 +30,13 @@ class BelgiumPostCodeType extends AbstractType
                     }
 
                     [$postcode, $municipality] = explode('|', $postcodeKey, 2);
+
                     return new BelgiumPostCode(
                         $postcode,
-                        $municipality
+                        $municipality,
                     );
-                }
-            )
+                },
+            ),
         );
     }
 
@@ -44,12 +45,15 @@ class BelgiumPostCodeType extends AbstractType
         $resolver->setDefaults([
             'choice_loader' => function (Options $options) {
                 if (!class_exists(Intl::class)) {
-                    throw new LogicException(sprintf('The "symfony/intl" component is required to use "%s". Try running "composer require symfony/intl".', static::class)); // phpcs:ignore Generic.Files.LineLength
+                    throw new LogicException(sprintf(
+                        'The "symfony/intl" component is required to use "%s". Try running "composer require symfony/intl".',
+                        static::class,
+                    )); // phpcs:ignore Generic.Files.LineLength
                 }
 
                 return ChoiceList::loader(
                     $this,
-                    new IntlCallbackChoiceLoader(static fn() => array_flip(BelgiumPostCodes::getNames()))
+                    new IntlCallbackChoiceLoader(static fn () => array_flip(BelgiumPostCodes::getNames())),
                 );
             },
             'choice_translation_domain' => false,

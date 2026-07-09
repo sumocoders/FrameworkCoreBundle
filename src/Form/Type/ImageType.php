@@ -2,8 +2,8 @@
 
 namespace SumoCoders\FrameworkCoreBundle\Form\Type;
 
-use SumoCoders\FrameworkCoreBundle\ValueObject\AbstractImage;
 use stdClass;
+use SumoCoders\FrameworkCoreBundle\ValueObject\AbstractImage;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Exception\TransformationFailedException;
@@ -31,7 +31,7 @@ class ImageType extends AbstractType
                     'required' => false,
                     'label' => $options['remove_image_label'],
                     'property_path' => 'pendingDeletion',
-                ]
+                ],
             );
         }
 
@@ -39,7 +39,7 @@ class ImageType extends AbstractType
             ->addEventListener(
                 FormEvents::PRE_SET_DATA,
                 function (FormEvent $event) use ($options) {
-                    $imageIsEmpty = ($event->getData() === null || empty($event->getData()->getFileName()));
+                    $imageIsEmpty = $event->getData() === null || empty($event->getData()->getFileName());
                     $required = $imageIsEmpty && $options['required'];
                     $fileFieldOptions = [
                         'label' => false,
@@ -49,12 +49,12 @@ class ImageType extends AbstractType
                     if ($required) {
                         $fileFieldOptions['constraints'] = [
                             new NotBlank(
-                                ['message' => $options['required_image_error']]
+                                ['message' => $options['required_image_error']],
                             ),
                         ];
                     }
                     $event->getForm()->add('file', SymfonyFileType::class, $fileFieldOptions);
-                }
+                },
             )
             ->addModelTransformer(
                 new CallbackTransformer(
@@ -74,8 +74,8 @@ class ImageType extends AbstractType
 
                         // return a clone to make sure that doctrine will do the lifecycle callbacks
                         return clone $image;
-                    }
-                )
+                    },
+                ),
             );
     }
 
@@ -90,7 +90,7 @@ class ImageType extends AbstractType
                 'required_image_error',
                 'accept',
                 'help',
-            ]
+            ],
         );
 
         $resolver->setDefaults(
@@ -133,7 +133,7 @@ class ImageType extends AbstractType
                 'accept' => 'image/*',
                 'constraints' => [new Valid()],
                 'error_bubbling' => false,
-            ]
+            ],
         );
     }
 
@@ -145,13 +145,13 @@ class ImageType extends AbstractType
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['show_preview'] = $options['show_preview'];
-        $view->vars['show_remove_image'] = $options['show_remove_image'] && $form->getData() !== null
-                                           && !empty($form->getData()->getFileName());
+        $view->vars['show_remove_image'] =
+            $options['show_remove_image'] && $form->getData() !== null && !empty($form->getData()->getFileName());
         // if you need to have an image you shouldn't be allowed to remove it
         if ($options['required']) {
             $view->vars['show_remove_image'] = false;
         }
-        $imageIsEmpty = ($form->getData() === null || empty($form->getData()->getFileName()));
+        $imageIsEmpty = $form->getData() === null || empty($form->getData()->getFileName());
         $view->vars['required'] = $imageIsEmpty && $options['required'];
 
         $view->vars['preview_url'] = false;
@@ -167,7 +167,7 @@ class ImageType extends AbstractType
             },
             [
                 'preview_class',
-            ]
+            ],
         );
     }
 }

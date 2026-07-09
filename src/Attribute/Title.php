@@ -23,7 +23,7 @@ final class Title
         if ($parent !== null) {
             $this->parent = new Route(
                 $parent['name'],
-                \array_key_exists('parameters', $parent) ? $parent['parameters'] : null
+                \array_key_exists('parameters', $parent) ? $parent['parameters'] : null,
             );
         } else {
             $this->parent = $parent;

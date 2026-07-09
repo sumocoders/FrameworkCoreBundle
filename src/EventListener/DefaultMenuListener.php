@@ -3,8 +3,8 @@
 namespace SumoCoders\FrameworkCoreBundle\EventListener;
 
 use Knp\Menu\ItemInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class DefaultMenuListener
@@ -16,7 +16,7 @@ class DefaultMenuListener
     public function __construct(
         Security $security,
         TranslatorInterface $translator,
-        RequestStack $requestStack
+        RequestStack $requestStack,
     ) {
         $this->security = $security;
         $this->translator = $translator;
@@ -49,7 +49,7 @@ class DefaultMenuListener
                     [
                         'route' => $request->attributes->get('_route'),
                     ],
-                ]
+                ],
             );
         }
     }

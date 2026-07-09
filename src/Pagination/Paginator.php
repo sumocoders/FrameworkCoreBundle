@@ -2,14 +2,14 @@
 
 namespace SumoCoders\FrameworkCoreBundle\Pagination;
 
+use ArrayIterator;
+use Countable;
 use Doctrine\ORM\QueryBuilder as DoctrineQueryBuilder;
 use Doctrine\ORM\Tools\Pagination\CountWalker;
 use Doctrine\ORM\Tools\Pagination\Paginator as DoctrinePaginator;
-use ArrayIterator;
+use Iterator;
 use IteratorAggregate;
 use Traversable;
-use Countable;
-use Iterator;
 
 class Paginator implements Countable, IteratorAggregate
 {

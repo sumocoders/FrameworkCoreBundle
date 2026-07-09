@@ -22,7 +22,7 @@ class AuditLogger
         ?string $identifier = null,
         EventAction $action = EventAction::READ,
         array $fields = [],
-        array $data = []
+        array $data = [],
     ): void {
         $user = $this->getLoggedInUser();
         $imperonatingUser = $this->getImpersonatingUser();
@@ -44,8 +44,8 @@ class AuditLogger
                 $userRoles,
                 $this->getIpAddress(),
                 json_encode($fields, JSON_THROW_ON_ERROR),
-                json_encode($data, JSON_THROW_ON_ERROR)
-            )
+                json_encode($data, JSON_THROW_ON_ERROR),
+            ),
         );
     }
 

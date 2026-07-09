@@ -93,7 +93,7 @@ abstract class AbstractFile
 
     public static function fromUploadedFile(
         ?UploadedFile $uploadedFile = null,
-        ?string $namePrefix = null
+        ?string $namePrefix = null,
     ): static {
         $file = new static(null);
         $file->setFile($uploadedFile);
@@ -149,8 +149,6 @@ abstract class AbstractFile
 
         $this->file = null;
     }
-
-
 
     /**
      * This will remove the old file, can be extended to add extra functionality

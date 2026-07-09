@@ -2,16 +2,16 @@
 
 namespace SumoCoders\FrameworkCoreBundle\Extensions\Doctrine;
 
+use Doctrine\ORM\Query\AST\Functions\FunctionNode;
 use Doctrine\ORM\Query\AST\InputParameter;
 use Doctrine\ORM\Query\AST\Literal;
 use Doctrine\ORM\Query\Lexer;
-use Doctrine\ORM\Query\AST\Functions\FunctionNode;
 use Doctrine\ORM\Query\Parser;
 use Doctrine\ORM\Query\SqlWalker;
 
 /**
- * "MATCH_AGAINST" "(" {StateFieldPathExpression ","}* InParameter {Literal}? ")"
- */
+ *  * "MATCH_AGAINST" "(" {StateFieldPathExpression ","}* InParameter {Literal}? ")"
+ *  */
 class MatchAgainst extends FunctionNode
 {
     /** @var array */
@@ -31,7 +31,7 @@ class MatchAgainst extends FunctionNode
         while ($parser->getLexer()->isNextToken(Lexer::T_IDENTIFIER)) {
             $this->columns[] = $parser->StateFieldPathExpression();
             $parser->match(Lexer::T_COMMA);
-        };
+        }
 
         $this->needle = $parser->InParameter();
 
@@ -56,12 +56,12 @@ class MatchAgainst extends FunctionNode
             $haystack .= $column->dispatch($sqlWalker);
         }
 
-        $query = "MATCH(" . $haystack . ") AGAINST (" . $this->needle->dispatch($sqlWalker);
+        $query = 'MATCH(' . $haystack . ') AGAINST (' . $this->needle->dispatch($sqlWalker);
 
         if ($this->mode) {
-            $query .= " " . $this->mode->value . " )";
+            $query .= ' ' . $this->mode->value . ' )';
         } else {
-            $query .= " )";
+            $query .= ' )';
         }
 
         return $query;

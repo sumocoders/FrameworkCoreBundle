@@ -2,8 +2,8 @@
 
 namespace SumoCoders\FrameworkCoreBundle\DBALType;
 
-use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Types\Type;
 use SumoCoders\FrameworkCoreBundle\ValueObject\AbstractImage;
 
 abstract class AbstractImageType extends Type

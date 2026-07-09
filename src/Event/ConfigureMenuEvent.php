@@ -10,7 +10,6 @@ class ConfigureMenuEvent extends Event
 {
     public const EVENT_NAME = 'framework_core.configure_menu';
 
-
     public function __construct(
         private FactoryInterface $factory,
         private ItemInterface $menu,

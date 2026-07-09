@@ -3,19 +3,19 @@
 namespace SumoCoders\FrameworkCoreBundle\EventListener;
 
 use Doctrine\ORM\EntityManagerInterface;
-use SumoCoders\FrameworkCoreBundle\Exception\Breadcrumb\EntityNotFoundException;
-use SumoCoders\FrameworkCoreBundle\ValueObject\Route;
-use Symfony\Bridge\Doctrine\Attribute\MapEntity;
-use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use SumoCoders\FrameworkCoreBundle\Service\BreadcrumbTrail;
-use SumoCoders\FrameworkCoreBundle\ValueObject\Breadcrumb;
-use SumoCoders\FrameworkCoreBundle\Attribute\Breadcrumb as BreadcrumbAttribute;
-use Symfony\Component\HttpKernel\Event\KernelEvent;
-use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\HttpFoundation\Request;
 use InvalidArgumentException;
 use RuntimeException;
+use SumoCoders\FrameworkCoreBundle\Attribute\Breadcrumb as BreadcrumbAttribute;
+use SumoCoders\FrameworkCoreBundle\Exception\Breadcrumb\EntityNotFoundException;
+use SumoCoders\FrameworkCoreBundle\Service\BreadcrumbTrail;
+use SumoCoders\FrameworkCoreBundle\ValueObject\Breadcrumb;
+use SumoCoders\FrameworkCoreBundle\ValueObject\Route;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Event\KernelEvent;
+use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class BreadcrumbListener
@@ -32,7 +32,7 @@ class BreadcrumbListener
         PropertyAccessorInterface $propertyAccess,
         BreadcrumbTrail $breadcrumbTrail,
         EntityManagerInterface $manager,
-        TranslatorInterface $translator
+        TranslatorInterface $translator,
     ) {
         $this->router = $router;
         $this->propertyAccess = $propertyAccess;
@@ -66,8 +66,8 @@ class BreadcrumbListener
             throw new InvalidArgumentException(
                 sprintf(
                     'Attributes from class "%s" cannot be read as it is abstract.',
-                    $class
-                )
+                    $class,
+                ),
             );
         }
 
@@ -81,11 +81,14 @@ class BreadcrumbListener
     private function processAttributeFromMethod(
         \Reflectionmethod $method,
         \ReflectionClass $class,
-        ?Route $route = null
+        ?Route $route = null,
     ): void {
         $attributes = $method->getAttributes(BreadcrumbAttribute::class, \ReflectionAttribute::IS_INSTANCEOF);
         if ($method->name === '__invoke' || $attributes !== []) {
-            $attributes = array_merge($attributes, $class->getAttributes(BreadcrumbAttribute::class, \ReflectionAttribute::IS_INSTANCEOF));
+            $attributes = array_merge($attributes, $class->getAttributes(
+                BreadcrumbAttribute::class,
+                \ReflectionAttribute::IS_INSTANCEOF,
+            ));
         }
 
         foreach ($attributes as $attribute) {
@@ -104,18 +107,17 @@ class BreadcrumbListener
                 $this->breadcrumbTrail->add(
                     $this->generateBreadcrumb(
                         $attributeInstance,
-                        $method
-                    )
+                        $method,
+                    ),
                 );
             } catch (EntityNotFoundException $e) {
-
             }
         }
     }
 
     private function generateBreadcrumb(
         BreadcrumbAttribute $breadcrumb,
-        \Reflectionmethod $method
+        \Reflectionmethod $method,
     ): Breadcrumb {
         $title = $breadcrumb->getTitle();
         $parameters = $breadcrumb->getParameters();
@@ -134,8 +136,10 @@ class BreadcrumbListener
 
             if (!$this->request->attributes->has($attributeName)) {
                 throw new RuntimeException(
-                    'You tried to use {' . $attributeName . '} as a breadcrumb parameter, but there is no ' .
-                    'parameter with that name in the route.'
+                    'You tried to use {'
+                    . $attributeName
+                    . '} as a breadcrumb parameter, but there is no '
+                    . 'parameter with that name in the route.',
                 );
             }
 
@@ -156,27 +160,31 @@ class BreadcrumbListener
 
             if ($name === null) {
                 throw new RuntimeException(
-                    'You tried to use {' . $attributeName . '} as a breadcrumb parameter, but there is no ' .
-                    'parameter with that name in the route.'
+                    'You tried to use {'
+                    . $attributeName
+                    . '} as a breadcrumb parameter, but there is no '
+                    . 'parameter with that name in the route.',
                 );
             }
 
             if ($mapping !== null && isset($mapping[$attributeName])) {
-                $attribute = $this->manager->getRepository($name)->findOneBy([$mapping[$attributeName] => $attributeId]);
+                $attribute = $this->manager
+                    ->getRepository($name)
+                    ->findOneBy([$mapping[$attributeName] => $attributeId]);
             } else {
                 $attribute = $this->manager->getRepository($name)->find($attributeId);
             }
 
             if (!is_object($attribute)) {
                 throw new EntityNotFoundException(
-                    'Could not resolve entity ' . $name . ' with ID ' . $attributeId
+                    'Could not resolve entity ' . $name . ' with ID ' . $attributeId,
                 );
             }
 
             if (!isset($propertyPath)) {
                 throw new RuntimeException(
-                    'When using objects in a breadcrumb, you have to specify which method to read.' .
-                    ' E.g. {object.name}'
+                    'When using objects in a breadcrumb, you have to specify which method to read.'
+                    . ' E.g. {object.name}',
                 );
             }
 
@@ -191,8 +199,8 @@ class BreadcrumbListener
                 $this->router->generate(
                     $breadcrumb->getRoute()->getName(),
                     $breadcrumb->getRoute()->getParameters(),
-                    UrlGeneratorInterface::ABSOLUTE_URL
-                )
+                    UrlGeneratorInterface::ABSOLUTE_URL,
+                ),
             );
         }
 
@@ -208,8 +216,10 @@ class BreadcrumbListener
 
                 if (!$this->request->attributes->has($attributeName)) {
                     throw new RuntimeException(
-                        'You tried to use {' . $attributeName . '} as a breadcrumb parameter, but there is no ' .
-                        'parameter with that name in the route.'
+                        'You tried to use {'
+                        . $attributeName
+                        . '} as a breadcrumb parameter, but there is no '
+                        . 'parameter with that name in the route.',
                     );
                 }
 
@@ -224,8 +234,10 @@ class BreadcrumbListener
 
                 if ($name === null) {
                     throw new RuntimeException(
-                        'You tried to use {' . $attributeName . '} as a breadcrumb parameter, but there is no ' .
-                        'parameter with that name in the route.'
+                        'You tried to use {'
+                        . $attributeName
+                        . '} as a breadcrumb parameter, but there is no '
+                        . 'parameter with that name in the route.',
                     );
                 }
 
@@ -233,14 +245,14 @@ class BreadcrumbListener
 
                 if (!is_object($attribute)) {
                     throw new RuntimeException(
-                        'Could not resolve entity ' . $name . ' with ID ' . $attributeId
+                        'Could not resolve entity ' . $name . ' with ID ' . $attributeId,
                     );
                 }
 
                 if (!isset($propertyPath)) {
                     throw new RuntimeException(
-                        'When using objects in a breadcrumb, you have to specify which method to read.' .
-                        ' E.g. {object.name}'
+                        'When using objects in a breadcrumb, you have to specify which method to read.'
+                        . ' E.g. {object.name}',
                     );
                 }
 
@@ -261,7 +273,7 @@ class BreadcrumbListener
 
         if ($routeInformation === null) {
             throw new RuntimeException(
-                'A route with name "' . $routeName . '" could not be found. Check your spelling.'
+                'A route with name "' . $routeName . '" could not be found. Check your spelling.',
             );
         }
 
@@ -353,20 +365,16 @@ class BreadcrumbListener
 
         $route->addParameters($parentParameters);
 
-        if (
-            count($routeInformation['parameters']) > 0
-            && !$route->getParameters()
-        ) {
+        if (count($routeInformation['parameters']) > 0 && !$route->getParameters()) {
             throw new RuntimeException(
-                'Your breadcrumb route is missing required parameters: ' .
-                implode($routeInformation['parameters'])
+                'Your breadcrumb route is missing required parameters: ' . implode($routeInformation['parameters']),
             );
         }
 
         foreach ($routeInformation['parameters'] as $requiredParameter) {
             if (!\array_key_exists($requiredParameter, $route->getParameters())) {
                 throw new RuntimeException(
-                    'Your breadcrumb route is missing required parameters: ' . $requiredParameter
+                    'Your breadcrumb route is missing required parameters: ' . $requiredParameter,
                 );
             }
         }

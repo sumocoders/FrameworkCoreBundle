@@ -132,7 +132,7 @@ final readonly class DoctrineAuditListener
                     $changes[$collectionUpdate->getMapping()->fieldName] = $this->getChangesForCollection(
                         $unitOfWork,
                         $className,
-                        $collectionUpdate
+                        $collectionUpdate,
                     );
                 }
             }
@@ -145,7 +145,7 @@ final readonly class DoctrineAuditListener
                     $changes[$collectionDeletion->getMapping()->fieldName] = $this->getChangesForCollection(
                         $unitOfWork,
                         $className,
-                        $collectionDeletion
+                        $collectionDeletion,
                     );
                 }
             }
@@ -155,7 +155,7 @@ final readonly class DoctrineAuditListener
                 $unitOfWork->getSingleIdentifierValue($entityUpdate),
                 EventAction::UPDATE,
                 array_keys($changes),
-                $changes
+                $changes,
             );
         }
 
@@ -178,7 +178,7 @@ final readonly class DoctrineAuditListener
                 $entityDeletion,
                 $unitOfWork,
                 $auditTrailAttributes[0]->getArguments()['fields'] ?? [],
-                $auditTrailAttributes[0]->getArguments()['withData'] ?? true
+                $auditTrailAttributes[0]->getArguments()['withData'] ?? true,
             );
 
             $this->auditLogger->log(
@@ -186,7 +186,7 @@ final readonly class DoctrineAuditListener
                 $unitOfWork->getSingleIdentifierValue($entityDeletion),
                 EventAction::DELETE,
                 [],
-                $properties
+                $properties,
             );
         }
     }
@@ -215,7 +215,7 @@ final readonly class DoctrineAuditListener
             $entity,
             $unitOfWork,
             $auditTrailAttributes[0]->getArguments()['fields'] ?? [],
-            $auditTrailAttributes[0]->getArguments()['withData'] ?? true
+            $auditTrailAttributes[0]->getArguments()['withData'] ?? true,
         );
 
         $this->auditLogger->log(
@@ -223,7 +223,7 @@ final readonly class DoctrineAuditListener
             $unitOfWork->getSingleIdentifierValue($entity),
             EventAction::CREATE,
             [],
-            $properties
+            $properties,
         );
     }
 
@@ -236,7 +236,7 @@ final readonly class DoctrineAuditListener
         object $entity,
         UnitOfWork $unitOfWork,
         array $fields = [],
-        bool $withData = false
+        bool $withData = false,
     ): array {
         $reflection = new ReflectionClass($entity);
         if ($entity instanceof Proxy) {
@@ -271,7 +271,8 @@ final readonly class DoctrineAuditListener
         if (!empty($fields)) {
             $properties = array_filter(
                 $properties,
-                fn ($key) => in_array($key, $fields, true), ARRAY_FILTER_USE_KEY
+                fn ($key) => in_array($key, $fields, true),
+                ARRAY_FILTER_USE_KEY,
             );
         }
 
@@ -284,7 +285,7 @@ final readonly class DoctrineAuditListener
     public function transform(
         UnitOfWork $unitOfWork,
         ReflectionProperty $reflectionProperty,
-        mixed $value
+        mixed $value,
     ): string|int|array|null {
         if ($value instanceof \BackedEnum) {
             return $value->value;
@@ -303,7 +304,7 @@ final readonly class DoctrineAuditListener
         }
 
         if ($value instanceof Collection) {
-            return $value->map(fn($item) => $item->getId())->toArray();
+            return $value->map(fn ($item) => $item->getId())->toArray();
         }
 
         $manyToOneAttributes = $reflectionProperty->getAttributes(ManyToOne::class);
@@ -333,7 +334,7 @@ final readonly class DoctrineAuditListener
      */
     private function getClassAndIdForCollectionChange(
         UnitOfWork $unitOfWork,
-        PersistentCollection $collectionChange
+        PersistentCollection $collectionChange,
     ): ?array {
         $owner = $collectionChange->getOwner();
 
@@ -362,7 +363,7 @@ final readonly class DoctrineAuditListener
     private function getChangesForCollection(
         UnitOfWork $unitOfWork,
         string $className,
-        PersistentCollection $collection
+        PersistentCollection $collection,
     ): array {
         $mapping = $collection->getMapping();
         $originalData = $this->getOriginalCollectionData($collection);
@@ -370,19 +371,19 @@ final readonly class DoctrineAuditListener
 
         $reflectionProperty = new ReflectionProperty(
             $className,
-            $mapping->fieldName
+            $mapping->fieldName,
         );
 
         return [
             'from' => $this->transform(
                 $unitOfWork,
                 $reflectionProperty,
-                $originalData
+                $originalData,
             ),
             'to' => $this->transform(
                 $unitOfWork,
                 $reflectionProperty,
-                $newData
+                $newData,
             ),
         ];
     }

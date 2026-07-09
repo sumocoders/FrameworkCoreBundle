@@ -8,8 +8,9 @@ use Twig\Attribute\AsTwigFunction;
 
 readonly class FrameworkExtension
 {
-    public function __construct(private RequestStack $requestStack)
-    {
+    public function __construct(
+        private RequestStack $requestStack,
+    ) {
     }
 
     #[AsTwigFilter('ucfirst')]

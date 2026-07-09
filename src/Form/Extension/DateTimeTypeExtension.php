@@ -24,7 +24,7 @@ final class DateTimeTypeExtension extends AbstractTypeExtension
                 'maximum_date' => null,
                 'minimum_date' => null,
                 'html5' => false,
-            ]
+            ],
         );
 
         $resolver->setDefined(['helper_text']);
@@ -35,7 +35,7 @@ final class DateTimeTypeExtension extends AbstractTypeExtension
         $view->vars['maximum_date'] = $options['maximum_date'] ?? null;
         $view->vars['minimum_date'] = $options['minimum_date'] ?? null;
         $view->vars['format'] = $options['format'];
-        $view->vars['divider'] = (strpos($options['format'], '-') !== false) ? '-' : '/';
+        $view->vars['divider'] = strpos($options['format'], '-') !== false ? '-' : '/';
         $view->vars['helper_text'] = $options['helper_text'] ?? null;
     }
 }

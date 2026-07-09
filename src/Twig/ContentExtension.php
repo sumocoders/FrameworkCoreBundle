@@ -11,7 +11,7 @@ readonly class ContentExtension
     public function __construct(
         #[Autowire('%kernel.project_dir%/public')]
         private string $publicFolder,
-        private Filesystem $filesystem
+        private Filesystem $filesystem,
     ) {
     }
 

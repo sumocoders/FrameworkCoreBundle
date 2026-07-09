@@ -2,8 +2,8 @@
 
 namespace SumoCoders\FrameworkCoreBundle\Form\Type;
 
-use SumoCoders\FrameworkCoreBundle\ValueObject\AbstractFile;
 use stdClass;
+use SumoCoders\FrameworkCoreBundle\ValueObject\AbstractFile;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Exception\TransformationFailedException;
@@ -31,7 +31,7 @@ class FileType extends AbstractType
                     'required' => false,
                     'label' => $options['remove_file_label'],
                     'property_path' => 'pendingDeletion',
-                ]
+                ],
             );
         }
 
@@ -39,7 +39,7 @@ class FileType extends AbstractType
             ->addEventListener(
                 FormEvents::PRE_SET_DATA,
                 function (FormEvent $event) use ($options) {
-                    $fileIsEmpty = ($event->getData() === null || empty($event->getData()->getFileName()));
+                    $fileIsEmpty = $event->getData() === null || empty($event->getData()->getFileName());
                     $required = $fileIsEmpty && $options['required'];
                     $fileFieldOptions = [
                         'label' => false,
@@ -49,12 +49,12 @@ class FileType extends AbstractType
                     if ($required) {
                         $fileFieldOptions['constraints'] = [
                             new NotBlank(
-                                ['message' => $options['required_file_error']]
+                                ['message' => $options['required_file_error']],
                             ),
                         ];
                     }
                     $event->getForm()->add('file', SymfonyFileType::class, $fileFieldOptions);
-                }
+                },
             )
             ->addModelTransformer(
                 new CallbackTransformer(
@@ -74,8 +74,8 @@ class FileType extends AbstractType
 
                         // return a clone to make sure that doctrine will do the lifecycle callbacks
                         return clone $file;
-                    }
-                )
+                    },
+                ),
             );
     }
 
@@ -91,7 +91,7 @@ class FileType extends AbstractType
                 'required_file_error',
                 'help',
                 'accept',
-            ]
+            ],
         );
 
         $resolver->setDefaults(
@@ -100,8 +100,7 @@ class FileType extends AbstractType
                 'preview_label' => 'forms.labels.viewCurrentFile',
                 'remove_file_label' => 'forms.labels.removeFile',
                 'empty_data' => function () {
-                    return new class extends StdClass
-                    {
+                    return new class extends StdClass {
                         /** @var UploadedFile */
                         protected $file;
 
@@ -135,7 +134,7 @@ class FileType extends AbstractType
                 'accept' => null,
                 'constraints' => array(new Valid()),
                 'error_bubbling' => false,
-            ]
+            ],
         );
     }
 
@@ -147,13 +146,13 @@ class FileType extends AbstractType
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['show_preview'] = $options['show_preview'];
-        $view->vars['show_remove_file'] = $options['show_remove_file'] && $form->getData() !== null
-                                          && !empty($form->getData()->getFileName());
+        $view->vars['show_remove_file'] =
+            $options['show_remove_file'] && $form->getData() !== null && !empty($form->getData()->getFileName());
         // if you need to have an file you shouldn't be allowed to remove it
         if ($options['required']) {
             $view->vars['show_remove_file'] = false;
         }
-        $imageIsEmpty = ($form->getData() === null || empty($form->getData()->getFileName()));
+        $imageIsEmpty = $form->getData() === null || empty($form->getData()->getFileName());
         $view->vars['required'] = $imageIsEmpty && $options['required'];
 
         $view->vars['preview_url'] = false;
@@ -168,7 +167,7 @@ class FileType extends AbstractType
             },
             [
                 'preview_label',
-            ]
+            ],
         );
     }
 }

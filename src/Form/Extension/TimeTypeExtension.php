@@ -23,15 +23,15 @@ final class TimeTypeExtension extends AbstractTypeExtension
             [
                 'format' => 'HH:mm',
                 'widget' => 'single_text',
-            ]
+            ],
         );
 
         $resolver->setAllowedValues(
             'widget',
             [
-            'single_text',
-            'choice',
-            ]
+                'single_text',
+                'choice',
+            ],
         );
 
         $resolver->setDefined(['helper_text']);
@@ -40,7 +40,7 @@ final class TimeTypeExtension extends AbstractTypeExtension
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['format'] = $options['format'];
-        $view->vars['divider'] = (strpos($options['format'], '-') !== false) ? '-' : '/';
+        $view->vars['divider'] = strpos($options['format'], '-') !== false ? '-' : '/';
         $view->vars['timepicker'] = $options['timepicker'] ?? false;
         $view->vars['helper_text'] = $options['helper_text'] ?? null;
     }

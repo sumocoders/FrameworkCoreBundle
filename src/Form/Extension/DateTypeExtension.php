@@ -25,15 +25,15 @@ final class DateTypeExtension extends AbstractTypeExtension
                 'maximum_date' => null,
                 'minimum_date' => null,
                 'html5' => false,
-            ]
+            ],
         );
 
         $resolver->setAllowedValues(
             'widget',
             [
-            'single_text',
-            'choice',
-            ]
+                'single_text',
+                'choice',
+            ],
         );
 
         $resolver->setDefined(['helper_text']);
@@ -44,7 +44,7 @@ final class DateTypeExtension extends AbstractTypeExtension
         $view->vars['maximum_date'] = $options['maximum_date'] ?? null;
         $view->vars['minimum_date'] = $options['minimum_date'] ?? null;
         $view->vars['format'] = $options['format'];
-        $view->vars['divider'] = (strpos($options['format'], '-') !== false) ? '-' : '/';
+        $view->vars['divider'] = strpos($options['format'], '-') !== false ? '-' : '/';
         $view->vars['datepicker'] = $options['datepicker'] ?? false;
         $view->vars['helper_text'] = $options['helper_text'] ?? null;
     }

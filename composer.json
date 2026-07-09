@@ -43,7 +43,8 @@
   "require-dev": {
     "roave/security-advisories": "dev-master",
     "symfony/phpunit-bridge": "^8.0",
-    "symfony/maker-bundle": "^1.61"
+    "symfony/maker-bundle": "^1.61",
+    "carthage-software/mago": "^1.43"
   },
   "autoload": {
     "psr-4": {

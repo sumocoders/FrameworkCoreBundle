@@ -46,9 +46,10 @@ class BelgiumPostCodeType extends AbstractType
             'choice_loader' => function (Options $options) {
                 if (!class_exists(Intl::class)) {
                     throw new LogicException(sprintf(
+                        // phpcs:ignore Generic.Files.LineLength
                         'The "symfony/intl" component is required to use "%s". Try running "composer require symfony/intl".',
                         static::class,
-                    )); // phpcs:ignore Generic.Files.LineLength
+                    ));
                 }
 
                 return ChoiceList::loader(

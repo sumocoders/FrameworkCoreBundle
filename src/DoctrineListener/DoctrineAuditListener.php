@@ -42,6 +42,7 @@ final readonly class DoctrineAuditListener
          */
         $collectionUpdatesByOwner = [];
         /**
+         * // phpcs:ignore Generic.Files.LineLength
          * @var array<class-string, array<int, array<int, PersistentCollection<int, mixed>>>> $collectionDeletionsByOwner
          */
         $collectionDeletionsByOwner = [];
@@ -109,7 +110,6 @@ final readonly class DoctrineAuditListener
 
                     $embedded = $entityUpdate->{'get' . ucfirst($property)}();
                     $fieldReflection = new ReflectionProperty($embedded, $subProperty);
-
                     // @mago-expect lint:no-else-clause
                 } else {
                     $fieldReflection = new ReflectionProperty($className, $field);
@@ -276,7 +276,7 @@ final readonly class DoctrineAuditListener
         if (count($fields) > 0) {
             $properties = array_filter(
                 $properties,
-                static fn ($key) => in_array($key, $fields, true),
+                static fn($key) => in_array($key, $fields, true),
                 ARRAY_FILTER_USE_KEY,
             );
         }
@@ -309,7 +309,7 @@ final readonly class DoctrineAuditListener
         }
 
         if ($value instanceof Collection) {
-            return $value->map(static fn ($item) => $item->getId())->toArray();
+            return $value->map(static fn($item) => $item->getId())->toArray();
         }
 
         $manyToOneAttributes = $reflectionProperty->getAttributes(ManyToOne::class);

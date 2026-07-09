@@ -1,0 +1,10 @@
+assets/scss/foundation-emails/
+config/*
+src/*
+tests/*
+translations/*
+vendor/*
+LICENSE
+*.*
+!*.css
+!*.scss

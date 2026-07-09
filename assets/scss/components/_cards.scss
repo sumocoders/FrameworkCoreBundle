@@ -88,12 +88,9 @@
       color: var(--bs-body-color);
 
       &::after {
-        bottom: 0;
+        inset: 0;
         content: '';
-        left: 0;
         position: absolute;
-        right: 0;
-        top: 0;
       }
 
       &:hover {

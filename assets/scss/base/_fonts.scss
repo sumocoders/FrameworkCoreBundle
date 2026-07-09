@@ -1,5 +1,5 @@
 // Example for importing fonts
-//@mixin font-import($font-name, $font-file, $style: normal, $weight: 400) {
+// @mixin font-import($font-name, $font-file, $style: normal, $weight: 400) {
 //
 //  @font-face {
 //    font-family: "#{$font-name}";
@@ -9,6 +9,6 @@
 //    font-style:   $style;
 //    font-weight:  $weight;
 //  }
-//}
+// }
 
-//@include font-import(Lato, lato-regular-webfont, normal, 400);
+// @include font-import(Lato, lato-regular-webfont, normal, 400);

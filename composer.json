@@ -45,7 +45,8 @@
     "symfony/phpunit-bridge": "^8.0",
     "symfony/maker-bundle": "^1.61",
     "carthage-software/mago": "^1.43",
-    "squizlabs/php_codesniffer": "^4.0"
+    "squizlabs/php_codesniffer": "^4.0",
+    "phpstan/phpstan": "^2.2"
   },
   "autoload": {
     "psr-4": {

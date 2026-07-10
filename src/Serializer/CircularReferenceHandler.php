@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping\Id;
 
 class CircularReferenceHandler
 {
-    public function __invoke($object): ?string
+    public function __invoke(object $object): ?string
     {
         return $this->getId($object);
     }
@@ -17,10 +17,7 @@ class CircularReferenceHandler
         $properties = $reflectionClass->getProperties();
 
         foreach ($properties as $property) {
-            // @mago-expect lint:prefer-early-continue
             if ($property->getAttributes(Id::class)) {
-                $property->setAccessible(true);
-
                 return (string) $property->getValue($object);
             }
         }

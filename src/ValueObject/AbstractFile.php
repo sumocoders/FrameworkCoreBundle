@@ -37,13 +37,15 @@ abstract class AbstractFile
 
     public function getAbsolutePath(): ?string
     {
+        // @mago-expect analysis:possibly-null-operand
         return $this->fileName === null ? null : $this->getUploadRootDir() . '/' . $this->fileName;
     }
 
     public function getWebPath(): string
     {
         $file = $this->getAbsolutePath();
-        if (is_file($file) && file_exists($file)) {
+        if (!is_null($file) && !is_null($this->fileName) && is_file($file) && file_exists($file)) {
+            // @mago-expect analysis:possibly-null-operand
             return '/files/' . $this->getUploadDir() . '/' . $this->fileName;
         }
 
@@ -92,6 +94,7 @@ abstract class AbstractFile
         ?UploadedFile $uploadedFile = null,
         ?string $namePrefix = null,
     ): static {
+        // @mago-expect analysis:unsafe-instantiation
         $file = new static(null);
         $file->setFile($uploadedFile);
         if ($namePrefix !== null) {
@@ -116,17 +119,20 @@ abstract class AbstractFile
      */
     public function prepareToUpload(): void
     {
-        if ($this->getFile() === null) {
+        $file = $this->getFile();
+        if (is_null($file)) {
             return;
         }
 
         // do whatever you want to generate a unique name
         $filename = sha1(uniqid((string) mt_rand(), true));
         if ($this->namePrefix !== null) {
+            // @mago-expect analysis:non-existent-method
             // @phpstan-ignore staticMethod.notFound
             $filename = Urlizer::urlize($this->namePrefix) . '_' . $filename;
         }
-        $this->fileName = $filename . '.' . $this->getFile()->guessExtension();
+        // @mago-expect analysis:possibly-null-operand
+        $this->fileName = $filename . '.' . $file->guessExtension();
     }
 
     /**
@@ -153,8 +159,13 @@ abstract class AbstractFile
      */
     protected function removeOldFile(): void
     {
+        $oldFile = $this->oldFileName;
+        if (is_null($oldFile)) {
+            return;
+        }
+
         // delete the old file
-        $oldFile = $this->getUploadRootDir() . '/' . $this->oldFileName;
+        $oldFile = $this->getUploadRootDir() . '/' . $oldFile;
         if (is_file($oldFile) && file_exists($oldFile)) {
             unlink($oldFile);
         }
@@ -169,7 +180,12 @@ abstract class AbstractFile
      */
     protected function writeFileToDisk(): void
     {
-        $this->getFile()->move($this->getUploadRootDir(), $this->fileName);
+        $file = $this->getFile();
+        if (is_null($file)) {
+            return;
+        }
+
+        $file->move($this->getUploadRootDir(), $this->fileName);
     }
 
     /**
@@ -178,7 +194,7 @@ abstract class AbstractFile
     public function remove(): void
     {
         $file = $this->getAbsolutePath();
-        if (!is_file($file) || !file_exists($file)) {
+        if (is_null($file) || !is_file($file) || !file_exists($file)) {
             return;
         }
 
@@ -192,6 +208,7 @@ abstract class AbstractFile
 
     public static function fromString(?string $fileName): ?self
     {
+        // @mago-expect analysis:unsafe-instantiation
         return $fileName !== null ? new static($fileName) : null;
     }
 
@@ -217,11 +234,10 @@ abstract class AbstractFile
     }
 
     /**
-     * @param bool $isPendingDeletion
      * @internal Used by the form types
-     *
      */
-    public function setPendingDeletion($isPendingDeletion): void
+    // @mago-expect lint:no-boolean-flag-parameter
+    public function setPendingDeletion(bool $isPendingDeletion): void
     {
         if ($isPendingDeletion) {
             $this->markForDeletion();

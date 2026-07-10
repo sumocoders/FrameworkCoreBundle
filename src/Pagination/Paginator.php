@@ -18,7 +18,7 @@ use Traversable;
  */
 class Paginator implements Countable, IteratorAggregate
 {
-    public const PAGE_SIZE = 30;
+    public const int PAGE_SIZE = 30;
 
     private int $currentPage;
     private int $startPage;
@@ -42,6 +42,7 @@ class Paginator implements Countable, IteratorAggregate
             ->setMaxResults($this->pageSize)
             ->getQuery();
 
+        // @mago-expect analysis:mixed-argument
         if (0 === count($this->queryBuilder->getDQLPart('join'))) {
             $query->setHint(CountWalker::HINT_DISTINCT, false);
         }
@@ -135,6 +136,7 @@ class Paginator implements Countable, IteratorAggregate
 
     public function count(): int
     {
+        // @mago-expect analysis:possibly-invalid-argument
         return count($this->getResults());
     }
 
@@ -146,13 +148,16 @@ class Paginator implements Countable, IteratorAggregate
         $results = $this->getResults();
 
         if ($results instanceof Iterator) {
+            // @mago-expect analysis:less-specific-return-statement
             return $results;
         }
 
         if ($results instanceof IteratorAggregate) {
+            // @mago-expect analysis:mixed-return-statement,non-existent-method(2)
             return $results->getIterator();
         }
 
+        // @mago-expect analysis:invalid-argument
         return new ArrayIterator($results);
     }
 

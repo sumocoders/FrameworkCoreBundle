@@ -9,6 +9,7 @@ final class AuditTrail
 {
     // @phpstan-ignore missingType.iterableValue
     public function __construct(
+        // @mago-expect analysis:imprecise-type
         public array $fields = [],
         public bool $withData = true,
     ) {

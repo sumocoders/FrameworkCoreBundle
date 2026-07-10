@@ -2,6 +2,7 @@
 
 namespace SumoCoders\FrameworkCoreBundle\Service;
 
+use SumoCoders\FrameworkCoreBundle\ValueObject\Breadcrumb;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PageTitle
@@ -29,12 +30,16 @@ class PageTitle
         $breadcrumbs = array_reverse($this->breadcrumbTrail->all());
 
         if (count($breadcrumbs) === 0) {
-            return $this->fallbacks->get('site_title');
+            return (string) $this->fallbacks->get('site_title');
         }
 
-        $titles = array_map(fn ($breadcrumb) => $this->translator->trans($breadcrumb->getTitle()), $breadcrumbs);
+        $titles = array_map(
+            fn (Breadcrumb $breadcrumb): string => $this->translator->trans($breadcrumb->getTitle()),
+            $breadcrumbs,
+        );
         $titles[] = $this->fallbacks->get('site_title');
 
+        // @mago-expect analysis:less-specific-nested-argument-type
         return implode(' - ', $titles);
     }
 

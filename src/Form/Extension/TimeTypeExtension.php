@@ -38,6 +38,7 @@ final class TimeTypeExtension extends AbstractTypeExtension
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['format'] = $options['format'];
+        // @mago-expect analysis:mixed-argument
         $view->vars['divider'] = str_contains($options['format'], '-') ? '-' : '/';
         $view->vars['timepicker'] = $options['timepicker'] ?? false;
         $view->vars['helper_text'] = $options['helper_text'] ?? null;

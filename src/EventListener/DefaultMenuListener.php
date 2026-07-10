@@ -41,8 +41,11 @@ class DefaultMenuListener
     public function enableChildRoutes(ItemInterface $item, string $prefix): void
     {
         $request = $this->requestStack->getCurrentRequest();
+        if ($request === null) {
+            return;
+        }
 
-        if (str_contains($request->attributes->get('_route'), $prefix)) {
+        if (str_contains((string) $request->attributes->get('_route'), $prefix)) {
             $item->setExtra(
                 'routes',
                 [

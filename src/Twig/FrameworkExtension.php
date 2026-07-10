@@ -26,10 +26,12 @@ readonly class FrameworkExtension
             return 'theme-light';
         }
 
+        // @mago-expect analysis:possible-method-access-on-null,possibly-null-property-access
         if (!$this->requestStack->getCurrentRequest()->cookies->has('theme')) {
             return 'theme-light';
         }
 
+        // @mago-expect analysis:possible-method-access-on-null,possibly-null-property-access
         return 'theme-' . $this->requestStack->getCurrentRequest()->cookies->get('theme');
     }
 
@@ -40,10 +42,12 @@ readonly class FrameworkExtension
             return true;
         }
 
+        // @mago-expect analysis:possible-method-access-on-null,possibly-null-property-access
         if (!$this->requestStack->getCurrentRequest()->cookies->has('sidebar_is_open')) {
             return true;
         }
 
+        // @mago-expect analysis:possible-method-access-on-null,possibly-null-property-access
         return $this->requestStack->getCurrentRequest()->cookies->get('sidebar_is_open') !== 'false';
     }
 }

@@ -19,7 +19,7 @@ abstract class AbstractImage extends AbstractFile
     /**
      * @var string|null
      */
-    public const FALLBACK_IMAGE = null;
+    public const ?string FALLBACK_IMAGE = null;
 
     public function getWebPath(): string
     {
@@ -27,11 +27,16 @@ abstract class AbstractImage extends AbstractFile
 
         $file = $this->getAbsolutePath();
 
-        if (is_file($file) && file_exists($file)) {
+        if (!is_null($file) && is_file($file) && file_exists($file)) {
             return $webPath;
         }
 
-        return static::FALLBACK_IMAGE;
+        if ($this->getFallbackImage() === null) {
+            throw new \RuntimeException('No fallback image set for ' . static::class);
+        }
+
+        // @mago-expect analysis:invalid-return-statement,nullable-return-statement
+        return $this->getFallbackImage();
     }
 
     public function getFallbackImage(): ?string

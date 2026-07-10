@@ -9,19 +9,6 @@ parameters:
   excludePaths:
   ignoreErrors:
     -
-      identifier: missingType.iterableValue
-      path: src/Attribute/Breadcrumb.php
-      count: 5
-    -
-      identifiers:
-        - missingType.iterableValue
-        - missingType.parameter
-      path: src/Attribute/Title.php
-    -
-      identifier: class.notFound
-      path: src/Command/Maintenance/CreatePrForOutdatedDependenciesCommand.php
-      count: 2
-    -
       identifiers:
         - method.notFound
         - argument.templateType
@@ -41,6 +28,7 @@ parameters:
     -
       identifier: missingType.generics
       paths:
+        - src/DoctrineListener/DoctrineAuditListener.php
         - src/EventListener/BreadcrumbListener.php
         - src/EventListener/DoctrineExtensionListener.php
         - src/Pagination/Paginator.php
@@ -52,11 +40,7 @@ parameters:
         - return.type
       path: src/Pagination/Paginator.php
     -
-      identifier: missingType.parameter
-      path: src/Serializer/CircularReferenceHandler.php
-    -
       identifiers:
-        - missingType.parameter
         - missingType.iterableValue
       path: src/Serializer/MaxDepthHandler.php
     -

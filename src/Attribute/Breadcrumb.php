@@ -9,10 +9,16 @@ use SumoCoders\FrameworkCoreBundle\ValueObject\Route;
 final class Breadcrumb
 {
     private string $title;
+    // @phpstan-ignore missingType.iterableValue
     private array $parameters;
     private ?Route $route;
     private ?Route $parent;
 
+    /**
+     * @param array<array-key, mixed>|null                                   $parameters
+     * @param array{name: string, parameters?: array<array-key, mixed>}|null $route
+     * @param array{name: string, parameters?: array<array-key, mixed>}|null $parent
+     */
     public function __construct(
         string $title,
         ?array $parameters = null,
@@ -69,6 +75,7 @@ final class Breadcrumb
         return $this->parent;
     }
 
+    /** @return array<array-key, mixed> */
     public function getParameters(): array
     {
         return $this->parameters;

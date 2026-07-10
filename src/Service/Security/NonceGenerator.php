@@ -42,6 +42,7 @@ class NonceGenerator implements NonceGeneratorInterface, EventSubscriberInterfac
         }
     }
 
+    // @mago-expect analysis:unused-parameter
     public function onKernelResponse(ResponseEvent $event): void
     {
         $this->requestNonce = null;

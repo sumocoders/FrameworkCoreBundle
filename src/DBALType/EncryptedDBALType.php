@@ -8,7 +8,7 @@ use Doctrine\DBAL\Types\Type;
 
 class EncryptedDBALType extends Type
 {
-    public const ENCRYPTED = 'encrypted';
+    public const string ENCRYPTED = 'encrypted';
 
     public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {
@@ -25,7 +25,7 @@ class EncryptedDBALType extends Type
             throw new \RuntimeException('ENCRYPTION_KEY should be a valid 64 character key in your .env.local');
         }
 
-        [$nonce, $encryptedValue] = explode('|', $value);
+        [$nonce, $encryptedValue] = explode('|', (string) $value);
 
         $decrypted = sodium_crypto_secretbox_open(
             sodium_hex2bin($encryptedValue),
@@ -34,8 +34,13 @@ class EncryptedDBALType extends Type
         );
 
         if ($decrypted === false) {
-            // @phpstan-ignore staticMethod.notFound
-            throw ConversionException::conversionFailed($value, $this->getName());
+            throw new ConversionException(
+                sprintf(
+                    'Could not convert value to PHP value: \'%1$s\' for type \'%2$s\'.',
+                    (string) $value,
+                    $this->getName(),
+                ),
+            );
         }
 
         return $decrypted;
@@ -54,7 +59,7 @@ class EncryptedDBALType extends Type
         $nonce = random_bytes(SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);
         $key = sodium_hex2bin($_ENV['ENCRYPTION_KEY']);
 
-        $encryptedValue = sodium_crypto_secretbox($value, $nonce, $key);
+        $encryptedValue = sodium_crypto_secretbox((string) $value, $nonce, $key);
 
         return sodium_bin2hex($nonce) . '|' . sodium_bin2hex($encryptedValue);
     }

@@ -7,6 +7,7 @@ use SumoCoders\FrameworkCoreBundle\ValueObject\BelgiumPostCode;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\ChoiceList\ChoiceList;
+use Symfony\Component\Form\ChoiceList\Loader\ChoiceLoaderInterface;
 use Symfony\Component\Form\ChoiceList\Loader\IntlCallbackChoiceLoader;
 use Symfony\Component\Form\Exception\LogicException;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -43,7 +44,8 @@ class BelgiumPostCodeType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'choice_loader' => function (Options $options) {
+            // @mago-expect analysis:unused-parameter
+            'choice_loader' => function (Options $options): ChoiceLoaderInterface {
                 if (!class_exists(Intl::class)) {
                     throw new LogicException(sprintf(
                         // phpcs:ignore Generic.Files.LineLength
@@ -54,7 +56,8 @@ class BelgiumPostCodeType extends AbstractType
 
                 return ChoiceList::loader(
                     $this,
-                    new IntlCallbackChoiceLoader(static fn () => array_flip(BelgiumPostCodes::getNames())),
+                    // @mago-expect analysis:imprecise-type
+                    new IntlCallbackChoiceLoader(static fn (): array => array_flip(BelgiumPostCodes::getNames())),
                 );
             },
             'choice_translation_domain' => false,

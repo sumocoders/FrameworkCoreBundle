@@ -17,6 +17,7 @@ class AuditLogger
     ) {
     }
 
+    // @mago-expect analysis:imprecise-type
     public function log(
         ?string $entityClass = null,
         ?string $identifier = null,
@@ -52,6 +53,7 @@ class AuditLogger
     private function getIpAddress(): ?string
     {
         if ($this->requestStack->getCurrentRequest() !== null) {
+            // @mago-expect analysis:possible-method-access-on-null,mixed-return-statement
             return $this->requestStack->getCurrentRequest()->getClientIp();
         }
 
@@ -61,6 +63,8 @@ class AuditLogger
     private function getImpersonatingUser(): ?UserInterface
     {
         if ($this->security->isGranted('ROLE_PREVIOUS_ADMIN')) {
+            // phpcs:ignore Generic.Files.LineLength.TooLong
+            // @mago-expect analysis:possible-method-access-on-null,mixed-return-statement,mixed-method-access,non-existent-method
             // @phpstan-ignore method.notFound
             return $this->security->getToken()->getOriginalToken()->getUser();
         }
@@ -83,6 +87,7 @@ class AuditLogger
     private function getRoles(): array
     {
         if ($this->security->getUser() !== null) {
+            // @mago-expect analysis:possible-method-access-on-null,mixed-return-statement
             return $this->security->getUser()->getRoles();
         }
 
@@ -93,6 +98,7 @@ class AuditLogger
     {
         // If a request is available, return the current URI
         if ($this->requestStack->getCurrentRequest() !== null) {
+            // @mago-expect analysis:possible-method-access-on-null,mixed-return-statement
             return $this->requestStack->getCurrentRequest()->getUri();
         }
 

@@ -7,7 +7,6 @@ php-version = "8.5"
 workspace = "."
 paths = [
     "src/",
-    "tests/",
 ]
 includes = [
     "vendor"

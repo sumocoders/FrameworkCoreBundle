@@ -45,50 +45,54 @@ final class CollectionTypeExtension extends AbstractTypeExtension
     {
         parent::buildForm($builder, $options);
 
-        if ($options['minimum_required_items'] < 0) {
+        if ((int) $options['minimum_required_items'] < 0) {
             throw new \InvalidArgumentException('minimum_required_items cannot be lower than 0');
         }
 
         if (
             $options['maximum_required_items'] !== null
-            && $options['maximum_required_items'] < $options['minimum_required_items']
+            && (int) $options['maximum_required_items'] < (int) $options['minimum_required_items']
         ) {
             throw new \InvalidArgumentException('maximum_required_items cannot be lower than minimum_required_items');
         }
 
-        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
-            $form = $event->getForm();
-            $min = $form->getConfig()->getOption('minimum_required_items');
-            $max = $form->getConfig()->getOption('maximum_required_items');
+        $builder->addEventListener(
+            FormEvents::POST_SUBMIT,
+            function (FormEvent $event): void {
+                $form = $event->getForm();
+                $min = (int) $form->getConfig()->getOption('minimum_required_items');
+                // @mago-expect analysis:mixed-assignment
+                $max = $form->getConfig()->getOption('maximum_required_items');
 
-            if ($form->count() < $min) {
-                $error = new FormError(
-                    message: $this->translator->trans(
-                        'You must add at least %count% items',
-                        ['%count%' => $min],
-                        'validators',
-                    ),
-                    messageTemplate: 'You must add at least %count% items',
-                    messageParameters: ['%count%' => $min],
-                );
-                $error->setOrigin($form);
-                $form->addError($error);
-            }
+                if ($form->count() < $min) {
+                    $error = new FormError(
+                        message: $this->translator->trans(
+                            'You must add at least %count% items',
+                            ['%count%' => $min],
+                            'validators',
+                        ),
+                        messageTemplate: 'You must add at least %count% items',
+                        messageParameters: ['%count%' => $min],
+                    );
+                    $error->setOrigin($form);
+                    $form->addError($error);
+                }
 
-            if ($max !== null && $form->count() > $max) {
-                $error = new FormError(
-                    message: $this->translator->trans(
-                        'You can add a maximum of %count% items',
-                        ['%count%' => $max],
-                        'validators',
-                    ),
-                    messageTemplate: 'You can add a maximum of %count% items',
-                    messageParameters: ['%count%' => $max],
-                );
-                $error->setOrigin($form);
-                $form->addError($error);
-            }
-        });
+                if ($max !== null && $form->count() > (int) $max) {
+                    $error = new FormError(
+                        message: $this->translator->trans(
+                            'You can add a maximum of %count% items',
+                            ['%count%' => $max],
+                            'validators',
+                        ),
+                        messageTemplate: 'You can add a maximum of %count% items',
+                        messageParameters: ['%count%' => $max],
+                    );
+                    $error->setOrigin($form);
+                    $form->addError($error);
+                }
+            },
+        );
     }
 
     public function buildView(FormView $view, FormInterface $form, array $options): void

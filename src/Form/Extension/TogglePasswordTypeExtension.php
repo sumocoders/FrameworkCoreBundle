@@ -50,20 +50,25 @@ final class TogglePasswordTypeExtension extends AbstractTypeExtension
         }
 
         if ($options['use_toggle_form_theme']) {
+            // @mago-expect analysis:mixed-argument
             array_splice($view->vars['block_prefixes'], -1, 0, 'toggle_password');
         }
 
         $controllerName = 'toggle-password';
+        // @mago-expect analysis:mixed-array-assignment,mixed-argument
         $view->vars['attr']['data-controller'] = trim(\sprintf(
             '%s %s',
             $view->vars['attr']['data-controller'] ?? '',
             $controllerName,
         ));
 
+        $controllerValues = [];
+        // @mago-expect analysis:mixed-argument(2)
         $controllerValues['hidden-label'] = $this->translateLabel(
             $options['hidden_label'],
             $options['translation_domain'],
         );
+        // @mago-expect analysis:mixed-argument(2)
         $controllerValues['visible-label'] = $this->translateLabel(
             $options['visible_label'],
             $options['translation_domain'],
@@ -72,6 +77,7 @@ final class TogglePasswordTypeExtension extends AbstractTypeExtension
         $controllerValues['button-classes'] = json_encode($options['button_classes'], \JSON_THROW_ON_ERROR);
 
         foreach ($controllerValues as $name => $value) {
+            // @mago-expect analysis:mixed-array-assignment
             $view->vars['attr'][\sprintf('data-%s-%s-value', $controllerName, $name)] = $value;
         }
 

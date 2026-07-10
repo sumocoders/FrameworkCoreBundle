@@ -50,11 +50,13 @@ class MenuBuilder
                 $this->reorderMenuItems($menuItem);
             }
 
+            // @mago-expect analysis:mixed-assignment
             $orderNumber = $menuItem->getExtra('orderNumber');
 
             // @mago-expect lint:no-else-clause
             if ($orderNumber !== null) {
                 // @mago-expect lint:no-else-clause
+                // @mago-expect analysis:mixed-argument,impossible-type-comparison,redundant-logical-operation,impossible-null-type-comparison
                 // @phpstan-ignore booleanOr.rightAlwaysFalse
                 if (!array_key_exists($orderNumber, $menuOrderArray) || is_null($menuOrderArray[$orderNumber])) {
                     $menuOrderArray[$orderNumber] = $menuItem->getName();

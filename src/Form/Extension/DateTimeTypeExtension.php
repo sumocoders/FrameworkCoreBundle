@@ -34,6 +34,7 @@ final class DateTimeTypeExtension extends AbstractTypeExtension
         $view->vars['maximum_date'] = $options['maximum_date'] ?? null;
         $view->vars['minimum_date'] = $options['minimum_date'] ?? null;
         $view->vars['format'] = $options['format'];
+        // @mago-expect analysis:mixed-argument
         $view->vars['divider'] = str_contains($options['format'], '-') ? '-' : '/';
         $view->vars['helper_text'] = $options['helper_text'] ?? null;
     }

@@ -61,7 +61,7 @@ class CreatePrForOutdatedDependenciesCommand
             return;
         }
 
-        $output = $this->runConsoleCommand(
+        $output = (string) $this->runConsoleCommand(
             [
                 'command' => 'importmap:outdated',
                 '--no-interaction' => true,
@@ -76,10 +76,13 @@ class CreatePrForOutdatedDependenciesCommand
             return;
         }
 
+        // @mago-expect analysis:mixed-assignment
         $outdatedPackages = json_decode($output, true, 512, JSON_THROW_ON_ERROR);
         $semverSafeUpdatePackages = array_filter(
+            // @mago-expect analysis:mixed-argument
             $outdatedPackages,
-            static fn ($package) => $package['latest-status'] === 'semver-safe-update',
+            // @mago-expect analysis:imprecise-type
+            static fn (array $package): bool => $package['latest-status'] === 'semver-safe-update',
         );
 
         if (count($semverSafeUpdatePackages) === 0) {
@@ -148,7 +151,7 @@ class CreatePrForOutdatedDependenciesCommand
             return;
         }
 
-        $outdatedPackages = $this->runCommand(
+        $outdatedPackages = (string) $this->runCommand(
             ['composer', 'outdated', '--direct', '--minor-only', '--no-scripts', '--format=json'],
             true,
             false,
@@ -159,14 +162,18 @@ class CreatePrForOutdatedDependenciesCommand
             return;
         }
 
+        // @mago-expect analysis:mixed-assignment
         $outdatedPackages = json_decode($outdatedPackages, true, 512, JSON_THROW_ON_ERROR);
+        // @mago-expect analysis:mixed-argument
         if (!array_key_exists('installed', $outdatedPackages)) {
             return;
         }
 
         $semverSafeUpdatePackages = array_filter(
+            // @mago-expect analysis:mixed-array-access,mixed-argument
             $outdatedPackages['installed'],
-            static function ($package) {
+            // @mago-expect analysis:imprecise-type
+            static function (array $package): bool {
                 if ($package['abandoned']) {
                     return false;
                 }
@@ -265,6 +272,7 @@ class CreatePrForOutdatedDependenciesCommand
         if (!is_callable($commandsToRun)) {
             throw new \InvalidArgumentException('The $commandsToRun parameter must be a callable.');
         }
+        // @mago-expect analysis:less-specific-nested-argument-type
         call_user_func_array($commandsToRun, $arguments);
 
         // push to remote
@@ -290,25 +298,29 @@ class CreatePrForOutdatedDependenciesCommand
         );
     }
 
-    /**
-     * @param array<mixed,mixed> $command
-     */
-    // @mago-expect lint:no-boolean-flag-parameter
+    // @phpstan-ignore missingType.iterableValue
     private function runCommand(
+        // @mago-expect analysis:imprecise-type
         array $command,
+        // @mago-expect lint:no-boolean-flag-parameter
         bool $showInput = true,
+        // @mago-expect lint:no-boolean-flag-parameter
         bool $showOutput = false,
+        // @mago-expect lint:no-boolean-flag-parameter
         bool $returnOutput = false,
     ): mixed {
         $io = $this->io;
         if ($showInput) {
+            // @mago-expect analysis:less-specific-nested-argument-type
             $io->writeln('  → ' . implode(' ', $command));
         }
 
+        // @mago-expect analysis:less-specific-nested-argument-type
         $process = new Process($command);
         // @mago-expect lint:no-else-clause
         if ($showOutput) {
-            $output = static function ($type, $buffer) use ($io) {
+            // @mago-expect analysis:unused-parameter
+            $output = static function (string $type, string $buffer) use ($io): void {
                 $buffer = trim($buffer);
                 $lines = explode("\n", $buffer);
                 foreach ($lines as $line) {
@@ -331,27 +343,30 @@ class CreatePrForOutdatedDependenciesCommand
         return null;
     }
 
-    /**
-     * @param array<mixed,mixed> $command
-     */
-    // @mago-expect lint:no-boolean-flag-parameter
+    // @phpstan-ignore missingType.iterableValue
     private function runConsoleCommand(
+        // @mago-expect analysis:imprecise-type
         array $command,
+        // @mago-expect lint:no-boolean-flag-parameter
         bool $showInput = true,
+        // @mago-expect lint:no-boolean-flag-parameter
         bool $showOutput = false,
+        // @mago-expect lint:no-boolean-flag-parameter
         bool $returnOutput = false,
     ): mixed {
         $io = $this->io;
         if ($showInput) {
             $commandString = [];
+            // @mago-expect analysis:mixed-assignment
             foreach ($command as $key => $value) {
-                if (is_bool($value) && $value === true) {
+                if (is_bool($value) && $value) {
                     $commandString[] = $key;
                     continue;
                 }
                 $commandString[] = $value;
             }
 
+            // @mago-expect analysis:less-specific-nested-argument-type
             $io->writeln('  → bin/console ' . implode(' ', $commandString));
         }
 
@@ -402,7 +417,7 @@ class CreatePrForOutdatedDependenciesCommand
         }
         $projectId = getenv('CI_PROJECT_ID');
         if ($projectId === false) {
-            $output = $this->runCommand(
+            $output = (string) $this->runCommand(
                 ['git', 'config', '--get', 'remote.origin.url'],
                 false,
                 false,
@@ -429,7 +444,6 @@ class CreatePrForOutdatedDependenciesCommand
             );
         }
 
-        // @phpstan-ignore class.notFound
         $response = $this->httpClient->request(
             'GET',
             sprintf(
@@ -448,20 +462,30 @@ class CreatePrForOutdatedDependenciesCommand
             ],
         );
 
+        // @mago-expect analysis:mixed-assignment
         $data = json_decode($response->getContent(), false, 512, JSON_THROW_ON_ERROR);
 
+        // @mago-expect analysis:mixed-argument
         if (count($data) === 0) {
             return [];
         }
 
         // @mago-expect lint:prefer-arrow-function
-        return array_map(static function ($mergeRequest) {
-            return [
-                'id' => $mergeRequest->id,
-                'title' => $mergeRequest->title,
-                'target_branch' => $mergeRequest->target_branch,
-            ];
-        }, $data);
+        // @mago-expect analysis:imprecise-type,mixed-argument,less-specific-nested-return-statement
+        return array_map(
+            static function (object $mergeRequest): array {
+                // @mago-expect analysis:ambiguous-object-property-access(3)
+                return [
+                    // @phpstan-ignore property.notFound
+                    'id' => $mergeRequest->id,
+                    // @phpstan-ignore property.notFound
+                    'title' => $mergeRequest->title,
+                    // @phpstan-ignore property.notFound
+                    'target_branch' => $mergeRequest->target_branch,
+                ];
+            },
+            $data,
+        );
     }
 
     private function hasMergeRequest(string $title, string $targetBranch): bool
@@ -487,7 +511,7 @@ class CreatePrForOutdatedDependenciesCommand
 
         $branch = getenv('CI_COMMIT_BRANCH');
         if ($branch === false) {
-            $branch = $this->runCommand(
+            $branch = (string) $this->runCommand(
                 ['git', 'rev-parse', '--abbrev-ref', 'HEAD'],
                 false,
                 false,

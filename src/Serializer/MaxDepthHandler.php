@@ -6,11 +6,13 @@ use Doctrine\ORM\Mapping\Id;
 
 class MaxDepthHandler
 {
+    // @mago-expect analysis:unused-parameter
     public function __invoke(
-        $innerObject,
-        $outerObject,
+        object $innerObject,
+        object $outerObject,
         string $attributeName,
         ?string $format = null,
+        // @mago-expect analysis:imprecise-type
         array $context = [],
     ): ?string {
         return $this->getId($innerObject);
@@ -22,10 +24,7 @@ class MaxDepthHandler
         $properties = $reflectionClass->getProperties();
 
         foreach ($properties as $property) {
-            // @mago-expect lint:prefer-early-continue
             if ($property->getAttributes(Id::class)) {
-                $property->setAccessible(true);
-
                 return (string) $property->getValue($object);
             }
         }

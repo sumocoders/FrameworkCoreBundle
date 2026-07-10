@@ -13,10 +13,12 @@ final class Title
 
     private bool $extend = true;
 
+    /** @param array{name: string, parameters?: array<array-key, mixed>}|null $parent */
     public function __construct(
         string $title,
         ?array $parent = null,
-        $extend = true,
+        // @mago-expect analysis:unused-parameter
+        bool $extend = true,
     ) {
         $this->title = $title;
 

@@ -38,7 +38,9 @@
     "doctrine/orm": "^3.3",
     "symfony/doctrine-messenger": "^8.0",
     "symfony/intl": "^8.0",
-    "nelmio/security-bundle": "^3.7"
+    "nelmio/security-bundle": "^3.7",
+    "symfony/validator": "^8.0",
+    "symfony/http-client": "^8.0"
   },
   "require-dev": {
     "roave/security-advisories": "dev-master",

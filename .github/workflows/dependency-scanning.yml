@@ -2,6 +2,7 @@ name: Dependency scanning
 
 on:
   push:
+    branches: [master]
   pull_request:
 
 concurrency:

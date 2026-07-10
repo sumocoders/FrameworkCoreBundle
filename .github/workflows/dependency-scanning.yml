@@ -1,0 +1,42 @@
+name: Dependency scanning
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  install:
+    uses: ./.github/workflows/install.yml
+
+  composer-audit:
+    name: PHP packages - composer audit
+    needs: install
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    container: sumocoders/cli-tools-php85:latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: vendor
+          path: vendor
+      - run: composer audit --ansi --no-interaction
+
+  composer-outdated:
+    name: PHP packages - composer outdated
+    needs: install
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    container: sumocoders/cli-tools-php85:latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: vendor
+          path: vendor
+      - run: composer outdated --ansi --no-interaction --strict

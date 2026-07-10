@@ -1,0 +1,25 @@
+name: Install
+
+on:
+  workflow_call:
+
+jobs:
+  install:
+    name: Install dependencies and build assets
+    runs-on: ubuntu-latest
+    container: sumocoders/cli-tools-php85:latest
+    steps:
+      - uses: actions/checkout@v4
+      - id: composer-cache
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: composer-${{ hashFiles('composer.lock') }}
+      - name: Install composer dependencies
+        if: steps.composer-cache.outputs.cache-hit != 'true'
+        run: COMPOSER_MEMORY_LIMIT=-1 composer install --no-scripts --no-progress
+      - uses: actions/upload-artifact@v4
+        with:
+          name: vendor
+          path: vendor
+          retention-days: 1

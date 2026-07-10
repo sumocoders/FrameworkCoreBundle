@@ -48,7 +48,8 @@
     "carthage-software/mago": "^1.43",
     "squizlabs/php_codesniffer": "^4.0",
     "phpstan/phpstan": "^2.2",
-    "vincentlanglet/twig-cs-fixer": "^4.0"
+    "vincentlanglet/twig-cs-fixer": "^4.0",
+    "micheh/phpcs-gitlab": "^2.1"
   },
   "autoload": {
     "psr-4": {

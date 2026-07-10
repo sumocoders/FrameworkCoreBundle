@@ -19,10 +19,10 @@ jobs:
     container: ghcr.io/carthage-software/mago:1
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/cache@v4
+      - uses: actions/download-artifact@v4
         with:
+          name: vendor
           path: vendor
-          key: composer-${{ hashFiles('composer.lock') }}
       - name: Check formatting
         run: mago --config=./mago.dist.toml --colors=always fmt --check
       - name: Show formatting diff
@@ -37,10 +37,10 @@ jobs:
     container: ghcr.io/carthage-software/mago:1
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/cache@v4
+      - uses: actions/download-artifact@v4
         with:
+          name: vendor
           path: vendor
-          key: composer-${{ hashFiles('composer.lock') }}
       - run: mago --config=./mago.dist.toml --colors=always lint --reporting-format=rich --minimum-fail-level=warning
 
   mago-analyse:
@@ -50,10 +50,10 @@ jobs:
     container: ghcr.io/carthage-software/mago:1
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/cache@v4
+      - uses: actions/download-artifact@v4
         with:
+          name: vendor
           path: vendor
-          key: composer-${{ hashFiles('composer.lock') }}
       - run: mago --config=./mago.dist.toml --colors=always analyse --reporting-format=rich --minimum-fail-level=warning
 
   mago-guard:
@@ -64,10 +64,10 @@ jobs:
     container: ghcr.io/carthage-software/mago:1
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/cache@v4
+      - uses: actions/download-artifact@v4
         with:
+          name: vendor
           path: vendor
-          key: composer-${{ hashFiles('composer.lock') }}
       - run: mago --config=./mago.dist.toml --colors=always guard --reporting-format=rich --minimum-fail-level=warning
 
   phpcs:
@@ -77,10 +77,10 @@ jobs:
     container: sumocoders/cli-tools-php85:latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/cache@v4
+      - uses: actions/download-artifact@v4
         with:
+          name: vendor
           path: vendor
-          key: composer-${{ hashFiles('composer.lock') }}
       - run: php vendor/bin/phpcs --colors --report-full -s
 
   phpstan:
@@ -90,10 +90,10 @@ jobs:
     container: sumocoders/cli-tools-php85:latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/cache@v4
+      - uses: actions/download-artifact@v4
         with:
+          name: vendor
           path: vendor
-          key: composer-${{ hashFiles('composer.lock') }}
       - run: php vendor/bin/phpstan analyse --memory-limit=-1 --no-progress --no-interaction
 
   twig-cs-fixer:
@@ -104,10 +104,10 @@ jobs:
     container: sumocoders/cli-tools-php85:latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/cache@v4
+      - uses: actions/download-artifact@v4
         with:
+          name: vendor
           path: vendor
-          key: composer-${{ hashFiles('composer.lock') }}
       - run: php vendor/bin/twig-cs-fixer --no-interaction lint templates/
 
   stylelint:

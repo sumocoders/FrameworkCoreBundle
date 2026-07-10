@@ -17,13 +17,13 @@ Requirements:
 
 ```bash
 # Install dependencies
-composer install
+symfony composer install
 
 # Run tests
-./vendor/bin/phpunit
+symfony php vendor/bin/phpunit
 
 # Run a single test file
-./vendor/bin/phpunit tests/path/to/FooTest.php
+symfony php vendor/bin/phpunit tests/path/to/FooTest.php
 ```
 
 No phpstan or phpcs config exists in this repo. Those are configured per-project in the consuming application.

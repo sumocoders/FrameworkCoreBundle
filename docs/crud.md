@@ -17,7 +17,7 @@ src/
   Controller/
     Item/
       Admin/
-        IndexController.php
+        OverviewController.php
         CreateController.php
         UpdateController.php
         DeleteController.php
@@ -60,7 +60,7 @@ tests/
   Controller/
     Item/
       Admin/
-        IndexControllerTest.php
+        OverviewControllerTest.php
         CreateControllerTest.php
         UpdateControllerTest.php
         DeleteControllerTest.php
@@ -361,7 +361,7 @@ final class DeleteItemMessageHandler
 Inject dependencies via the constructor. Use `$messageBus` as the variable name for `MessageBusInterface`. Place
 `#[Route]` and `#[Breadcrumb]` attributes on `__invoke`, not on the class.
 
-### IndexController
+### OverviewController
 
 ```php
 <?php
@@ -377,7 +377,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class IndexController extends AbstractController
+final class OverviewController extends AbstractController
 {
     public function __construct(
         private readonly ItemRepository $repository,
@@ -793,7 +793,7 @@ namespace App\Tests\Controller\Item\Admin;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-final class IndexControllerTest extends WebTestCase
+final class OverviewControllerTest extends WebTestCase
 {
     public function testItRendersTheIndex(): void
     {

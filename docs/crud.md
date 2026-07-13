@@ -110,7 +110,9 @@ class Item
 
 ## DataTransferObject
 
-`ItemDataTransferObject` holds the form fields for both create and update. Use the constructor to set initial values.
+`ItemDataTransferObject` holds the form fields for both create and update. It is abstract: it is never
+instantiated directly, only through `CreateItemMessage` and `UpdateItemMessage`. Declare fields as public
+properties with their default values directly on the class, no constructor.
 
 ```php
 <?php
@@ -119,21 +121,19 @@ namespace App\DataTransferObject;
 
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-class ItemDataTransferObject
+abstract class ItemDataTransferObject
 {
-    public function __construct(
-        #[NotBlank]
-        public string $name = '',
-    ) {
-    }
+    #[NotBlank]
+    public string $name = '';
 }
 ```
 
 ## Messages
 
-Messages extend `ItemDataTransferObject`. `UpdateItemMessage` accepts the entity in its constructor and pre-fills the
-DataTransferObject fields. The form is initialised with the message, so `$form->getData()` returns the message
-directly and can be dispatched without conversion.
+Messages extend `ItemDataTransferObject`. `CreateItemMessage` extends it with no changes. `UpdateItemMessage`
+accepts the entity in its constructor and assigns the inherited properties directly to pre-fill the form. The
+form is initialised with the message, so `$form->getData()` returns the message directly and can be dispatched
+without conversion.
 
 ```php
 <?php
@@ -161,7 +161,7 @@ final class UpdateItemMessage extends ItemDataTransferObject
         Item $item,
     ) {
         $this->id = $item->getId();
-        parent::__construct($item->getName());
+        $this->name = $item->getName();
     }
 }
 ```
@@ -701,7 +701,8 @@ final class CreateItemMessageHandlerTest extends TestCase
             ->method('save')
             ->with($this->isInstanceOf(Item::class));
 
-        $message = new CreateItemMessage('Test item');
+        $message = new CreateItemMessage();
+        $message->name = 'Test item';
 
         $handler = new CreateItemMessageHandler($repository);
         $handler($message);

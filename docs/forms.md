@@ -179,7 +179,7 @@ Form field labels are translated automatically using the form's translation doma
 To provide a custom translation, add a key to your translation file:
 
 ```yaml
-# translations/messages.en.yaml
+# translations/messages+intl-icu.en.yaml
 Username: 'Enter your username'
 ```
 

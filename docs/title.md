@@ -51,7 +51,7 @@ Output: `My Page Title - My Application`
 The title string is passed through the translator, so translation keys work:
 
 ```yaml
-# translations/messages.en.yaml
+# translations/messages+intl-icu.en.yaml
 page.my_page: 'My Page Title'
 ```
 

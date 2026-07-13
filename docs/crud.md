@@ -230,7 +230,8 @@ final class ItemType extends AbstractType
 
 ## Repository
 
-`save()` and `remove()` accept an optional `$flush` parameter, defaulting to `true`.
+`add()` always flushes. `save()` and `remove()` accept an optional `$flush` parameter; `save()` defaults to
+`false`, `remove()` defaults to `true`.
 
 ```php
 <?php
@@ -256,11 +257,17 @@ class ItemRepository extends ServiceEntityRepository
         );
     }
 
-    public function save(Item $item, bool $flush = true): void
+    public function add(Item $item): void
+    {
+        $this->getEntityManager()->persist($item);
+        $this->flush();
+    }
+
+    public function save(Item $item, bool $flush = false): void
     {
         $this->getEntityManager()->persist($item);
         if ($flush) {
-            $this->getEntityManager()->flush();
+            $this->flush();
         }
     }
 
@@ -268,8 +275,13 @@ class ItemRepository extends ServiceEntityRepository
     {
         $this->getEntityManager()->remove($item);
         if ($flush) {
-            $this->getEntityManager()->flush();
+            $this->flush();
         }
+    }
+
+    public function flush(): void
+    {
+        $this->getEntityManager()->flush();
     }
 }
 ```
@@ -296,7 +308,7 @@ final class CreateItemMessageHandler
 
     public function __invoke(CreateItemMessage $message): void
     {
-        $this->repository->save(new Item($message->name));
+        $this->repository->add(new Item($message->name));
     }
 }
 ```
@@ -328,7 +340,7 @@ final class UpdateItemMessageHandler
         }
 
         $item->update($message->name);
-        $this->repository->save($item);
+        $this->repository->flush();
     }
 }
 ```
@@ -699,7 +711,7 @@ final class CreateItemMessageHandlerTest extends TestCase
     {
         $repository = $this->createMock(ItemRepository::class);
         $repository->expects($this->once())
-            ->method('save')
+            ->method('add')
             ->with($this->isInstanceOf(Item::class));
 
         $message = new CreateItemMessage();
@@ -731,8 +743,7 @@ final class UpdateItemMessageHandlerTest extends TestCase
         $repository = $this->createMock(ItemRepository::class);
         $repository->method('find')->willReturn($item);
         $repository->expects($this->once())
-            ->method('save')
-            ->with($item);
+            ->method('flush');
 
         $message = new UpdateItemMessage($item);
         $message->name = 'New name';

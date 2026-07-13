@@ -183,7 +183,7 @@ field name (e.g. field `username` → key `Username`).
 To provide a custom translation, add a key to your translation file:
 
 ```yaml
-# translations/messages.en.yaml
+# translations/messages+intl-icu.en.yaml
 Username: 'Enter your username'
 ```
 

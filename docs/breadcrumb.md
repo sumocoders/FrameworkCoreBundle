@@ -158,7 +158,7 @@ public function __invoke(Author $author, Book $book): Response
 All breadcrumb titles pass through the `|trans` Twig filter when rendered. Translation keys work out of the box:
 
 ```yaml
-# translations/messages.en.yaml
+# translations/messages+intl-icu.en.yaml
 breadcrumb.books: 'Books'
 ```
 
@@ -170,12 +170,12 @@ For parameterized translations, pass `parameters:` as an array where keys are th
 are `object.property` paths resolved from the current named arguments:
 
 ```yaml
-breadcrumb.author_detail: 'Author: %name%'
+breadcrumb.author_detail: 'Author: {name}'
 ```
 
 ```php
 #[Route('/author/{author}', name: 'author_detail')]
-#[Breadcrumb('breadcrumb.author_detail', parameters: ['%name%' => 'author.name'])]
+#[Breadcrumb('breadcrumb.author_detail', parameters: ['name' => 'author.name'])]
 public function __invoke(Author $author): Response
 {
 }
@@ -218,4 +218,4 @@ breadcrumb.authors: 'Authors'
 - **Parent chain stops early**: every route in the chain must have its own `#[Breadcrumb]` attribute; missing one
   breaks the recursive resolution
 - **Translation key not found**: breadcrumb titles are translated using the default domain; add the key to
-  `translations/messages.<locale>.yaml`
+  `translations/messages+intl-icu.<locale>.yaml`

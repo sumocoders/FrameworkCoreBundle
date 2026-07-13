@@ -50,7 +50,8 @@ templates/
     create.html.twig
     update.html.twig
 translations/
-  messages.en.yaml
+  messages+intl-icu.en.yaml
+  messages+intl-icu.nl.yaml
 tests/
   MessageHandler/
     Item/
@@ -652,7 +653,7 @@ The delete button uses the `confirm` Stimulus controller (see [stimulus.md](stim
         {{ stimulus_controller(
             'confirm',
             {
-                confirmationMessage: 'item.delete.confirm'|trans({'%item%': item.name}),
+                confirmationMessage: 'item.delete.confirm'|trans({item: item.name}),
                 cancelButtonText: 'dialogs.buttons.cancel'|trans,
                 confirmButtonText: 'item.actions.delete'|trans,
             }
@@ -920,7 +921,7 @@ final class DeleteControllerTest extends WebTestCase
 ## Translations
 
 ```yaml
-# translations/messages.en.yaml
+# translations/messages+intl-icu.en.yaml
 item:
   breadcrumb:
     index: 'Items'
@@ -937,6 +938,28 @@ item:
     save: 'Save'
     delete: 'Delete'
   delete:
-    confirm: 'Are you sure you want to delete "%item%"?'
+    confirm: 'Are you sure you want to delete "{item}"?'
   no_results: 'No items found.'
+```
+
+```yaml
+# translations/messages+intl-icu.nl.yaml
+item:
+  breadcrumb:
+    index: 'Items'
+    create: 'Item toevoegen'
+  label:
+    name: 'Naam'
+  flash:
+    created: 'Het item werd aangemaakt.'
+    updated: 'Het item werd opgeslagen.'
+    deleted: 'Het item werd verwijderd.'
+  actions:
+    create: 'Item toevoegen'
+    update: 'Bewerken'
+    save: 'Opslaan'
+    delete: 'Verwijderen'
+  delete:
+    confirm: 'Ben je zeker dat je "{item}" wil verwijderen?'
+  no_results: 'Geen items gevonden.'
 ```

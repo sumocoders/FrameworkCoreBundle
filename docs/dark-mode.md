@@ -35,7 +35,6 @@ Override Bootstrap dark-mode CSS variables in `assets/scss/_bootstrap-variables-
 ## Troubleshooting
 
 - **Toggle button not visible**: check that `themetoggler.html.twig` is included in your base template
-- **Theme resets on page reload**: the Stimulus controller writes a `theme` cookie; verify cookies are not blocked and
-  the domain matches
+- **Theme resets on page reload**: the theme is stored in `localStorage` (`theme`); verify storage isn’t blocked and that `templates/settheme.html.twig` is included early in your base layout
 - **Dark variables not applying**: confirm `_bootstrap-variables-dark.scss` is imported after the Bootstrap variables
   file in your main SCSS entry point

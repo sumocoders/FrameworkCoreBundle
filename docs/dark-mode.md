@@ -10,9 +10,9 @@ CSS variables.
 
 ## How it works
 
-1. `FrameworkExtension` (Twig) provides `theme()`, returns `'theme-light'` or `'theme-{cookieValue}'`
-2. A Stimulus controller (`dark-mode`) toggles the cookie and updates `data-bs-theme` on `<html>` without a page reload
-3. `templates/partials/themetoggler.html.twig` renders the toggle button
+1. `templates/settheme.html.twig` reads `localStorage.theme` and sets `data-bs-theme` before the page renders
+2. The Stimulus `theme` controller updates `localStorage.theme` and `data-bs-theme` when toggled
+3. `templates/themetoggler.html.twig` renders the theme toggle UI
 
 ## Customize variables
 

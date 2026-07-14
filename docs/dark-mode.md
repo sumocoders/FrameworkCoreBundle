@@ -1,8 +1,8 @@
 # Dark mode
 
-The bundle uses Bootstrap 5.3 color themes for dark mode. The active theme is stored in a cookie (`theme`) and applied
-via the `data-bs-theme` attribute on `<html>`. The Twig function `theme()` reads the cookie and returns the correct
-class.
+The bundle uses Bootstrap 5.3 color themes for dark mode. The active theme is stored in `localStorage` (`theme`) and applied
+via the `data-bs-theme` attribute on `<html>` (see `templates/settheme.html.twig`).
+No server-side cookie is required for the Bootstrap theme switcher to work.
 
 Color variables are defined in `assets/scss/_bootstrap-variables-dark.scss`. See
 the [Bootstrap color modes documentation](https://getbootstrap.com/docs/5.3/customize/color-modes/) for all available

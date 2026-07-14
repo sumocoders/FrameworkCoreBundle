@@ -2,9 +2,6 @@
   .toast-#{$color} {
     border-left: 6px solid shift-color($value, $alert-color-scale);
 
-    .toast-icon-wrapper {
-    }
-
     .toast-icon {
       color: shift-color($value, $alert-color-scale) !important;
     }

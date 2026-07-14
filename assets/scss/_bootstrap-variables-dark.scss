@@ -1,10 +1,15 @@
-// Dark color mode variables
-//
-// Custom variables for the `[data-bs-theme="dark"]` theme. Use this as a starting point for your own custom color modes by creating a new theme-specific file like `_variables-dark.scss` and adding the variables you need.
+/**
+ * Dark color mode variables
+ *
+ * Custom variables for the `[data-bs-theme="dark"]` theme. Use this as a
+ * starting point for your own custom color modes by creating a new
+ * theme-specific file like `_variables-dark.scss` and adding the variables
+ * you need.
+ **/
 
-//
-// Global colors
-//
+/**
+ * Global colors
+ */
 $white: #e1e1e1 !default;
 
 
@@ -62,9 +67,9 @@ $mark-color-dark: $body-color-dark !default;
 $mark-bg-dark: #420b2a !default;
 
 
-//
-// Forms
-//
+/**
+ * Forms
+ */
 
 $form-select-indicator-color-dark: $body-color-dark !default;
 $form-select-indicator-dark: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path fill='none' stroke='#{$form-select-indicator-color-dark}' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/></svg>") !default;
@@ -80,9 +85,9 @@ $form-invalid-border-color-dark: $red-300 !default;
 // scss-docs-end form-validation-colors-dark
 
 
-//
-// Accordion
-//
+/**
+ * Accordion
+ */
 
 $accordion-icon-color-dark: $primary-text-emphasis-dark !default;
 $accordion-icon-active-color-dark: $primary-text-emphasis-dark !default;
@@ -92,17 +97,17 @@ $accordion-button-active-icon-dark: url("data:image/svg+xml,<svg xmlns='http://w
 // scss-docs-end sass-dark-mode-vars
 
 
-//
-// Carousel
-//
+/**
+ * Carousel
+ */
 
 $carousel-indicator-active-bg-dark: $carousel-dark-indicator-active-bg !default;
 $carousel-caption-color-dark: $carousel-dark-caption-color !default;
 $carousel-control-icon-filter-dark: $carousel-dark-control-icon-filter !default;
 
-//
-// Close button
-//
+/**
+ * Close button
+ */
 
 $btn-close-filter-dark: $btn-close-white-filter !default;
 

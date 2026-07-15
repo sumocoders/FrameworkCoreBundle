@@ -49,7 +49,7 @@ class ImageType extends AbstractType
                     if ($required) {
                         $fileFieldOptions['constraints'] = [
                             new NotBlank(
-                                ['message' => $options['required_image_error']]
+                                message: $options['required_image_error']
                             ),
                         ];
                     }

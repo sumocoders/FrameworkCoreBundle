@@ -230,8 +230,8 @@ final class ItemType extends AbstractType
 
 ## Repository
 
-`add()`, `save()` and `remove()` accept an optional `$flush` parameter. `save()` defaults to `false`;
-`add()` and `remove()` default to `true`.
+`add()` and `remove()` accept an optional `$flush` parameter, defaulting to `true`. For an entity
+that is already managed (e.g. fetched via `find()`), call `flush()` directly instead.
 
 ```php
 <?php
@@ -258,14 +258,6 @@ class ItemRepository extends ServiceEntityRepository
     }
 
     public function add(Item $item, bool $flush = true): void
-    {
-        $this->getEntityManager()->persist($item);
-        if ($flush) {
-            $this->flush();
-        }
-    }
-
-    public function save(Item $item, bool $flush = false): void
     {
         $this->getEntityManager()->persist($item);
         if ($flush) {

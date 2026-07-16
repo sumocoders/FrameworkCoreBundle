@@ -5,7 +5,7 @@ namespace SumoCoders\FrameworkCoreBundle\Attribute;
 use Attribute;
 use SumoCoders\FrameworkCoreBundle\ValueObject\Route;
 
-#[Attribute(Attribute::TARGET_METHOD)]
+#[Attribute(Attribute::TARGET_METHOD | Attribute::TARGET_CLASS)]
 final class Title
 {
     private string $title;

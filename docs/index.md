@@ -68,9 +68,12 @@ HTTP request
 | Attribute          | Target          | What it does                                                         |
 |--------------------|-----------------|----------------------------------------------------------------------|
 | `#[Breadcrumb]`    | method / class  | Adds one crumb to the trail; repeatable; supports `parent:` chaining |
-| `#[Title]`         | method          | Explicit page title with `{param}` interpolation                     |
+| `#[Title]`         | method / class  | Explicit page title with `{param}` interpolation                     |
 | `#[AuditTrail]`    | entity class    | Enables Doctrine audit logging                                       |
 | `#[SensitiveData]` | entity property | Masks value in audit log as `*****`                                  |
+
+For invokable controllers, prefer placing `#[Route]`, `#[Breadcrumb]`, and `#[Title]` on the class rather than on
+`__invoke`.
 
 ### Service configuration
 

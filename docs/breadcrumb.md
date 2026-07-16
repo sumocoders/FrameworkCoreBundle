@@ -41,8 +41,9 @@ element are added in declaration order.
 
 ## Basics
 
-Add a `#[Breadcrumb]` attribute to a controller method to register a crumb. The attribute is repeatable. Each one
-appends a crumb to the trail in declaration order.
+Add a `#[Breadcrumb]` attribute to a controller to register a crumb. The attribute is repeatable. Each one
+appends a crumb to the trail in declaration order. For invokable controllers, prefer placing `#[Route]` and
+`#[Breadcrumb]` on the class rather than on `__invoke`.
 
 ```php
 use SumoCoders\FrameworkCoreBundle\Attribute\Breadcrumb;
@@ -53,8 +54,11 @@ Single crumb:
 ```php
 #[Route('/books', name: 'books_overview')]
 #[Breadcrumb('books')]
-public function __invoke(): Response
+class BooksOverviewController
 {
+    public function __invoke(): Response
+    {
+    }
 }
 ```
 
@@ -64,17 +68,23 @@ Chained crumbs on one controller:
 #[Route('/books/genres', name: 'genres_overview')]
 #[Breadcrumb('books')]
 #[Breadcrumb('genres')]
-public function __invoke(): Response
+class GenresOverviewController
 {
+    public function __invoke(): Response
+    {
+    }
 }
 ```
 
 ## Class-level attributes
 
-`#[Breadcrumb]` can be placed on the class instead of the method. Class attributes are only picked up for `__invoke`
-controllers, or for named methods that also have at least one `#[Breadcrumb]` attribute of their own.
+`#[Breadcrumb]` is preferably placed on the class rather than the method for invokable controllers. Class attributes
+are only picked up for `__invoke` controllers, or for named methods that also have at least one `#[Breadcrumb]`
+attribute of their own - so this convention doesn't apply to multi-action controllers, where `#[Breadcrumb]` stays
+on the relevant method.
 
 ```php
+#[Route('/books', name: 'books_overview')]
 #[Breadcrumb('books')]
 class BooksController
 {
@@ -93,8 +103,11 @@ controller's named arguments and request attributes. You do not need to specify 
 #[Route('/books/genres', name: 'genres_overview')]
 #[Breadcrumb('books', route: ['name' => 'books_overview'])]
 #[Breadcrumb('genres')]
-public function __invoke(): Response
+class GenresOverviewController
 {
+    public function __invoke(): Response
+    {
+    }
 }
 ```
 
@@ -113,14 +126,20 @@ Pass `parent:` to automatically prepend the full breadcrumb trail of another rou
 ```php
 #[Route('/books', name: 'books_overview')]
 #[Breadcrumb('books')]
-public function __invoke(): Response
+class BooksOverviewController
 {
+    public function __invoke(): Response
+    {
+    }
 }
 
 #[Route('/books/genres', name: 'genres_overview')]
 #[Breadcrumb('genres', parent: ['name' => 'books_overview'])]
-public function __invoke(): Response
+class GenresOverviewController
 {
+    public function __invoke(): Response
+    {
+    }
 }
 ```
 
@@ -134,8 +153,11 @@ Use `{object.property}` to read a value from a controller argument at request ti
 #[Route('/books/{book}', name: 'book_detail')]
 #[Breadcrumb('books', route: ['name' => 'books_overview'])]
 #[Breadcrumb('{book.title}')]
-public function __invoke(Book $book): Response
+class BookDetailController
 {
+    public function __invoke(Book $book): Response
+    {
+    }
 }
 ```
 
@@ -145,8 +167,11 @@ This also works when combined with `parent:`, as long as the required route para
 // ! /{author} must be in the route for parameter resolution to work
 #[Route('/{author}/{book}', name: 'book_detail')]
 #[Breadcrumb('{book.title}', parent: ['name' => 'author_detail'])]
-public function __invoke(Author $author, Book $book): Response
+class BookDetailController
 {
+    public function __invoke(Author $author, Book $book): Response
+    {
+    }
 }
 ```
 
@@ -176,8 +201,11 @@ breadcrumb.author_detail: 'Author: {name}'
 ```php
 #[Route('/author/{author}', name: 'author_detail')]
 #[Breadcrumb('breadcrumb.author_detail', parameters: ['name' => 'author.name'])]
-public function __invoke(Author $author): Response
+class AuthorDetailController
 {
+    public function __invoke(Author $author): Response
+    {
+    }
 }
 ```
 
@@ -188,20 +216,29 @@ Trail: Authors > J.K. Rowling > Harry Potter
 ```php
 #[Route('/authors', name: 'author_overview')]
 #[Breadcrumb('breadcrumb.authors')]
-public function __invoke(): Response
+class AuthorOverviewController
 {
+    public function __invoke(): Response
+    {
+    }
 }
 
 #[Route('/authors/{author}', name: 'author_detail')]
 #[Breadcrumb('{author.name}', parent: ['name' => 'author_overview'])]
-public function __invoke(Author $author): Response
+class AuthorDetailController
 {
+    public function __invoke(Author $author): Response
+    {
+    }
 }
 
 #[Route('/authors/{author}/{book}', name: 'book_detail')]
 #[Breadcrumb('{book.title}', parent: ['name' => 'author_detail'])]
-public function __invoke(Author $author, Book $book): Response
+class BookDetailController
 {
+    public function __invoke(Author $author, Book $book): Response
+    {
+    }
 }
 ```
 
@@ -211,8 +248,8 @@ breadcrumb.authors: 'Authors'
 
 ## Troubleshooting
 
-- **Breadcrumb not appearing**: verify the controller method has `#[Breadcrumb]` (not the class alone, unless it is an
-  invokable controller)
+- **Breadcrumb not appearing**: on a multi-action controller, a class-level `#[Breadcrumb]` is only picked up for
+  `__invoke` or for methods that have their own `#[Breadcrumb]` attribute - verify the matched method qualifies
 - **`{object.property}` shows literally**: scalars (e.g. `string $name`) cannot be interpolated; only object arguments
   with accessible properties work
 - **Parent chain stops early**: every route in the chain must have its own `#[Breadcrumb]` attribute; missing one

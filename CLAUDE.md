@@ -48,9 +48,12 @@ Controller behaviour is controlled via PHP 8 attributes, not YAML or annotations
 | Attribute          | Target          | Purpose                                                                                            |
 |--------------------|-----------------|----------------------------------------------------------------------------------------------------|
 | `#[Breadcrumb]`    | method / class  | Adds one crumb; repeatable for chains; supports `parent:` for automatic trail building             |
-| `#[Title]`         | method          | Explicit page title; supports `{param}` / `{object.property}` interpolation and `parent:` chaining |
+| `#[Title]`         | method / class  | Explicit page title; supports `{param}` / `{object.property}` interpolation and `parent:` chaining |
 | `#[AuditTrail]`    | entity class    | Enables Doctrine audit logging for that entity; `withData: false` skips field-level diff           |
 | `#[SensitiveData]` | entity property | Masks property value in audit log output                                                           |
+
+For invokable controllers, prefer placing `#[Route]`, `#[Breadcrumb]`, and `#[Title]` on the class rather than on
+`__invoke`.
 
 ### Subsystems
 

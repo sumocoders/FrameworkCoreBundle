@@ -373,7 +373,7 @@ final class DeleteItemMessageHandler
 ## Controllers
 
 Inject dependencies via the constructor. Use `$messageBus` as the variable name for `MessageBusInterface`. Place
-`#[Route]` and `#[Breadcrumb]` attributes on `__invoke`, not on the class.
+`#[Route]` and `#[Breadcrumb]` attributes on the class, not on `__invoke`.
 
 ### OverviewController
 
@@ -391,6 +391,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+#[Route('/admin/items', name: 'item_index')]
+#[Breadcrumb('item.breadcrumb.index')]
 final class OverviewController extends AbstractController
 {
     public function __construct(
@@ -398,8 +400,6 @@ final class OverviewController extends AbstractController
     ) {
     }
 
-    #[Route('/admin/items', name: 'item_index')]
-    #[Breadcrumb('item.breadcrumb.index')]
     public function __invoke(Request $request): Response
     {
         $items = $this->repository->getPaginated()
@@ -429,6 +429,9 @@ use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+#[Route('/admin/items/create', name: 'item_create')]
+#[Breadcrumb('item.breadcrumb.index', route: ['name' => 'item_index'])]
+#[Breadcrumb('item.breadcrumb.create')]
 final class CreateController extends AbstractController
 {
     public function __construct(
@@ -437,9 +440,6 @@ final class CreateController extends AbstractController
     ) {
     }
 
-    #[Route('/admin/items/create', name: 'item_create')]
-    #[Breadcrumb('item.breadcrumb.index', route: ['name' => 'item_index'])]
-    #[Breadcrumb('item.breadcrumb.create')]
     public function __invoke(Request $request): Response
     {
         $form = $this->createForm(ItemType::class, new CreateItemMessage());
@@ -479,6 +479,9 @@ use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+#[Route('/admin/items/{item}/update', name: 'item_update')]
+#[Breadcrumb('item.breadcrumb.index', route: ['name' => 'item_index'])]
+#[Breadcrumb('{item.name}')]
 final class UpdateController extends AbstractController
 {
     public function __construct(
@@ -487,9 +490,6 @@ final class UpdateController extends AbstractController
     ) {
     }
 
-    #[Route('/admin/items/{item}/update', name: 'item_update')]
-    #[Breadcrumb('item.breadcrumb.index', route: ['name' => 'item_index'])]
-    #[Breadcrumb('{item.name}')]
     public function __invoke(Request $request, Item $item): Response
     {
         $form = $this->createForm(ItemType::class, new UpdateItemMessage($item));
@@ -537,6 +537,7 @@ use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+#[Route('/admin/items/{item}/delete', name: 'item_delete', methods: ['POST'])]
 final class DeleteController extends AbstractController
 {
     public function __construct(
@@ -545,7 +546,6 @@ final class DeleteController extends AbstractController
     ) {
     }
 
-    #[Route('/admin/items/{item}/delete', name: 'item_delete', methods: ['POST'])]
     public function __invoke(Request $request, Item $item): Response
     {
         $deleteForm = $this->createFormBuilder()

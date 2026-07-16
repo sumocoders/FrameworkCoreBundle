@@ -11,7 +11,8 @@ all Twig templates as the `pageTitle` variable.
 | `parent`  | `array\|null` | `null`   | Prepends the title of another route. Keys: `name` (required), `parameters` (optional array)                           |
 | `extend`  | `bool`        | `true`   | When `true`, appends ` - <site_title>`. When `false`, uses the string verbatim                                        |
 
-The attribute targets **methods only** and is **not repeatable**.
+The attribute can target a method or a class, and is **not repeatable**. For invokable controllers, prefer the
+class-level placement; when both are present, the method-level attribute wins.
 
 ## Resolution order
 
@@ -39,11 +40,17 @@ use SumoCoders\FrameworkCoreBundle\Attribute\Title;
 
 ### Basic usage
 
+For invokable controllers, prefer placing `#[Route]` and `#[Title]` on the class rather than on `__invoke`:
+
 ```php
+#[Route('/my-page', name: 'my_page')]
 #[Title('My Page Title')]
-public function __invoke(): Response
+class MyPageController
 {
-    // ...
+    public function __invoke(): Response
+    {
+        // ...
+    }
 }
 ```
 
@@ -57,10 +64,31 @@ page.my_page: 'My Page Title'
 ```
 
 ```php
+#[Route('/my-page', name: 'my_page')]
 #[Title('page.my_page')]
-public function __invoke(): Response
+class MyPageController
 {
-    // ...
+    public function __invoke(): Response
+    {
+        // ...
+    }
+}
+```
+
+### Class-level attribute
+
+`#[Title]` is preferably placed on the class rather than the method for invokable controllers. It is picked up for
+any method on that class that does not have its own `#[Title]` attribute - on a multi-action controller, keep
+`#[Title]` on the relevant method instead:
+
+```php
+#[Title('My Page Title')]
+class MyController
+{
+    public function __invoke(): Response
+    {
+        // ...
+    }
 }
 ```
 
@@ -69,10 +97,14 @@ public function __invoke(): Response
 Pass `['name' => 'route_name']` to append the parent route's title to the chain:
 
 ```php
+#[Route('/detail', name: 'detail_route')]
 #[Title('Detail', ['name' => 'overview_route'])]
-public function __invoke(): Response
+class DetailController
 {
-    // ...
+    public function __invoke(): Response
+    {
+        // ...
+    }
 }
 ```
 
@@ -86,22 +118,30 @@ included too.
 Reference a controller argument by name using `{param}`:
 
 ```php
+#[Route('/edit/{name}', name: 'edit_item')]
 #[Title('Edit {name}')]
-public function __invoke(string $name): Response
+class EditController
 {
-    // ...
+    public function __invoke(string $name): Response
+    {
+        // ...
+    }
 }
 ```
 
 Access a property of an object argument using `{object.property}`:
 
 ```php
+#[Route('/blog/{slug}', name: 'blog_detail')]
 #[Title('{blog.title}')]
-public function __invoke(
-    #[MapEntity(mapping: ['slug' => 'slug'])]
-    Blog $blog,
-): Response {
-    // ...
+class BlogDetailController
+{
+    public function __invoke(
+        #[MapEntity(mapping: ['slug' => 'slug'])]
+        Blog $blog,
+    ): Response {
+        // ...
+    }
 }
 ```
 
@@ -114,9 +154,12 @@ Pass `extend: false` to set the title verbatim, with no translation, no parent c
 
 ```php
 #[Title('Exact Title', extend: false)]
-public function __invoke(): Response
+class ExactTitleController
 {
-    // ...
+    public function __invoke(): Response
+    {
+        // ...
+    }
 }
 ```
 

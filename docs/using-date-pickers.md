@@ -44,12 +44,11 @@ $builder->add('date', DateType::class, [
 
 ## Passing additional Flatpickr options
 
-Pass any [Flatpickr option](https://flatpickr.js.org/options/) as a `data-date-*` attribute, converting camelCase to
+Pass any [Flatpickr option](https://flatpickr.js.org/options/) as a `data-*` attribute, converting camelCase to
 kebab-case:
 
-- `minDate` → `data-date-min-date`
-- `showMonths` → `data-date-show-months`
-
+- `minDate` → `data-min-date`
+- `showMonths` → `data-show-months`
 ```php
 $builder->add('date', DateType::class, [
     'data'         => new \DateTime(),

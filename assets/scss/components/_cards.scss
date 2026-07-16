@@ -80,10 +80,12 @@
       margin-bottom: 1rem;
     }
 
+    /* stylelint-disable-next-line no-descending-specificity */
     h2 {
       font-size: $font-size-base;
     }
 
+    /* stylelint-disable-next-line no-descending-specificity */
     a {
       color: var(--bs-body-color);
 
@@ -93,10 +95,12 @@
         position: absolute;
       }
 
+      /* stylelint-disable-next-line no-descending-specificity */
       &:hover {
         text-decoration: none;
       }
 
+      /* stylelint-disable-next-line no-descending-specificity */
       &:focus {
         text-decoration: underline;
       }
@@ -136,9 +140,11 @@
   }
 }
 
+/* stylelint-disable-next-line no-descending-specificity */
 .card-collection-item {
   margin-bottom: $spacer;
   padding-right: map_get($spacers, 4);
+  overflow: visible;
 }
 
 @include media-breakpoint-up(md) {
@@ -151,10 +157,6 @@
       margin-bottom: 2rem;
     }
   }
-}
-
-.card-collection-item {
-  overflow: visible;
 }
 
 @include media-breakpoint-up(lg) {

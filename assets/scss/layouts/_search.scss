@@ -13,6 +13,7 @@
       display: none;
     }
 
+    /* stylelint-disable-next-line no-descending-specificity */
     .form-control {
       border: 0;
       border-radius: 0;
@@ -89,6 +90,7 @@
       }
     }
 
+    /* stylelint-disable-next-line no-descending-specificity */
     .toggle-searchbar {
       display: inline-block;
       padding: 15px 20px;

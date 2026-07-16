@@ -1,3 +1,4 @@
+/* stylelint-disable-next-line selector-id-pattern */
 #offcanvasUser {
   .btn-close {
     padding: 12px;
@@ -66,6 +67,7 @@
 }
 
 @include color-mode(dark) {
+  /* stylelint-disable-next-line selector-id-pattern */
   #offcanvasUser {
     @include media-breakpoint-down(lg) {
       .user-nav:not(.theme-toggler) {

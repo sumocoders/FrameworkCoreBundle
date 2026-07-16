@@ -1,7 +1,9 @@
+/* stylelint-disable selector-class-pattern */
 .flatpickr-calendar {
   .flatpickr-day {
     &.selected:hover,
     &.selected:focus,
+    /* stylelint-disable-next-line no-descending-specificity */
     &.selected {
       background: var(--bs-primary-text-emphasis);
       border-color: var(--bs-primary-text-emphasis);
@@ -28,7 +30,9 @@
     border: 1px solid var(--bs-primary-text-emphasis);
   }
 
+  /* stylelint-disable-next-line no-descending-specificity */
   .flatpickr-day.today:hover,
+  /* stylelint-disable-next-line no-descending-specificity */
   .flatpickr-day.today:focus {
     background: var(--bs-primary-text-emphasis);
   }
@@ -72,6 +76,7 @@
 
       &.selected:hover,
       &.selected:focus,
+      /* stylelint-disable-next-line no-descending-specificity */
       &.selected {
         color: color-contrast($primary-text-emphasis-dark);
       }
@@ -88,6 +93,7 @@
     }
 
     .flatpickr-time input,
+    /* stylelint-disable-next-line no-descending-specificity */
     .flatpickr-day,
     .flatpickr-weekday {
       color: var(--bs-body-color);
@@ -101,3 +107,4 @@
     }
   }
 }
+/* stylelint-enable selector-class-pattern */

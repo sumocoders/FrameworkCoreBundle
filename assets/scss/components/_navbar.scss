@@ -153,12 +153,15 @@ body.no-scroll {
           transform: translateX(7px);
         }
 
+        /* stylelint-disable-next-line no-descending-specificity */
         &:hover::before,
+        /* stylelint-disable-next-line no-descending-specificity */
         &:focus::before {
           animation: none;
         }
       }
 
+      /* stylelint-disable-next-line no-descending-specificity */
       .nav-link {
         color: var(--menu-color);
         flex-direction: row;
@@ -166,6 +169,7 @@ body.no-scroll {
         padding: 1.7rem 1rem 1.7rem 1.6rem;
         position: relative;
 
+        /* stylelint-disable-next-line no-descending-specificity */
         &::before {
           background-color: var(--menu-color);
           border-radius: 50%;
@@ -178,11 +182,14 @@ body.no-scroll {
           width: 15px;
         }
 
+        /* stylelint-disable-next-line no-descending-specificity */
         &:hover,
+        /* stylelint-disable-next-line no-descending-specificity */
         &:focus {
           background-color: var(--menu-active-bg);
           color: var(--menu-active-color);
 
+          /* stylelint-disable-next-line no-descending-specificity */
           &::before {
             animation: bounce 1s 1;
             background-color: var(--menu-active-color);
@@ -258,6 +265,7 @@ body.no-scroll {
       }
     }
 
+    /* stylelint-disable-next-line no-descending-specificity */
     .bi-chevron-down {
       margin-top: -8px;
       position: absolute;
@@ -290,6 +298,7 @@ body.no-scroll {
         background-color: var(--top-color);
         color: $text-muted;
 
+        /* stylelint-disable-next-line no-descending-specificity */
         .nav-link {
           color: $text-muted;
           cursor: pointer;

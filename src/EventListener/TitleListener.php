@@ -30,7 +30,7 @@ class TitleListener
             return;
         }
 
-        $attributes = $method->getAttributes(Title::class, \ReflectionAttribute::IS_INSTANCEOF);
+        $attributes = $this->getTitleAttributes($method);
         if (empty($attributes)) {
             return;
         }
@@ -68,6 +68,17 @@ class TitleListener
         return null;
     }
 
+    /** @return array<\ReflectionAttribute<Title>> */
+    private function getTitleAttributes(ReflectionMethod $method): array
+    {
+        $attributes = $method->getAttributes(Title::class, \ReflectionAttribute::IS_INSTANCEOF);
+        if ($attributes !== []) {
+            return $attributes;
+        }
+
+        return $method->getDeclaringClass()->getAttributes(Title::class, \ReflectionAttribute::IS_INSTANCEOF);
+    }
+
     /**
      * Get the title from the parent route.
      *
@@ -82,7 +93,7 @@ class TitleListener
 
         $title = '';
         // Loop through the Title attributes of the method and process them
-        foreach ($method->getAttributes(Title::class, \ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
+        foreach ($this->getTitleAttributes($method) as $attribute) {
             $parentAttribute = $attribute->newInstance();
             $title .= ' - ' . $this->processTitle($parentAttribute->getTitle(), $parameters);
 

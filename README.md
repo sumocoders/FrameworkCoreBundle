@@ -1,18 +1,31 @@
 # SumoCoders FrameworkCoreBundle
-This bundle is created and maintained by [SumoCoders](https://github.com/sumocoders). It contains a set of basic tools that enable us to build an application in a shorter timespan. The bundle is intended to be used together with our [npm package](https://github.com/sumocoders/FrameworkStylePackage).
+
+Shared foundation bundle for SumoCoders Symfony projects. Provides page titles, breadcrumbs, navigation menus,
+file/image uploads, encrypted fields, audit logging, pagination, and a frontend design system. Created and maintained
+by [SumoCoders](https://github.com/sumocoders).
 
 ## Installation
-To properly use this bundle, create a new project with our application skeleton:
+
+Create a new project with the application skeleton. It installs this bundle and all required config:
+
+```bash
+composer create-project sumocoders/application-skeleton my_project
 ```
-$ composer create-project sumocoders/application-skeleton my_project
-```
-The skeleton will load this bundle, install our npm package and add some extra config for CI, deployment, etc..
+
+Requires:
+
+- PHP ^8.5
+- Symfony ^8.0
+- Doctrine ^3.3.
 
 ## Documentation
-All documentation is located in the `docs/` subdirectory.
+
+Start at [`docs/index.md`](docs/index.md).
 
 ## Issues?
+
 Feel free to add an Issue on Github, or even better create a PR.
 
 ## License
+
 This software is published under the [MIT License](LICENSE.md)

@@ -24,9 +24,11 @@ readonly class PaginatorExtension
             throw new \RuntimeException('We can not guess the route when used in a sub-request');
         }
 
+        // @mago-expect analysis:possible-method-access-on-null,possibly-null-property-access,mixed-assignment
         $route = $request->attributes->get('_route');
 
         // Make sure we read the route parameters from the passed option array
+        // @mago-expect analysis:mixed-argument(2),possible-method-access-on-null(2),possibly-null-property-access
         $routeParams = array_merge($request->query->all(), $request->attributes->get('_route_params', []));
 
         $paginator->calculateStartAndEndPage();
@@ -41,7 +43,7 @@ readonly class PaginatorExtension
                 'start_page' => $paginator->getStartPage(),
                 'end_page' => $paginator->getEndPage(),
                 'page_count' => $paginator->getNumberOfPages(),
-            ]
+            ],
         );
     }
 

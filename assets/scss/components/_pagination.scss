@@ -26,6 +26,7 @@
 
     }
 
+    /* stylelint-disable-next-line no-descending-specificity */
     &.disabled span {
       border: none;
       background-color: transparent;
@@ -42,6 +43,7 @@
   }
 }
 
+/* stylelint-disable-next-line no-descending-specificity */
 .pager .page-item .page-link {
   color: var(--bs-gray-500);
 

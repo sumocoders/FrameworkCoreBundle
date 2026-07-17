@@ -22,7 +22,7 @@ class AjaxClient {
   configureDefaults () {
     this.instance.defaults.timeout = 2500
     this.instance.defaults.headers.common = {
-      'Accept': 'application/json',
+      Accept: 'application/json'
     }
     this.instance.defaults.busy_targets = []
   }
@@ -104,7 +104,7 @@ class AjaxClient {
   }
 
   createSpinner () {
-    let spinner = document.createElement('span')
+    const spinner = document.createElement('span')
     spinner.setAttribute('class', 'spinner-border spinner-border-sm me-2')
     spinner.setAttribute('aria-hidden', 'true')
     return spinner

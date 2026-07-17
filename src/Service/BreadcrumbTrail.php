@@ -6,9 +6,15 @@ use Countable;
 use Iterator;
 use SumoCoders\FrameworkCoreBundle\ValueObject\Breadcrumb;
 
+/**
+ * @implements Iterator<int, Breadcrumb>
+ */
 class BreadcrumbTrail implements Iterator, Countable
 {
     private int $index;
+    /**
+     * @var Breadcrumb[]
+     */
     private array $breadcrumbs;
 
     public function __construct()
@@ -27,6 +33,9 @@ class BreadcrumbTrail implements Iterator, Countable
         $this->breadcrumbs[] = $breadcrumb;
     }
 
+    /**
+     * @return Breadcrumb[]
+     */
     public function all(): array
     {
         return $this->breadcrumbs;

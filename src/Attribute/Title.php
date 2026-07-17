@@ -13,24 +13,27 @@ final class Title
 
     private bool $extend = true;
 
+    /** @param array{name: string, parameters?: array<array-key, mixed>}|null $parent */
     public function __construct(
         string $title,
         ?array $parent = null,
-        $extend = true,
+        // @mago-expect analysis:unused-parameter
+        bool $extend = true,
     ) {
         $this->title = $title;
 
+        // @mago-expect lint:no-else-clause
         if ($parent !== null) {
             $this->parent = new Route(
                 $parent['name'],
-                \array_key_exists('parameters', $parent) ? $parent['parameters'] : null
+                \array_key_exists('parameters', $parent) ? $parent['parameters'] : null,
             );
         } else {
             $this->parent = $parent;
         }
     }
 
-    public function getTitle(): ?string
+    public function getTitle(): string
     {
         return $this->title;
     }

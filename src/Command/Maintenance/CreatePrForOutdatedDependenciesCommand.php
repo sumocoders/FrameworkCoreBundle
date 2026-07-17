@@ -18,6 +18,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
     name: 'sumo:maintenance:create-pr-for-outdated-dependencies',
     description: 'Create PR for outdated dependencies (Importmap and Composer)',
 )]
+// @mago-expect lint:kan-defect,cyclomatic-complexity
 class CreatePrForOutdatedDependenciesCommand
 {
     private SymfonyStyle $io;
@@ -36,7 +37,7 @@ class CreatePrForOutdatedDependenciesCommand
     private Application $application;
 
     public function __construct(
-        private readonly HttpClientInterface $httpClient
+        private readonly HttpClientInterface $httpClient,
     ) {
     }
 
@@ -60,7 +61,7 @@ class CreatePrForOutdatedDependenciesCommand
             return;
         }
 
-        $output = $this->runConsoleCommand(
+        $output = (string) $this->runConsoleCommand(
             [
                 'command' => 'importmap:outdated',
                 '--no-interaction' => true,
@@ -68,20 +69,23 @@ class CreatePrForOutdatedDependenciesCommand
             ],
             true,
             false,
-            true
+            true,
         );
 
         if ($output === '') {
             return;
         }
 
+        // @mago-expect analysis:mixed-assignment
         $outdatedPackages = json_decode($output, true, 512, JSON_THROW_ON_ERROR);
         $semverSafeUpdatePackages = array_filter(
+            // @mago-expect analysis:mixed-argument
             $outdatedPackages,
-            static fn($package) => $package['latest-status'] === 'semver-safe-update'
+            // @mago-expect analysis:imprecise-type
+            static fn (array $package): bool => $package['latest-status'] === 'semver-safe-update',
         );
 
-        if (empty($semverSafeUpdatePackages)) {
+        if (count($semverSafeUpdatePackages) === 0) {
             return;
         }
 
@@ -89,7 +93,7 @@ class CreatePrForOutdatedDependenciesCommand
             date('YmdHi') . '-update-importmap-dependencies',
             date('d/m/Y') . ' Update importmap dependencies',
             [$this, 'runImportmapUpdateCommands'],
-            [$semverSafeUpdatePackages]
+            [$semverSafeUpdatePackages],
         );
 
         $this->io->success('Created a merge request for updating importmap dependencies.');
@@ -114,7 +118,7 @@ class CreatePrForOutdatedDependenciesCommand
                     '--ansi' => true,
                 ],
                 true,
-                true
+                true,
             );
 
             $this->runCommand(['git', 'add', 'importmap.php']);
@@ -122,12 +126,11 @@ class CreatePrForOutdatedDependenciesCommand
                 '  * %1$s (%2$s → %3$s)',
                 $package['name'],
                 $package['current'],
-                $package['latest']
+                $package['latest'],
             );
         }
 
-        $commitMessage = 'chore(importmap): Update importmap dependencies' .
-                         "\n\n" . implode("\n", $versionMessages);
+        $commitMessage = 'chore(importmap): Update importmap dependencies' . "\n\n" . implode("\n", $versionMessages);
         $this->runCommand(
             [
                 'git',
@@ -136,7 +139,7 @@ class CreatePrForOutdatedDependenciesCommand
                 '--no-verify',
                 '--message',
                 $commitMessage,
-            ]
+            ],
         );
     }
 
@@ -148,34 +151,38 @@ class CreatePrForOutdatedDependenciesCommand
             return;
         }
 
-        $outdatedPackages = $this->runCommand(
+        $outdatedPackages = (string) $this->runCommand(
             ['composer', 'outdated', '--direct', '--minor-only', '--no-scripts', '--format=json'],
             true,
             false,
-            true
+            true,
         );
 
         if ($outdatedPackages === '') {
             return;
         }
 
+        // @mago-expect analysis:mixed-assignment
         $outdatedPackages = json_decode($outdatedPackages, true, 512, JSON_THROW_ON_ERROR);
+        // @mago-expect analysis:mixed-argument
         if (!array_key_exists('installed', $outdatedPackages)) {
             return;
         }
 
         $semverSafeUpdatePackages = array_filter(
+            // @mago-expect analysis:mixed-array-access,mixed-argument
             $outdatedPackages['installed'],
-            static function ($package) {
+            // @mago-expect analysis:imprecise-type
+            static function (array $package): bool {
                 if ($package['abandoned']) {
                     return false;
                 }
 
                 return $package['latest-status'] === 'semver-safe-update';
-            }
+            },
         );
 
-        if (empty($semverSafeUpdatePackages)) {
+        if (count($semverSafeUpdatePackages) === 0) {
             return;
         }
 
@@ -183,7 +190,7 @@ class CreatePrForOutdatedDependenciesCommand
             date('YmdHi') . '-update-composer-dependencies',
             date('d/m/Y') . ' Update composer dependencies',
             [$this, 'runComposerUpdateCommands'],
-            [$semverSafeUpdatePackages]
+            [$semverSafeUpdatePackages],
         );
 
         $this->io->success('Created a merge request for updating composer dependencies.');
@@ -221,7 +228,7 @@ class CreatePrForOutdatedDependenciesCommand
             $this->runCommand(
                 $command,
                 true,
-                true
+                true,
             );
 
             $this->runCommand(['git', 'add', 'composer.json', 'composer.lock', 'symfony.lock', 'config/reference.php']);
@@ -229,12 +236,11 @@ class CreatePrForOutdatedDependenciesCommand
                 '  * %1$s (%2$s → %3$s)',
                 $package['name'],
                 $package['version'],
-                $package['latest']
+                $package['latest'],
             );
         }
 
-        $commitMessage = 'chore(composer): Update composer dependencies' .
-                         "\n\n" . implode("\n", $versionMessages);
+        $commitMessage = 'chore(composer): Update composer dependencies' . "\n\n" . implode("\n", $versionMessages);
         $this->runCommand(
             [
                 'git',
@@ -243,7 +249,7 @@ class CreatePrForOutdatedDependenciesCommand
                 '--no-verify',
                 '--message',
                 $commitMessage,
-            ]
+            ],
         );
     }
 
@@ -255,7 +261,7 @@ class CreatePrForOutdatedDependenciesCommand
         string $newBranchName,
         string $pullRequestTitle,
         callable|array $commandsToRun,
-        array $arguments = []
+        array $arguments = [],
     ): void {
         // create new branch
         $this->runCommand(
@@ -266,6 +272,7 @@ class CreatePrForOutdatedDependenciesCommand
         if (!is_callable($commandsToRun)) {
             throw new \InvalidArgumentException('The $commandsToRun parameter must be a callable.');
         }
+        // @mago-expect analysis:less-specific-nested-argument-type
         call_user_func_array($commandsToRun, $arguments);
 
         // push to remote
@@ -291,23 +298,29 @@ class CreatePrForOutdatedDependenciesCommand
         );
     }
 
-    /**
-     * @param array<mixed,mixed> $command
-     */
+    // @phpstan-ignore missingType.iterableValue
     private function runCommand(
+        // @mago-expect analysis:imprecise-type
         array $command,
+        // @mago-expect lint:no-boolean-flag-parameter
         bool $showInput = true,
+        // @mago-expect lint:no-boolean-flag-parameter
         bool $showOutput = false,
-        bool $returnOutput = false
+        // @mago-expect lint:no-boolean-flag-parameter
+        bool $returnOutput = false,
     ): mixed {
         $io = $this->io;
         if ($showInput) {
+            // @mago-expect analysis:less-specific-nested-argument-type
             $io->writeln('  → ' . implode(' ', $command));
         }
 
+        // @mago-expect analysis:less-specific-nested-argument-type
         $process = new Process($command);
+        // @mago-expect lint:no-else-clause
         if ($showOutput) {
-            $output = function ($type, $buffer) use ($io) {
+            // @mago-expect analysis:unused-parameter
+            $output = static function (string $type, string $buffer) use ($io): void {
                 $buffer = trim($buffer);
                 $lines = explode("\n", $buffer);
                 foreach ($lines as $line) {
@@ -330,26 +343,30 @@ class CreatePrForOutdatedDependenciesCommand
         return null;
     }
 
-    /**
-     * @param array<mixed,mixed> $command
-     */
+    // @phpstan-ignore missingType.iterableValue
     private function runConsoleCommand(
+        // @mago-expect analysis:imprecise-type
         array $command,
+        // @mago-expect lint:no-boolean-flag-parameter
         bool $showInput = true,
+        // @mago-expect lint:no-boolean-flag-parameter
         bool $showOutput = false,
-        bool $returnOutput = false
+        // @mago-expect lint:no-boolean-flag-parameter
+        bool $returnOutput = false,
     ): mixed {
         $io = $this->io;
         if ($showInput) {
             $commandString = [];
+            // @mago-expect analysis:mixed-assignment
             foreach ($command as $key => $value) {
-                if (is_bool($value) && $value === true) {
+                if (is_bool($value) && $value) {
                     $commandString[] = $key;
                     continue;
                 }
                 $commandString[] = $value;
             }
 
+            // @mago-expect analysis:less-specific-nested-argument-type
             $io->writeln('  → bin/console ' . implode(' ', $commandString));
         }
 
@@ -400,18 +417,18 @@ class CreatePrForOutdatedDependenciesCommand
         }
         $projectId = getenv('CI_PROJECT_ID');
         if ($projectId === false) {
-            $output = $this->runCommand(
+            $output = (string) $this->runCommand(
                 ['git', 'config', '--get', 'remote.origin.url'],
                 false,
                 false,
-                true
+                true,
             );
             $matches = [];
             preg_match('/.*:(.+)\.git$/', $output, $matches);
 
-            if (!isset($matches[1])) {
+            if (!array_key_exists(1, $matches)) {
                 throw new \RuntimeException(
-                    'Could not determine project ID from git remote URL.'
+                    'Could not determine project ID from git remote URL.',
                 );
             }
 
@@ -423,7 +440,7 @@ class CreatePrForOutdatedDependenciesCommand
         }
         if ($gitlabToken === false) {
             throw new \RuntimeException(
-                'You need to set the SUMO_GITLAB_ACCESS_TOKEN environment variable.'
+                'You need to set the SUMO_GITLAB_ACCESS_TOKEN environment variable.',
             );
         }
 
@@ -432,7 +449,7 @@ class CreatePrForOutdatedDependenciesCommand
             sprintf(
                 '%1$s/projects/%2$s/merge_requests',
                 $gitlabUrl,
-                $projectId
+                $projectId,
             ),
             [
                 'headers' => [
@@ -442,31 +459,44 @@ class CreatePrForOutdatedDependenciesCommand
                     'state' => 'opened',
                     'per_page' => 100,
                 ],
-            ]
+            ],
         );
 
+        // @mago-expect analysis:mixed-assignment
         $data = json_decode($response->getContent(), false, 512, JSON_THROW_ON_ERROR);
 
-        if (empty($data)) {
+        // @mago-expect analysis:mixed-argument
+        if (count($data) === 0) {
             return [];
         }
 
-        return array_map(function ($mergeRequest) {
-            return [
-                'id' => $mergeRequest->id,
-                'title' => $mergeRequest->title,
-                'target_branch' => $mergeRequest->target_branch,
-            ];
-        }, $data);
+        // @mago-expect lint:prefer-arrow-function
+        // @mago-expect analysis:imprecise-type,mixed-argument,less-specific-nested-return-statement
+        return array_map(
+            static function (object $mergeRequest): array {
+                // @mago-expect analysis:ambiguous-object-property-access(3)
+                return [
+                    // @phpstan-ignore property.notFound
+                    'id' => $mergeRequest->id,
+                    // @phpstan-ignore property.notFound
+                    'title' => $mergeRequest->title,
+                    // @phpstan-ignore property.notFound
+                    'target_branch' => $mergeRequest->target_branch,
+                ];
+            },
+            $data,
+        );
     }
 
     private function hasMergeRequest(string $title, string $targetBranch): bool
     {
         foreach ($this->openMergeRequests as $mergeRequest) {
-            if ($mergeRequest['target_branch'] === $targetBranch) {
-                if (stripos($mergeRequest['title'], $title) !== false) {
-                    return true;
-                }
+            if ($mergeRequest['target_branch'] !== $targetBranch) {
+                continue;
+            }
+
+            if (stripos($mergeRequest['title'], $title) !== false) {
+                return true;
             }
         }
 
@@ -481,11 +511,11 @@ class CreatePrForOutdatedDependenciesCommand
 
         $branch = getenv('CI_COMMIT_BRANCH');
         if ($branch === false) {
-            $branch = $this->runCommand(
+            $branch = (string) $this->runCommand(
                 ['git', 'rev-parse', '--abbrev-ref', 'HEAD'],
                 false,
                 false,
-                true
+                true,
             );
         }
         $this->originalBranch = trim($branch);

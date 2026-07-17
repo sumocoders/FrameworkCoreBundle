@@ -6,20 +6,26 @@ use Doctrine\ORM\Mapping\Id;
 
 class MaxDepthHandler
 {
-    public function __invoke($innerObject, $outerObject, string $attributeName, string $format = null, array $context = [])
-    {
+    // @mago-expect analysis:unused-parameter
+    public function __invoke(
+        object $innerObject,
+        object $outerObject,
+        string $attributeName,
+        ?string $format = null,
+        // @mago-expect analysis:imprecise-type
+        array $context = [],
+    ): ?string {
         return $this->getId($innerObject);
     }
 
     private function getId(object $object): ?string
     {
-        $reflectionClass = new \ReflectionClass($entity);
+        $reflectionClass = new \ReflectionClass($object);
         $properties = $reflectionClass->getProperties();
 
         foreach ($properties as $property) {
             if ($property->getAttributes(Id::class)) {
-                $property->setAccessible(true);
-                return (string) $property->getValue($entity);
+                return (string) $property->getValue($object);
             }
         }
 

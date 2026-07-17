@@ -1,4 +1,4 @@
 /vendor/
 composer.lock
-coverage.xml
-phpunit.xml
+.phpcs-cache
+.twig-cs-fixer.cache

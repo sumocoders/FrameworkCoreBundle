@@ -22,9 +22,9 @@ class NonceGenerator implements NonceGeneratorInterface, EventSubscriberInterfac
     {
         if ($this->requestNonce) {
             return $this->requestNonce;
-        } else {
-            return $this->parent->generate();
         }
+
+        return $this->parent->generate();
     }
 
     public static function getSubscribedEvents(): array
@@ -42,6 +42,7 @@ class NonceGenerator implements NonceGeneratorInterface, EventSubscriberInterfac
         }
     }
 
+    // @mago-expect analysis:unused-parameter
     public function onKernelResponse(ResponseEvent $event): void
     {
         $this->requestNonce = null;

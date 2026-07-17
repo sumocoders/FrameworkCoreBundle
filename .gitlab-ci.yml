@@ -1,0 +1,204 @@
+stages:
+  - build
+  - code quality
+  - dependency scanning
+  - outdated packages
+
+workflow:
+  auto_cancel:
+    on_new_commit: interruptible
+
+# Cache default configuration
+cache: &global_cache
+  key: "$CI_PIPELINE_ID"
+  paths:
+    - node_modules
+    - public/build
+    - var/sass
+    - vendor
+  policy: pull
+
+
+# Build section
+Install dependencies and build assets:
+  image: sumocoders/cli-tools-php85:latest
+  script:
+    - COMPOSER_MEMORY_LIMIT=-1 composer install --no-scripts --no-progress
+  cache:
+    <<: *global_cache
+    policy: pull-push
+  stage: build
+  interruptible: true
+  tags:
+    - docker
+
+
+# Code Quality section
+Mago - check code styling:
+  image:
+    name: ghcr.io/carthage-software/mago:1
+    entrypoint: [ '' ]
+  script:
+    - mago --config=./mago.dist.toml --colors=always fmt --check
+  after_script:
+    - >
+      if [ "$CI_JOB_STATUS" != 'success' ]; then
+        mago --config=./mago.dist.toml --colors=always fmt --dry-run
+      fi
+  stage: code quality
+  interruptible: true
+  needs: [ "Install dependencies and build assets" ]
+  tags:
+    - docker
+
+Mago - lint:
+  image:
+    name: ghcr.io/carthage-software/mago:1
+    entrypoint: [ '' ]
+  script:
+    - mago --config=./mago.dist.toml --colors=always lint --reporting-format=rich --minimum-fail-level=warning
+  stage: code quality
+  interruptible: true
+  needs: [ "Install dependencies and build assets" ]
+  tags:
+    - docker
+  allow_failure: true
+
+Mago - analyse:
+  image:
+    name: ghcr.io/carthage-software/mago:1
+    entrypoint: [ '' ]
+  script:
+    - mago --config=./mago.dist.toml --colors=always analyse --reporting-format=rich --minimum-fail-level=warning
+  stage: code quality
+  interruptible: true
+  needs: [ "Install dependencies and build assets" ]
+  tags:
+    - docker
+
+Mago - guard:
+  image:
+    name: ghcr.io/carthage-software/mago:1
+    entrypoint: [ '' ]
+  script:
+    - mago --config=./mago.dist.toml --colors=always guard --reporting-format=rich --minimum-fail-level=warning
+  stage: code quality
+  interruptible: true
+  needs: [ "Install dependencies and build assets" ]
+  tags:
+    - docker
+  allow_failure: true
+
+PHP_CodeSniffer - check code styling:
+  image: sumocoders/cli-tools-php85:latest
+  script:
+    - php vendor/bin/phpcs --colors --report-full -s --report-\\Micheh\\PhpCodeSniffer\\Report\\Gitlab=phpcs-report.json
+  artifacts:
+    expire_in: 1 week
+    reports:
+      codequality: phpcs-report.json
+  stage: code quality
+  interruptible: true
+  needs: [ "Install dependencies and build assets" ]
+  tags:
+    - docker
+
+PHPStan - check for bugs:
+  image: sumocoders/cli-tools-php85:latest
+  script:
+    - php vendor/bin/phpstan analyse --memory-limit=-1 --error-format=gitlab --no-progress --no-interaction  > phpstan-report.json
+  after_script:
+    # Run it again so the output is visible in the job
+    - >
+      if [ "$CI_JOB_STATUS" != 'success' ]; then
+        php vendor/bin/phpstan analyse --memory-limit=-1 --no-progress
+      fi
+  artifacts:
+    expire_in: 1 week
+    reports:
+      codequality: phpstan-report.json
+  stage: code quality
+  interruptible: true
+  needs: [ "Install dependencies and build assets" ]
+  tags:
+    - docker
+
+Twig-CS-Fixer - check code styling:
+  image: sumocoders/cli-tools-php85:latest
+  script:
+    - php vendor/bin/twig-cs-fixer lint templates/ --report=junit > twigcs-report.xml
+  after_script:
+    # Run it again so the output is visible in the job
+    - >
+      if [ "$CI_JOB_STATUS" != 'success' ]; then
+        php vendor/bin/twig-cs-fixer --no-interaction lint templates/
+      fi
+  artifacts:
+    expire_in: 1 week
+    reports:
+      junit: twigcs-report.xml
+  stage: code quality
+  interruptible: true
+  needs: [ "Install dependencies and build assets" ]
+  tags:
+    - docker
+  allow_failure: true
+
+Stylelint - check code styling:
+  image: sumocoders/stylelint:latest
+  script:
+    - stylelint --output-file=stylelint-report.json --custom-formatter=stylelint-formatter-gitlab-code-quality-report .
+  after_script:
+    - >
+      if [ "$CI_JOB_STATUS" != 'success' ]; then
+        stylelint --color .
+      fi
+  artifacts:
+    expire_in: 1 week
+    reports:
+      codequality: stylelint-report.json
+  stage: code quality
+  interruptible: true
+  needs: [ "Install dependencies and build assets" ]
+  tags:
+    - docker
+  allow_failure: true
+
+StandardJS - check code styling:
+  image: sumocoders/standardjs:latest
+  script:
+    - sh -c 'standard . | standard-gitlab --output-file standardjs-report.json --human-readable'
+  artifacts:
+    expire_in: 1 week
+    reports:
+      codequality: standardjs-report.json
+  stage: code quality
+  interruptible: true
+  needs: [ "Install dependencies and build assets" ]
+  tags:
+    - docker
+  allow_failure: true
+
+
+PHP packages - composer audit:
+  image: sumocoders/cli-tools-php85:latest
+  script:
+    - composer audit --ansi --no-interaction
+  stage: dependency scanning
+  interruptible: true
+  needs: [ "Install dependencies and build assets" ]
+  tags:
+    - docker
+  allow_failure: true
+
+
+PHP packages - composer outdated:
+  image: sumocoders/cli-tools-php85:latest
+  script:
+    - composer outdated --ansi --no-interaction --strict
+  stage: outdated packages
+  interruptible: true
+  needs: [ "Install dependencies and build assets" ]
+  tags:
+    - docker
+  allow_failure: true

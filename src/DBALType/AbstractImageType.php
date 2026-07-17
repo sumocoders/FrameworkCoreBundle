@@ -2,43 +2,29 @@
 
 namespace SumoCoders\FrameworkCoreBundle\DBALType;
 
-use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Types\Type;
 use SumoCoders\FrameworkCoreBundle\ValueObject\AbstractImage;
 
 abstract class AbstractImageType extends Type
 {
-    /**
-     * @param array $fieldDeclaration
-     * @param AbstractPlatform $platform
-     *
-     * @return string
-     */
-    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform): string
+    public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {
         return 'VARCHAR(255)';
     }
 
-    /**
-     * @param string $imageName
-     * @param AbstractPlatform $platform
-     *
-     * @return AbstractImage|null
-     */
-    public function convertToPHPValue($imageName, AbstractPlatform $platform): ?AbstractImage
+    public function convertToPHPValue(mixed $value, AbstractPlatform $platform): ?AbstractImage
     {
-        return $this->createFromString($imageName);
+        if (is_null($value)) {
+            return null;
+        }
+
+        return $this->createFromString((string) $value);
     }
 
-    /**
-     * @param AbstractImage $image
-     * @param AbstractPlatform $platform
-     *
-     * @return string|null
-     */
-    public function convertToDatabaseValue($image, AbstractPlatform $platform): ?string
+    public function convertToDatabaseValue(mixed $value, AbstractPlatform $platform): ?string
     {
-        return $image !== null ? (string) $image : null;
+        return $value !== null ? (string) $value : null;
     }
 
     abstract protected function createFromString(string $imageName): ?AbstractImage;

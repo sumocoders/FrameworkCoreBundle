@@ -2,6 +2,7 @@
 
 namespace SumoCoders\FrameworkCoreBundle\EventListener;
 
+use Doctrine\ORM\EntityManagerInterface;
 use ReflectionClass;
 use SumoCoders\FrameworkCoreBundle\Attribute\Title;
 use SumoCoders\FrameworkCoreBundle\Service\Fallbacks;
@@ -12,7 +13,6 @@ use Symfony\Component\HttpKernel\Event\KernelEvent;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Class TitleListener
@@ -20,8 +20,10 @@ use Doctrine\ORM\EntityManagerInterface;
  * This class is responsible for handling the title of the page.
  * It listens to the kernel controller event and sets the title based on the Title attribute.
  */
+// @mago-expect lint:kan-defect,cyclomatic-complexity
 class TitleListener
 {
+    // @mago-expect lint:excessive-parameter-list
     public function __construct(
         private PageTitle $pageTitleService,
         private Fallbacks $fallbacks,
@@ -40,14 +42,16 @@ class TitleListener
     public function onKernelController(KernelEvent $event): void
     {
         // Get the controller and its methods
+        // @mago-expect analysis:non-existent-method(3),mixed-assignment
         $controller = is_array($event->getController()) ? $event->getController()[0] : $event->getController();
-        $methods = (new ReflectionClass($controller))->getMethods();
+        // @mago-expect analysis:mixed-argument
+        $methods = new ReflectionClass($controller)->getMethods();
 
         // Loop through the methods and process the Title attributes
         foreach ($methods as $method) {
             $attributes = $method->getAttributes(Title::class, \ReflectionAttribute::IS_INSTANCEOF);
 
-            if (empty($attributes)) {
+            if (count($attributes) === 0) {
                 continue;
             }
 
@@ -60,15 +64,18 @@ class TitleListener
 
                 if (!$titleAttribute->isExtend()) {
                     $this->pageTitleService->setTitle($titleAttribute->getTitle());
+
                     return;
                 }
 
                 $title = $this->processTitle($titleAttribute->getTitle(), $parameters);
 
                 if ($titleAttribute->hasParent()) {
+                    // @mago-expect analysis:possibly-null-argument
                     $title .= $this->getTitleFromParent($titleAttribute->getParent(), $parameters);
                 }
 
+                // @mago-expect analysis:mixed-operand
                 $this->pageTitleService->setTitle($title . ' - ' . $this->fallbacks->get('site_title'));
             }
         }
@@ -78,7 +85,7 @@ class TitleListener
      * Process the parameters of a method.
      *
      * @param array<\ReflectionParameter> $reflextionParameters
-     * @param array<mixed> $parameters
+     * @param array<mixed>                $parameters
      * @return array<mixed>
      */
     private function processParameters(array $reflextionParameters, array $parameters): array
@@ -92,15 +99,25 @@ class TitleListener
             }
 
             $parameterAttributes = $reflextionParameter->getAttributes(MapEntity::class);
-            if (empty($parameterAttributes)) {
+            if (count($parameterAttributes) === 0) {
                 continue;
             }
 
             // Get the mapping and value of the parameter
+            // @mago-expect analysis:mixed-assignment
             $mapping = $parameterAttributes[0]->getArguments()['mapping'] ?? null;
-            $value = $mapping !== null && isset($parameters[$parameterName])
-                ? $this->manager->getRepository($reflextionParameter->getType()->getName())->findOneBy([$mapping[$parameterName] => $parameters[$parameterName]])
-                : $this->manager->getRepository($reflextionParameter->getType()->getName())->find($parameters[$parameterName]);
+            // @mago-expect lint:no-else-clause
+            if ($mapping !== null && $parameters[$parameterName] !== null) {
+                // @mago-expect analysis:possible-method-access-on-null,non-existent-method(2),mixed-argument,mixed-array-access,invalid-array-element-key,less-specific-argument
+                $value = $this->manager
+                    ->getRepository($reflextionParameter->getType()->getName())
+                    ->findOneBy([$mapping[$parameterName] => $parameters[$parameterName]]);
+            } else {
+                // @mago-expect analysis:possible-method-access-on-null,non-existent-method(2),mixed-argument
+                $value = $this->manager
+                    ->getRepository($reflextionParameter->getType()->getName())
+                    ->find($parameters[$parameterName]);
+            }
 
             $parameters[$parameterName] = $value;
         }
@@ -117,7 +134,9 @@ class TitleListener
     {
         // Get the route information and the method of the controller
         $routeInformation = $this->getRouteInformation($parent->getName());
+        // @mago-expect analysis:possibly-null-array-access,mixed-argument
         $class = new \ReflectionClass($routeInformation['controller']);
+        // @mago-expect analysis:mixed-argument
         $method = $class->getMethod($routeInformation['method'] ?? '__invoke');
 
         $title = '';
@@ -127,6 +146,7 @@ class TitleListener
             $title .= ' - ' . $this->processTitle($parentAttribute->getTitle(), $parameters);
 
             if ($parentAttribute->hasParent()) {
+                // @mago-expect analysis:possibly-null-argument
                 $title .= $this->getTitleFromParent($parentAttribute->getParent(), $parameters);
             }
         }
@@ -142,7 +162,8 @@ class TitleListener
     private function processTitle(string $title, array $parameters = []): string
     {
         // Replace the placeholders in the title with the actual parameters
-        if (strpos($title, '{') !== false) {
+        if (str_contains($title, '{')) {
+            $matches = [];
             preg_match_all('/\{(.*?)\}/', $title, $matches);
 
             foreach ($matches[1] as $match) {
@@ -152,10 +173,12 @@ class TitleListener
                     throw new \Exception(sprintf('Parameter %s not found in request', $parts[0]));
                 }
 
+                // @mago-expect analysis:mixed-assignment,mixed-argument
                 $replaceWith = count($parts) === 2
                     ? $this->propertyAccess->getValue($parameters[$parts[0]], $parts[1])
                     : $parameters[$parts[0]];
 
+                // @mago-expect analysis:mixed-argument
                 $title = str_replace('{' . $match . '}', $replaceWith, $title);
             }
         }
@@ -181,11 +204,16 @@ class TitleListener
             }
 
             // Get the controller and method of the route
+            // @mago-expect analysis:mixed-assignment
             $controller = $route->getDefault('_controller');
-            $method = strpos($controller, '::') > 0 ? explode('::', $controller)[1] : '__invoke';
+            // @mago-expect analysis:mixed-argument(2)
+            $method = str_contains($controller, '::') ? explode('::', $controller)[1] : '__invoke';
 
             // Get the required parameters of the route
-            $requiredParameters = array_filter($route->compile()->getVariables(), fn($parameter) => $route->getDefault($parameter) === null);
+            $requiredParameters = array_filter(
+                $route->compile()->getVariables(),
+                static fn (string $parameter): bool => $route->getDefault($parameter) === null,
+            );
 
             return [
                 'controller' => $controller,

@@ -38,12 +38,18 @@
     "doctrine/orm": "^3.3",
     "symfony/doctrine-messenger": "^8.0",
     "symfony/intl": "^8.0",
-    "nelmio/security-bundle": "^3.7"
+    "nelmio/security-bundle": "^3.7",
+    "symfony/validator": "^8.0",
+    "symfony/http-client": "^8.0"
   },
   "require-dev": {
     "roave/security-advisories": "dev-master",
-    "symfony/phpunit-bridge": "^8.0",
-    "symfony/maker-bundle": "^1.61"
+    "symfony/maker-bundle": "^1.61",
+    "carthage-software/mago": "^1.43",
+    "squizlabs/php_codesniffer": "^4.0",
+    "phpstan/phpstan": "^2.2",
+    "vincentlanglet/twig-cs-fixer": "^4.0",
+    "micheh/phpcs-gitlab": "^2.1"
   },
   "autoload": {
     "psr-4": {

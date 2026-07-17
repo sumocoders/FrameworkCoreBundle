@@ -2,8 +2,8 @@
 
 namespace SumoCoders\FrameworkCoreBundle\Form\Type;
 
-use SumoCoders\FrameworkCoreBundle\ValueObject\AbstractImage;
 use stdClass;
+use SumoCoders\FrameworkCoreBundle\ValueObject\AbstractImage;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Exception\TransformationFailedException;
@@ -31,16 +31,17 @@ class ImageType extends AbstractType
                     'required' => false,
                     'label' => $options['remove_image_label'],
                     'property_path' => 'pendingDeletion',
-                ]
+                ],
             );
         }
 
         $builder
             ->addEventListener(
                 FormEvents::PRE_SET_DATA,
-                function (FormEvent $event) use ($options) {
-                    $imageIsEmpty = ($event->getData() === null || empty($event->getData()->getFileName()));
-                    $required = $imageIsEmpty && $options['required'];
+                static function (FormEvent $event) use ($options): void {
+                    // @mago-expect analysis:mixed-method-access
+                    $imageIsEmpty = $event->getData() === null || $event->getData()->getFileName() === null;
+                    $required = $imageIsEmpty && $options['required'] === true;
                     $fileFieldOptions = [
                         'label' => false,
                         'required' => $required,
@@ -49,33 +50,38 @@ class ImageType extends AbstractType
                     if ($required) {
                         $fileFieldOptions['constraints'] = [
                             new NotBlank(
-                                message: $options['required_image_error']
+                                message: (string) $options['required_image_error'],
                             ),
                         ];
                     }
                     $event->getForm()->add('file', SymfonyFileType::class, $fileFieldOptions);
-                }
+                },
             )
             ->addModelTransformer(
                 new CallbackTransformer(
-                    function (?AbstractImage $image = null) {
-                        return $image;
-                    },
-                    function ($image) use ($options) {
+                    // @mago-expect analysis:missing-return-type
+                    static fn (?AbstractImage $image = null) => $image,
+                    // @mago-expect analysis:missing-parameter-type
+                    static function ($image) use ($options): AbstractImage {
                         if (!$image instanceof AbstractImage && !$image instanceof stdClass) {
                             throw new TransformationFailedException('Invalid class for the image');
                         }
 
+                        // @mago-expect analysis:mixed-assignment
                         $imageClass = $options['image_class'];
 
                         if (!$image instanceof AbstractImage) {
+                            // @mago-expect analysis:mixed-assignment,non-existent-method
+                            // @phpstan-ignore method.nonObject
                             $image = $imageClass::fromUploadedFile($image->getFile());
                         }
 
                         // return a clone to make sure that doctrine will do the lifecycle callbacks
+                        // @mago-expect analysis:mixed-return-statement,mixed-clone
+                        // @phpstan-ignore return.type
                         return clone $image;
-                    }
-                )
+                    },
+                ),
             );
     }
 
@@ -90,21 +96,20 @@ class ImageType extends AbstractType
                 'required_image_error',
                 'accept',
                 'help',
-            ]
+            ],
         );
 
         $resolver->setDefaults(
             [
                 'data_class' => AbstractImage::class,
-                'empty_data' => function () {
+                // @mago-expect lint:prefer-arrow-function
+                // @mago-expect analysis:missing-return-type
+                'empty_data' => static function () {
                     return new class extends StdClass {
-                        /** @var UploadedFile */
-                        protected $file;
+                        protected ?UploadedFile $file;
+                        protected bool $pendingDeletion = false;
 
-                        /** @var bool */
-                        protected $pendingDeletion = false;
-
-                        public function setFile(?UploadedFile $file = null)
+                        public function setFile(?UploadedFile $file = null): void
                         {
                             $this->file = $file;
                         }
@@ -119,7 +124,7 @@ class ImageType extends AbstractType
                             return $this->pendingDeletion;
                         }
 
-                        public function setPendingDeletion(bool $pendingDeletion)
+                        public function setPendingDeletion(bool $pendingDeletion): void
                         {
                             $this->pendingDeletion = $pendingDeletion;
                         }
@@ -133,7 +138,7 @@ class ImageType extends AbstractType
                 'accept' => 'image/*',
                 'constraints' => [new Valid()],
                 'error_bubbling' => false,
-            ]
+            ],
         );
     }
 
@@ -145,29 +150,32 @@ class ImageType extends AbstractType
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['show_preview'] = $options['show_preview'];
-        $view->vars['show_remove_image'] = $options['show_remove_image'] && $form->getData() !== null
-                                           && !empty($form->getData()->getFileName());
+        $view->vars['show_remove_image'] =
+            // @mago-expect analysis:mixed-method-access,mixed-operand
+            $options['show_remove_image'] && $form->getData() !== null && $form->getData()->getFileName() !== null;
         // if you need to have an image you shouldn't be allowed to remove it
-        if ($options['required']) {
+        if ($options['required'] === true) {
             $view->vars['show_remove_image'] = false;
         }
-        $imageIsEmpty = ($form->getData() === null || empty($form->getData()->getFileName()));
-        $view->vars['required'] = $imageIsEmpty && $options['required'];
+        // @mago-expect analysis:mixed-method-access
+        $filesIsEmpty = $form->getData() === null || $form->getData()->getFileName() === null;
+        $view->vars['required'] = $filesIsEmpty && $options['required'] === true;
 
         $view->vars['preview_url'] = false;
         if ($form->getData() instanceof AbstractImage) {
+            // @mago-expect analysis:mixed-method-access
             $view->vars['preview_url'] = $form->getData()->getWebPath();
         }
 
         array_map(
-            function ($optionName) use ($options, &$view) {
-                if (array_key_exists($optionName, $options) && !empty($options[$optionName])) {
+            static function (string $optionName) use ($options, &$view): void {
+                if (array_key_exists($optionName, $options) && $options[$optionName] !== null) {
                     $view->vars[$optionName] = $options[$optionName];
                 }
             },
             [
                 'preview_class',
-            ]
+            ],
         );
     }
 }

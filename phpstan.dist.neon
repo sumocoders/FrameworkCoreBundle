@@ -1,0 +1,53 @@
+services:
+  errorFormatter.junit:
+    class: PHPStan\Command\ErrorFormatter\JUnitErrorFormatter
+parameters:
+  inferPrivatePropertyTypeFromConstructor: true
+  level: 7
+  paths:
+    - src/
+  excludePaths:
+  ignoreErrors:
+    -
+      identifiers:
+        - method.notFound
+        - argument.templateType
+      path: src/EventListener/BreadcrumbListener.php
+    -
+      identifier: argument.templateType
+      path: src/EventListener/TitleListener.php
+      count: 2
+    -
+      identifiers:
+        - method.notFound
+      path: src/EventListener/TitleListener.php
+    -
+      identifier: missingType.iterableValue
+      path: src/Logger/AuditLogger.php
+      count: 2
+    -
+      identifier: missingType.generics
+      paths:
+        - src/DoctrineListener/DoctrineAuditListener.php
+        - src/EventListener/BreadcrumbListener.php
+        - src/EventListener/DoctrineExtensionListener.php
+        - src/Pagination/Paginator.php
+        - src/Twig/PaginatorExtension.php
+    -
+      identifiers:
+        - argument.type
+        - missingType.iterableValue
+        - return.type
+      path: src/Pagination/Paginator.php
+    -
+      identifiers:
+        - missingType.iterableValue
+      path: src/Serializer/MaxDepthHandler.php
+    -
+      identifier: new.static
+      path: src/ValueObject/AbstractFile.php
+      count: 2
+    -
+      identifier: missingType.iterableValue
+      path: src/ValueObject/Route.php
+      count: 4

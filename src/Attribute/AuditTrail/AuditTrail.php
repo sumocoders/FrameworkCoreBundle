@@ -7,7 +7,11 @@ use Attribute;
 #[Attribute(Attribute::TARGET_CLASS)]
 final class AuditTrail
 {
-    public function __construct(public array $fields = [], public bool $withData = true)
-    {
+    // @phpstan-ignore missingType.iterableValue
+    public function __construct(
+        // @mago-expect analysis:imprecise-type
+        public array $fields = [],
+        public bool $withData = true,
+    ) {
     }
 }

@@ -3,8 +3,8 @@
 namespace SumoCoders\FrameworkCoreBundle\EventListener;
 
 use Knp\Menu\ItemInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class DefaultMenuListener
@@ -16,7 +16,7 @@ class DefaultMenuListener
     public function __construct(
         Security $security,
         TranslatorInterface $translator,
-        RequestStack $requestStack
+        RequestStack $requestStack,
     ) {
         $this->security = $security;
         $this->translator = $translator;
@@ -41,15 +41,18 @@ class DefaultMenuListener
     public function enableChildRoutes(ItemInterface $item, string $prefix): void
     {
         $request = $this->requestStack->getCurrentRequest();
+        if ($request === null) {
+            return;
+        }
 
-        if (str_contains($request->attributes->get('_route'), $prefix)) {
+        if (str_contains((string) $request->attributes->get('_route'), $prefix)) {
             $item->setExtra(
                 'routes',
                 [
                     [
                         'route' => $request->attributes->get('_route'),
                     ],
-                ]
+                ],
             );
         }
     }

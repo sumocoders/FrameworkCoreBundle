@@ -3,7 +3,7 @@
 
 {%- block form_start -%}
     {% if attr.id is not defined %}
-        {% set attr = attr|merge({'id': form.vars.id}) %}
+        {% set attr = attr|merge({id: form.vars.id}) %}
     {% endif %}
     {{ parent() }}
 {%- endblock form_start -%}
@@ -12,21 +12,21 @@
   {% if label is not same as(false) -%}
     {%- set parent_label_class = parent_label_class|default(label_attr.class|default('')) -%}
     {% if label is empty %}
-      {% set label = name|humanize|trans({}, translation_domain)|ucfirst  %}
+      {% set label = name|humanize|trans({}, translation_domain)|ucfirst %}
     {% endif %}
     {%- if compound is defined and compound -%}
       {%- set element = 'legend' -%}
       {%- if 'col-form-label' not in parent_label_class -%}
-        {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' col-form-label' )|trim}) -%}
+        {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' col-form-label')|trim}) -%}
       {%- endif -%}
     {%- else -%}
       {%- set row_class = row_class|default(row_attr.class|default('')) -%}
       {%- set label_attr = label_attr|merge({for: id}) -%}
       {%- if 'col-form-label' not in parent_label_class -%}
-        {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ('input-group' in row_class ? ' input-group-text' : ' form-label') )|trim}) -%}
+        {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ('input-group' in row_class ? ' input-group-text' : ' form-label'))|trim}) -%}
       {%- endif -%}
     {%- endif -%}
-    <{{ element|default('label') }}{% if label_attr %}{% with { attr: label_attr } %}{{ block('attributes') }}{% endwith %}{% endif %}>
+    <{{ element|default('label') }}{% if label_attr %}{% with {attr: label_attr} %}{{ block('attributes') }}{% endwith %}{% endif %}>
     {%- if translation_domain is same as(false) -%}
       {%- if label_html is same as(false) -%}
         {{- label -}}
@@ -56,7 +56,7 @@
   {%- endif -%}
   {%- set widget_attr = {} -%}
   {%- if help is not empty -%}
-    {%- set widget_attr = {attr: {'aria-describedby': id ~"_help"}} -%}
+    {%- set widget_attr = {attr: {'aria-describedby': id ~ '_help'}} -%}
   {%- endif -%}
   {%- set row_class = row_class|default(row_attr.class|default('form-group')|trim) -%}
   <{{ element|default('div') }}{% with {attr: row_attr|merge({class: row_class})} %}{{ block('attributes') }}{% endwith %}>
@@ -189,7 +189,7 @@
   {%- endif -%}
   {%- set widget_attr = {} -%}
   {%- if help is not empty -%}
-    {%- set widget_attr = {attr: {'aria-describedby': id ~ "_help"}} -%}
+    {%- set widget_attr = {attr: {'aria-describedby': id ~ '_help'}} -%}
   {%- endif -%}
   <{{ element|default('div') }} class="form-group">
   {{- form_label(form) -}}
@@ -201,15 +201,15 @@
   {%- if widget == 'single_text' -%}
     {% set attr = attr|merge({'data-controller': 'date-time-picker'}) -%}
     {%- if not valid -%}{% set attr = attr|merge({class: (attr.class|default('') ~ ' is-invalid')|trim}) -%}{%- endif -%}
-    {%- if help is not empty -%}{%- set widget_attr = {attr: {'aria-describedby': id ~ "_help"}} -%}{%- endif -%}
+    {%- if help is not empty -%}{%- set widget_attr = {attr: {'aria-describedby': id ~ '_help'}} -%}{%- endif -%}
     {# Its hardcoded for the symfony format because the patterns don't match #}
     {% if format is defined and format == 'dd/MM/yyyy' %}{% set attr = attr|merge({'data-date-format': 'd/m/Y'}) -%}{% endif %}
     {# The format needs to be defined before any min or max date #}
     {% if minimum_date %}{% set attr = attr|merge({'data-min-date': minimum_date|date('d/m/Y')}) -%}{% endif %}
     {% if maximum_date %}{% set attr = attr|merge({'data-max-date': maximum_date|date('d/m/Y')}) -%}{% endif %}
-    {% if read_only is defined and read_only %}{% set attr = attr|merge({'readonly': 'readonly'}) -%}{% endif %}
-    {% if disabled %}{% set attr = attr|merge({'disabled': 'disabled'}) -%}{% endif %}
-    {% if required %}{% set attr = attr|merge({'required': 'required'}) -%}{% endif %}
+    {% if read_only is defined and read_only %}{% set attr = attr|merge({readonly: 'readonly'}) -%}{% endif %}
+    {% if disabled %}{% set attr = attr|merge({disabled: 'disabled'}) -%}{% endif %}
+    {% if required %}{% set attr = attr|merge({required: 'required'}) -%}{% endif %}
 
     <div class="input-group">
       <div class="input-group-text">
@@ -226,17 +226,17 @@
     {% endif %}
 
     <div class="col-md-3">
-      {%- if label is not same as(false) -%}{{ form_label(form.day, null, { 'label_attr': {'class': 'visually-hidden'} }) }}{%- endif -%}
+      {%- if label is not same as(false) -%}{{ form_label(form.day, null, {label_attr: {class: 'visually-hidden'}}) }}{%- endif -%}
       {{ form_widget(form.day) }}
     </div>
     <span>{{ divider }}</span>
     <div class="col-md-3">
-      {%- if label is not same as(false) -%}{{ form_label(form.month, null, { 'label_attr': {'class': 'visually-hidden'} }) }}{%- endif -%}
+      {%- if label is not same as(false) -%}{{ form_label(form.month, null, {label_attr: {class: 'visually-hidden'}}) }}{%- endif -%}
       {{ form_widget(form.month) }}
     </div>
     <span>{{ divider }}</span>
     <div class="col-md-3">
-      {%- if label is not same as(false) -%}{{ form_label(form.year, null, { 'label_attr': {'class': 'visually-hidden'} }) }}{%- endif -%}
+      {%- if label is not same as(false) -%}{{ form_label(form.year, null, {label_attr: {class: 'visually-hidden'}}) }}{%- endif -%}
       {{ form_widget(form.year) }}
     </div>
 
@@ -255,7 +255,7 @@
   {%- endif -%}
   {%- set widget_attr = {} -%}
   {%- if help is not empty -%}
-    {%- set widget_attr = {attr: {'aria-describedby': id ~ "_help"}} -%}
+    {%- set widget_attr = {attr: {'aria-describedby': id ~ '_help'}} -%}
   {%- endif -%}
   {% set row_classes = ['form-group']|merge(form.vars.row_attr.class|default('')|split(' ')) -%}
   <{{ element|default('div') }} class="{{ row_classes|join(' ') }}">
@@ -269,12 +269,12 @@
     {% set attr = attr|merge({'data-controller': 'date-time-picker', 'data-date-time-picker-enable-time-value': 'true', 'data-date-time-picker-show-calendar-value': 'false'}) -%}
     {% set attr = attr|merge({'data-time_24hr': 'true'}) -%}
     {%- if not valid -%}{% set attr = attr|merge({class: (attr.class|default('') ~ ' is-invalid')|trim}) -%}{%- endif -%}
-    {%- if help is not empty -%}{%- set widget_attr = {attr: {'aria-describedby': id ~ "_help"}} -%}{%- endif -%}
+    {%- if help is not empty -%}{%- set widget_attr = {attr: {'aria-describedby': id ~ '_help'}} -%}{%- endif -%}
     {# Its hardcoded for the symfony format because the patterns don't match #}
     {% if format is defined and format == 'HH:mm' %}{% set attr = attr|merge({'data-date-format': 'H:i'}) -%}{% endif %}
-    {% if read_only is defined and read_only %}{% set attr = attr|merge({'readonly': 'readonly'}) -%}{% endif %}
-    {% if disabled %}{% set attr = attr|merge({'disabled': 'disabled'}) -%}{% endif %}
-    {% if required %}{% set attr = attr|merge({'required': 'required'}) -%}{% endif %}
+    {% if read_only is defined and read_only %}{% set attr = attr|merge({readonly: 'readonly'}) -%}{% endif %}
+    {% if disabled %}{% set attr = attr|merge({disabled: 'disabled'}) -%}{% endif %}
+    {% if required %}{% set attr = attr|merge({required: 'required'}) -%}{% endif %}
 
     <div class="input-group">
       <div class="input-group-text">
@@ -295,14 +295,14 @@
     {% endif %}
 
     <div class="col-md-3">
-      {%- if label is not same as(false) -%}{{ form_label(form.hour, null, { 'label_attr': {'class': 'visually-hidden'} }) }}{%- endif -%}
+      {%- if label is not same as(false) -%}{{ form_label(form.hour, null, {label_attr: {class: 'visually-hidden'}}) }}{%- endif -%}
       {{ form_widget(form.hour) }}
     </div>
     <div class="col-md-1 text-center">
       <span>{{ divider }}</span>
     </div>
     <div class="col-md-3">
-      {%- if label is not same as(false) -%}{{ form_label(form.minute, null, { 'label_attr': {'class': 'visually-hidden'} }) }}{%- endif -%}
+      {%- if label is not same as(false) -%}{{ form_label(form.minute, null, {label_attr: {class: 'visually-hidden'}}) }}{%- endif -%}
       {{ form_widget(form.minute) }}
     </div>
     {% if with_seconds %}
@@ -310,7 +310,7 @@
         <span>{{ divider }}</span>
       </div>
       <div class="col-md-3">
-        {%- if label is not same as(false) -%}{{ form_label(form.second, null, { 'label_attr': {'class': 'visually-hidden'} }) }}{%- endif -%}
+        {%- if label is not same as(false) -%}{{ form_label(form.second, null, {label_attr: {class: 'visually-hidden'}}) }}{%- endif -%}
         {{ form_widget(form.second) }}
       </div>
     {% endif %}
@@ -330,7 +330,7 @@
   {%- endif -%}
   {%- set widget_attr = {} -%}
   {%- if help is not empty -%}
-    {%- set widget_attr = {attr: {'aria-describedby': id ~ "_help"}} -%}
+    {%- set widget_attr = {attr: {'aria-describedby': id ~ '_help'}} -%}
   {%- endif -%}
   <{{ element|default('div') }} class="form-group">
   {{- form_label(form) -}}
@@ -343,15 +343,15 @@
     {% set attr = attr|merge({'data-controller': 'date-time-picker', 'data-date-time-picker-enable-time-value': 'true'}) -%}
     {% set attr = attr|merge({'data-time_24hr': 'true'}) -%}
     {%- if not valid -%}{% set attr = attr|merge({class: (attr.class|default('') ~ ' is-invalid')|trim}) -%}{%- endif -%}
-    {%- if help is not empty -%}{%- set widget_attr = {attr: {'aria-describedby': id ~ "_help"}} -%}{%- endif -%}
+    {%- if help is not empty -%}{%- set widget_attr = {attr: {'aria-describedby': id ~ '_help'}} -%}{%- endif -%}
     {# Its hardcoded for the symfony format because the patterns don't match #}
     {% if format is defined and format == 'dd/MM/yyyy HH:mm' %}{% set attr = attr|merge({'data-date-format': 'd/m/Y H:i'}) -%}{% endif %}
     {# The format needs to be defined before any min or max date #}
     {% if minimum_date %}{% set attr = attr|merge({'data-min-date': minimum_date|date('d/m/Y')}) -%}{% endif %}
     {% if maximum_date %}{% set attr = attr|merge({'data-max-date': maximum_date|date('d/m/Y')}) -%}{% endif %}
-    {% if read_only is defined and read_only %}{% set attr = attr|merge({'readonly': 'readonly'}) -%}{% endif %}
-    {% if disabled %}{% set attr = attr|merge({'disabled': 'disabled'}) -%}{% endif %}
-    {% if required %}{% set attr = attr|merge({'required': 'required'}) -%}{% endif %}
+    {% if read_only is defined and read_only %}{% set attr = attr|merge({readonly: 'readonly'}) -%}{% endif %}
+    {% if disabled %}{% set attr = attr|merge({disabled: 'disabled'}) -%}{% endif %}
+    {% if required %}{% set attr = attr|merge({required: 'required'}) -%}{% endif %}
 
     <div class="input-group">
       <div class="input-group-text">
@@ -368,12 +368,12 @@
     {% endif %}
 
     <div class="col-md-3">
-      {%- if label is not same as(false) -%}{{ form_label(form.date, null, { 'label_attr': {'class': 'visually-hidden'} }) }}{%- endif -%}
+      {%- if label is not same as(false) -%}{{ form_label(form.date, null, {label_attr: {class: 'visually-hidden'}}) }}{%- endif -%}
       {{ form_widget(form.date) }}
     </div>
     <span>{{ divider }}</span>
     <div class="col-md-3">
-      {%- if label is not same as(false) -%}{{ form_label(form.time, null, { 'label_attr': {'class': 'visually-hidden'} }) }}{%- endif -%}
+      {%- if label is not same as(false) -%}{{ form_label(form.time, null, {label_attr: {class: 'visually-hidden'}}) }}{%- endif -%}
       {{ form_widget(form.time) }}
     </div>
 
@@ -396,7 +396,7 @@
   <select
     name="{{ full_name }}"
     id="{{ id }}"
-    {% set attr = attr|merge({'class': attr.class|default('select2')}) %}
+    {% set attr = attr|merge({class: attr.class|default('select2')}) %}
     {{ form.vars.multiple ? 'multiple' : '' }}
     {{ block('widget_attributes') }}
   >
@@ -428,9 +428,9 @@
   {%- if help is not empty -%}
     {%- set help_attr = help_attr|merge({class: (help_attr.class|default('') ~ ' help-text')|trim}) -%}
     {%- if help_html is same as(false) -%}
-    <p id="{{ id }}_help"{% with { attr: help_attr } %}{{ block('attributes') }}{% endwith %}>
+    <p id="{{ id }}_help"{% with {attr: help_attr} %}{{ block('attributes') }}{% endwith %}>
     {%- else -%}
-      <div id="{{ id }}_help"{% with { attr: help_attr } %}{{ block('attributes') }}{% endwith %}>
+      <div id="{{ id }}_help"{% with {attr: help_attr} %}{{ block('attributes') }}{% endwith %}>
     {%- endif -%}
     {%- if translation_domain is same as(false) -%}
       {%- if help_html is same as(false) -%}

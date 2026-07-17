@@ -19,7 +19,7 @@ class DoctrineExtensionListener
         TokenStorageInterface $tokenStorage,
         AuthorizationCheckerInterface $authorizationChecker,
         LoggableListener $loggableListener,
-        BlameableListener $blamableListener
+        BlameableListener $blamableListener,
     ) {
         $this->tokenStorage = $tokenStorage;
         $this->authorizationChecker = $authorizationChecker;
@@ -27,12 +27,14 @@ class DoctrineExtensionListener
         $this->blamableListener = $blamableListener;
     }
 
+    // @mago-expect analysis:unused-parameter
     public function onKernelRequest(RequestEvent $event): void
     {
         if (
             $this->tokenStorage->getToken() !== null
             && $this->authorizationChecker->isGranted('IS_AUTHENTICATED_REMEMBERED')
         ) {
+            // @mago-expect analysis:possible-method-access-on-null,mixed-assignment
             $user = $this->tokenStorage->getToken()->getUser();
 
             $this->loggableListener->setUsername($user);

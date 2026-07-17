@@ -3,21 +3,22 @@
 namespace SumoCoders\FrameworkCoreBundle\EventListener;
 
 use Doctrine\ORM\EntityManagerInterface;
-use SumoCoders\FrameworkCoreBundle\Exception\Breadcrumb\EntityNotFoundException;
-use SumoCoders\FrameworkCoreBundle\ValueObject\Route;
-use Symfony\Bridge\Doctrine\Attribute\MapEntity;
-use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use SumoCoders\FrameworkCoreBundle\Service\BreadcrumbTrail;
-use SumoCoders\FrameworkCoreBundle\ValueObject\Breadcrumb;
-use SumoCoders\FrameworkCoreBundle\Attribute\Breadcrumb as BreadcrumbAttribute;
-use Symfony\Component\HttpKernel\Event\KernelEvent;
-use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\HttpFoundation\Request;
 use InvalidArgumentException;
 use RuntimeException;
+use SumoCoders\FrameworkCoreBundle\Attribute\Breadcrumb as BreadcrumbAttribute;
+use SumoCoders\FrameworkCoreBundle\Exception\Breadcrumb\EntityNotFoundException;
+use SumoCoders\FrameworkCoreBundle\Service\BreadcrumbTrail;
+use SumoCoders\FrameworkCoreBundle\ValueObject\Breadcrumb;
+use SumoCoders\FrameworkCoreBundle\ValueObject\Route;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Event\KernelEvent;
+use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+// @mago-expect lint:halstead,kan-defect,cyclomatic-complexity
 class BreadcrumbListener
 {
     private RouterInterface $router;
@@ -32,7 +33,7 @@ class BreadcrumbListener
         PropertyAccessorInterface $propertyAccess,
         BreadcrumbTrail $breadcrumbTrail,
         EntityManagerInterface $manager,
-        TranslatorInterface $translator
+        TranslatorInterface $translator,
     ) {
         $this->router = $router;
         $this->propertyAccess = $propertyAccess;
@@ -43,10 +44,12 @@ class BreadcrumbListener
 
     public function onKernelController(KernelEvent $event): void
     {
+        // @mago-expect analysis:mixed-assignment,non-existent-method
         $controller = $event->getController();
         $this->request = $event->getRequest();
 
         if (is_array($controller)) {
+            // @mago-expect analysis:mixed-assignment
             $controller = $controller[0];
         }
 
@@ -54,6 +57,7 @@ class BreadcrumbListener
             $this->breadcrumbTrail->reset();
         }
 
+        // @mago-expect analysis:mixed-argument
         $this->processBreadcrumbs($controller);
     }
 
@@ -66,8 +70,8 @@ class BreadcrumbListener
             throw new InvalidArgumentException(
                 sprintf(
                     'Attributes from class "%s" cannot be read as it is abstract.',
-                    $class
-                )
+                    $class,
+                ),
             );
         }
 
@@ -81,15 +85,17 @@ class BreadcrumbListener
     private function processAttributeFromMethod(
         \Reflectionmethod $method,
         \ReflectionClass $class,
-        ?Route $route = null
+        ?Route $route = null,
     ): void {
         $attributes = $method->getAttributes(BreadcrumbAttribute::class, \ReflectionAttribute::IS_INSTANCEOF);
         if ($method->name === '__invoke' || $attributes !== []) {
-            $attributes = array_merge($attributes, $class->getAttributes(BreadcrumbAttribute::class, \ReflectionAttribute::IS_INSTANCEOF));
+            $attributes = array_merge($attributes, $class->getAttributes(
+                BreadcrumbAttribute::class,
+                \ReflectionAttribute::IS_INSTANCEOF,
+            ));
         }
 
         foreach ($attributes as $attribute) {
-            /** @var BreadcrumbAttribute $attributeInstance */
             $attributeInstance = $attribute->newInstance();
 
             if ($route !== null) {
@@ -97,6 +103,7 @@ class BreadcrumbListener
             }
 
             if ($attributeInstance->hasParent()) {
+                // @mago-expect analysis:possibly-null-argument
                 $this->addBreadcrumbsForParent($attributeInstance->getParent());
             }
 
@@ -104,18 +111,19 @@ class BreadcrumbListener
                 $this->breadcrumbTrail->add(
                     $this->generateBreadcrumb(
                         $attributeInstance,
-                        $method
-                    )
+                        $method,
+                    ),
                 );
-            } catch (EntityNotFoundException $e) {
 
+                // @mago-expect lint:no-empty-catch-clause
+            } catch (EntityNotFoundException $e) {
             }
         }
     }
 
     private function generateBreadcrumb(
         BreadcrumbAttribute $breadcrumb,
-        \Reflectionmethod $method
+        \Reflectionmethod $method,
     ): Breadcrumb {
         $title = $breadcrumb->getTitle();
         $parameters = $breadcrumb->getParameters();
@@ -124,6 +132,7 @@ class BreadcrumbListener
         if ($title[0] === '{' && $title[-1] === '}') {
             $expression = substr($title, 1, strlen($title) - 2);
 
+            // @mago-expect lint:no-else-clause
             if (str_contains($expression, '.')) {
                 $split = explode('.', $expression, 2);
                 $attributeName = $split[0];
@@ -134,20 +143,28 @@ class BreadcrumbListener
 
             if (!$this->request->attributes->has($attributeName)) {
                 throw new RuntimeException(
-                    'You tried to use {' . $attributeName . '} as a breadcrumb parameter, but there is no ' .
-                    'parameter with that name in the route.'
+                    'You tried to use {'
+                    . $attributeName
+                    . '} as a breadcrumb parameter, but there is no '
+                    . 'parameter with that name in the route.',
                 );
             }
 
+            // @mago-expect analysis:mixed-assignment
             $attributeId = $this->request->attributes->get($attributeName);
 
             $name = null;
             $mapping = null;
             foreach ($method->getParameters() as $parameter) {
                 if ($parameter->name === $attributeName) {
+                    // @mago-expect analysis:possible-method-access-on-null,non-existent-method(2),mixed-assignment
                     $name = $parameter->getType()->getName();
+                    // @mago-expect lint:prefer-early-continue
                     foreach ($parameter->getAttributes() as $attribute) {
+                        // @mago-expect lint:prefer-early-continue
                         if ($attribute->getName() === MapEntity::class) {
+                            // @mago-expect analysis:ambiguous-object-property-access,mixed-assignment
+                            // @phpstan-ignore property.notFound
                             $mapping = $attribute->newInstance()->mapping;
                         }
                     }
@@ -156,101 +173,133 @@ class BreadcrumbListener
 
             if ($name === null) {
                 throw new RuntimeException(
-                    'You tried to use {' . $attributeName . '} as a breadcrumb parameter, but there is no ' .
-                    'parameter with that name in the route.'
+                    'You tried to use {'
+                    . $attributeName
+                    . '} as a breadcrumb parameter, but there is no '
+                    . 'parameter with that name in the route.',
                 );
             }
 
+            // @mago-expect lint:no-isset,no-else-clause
             if ($mapping !== null && isset($mapping[$attributeName])) {
-                $attribute = $this->manager->getRepository($name)->findOneBy([$mapping[$attributeName] => $attributeId]);
+                // @mago-expect analysis:mixed-argument,invalid-array-element-key,less-specific-argument
+                $attribute = $this->manager
+                    ->getRepository($name)
+                    ->findOneBy([$mapping[$attributeName] => $attributeId]);
             } else {
+                // @mago-expect analysis:mixed-argument
                 $attribute = $this->manager->getRepository($name)->find($attributeId);
             }
 
             if (!is_object($attribute)) {
+                // @mago-expect analysis:mixed-operand(2)
                 throw new EntityNotFoundException(
-                    'Could not resolve entity ' . $name . ' with ID ' . $attributeId
+                    'Could not resolve entity ' . $name . ' with ID ' . $attributeId,
                 );
             }
 
+            // @mago-expect lint:no-isset
             if (!isset($propertyPath)) {
                 throw new RuntimeException(
-                    'When using objects in a breadcrumb, you have to specify which method to read.' .
-                    ' E.g. {object.name}'
+                    'When using objects in a breadcrumb, you have to specify which method to read.'
+                    . ' E.g. {object.name}',
                 );
             }
 
+            // @mago-expect analysis:mixed-argument,mixed-assignment
             $title = $this->propertyAccess->getValue($attribute, $propertyPath);
         }
 
         if ($breadcrumb->hasRoute()) {
             $this->resolveRouteParameters($breadcrumb);
 
+            // @mago-expect analysis:mixed-argument(3),possible-method-access-on-null(2)
             return new Breadcrumb(
                 $title,
                 $this->router->generate(
                     $breadcrumb->getRoute()->getName(),
                     $breadcrumb->getRoute()->getParameters(),
-                    UrlGeneratorInterface::ABSOLUTE_URL
-                )
+                    UrlGeneratorInterface::ABSOLUTE_URL,
+                ),
             );
         }
 
         if (count($parameters)) {
+            // @mago-expect analysis:mixed-assignment
             foreach ($parameters as $key => $parameterValue) {
+                // @mago-expect lint:no-else-clause
+                // @mago-expect analysis:mixed-argument
                 if (str_contains($parameterValue, '.')) {
+                    // @mago-expect analysis:mixed-argument
                     $split = explode('.', $parameterValue, 2);
                     $attributeName = $split[0];
                     $propertyPath = $split[1];
                 } else {
+                    // @mago-expect analysis:mixed-assignment
                     $attributeName = $parameterValue;
                 }
 
+                // @mago-expect analysis:mixed-argument
                 if (!$this->request->attributes->has($attributeName)) {
+                    // @mago-expect analysis:mixed-operand
                     throw new RuntimeException(
-                        'You tried to use {' . $attributeName . '} as a breadcrumb parameter, but there is no ' .
-                        'parameter with that name in the route.'
+                        'You tried to use {'
+                        . $attributeName
+                        . '} as a breadcrumb parameter, but there is no '
+                        . 'parameter with that name in the route.',
                     );
                 }
 
+                // @mago-expect analysis:mixed-argument,mixed-assignment
                 $attributeId = $this->request->attributes->get($attributeName);
 
                 $name = null;
                 foreach ($method->getParameters() as $parameter) {
+                    // @mago-expect lint:prefer-early-continue
                     if ($parameter->name === $attributeName) {
+                        // @mago-expect analysis:possible-method-access-on-null,non-existent-method(2),mixed-assignment
                         $name = $parameter->getType()->getName();
                     }
                 }
 
                 if ($name === null) {
+                    // @mago-expect analysis:mixed-operand
                     throw new RuntimeException(
-                        'You tried to use {' . $attributeName . '} as a breadcrumb parameter, but there is no ' .
-                        'parameter with that name in the route.'
+                        'You tried to use {'
+                        . $attributeName
+                        . '} as a breadcrumb parameter, but there is no '
+                        . 'parameter with that name in the route.',
                     );
                 }
 
+                // @mago-expect analysis:mixed-argument
                 $attribute = $this->manager->getRepository($name)->find($attributeId);
 
                 if (!is_object($attribute)) {
+                    // @mago-expect analysis:mixed-operand(2)
                     throw new RuntimeException(
-                        'Could not resolve entity ' . $name . ' with ID ' . $attributeId
+                        'Could not resolve entity ' . $name . ' with ID ' . $attributeId,
                     );
                 }
 
+                // @mago-expect lint:no-isset
                 if (!isset($propertyPath)) {
                     throw new RuntimeException(
-                        'When using objects in a breadcrumb, you have to specify which method to read.' .
-                        ' E.g. {object.name}'
+                        'When using objects in a breadcrumb, you have to specify which method to read.'
+                        . ' E.g. {object.name}',
                     );
                 }
 
+                // @mago-expect analysis:mixed-argument
                 $parameters[$key] = $this->propertyAccess->getValue($attribute, $propertyPath);
             }
 
+            // @mago-expect analysis:mixed-argument
             $title = $this->translator->trans($title, $parameters);
         }
 
         // Just a simple string
+        // @mago-expect analysis:mixed-argument
         return new Breadcrumb($title);
     }
 
@@ -261,24 +310,33 @@ class BreadcrumbListener
 
         if ($routeInformation === null) {
             throw new RuntimeException(
-                'A route with name "' . $routeName . '" could not be found. Check your spelling.'
+                'A route with name "' . $routeName . '" could not be found. Check your spelling.',
             );
         }
 
         // If class contains :: in the name, we're dealing with a static method
+        // @mago-expect lint:no-else-clause
+        // @mago-expect analysis:mixed-argument,possibly-false-operand
         if (strpos($routeInformation['controller'], '::') > 0) {
+            // @mago-expect analysis:mixed-argument
             $parts = explode('::', $routeInformation['controller']);
+            // @mago-expect analysis:possibly-invalid-argument
+            // @phpstan-ignore argument.type
             $class = new \ReflectionClass($parts[0]);
 
             $method = $class->getMethod($parts[1]);
         } else {
+            // @mago-expect analysis:mixed-argument
             $class = new \ReflectionClass($routeInformation['controller']);
+            // @mago-expect analysis:mixed-argument
             $method = $class->getMethod($routeInformation['method']);
         }
 
         $this->processAttributeFromMethod($method, $class, new Route($routeName));
     }
 
+    // @mago-expect analysis:imprecise-type
+    // @phpstan-ignore missingType.iterableValue
     private function getRouteInformation(string $name): ?array
     {
         // Get all the routes defined in the entire application
@@ -294,11 +352,15 @@ class BreadcrumbListener
              * In the case of multiple methods defined per controller,
              * explode the controller name and method
              */
+            // @mago-expect lint:no-else-clause
+            // @mago-expect analysis:mixed-argument,possibly-false-operand
             if (strpos($route->getDefault('_controller'), '::') > 0) {
+                // @mago-expect analysis:mixed-argument
                 $chunk = explode('::', $route->getDefault('_controller'));
                 $controller = $chunk[0];
                 $method = $chunk[1];
             } else {
+                // @mago-expect analysis:mixed-assignment
                 $controller = $route->getDefault('_controller');
             }
 
@@ -308,7 +370,10 @@ class BreadcrumbListener
 
             // Loop each parameter and check if a default exists for it
             $requiredParameters = [];
+            // @mago-expect analysis:mixed-assignment
             foreach ($parameters as $parameter) {
+                // @mago-expect lint:prefer-early-continue
+                // @mago-expect analysis:mixed-argument
                 if ($route->getDefault($parameter) === null) {
                     $requiredParameters[] = $parameter;
                 }
@@ -328,12 +393,15 @@ class BreadcrumbListener
     private function resolveRouteParameters(BreadcrumbAttribute $breadcrumb): void
     {
         $route = $breadcrumb->getRoute();
+        // @mago-expect analysis:mixed-argument,possible-method-access-on-null
         $routeInformation = $this->getRouteInformation($route->getName());
+        // @mago-expect analysis:mixed-assignment,possibly-null-array-access
         $requiredParameters = $routeInformation['parameters'];
 
         $parentParameters = [];
         $currentAttributes = $this->request->attributes->all();
 
+        // @mago-expect analysis:invalid-iterator,mixed-assignment
         foreach ($requiredParameters as $requiredParentParameter) {
             /*
              * In real world scenario's, the parent is often present
@@ -342,8 +410,12 @@ class BreadcrumbListener
              * If we're currently in the child route, we can check the URI
              * for the author parameter and already fill it in.
              */
+            // @mago-expect lint:prefer-early-continue
+            // @mago-expect analysis:mixed-argument
             if (\array_key_exists($requiredParentParameter, $currentAttributes)) {
+                // @mago-expect lint:no-else-clause
                 if (is_object($currentAttributes[$requiredParentParameter])) {
+                    // @mago-expect analysis:ambiguous-object-method-access
                     $parentParameters[$requiredParentParameter] = $currentAttributes[$requiredParentParameter]->getId();
                 } else {
                     $parentParameters[$requiredParentParameter] = $currentAttributes[$requiredParentParameter];
@@ -351,22 +423,24 @@ class BreadcrumbListener
             }
         }
 
+        // @mago-expect analysis:possible-method-access-on-null
         $route->addParameters($parentParameters);
 
-        if (
-            count($routeInformation['parameters']) > 0
-            && !$route->getParameters()
-        ) {
+        // @mago-expect analysis:mixed-argument,possible-method-access-on-null,possibly-null-array-access
+        if (count($routeInformation['parameters']) > 0 && !$route->getParameters()) {
+            // @mago-expect analysis:mixed-argument
             throw new RuntimeException(
-                'Your breadcrumb route is missing required parameters: ' .
-                implode($routeInformation['parameters'])
+                'Your breadcrumb route is missing required parameters: ' . implode($routeInformation['parameters']),
             );
         }
 
+        // @mago-expect analysis:invalid-iterator,mixed-assignment,possibly-null-array-access
         foreach ($routeInformation['parameters'] as $requiredParameter) {
+            // @mago-expect analysis:mixed-argument(2),possible-method-access-on-null
             if (!\array_key_exists($requiredParameter, $route->getParameters())) {
                 throw new RuntimeException(
-                    'Your breadcrumb route is missing required parameters: ' . $requiredParameter
+                    // @mago-expect analysis:mixed-operand
+                    'Your breadcrumb route is missing required parameters: ' . $requiredParameter,
                 );
             }
         }

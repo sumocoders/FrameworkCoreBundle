@@ -8,8 +8,7 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class ConfigureMenuEvent extends Event
 {
-    public const EVENT_NAME = 'framework_core.configure_menu';
-
+    public const string EVENT_NAME = 'framework_core.configure_menu';
 
     public function __construct(
         private FactoryInterface $factory,
@@ -17,6 +16,8 @@ class ConfigureMenuEvent extends Event
     ) {
     }
 
+    // @mago-expect analysis:unused-method
+    // @phpstan-ignore method.unused
     private function setFactory(FactoryInterface $factory): void
     {
         $this->factory = $factory;
@@ -27,7 +28,9 @@ class ConfigureMenuEvent extends Event
         return $this->factory;
     }
 
-    private function setMenu(ItemInterface $menu)
+    // @mago-expect analysis:unused-method
+    // @phpstan-ignore method.unused
+    private function setMenu(ItemInterface $menu): void
     {
         $this->menu = $menu;
     }

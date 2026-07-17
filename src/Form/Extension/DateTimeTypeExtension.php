@@ -2,7 +2,6 @@
 
 namespace SumoCoders\FrameworkCoreBundle\Form\Extension;
 
-use DateTime;
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\FormInterface;
@@ -24,7 +23,7 @@ final class DateTimeTypeExtension extends AbstractTypeExtension
                 'maximum_date' => null,
                 'minimum_date' => null,
                 'html5' => false,
-            ]
+            ],
         );
 
         $resolver->setDefined(['helper_text']);
@@ -35,7 +34,8 @@ final class DateTimeTypeExtension extends AbstractTypeExtension
         $view->vars['maximum_date'] = $options['maximum_date'] ?? null;
         $view->vars['minimum_date'] = $options['minimum_date'] ?? null;
         $view->vars['format'] = $options['format'];
-        $view->vars['divider'] = (strpos($options['format'], '-') !== false) ? '-' : '/';
+        // @mago-expect analysis:mixed-argument
+        $view->vars['divider'] = str_contains($options['format'], '-') ? '-' : '/';
         $view->vars['helper_text'] = $options['helper_text'] ?? null;
     }
 }

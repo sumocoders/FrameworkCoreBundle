@@ -9,36 +9,45 @@ use SumoCoders\FrameworkCoreBundle\ValueObject\Route;
 final class Breadcrumb
 {
     private string $title;
+    // @phpstan-ignore missingType.iterableValue
     private array $parameters;
     private ?Route $route;
     private ?Route $parent;
 
+    /**
+     * @param array<array-key, mixed>|null                                   $parameters
+     * @param array{name: string, parameters?: array<array-key, mixed>}|null $route
+     * @param array{name: string, parameters?: array<array-key, mixed>}|null $parent
+     */
     public function __construct(
         string $title,
         ?array $parameters = null,
         ?array $route = null,
-        ?array $parent = null
+        ?array $parent = null,
     ) {
         $this->title = $title;
 
+        // @mago-expect lint:no-else-clause
         if ($route !== null) {
             $this->route = new Route(
                 $route['name'],
-                \array_key_exists('parameters', $route) ? $route['parameters'] : null
+                \array_key_exists('parameters', $route) ? $route['parameters'] : null,
             );
         } else {
             $this->route = $route;
         }
 
+        // @mago-expect lint:no-else-clause
         if ($parent !== null) {
             $this->parent = new Route(
                 $parent['name'],
-                \array_key_exists('parameters', $parent) ? $parent['parameters'] : null
+                \array_key_exists('parameters', $parent) ? $parent['parameters'] : null,
             );
         } else {
             $this->parent = $parent;
         }
 
+        // @mago-expect lint:no-else-clause
         if ($parameters !== null) {
             $this->parameters = $parameters;
         } else {
@@ -46,7 +55,7 @@ final class Breadcrumb
         }
     }
 
-    public function getTitle(): ?string
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -66,6 +75,7 @@ final class Breadcrumb
         return $this->parent;
     }
 
+    /** @return array<array-key, mixed> */
     public function getParameters(): array
     {
         return $this->parameters;

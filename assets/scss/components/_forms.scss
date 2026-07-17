@@ -5,7 +5,7 @@
 .form-group abbr[title] {
   border-bottom: 0;
   color: var(--bs-primary-text-emphasis);
-  margin-left: 5px;
+  margin-left: 0;
   text-decoration: none;
 }
 
@@ -16,10 +16,6 @@
 
 [data-role="clipboard"]:hover {
   cursor: copy;
-}
-
-.form-group abbr[title] {
-  margin-left: 0;
 }
 
 @include color-mode(dark) {

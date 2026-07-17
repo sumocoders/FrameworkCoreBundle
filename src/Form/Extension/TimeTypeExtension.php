@@ -2,9 +2,7 @@
 
 namespace SumoCoders\FrameworkCoreBundle\Form\Extension;
 
-use IntlDateFormatter;
 use Symfony\Component\Form\AbstractTypeExtension;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
@@ -23,15 +21,15 @@ final class TimeTypeExtension extends AbstractTypeExtension
             [
                 'format' => 'HH:mm',
                 'widget' => 'single_text',
-            ]
+            ],
         );
 
         $resolver->setAllowedValues(
             'widget',
             [
-            'single_text',
-            'choice',
-            ]
+                'single_text',
+                'choice',
+            ],
         );
 
         $resolver->setDefined(['helper_text']);
@@ -40,7 +38,8 @@ final class TimeTypeExtension extends AbstractTypeExtension
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['format'] = $options['format'];
-        $view->vars['divider'] = (strpos($options['format'], '-') !== false) ? '-' : '/';
+        // @mago-expect analysis:mixed-argument
+        $view->vars['divider'] = str_contains($options['format'], '-') ? '-' : '/';
         $view->vars['timepicker'] = $options['timepicker'] ?? false;
         $view->vars['helper_text'] = $options['helper_text'] ?? null;
     }

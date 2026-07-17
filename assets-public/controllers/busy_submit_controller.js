@@ -2,8 +2,8 @@ import { Controller } from '@hotwired/stimulus'
 
 export default class extends Controller {
   connect () {
-    this.disableSubmit = this.disableSubmit.bind(this);
-    this.enableSubmit = this.enableSubmit.bind(this);
+    this.disableSubmit = this.disableSubmit.bind(this)
+    this.enableSubmit = this.enableSubmit.bind(this)
     this.element.addEventListener('turbo:submit-start', this.disableSubmit)
     this.element.addEventListener('turbo:submit-end', this.enableSubmit)
   }
@@ -54,7 +54,7 @@ export default class extends Controller {
   }
 
   createSpinner () {
-    let spinner = document.createElement('span')
+    const spinner = document.createElement('span')
     spinner.setAttribute('class', 'spinner-border spinner-border-sm me-2')
     spinner.setAttribute('aria-hidden', 'true')
     return spinner

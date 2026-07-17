@@ -10,6 +10,7 @@
     color: var(--bs-white);
   }
 
+  /* stylelint-disable-next-line no-descending-specificity */
   .ui-state-focus {
     background: var(--bs-primary-text-emphasis);
     border-color: var(--bs-primary-text-emphasis);
@@ -22,12 +23,14 @@
   padding-top: 10px;
 }
 
+/* stylelint-disable-next-line no-descending-specificity */
 .ui-state-focus {
   background: var(--bs-primary-text-emphasis);
   border: 0;
   color: $white;
   margin: 0;
 
+  /* stylelint-disable-next-line no-descending-specificity */
   a {
     color: $white;
   }

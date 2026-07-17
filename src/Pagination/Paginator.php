@@ -2,18 +2,23 @@
 
 namespace SumoCoders\FrameworkCoreBundle\Pagination;
 
+use ArrayIterator;
+use Countable;
 use Doctrine\ORM\QueryBuilder as DoctrineQueryBuilder;
 use Doctrine\ORM\Tools\Pagination\CountWalker;
 use Doctrine\ORM\Tools\Pagination\Paginator as DoctrinePaginator;
-use ArrayIterator;
+use Iterator;
 use IteratorAggregate;
 use Traversable;
-use Countable;
-use Iterator;
 
+/**
+ * @template TKey of int
+ * @template TValue of object
+ * @implements IteratorAggregate<TKey, TValue>
+ */
 class Paginator implements Countable, IteratorAggregate
 {
-    public const PAGE_SIZE = 30;
+    public const int PAGE_SIZE = 30;
 
     private int $currentPage;
     private int $startPage;
@@ -37,6 +42,7 @@ class Paginator implements Countable, IteratorAggregate
             ->setMaxResults($this->pageSize)
             ->getQuery();
 
+        // @mago-expect analysis:mixed-argument
         if (0 === count($this->queryBuilder->getDQLPart('join'))) {
             $query->setHint(CountWalker::HINT_DISTINCT, false);
         }
@@ -130,22 +136,28 @@ class Paginator implements Countable, IteratorAggregate
 
     public function count(): int
     {
+        // @mago-expect analysis:possibly-invalid-argument
         return count($this->getResults());
     }
 
-    /** @return ArrayIterator<int, object> */
+    /**
+     * @return ArrayIterator<TKey, TValue>
+     */
     public function getIterator(): Traversable
     {
         $results = $this->getResults();
 
         if ($results instanceof Iterator) {
+            // @mago-expect analysis:less-specific-return-statement
             return $results;
         }
 
         if ($results instanceof IteratorAggregate) {
+            // @mago-expect analysis:mixed-return-statement,non-existent-method(2)
             return $results->getIterator();
         }
 
+        // @mago-expect analysis:invalid-argument
         return new ArrayIterator($results);
     }
 
@@ -168,22 +180,22 @@ class Paginator implements Countable, IteratorAggregate
         $this->endPage = $endPage;
     }
 
-    private function startPageUnderflow($startPage): bool
+    private function startPageUnderflow(int $startPage): bool
     {
         return $startPage < 1;
     }
 
-    private function endPageOverflow($endPage): bool
+    private function endPageOverflow(int $endPage): bool
     {
         return $endPage > $this->getNumberOfPages();
     }
 
-    private function calculateEndPageForStartPageUnderflow($startPage, $endPage): int
+    private function calculateEndPageForStartPageUnderflow(int $startPage, int $endPage): int
     {
         return min($endPage + (1 - $startPage), $this->getNumberOfPages());
     }
 
-    private function calculateStartPageForEndPageOverflow($startPage, $endPage): int
+    private function calculateStartPageForEndPageOverflow(int $startPage, int $endPage): int
     {
         return max($startPage - ($endPage - $this->getNumberOfPages()), 1);
     }

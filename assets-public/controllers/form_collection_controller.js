@@ -54,7 +54,7 @@ export default class extends Controller {
     document.dispatchEvent(new Event('add.collection.item'))
 
     let prototype = this.element.dataset.prototype
-    let prototypeName = this.element.dataset.prototypeName
+    const prototypeName = this.element.dataset.prototypeName
     // get the new index
     const index = parseInt(this.element.dataset.index)
     // Replace prototype name (default '__name__') in the prototype's HTML to

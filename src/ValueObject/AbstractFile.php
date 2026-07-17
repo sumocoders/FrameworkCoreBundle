@@ -3,10 +3,6 @@
 namespace SumoCoders\FrameworkCoreBundle\ValueObject;
 
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Annotation\Slug;
-use Gedmo\Mapping\Annotation\SlugHandler;
-use Gedmo\Sluggable\Sluggable;
-use Gedmo\Sluggable\SluggableListener;
 use Gedmo\Sluggable\Util\Urlizer;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -19,6 +15,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  * upload for PostPersist() and PostUpdate()
  * remove for PostRemove()
  */
+// @mago-expect lint:cyclomatic-complexity
 abstract class AbstractFile
 {
     protected ?UploadedFile $file = null;
@@ -40,13 +37,15 @@ abstract class AbstractFile
 
     public function getAbsolutePath(): ?string
     {
+        // @mago-expect analysis:possibly-null-operand
         return $this->fileName === null ? null : $this->getUploadRootDir() . '/' . $this->fileName;
     }
 
     public function getWebPath(): string
     {
         $file = $this->getAbsolutePath();
-        if (is_file($file) && file_exists($file)) {
+        if (!is_null($file) && !is_null($this->fileName) && is_file($file) && file_exists($file)) {
+            // @mago-expect analysis:possibly-null-operand
             return '/files/' . $this->getUploadDir() . '/' . $this->fileName;
         }
 
@@ -93,8 +92,9 @@ abstract class AbstractFile
 
     public static function fromUploadedFile(
         ?UploadedFile $uploadedFile = null,
-        ?string $namePrefix = null
+        ?string $namePrefix = null,
     ): static {
+        // @mago-expect analysis:unsafe-instantiation
         $file = new static(null);
         $file->setFile($uploadedFile);
         if ($namePrefix !== null) {
@@ -119,16 +119,20 @@ abstract class AbstractFile
      */
     public function prepareToUpload(): void
     {
-        if ($this->getFile() === null) {
+        $file = $this->getFile();
+        if (is_null($file)) {
             return;
         }
 
         // do whatever you want to generate a unique name
-        $filename = sha1(uniqid(mt_rand(), true));
+        $filename = sha1(uniqid((string) mt_rand(), true));
         if ($this->namePrefix !== null) {
+            // @mago-expect analysis:non-existent-method
+            // @phpstan-ignore staticMethod.notFound
             $filename = Urlizer::urlize($this->namePrefix) . '_' . $filename;
         }
-        $this->fileName = $filename . '.' . $this->getFile()->guessExtension();
+        // @mago-expect analysis:possibly-null-operand
+        $this->fileName = $filename . '.' . $file->guessExtension();
     }
 
     /**
@@ -150,15 +154,18 @@ abstract class AbstractFile
         $this->file = null;
     }
 
-
-
     /**
      * This will remove the old file, can be extended to add extra functionality
      */
     protected function removeOldFile(): void
     {
+        $oldFile = $this->oldFileName;
+        if (is_null($oldFile)) {
+            return;
+        }
+
         // delete the old file
-        $oldFile = $this->getUploadRootDir() . '/' . $this->oldFileName;
+        $oldFile = $this->getUploadRootDir() . '/' . $oldFile;
         if (is_file($oldFile) && file_exists($oldFile)) {
             unlink($oldFile);
         }
@@ -173,7 +180,12 @@ abstract class AbstractFile
      */
     protected function writeFileToDisk(): void
     {
-        $this->getFile()->move($this->getUploadRootDir(), $this->fileName);
+        $file = $this->getFile();
+        if (is_null($file)) {
+            return;
+        }
+
+        $file->move($this->getUploadRootDir(), $this->fileName);
     }
 
     /**
@@ -182,7 +194,7 @@ abstract class AbstractFile
     public function remove(): void
     {
         $file = $this->getAbsolutePath();
-        if (!is_file($file) || !file_exists($file)) {
+        if (is_null($file) || !is_file($file) || !file_exists($file)) {
             return;
         }
 
@@ -196,6 +208,7 @@ abstract class AbstractFile
 
     public static function fromString(?string $fileName): ?self
     {
+        // @mago-expect analysis:unsafe-instantiation
         return $fileName !== null ? new static($fileName) : null;
     }
 
@@ -222,10 +235,9 @@ abstract class AbstractFile
 
     /**
      * @internal Used by the form types
-     *
-     * @param bool $isPendingDeletion
      */
-    public function setPendingDeletion($isPendingDeletion): void
+    // @mago-expect lint:no-boolean-flag-parameter
+    public function setPendingDeletion(bool $isPendingDeletion): void
     {
         if ($isPendingDeletion) {
             $this->markForDeletion();
@@ -233,13 +245,13 @@ abstract class AbstractFile
     }
 
     /**
+     * @return bool
      * @internal Used by the form types
      *
-     * @return bool
      */
     public function isPendingDeletion(): bool
     {
-        return !empty($this->oldFileName) && $this->fileName === null;
+        return $this->oldFileName !== null && $this->fileName === null;
     }
 
     public function jsonSerialize(): string

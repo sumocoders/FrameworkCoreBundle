@@ -24,6 +24,7 @@ use SumoCoders\FrameworkCoreBundle\Logger\AuditLogger;
 
 #[AsDoctrineListener(event: Events::postPersist, priority: 500)]
 #[AsDoctrineListener(event: Events::onFlush, priority: 500)]
+// @mago-expect lint:kan-defect,cyclomatic-complexity
 final readonly class DoctrineAuditListener
 {
     public function __construct(
@@ -31,6 +32,7 @@ final readonly class DoctrineAuditListener
     ) {
     }
 
+    // @mago-expect lint:halstead
     public function onFlush(OnFlushEventArgs $args): void
     {
         $unitOfWork = $args->getObjectManager()->getUnitOfWork();
@@ -40,6 +42,7 @@ final readonly class DoctrineAuditListener
          */
         $collectionUpdatesByOwner = [];
         /**
+         * // phpcs:ignore Generic.Files.LineLength
          * @var array<class-string, array<int, array<int, PersistentCollection<int, mixed>>>> $collectionDeletionsByOwner
          */
         $collectionDeletionsByOwner = [];
@@ -50,6 +53,7 @@ final readonly class DoctrineAuditListener
             if ($classAndId === null) {
                 continue;
             }
+            // @mago-expect analysis:mixed-assignment
             [$class, $id] = $classAndId;
 
             $collectionUpdatesByOwner[$class][$id][] = $collectionUpdate;
@@ -60,6 +64,7 @@ final readonly class DoctrineAuditListener
             if ($classAndId === null) {
                 continue;
             }
+            // @mago-expect analysis:mixed-assignment
             [$class, $id] = $classAndId;
 
             $collectionDeletionsByOwner[$class][$id][] = $collectionDeletion;
@@ -76,21 +81,25 @@ final readonly class DoctrineAuditListener
             }
 
             $auditTrailAttributes = $entityUpdateReflectionClass->getAttributes(AuditTrail::class);
-            if (empty($auditTrailAttributes)) {
+            if (count($auditTrailAttributes) === 0) {
                 continue;
             }
 
             $className = $entityUpdateReflectionClass->getName();
+            // @mago-expect analysis:mixed-assignment
             $id = $unitOfWork->getSingleIdentifierValue($entityUpdate);
 
+            // @mago-expect analysis:mixed-assignment
             $propertiesToTrack = $auditTrailAttributes[0]->getArguments()['fields'] ?? [];
             $changes = [];
             $changeSet = $unitOfWork->getEntityChangeSet($entityUpdate);
             foreach ($changeSet as $field => $change) {
-                if (!empty($propertiesToTrack) && !in_array($field, $propertiesToTrack, true)) {
+                // @mago-expect analysis:mixed-argument(2)
+                if (count($propertiesToTrack) > 0 && !in_array($field, $propertiesToTrack, true)) {
                     continue;
                 }
 
+                // @mago-expect analysis:mixed-assignment
                 $withData = $auditTrailAttributes[0]->getArguments()['withData'] ?? true;
                 if ($withData === false) {
                     continue;
@@ -99,20 +108,26 @@ final readonly class DoctrineAuditListener
                 if (str_contains($field, '.')) {
                     [$property, $subProperty] = explode('.', $field);
 
+                    // @mago-expect analysis:possibly-invalid-argument
                     $fieldReflection = new ReflectionProperty($className, $property);
                     $embeddedAttributes = $fieldReflection->getAttributes(Embedded::class);
-                    if (empty($embeddedAttributes)) {
+                    if (count($embeddedAttributes) === 0) {
                         continue;
                     }
 
+                    // @mago-expect analysis:mixed-assignment,string-member-selector
                     $embedded = $entityUpdate->{'get' . ucfirst($property)}();
+                    // @mago-expect analysis:mixed-argument
                     $fieldReflection = new ReflectionProperty($embedded, $subProperty);
+
+                    // @mago-expect lint:no-else-clause
                 } else {
+                    // @mago-expect analysis:possibly-invalid-argument
                     $fieldReflection = new ReflectionProperty($className, $field);
                 }
 
                 $sensitiveDataAttributes = $fieldReflection->getAttributes(SensitiveData::class);
-                if (!empty($sensitiveDataAttributes)) {
+                if (count($sensitiveDataAttributes) > 0) {
                     $changes[$field] = ['from' => '*****', 'to' => '*****'];
 
                     continue;
@@ -126,36 +141,41 @@ final readonly class DoctrineAuditListener
 
             if (
                 array_key_exists($className, $collectionUpdatesByOwner)
+                // @mago-expect analysis:less-specific-nested-argument-type,mixed-argument
                 && array_key_exists($id, $collectionUpdatesByOwner[$className])
             ) {
                 foreach ($collectionUpdatesByOwner[$className][$id] as $collectionUpdate) {
                     $changes[$collectionUpdate->getMapping()->fieldName] = $this->getChangesForCollection(
                         $unitOfWork,
                         $className,
-                        $collectionUpdate
+                        // @mago-expect analysis:less-specific-argument
+                        $collectionUpdate,
                     );
                 }
             }
 
             if (
                 array_key_exists($className, $collectionDeletionsByOwner)
+                // @mago-expect analysis:less-specific-nested-argument-type,mixed-argument
                 && array_key_exists($id, $collectionDeletionsByOwner[$className])
             ) {
                 foreach ($collectionDeletionsByOwner[$className][$id] as $collectionDeletion) {
                     $changes[$collectionDeletion->getMapping()->fieldName] = $this->getChangesForCollection(
                         $unitOfWork,
                         $className,
-                        $collectionDeletion
+                        // @mago-expect analysis:less-specific-argument
+                        $collectionDeletion,
                     );
                 }
             }
 
             $this->auditLogger->log(
                 $className,
+                // @mago-expect analysis:mixed-argument
                 $unitOfWork->getSingleIdentifierValue($entityUpdate),
                 EventAction::UPDATE,
                 array_keys($changes),
-                $changes
+                $changes,
             );
         }
 
@@ -170,23 +190,26 @@ final readonly class DoctrineAuditListener
             }
 
             $auditTrailAttributes = $entityDeletionReflectionClass->getAttributes(AuditTrail::class);
-            if (empty($auditTrailAttributes)) {
+            if (count($auditTrailAttributes) === 0) {
                 continue;
             }
 
             $properties = $this->getProperties(
                 $entityDeletion,
                 $unitOfWork,
+                // @mago-expect analysis:mixed-argument
                 $auditTrailAttributes[0]->getArguments()['fields'] ?? [],
-                $auditTrailAttributes[0]->getArguments()['withData'] ?? true
+                // @mago-expect analysis:mixed-argument
+                $auditTrailAttributes[0]->getArguments()['withData'] ?? true,
             );
 
             $this->auditLogger->log(
                 $entityDeletion::class,
+                // @mago-expect analysis:mixed-argument
                 $unitOfWork->getSingleIdentifierValue($entityDeletion),
                 EventAction::DELETE,
                 [],
-                $properties
+                $properties,
             );
         }
     }
@@ -205,7 +228,7 @@ final readonly class DoctrineAuditListener
         }
 
         $auditTrailAttributes = $entityReflectionClass->getAttributes(AuditTrail::class);
-        if (empty($auditTrailAttributes)) {
+        if (count($auditTrailAttributes) === 0) {
             return;
         }
 
@@ -214,16 +237,19 @@ final readonly class DoctrineAuditListener
         $properties = $this->getProperties(
             $entity,
             $unitOfWork,
+            // @mago-expect analysis:mixed-argument
             $auditTrailAttributes[0]->getArguments()['fields'] ?? [],
-            $auditTrailAttributes[0]->getArguments()['withData'] ?? true
+            // @mago-expect analysis:mixed-argument
+            $auditTrailAttributes[0]->getArguments()['withData'] ?? true,
         );
 
         $this->auditLogger->log(
             $entity::class,
+            // @mago-expect analysis:mixed-argument
             $unitOfWork->getSingleIdentifierValue($entity),
             EventAction::CREATE,
             [],
-            $properties
+            $properties,
         );
     }
 
@@ -236,7 +262,8 @@ final readonly class DoctrineAuditListener
         object $entity,
         UnitOfWork $unitOfWork,
         array $fields = [],
-        bool $withData = false
+        // @mago-expect lint:no-boolean-flag-parameter
+        bool $withData = false,
     ): array {
         $reflection = new ReflectionClass($entity);
         if ($entity instanceof Proxy) {
@@ -259,7 +286,7 @@ final readonly class DoctrineAuditListener
             }
 
             $sensitiveDataAttributes = $property->getAttributes(SensitiveData::class);
-            if (!empty($sensitiveDataAttributes)) {
+            if (count($sensitiveDataAttributes) > 0) {
                 $properties[$property->getName()] = '*****';
 
                 continue;
@@ -268,24 +295,23 @@ final readonly class DoctrineAuditListener
             $properties[$property->getName()] = $this->transform($unitOfWork, $property, $property->getValue($entity));
         }
 
-        if (!empty($fields)) {
+        if (count($fields) > 0) {
             $properties = array_filter(
                 $properties,
-                fn ($key) => in_array($key, $fields, true), ARRAY_FILTER_USE_KEY
+                static fn (string $key): bool => in_array($key, $fields, true),
+                ARRAY_FILTER_USE_KEY,
             );
         }
 
+        // @mago-expect analysis:less-specific-nested-return-statement
         return $properties;
     }
 
-    /**
-     * @return string|int|array<mixed>|null
-     */
     public function transform(
         UnitOfWork $unitOfWork,
         ReflectionProperty $reflectionProperty,
-        mixed $value
-    ): string|int|array|null {
+        mixed $value,
+    ): mixed {
         if ($value instanceof \BackedEnum) {
             return $value->value;
         }
@@ -303,37 +329,37 @@ final readonly class DoctrineAuditListener
         }
 
         if ($value instanceof Collection) {
-            return $value->map(fn($item) => $item->getId())->toArray();
+            // @mago-expect analysis:mixed-method-access,missing-return-type,missing-parameter-type
+            return $value->map(static fn ($item) => $item->getId())->toArray();
         }
 
         $manyToOneAttributes = $reflectionProperty->getAttributes(ManyToOne::class);
         $oneToOneAttributes = $reflectionProperty->getAttributes(OneToOne::class);
-        if (!empty($manyToOneAttributes) || !empty($oneToOneAttributes)) {
+        if (count($manyToOneAttributes) > 0 || count($oneToOneAttributes) > 0) {
             return $unitOfWork->getSingleIdentifierValue($value);
         }
 
         $embeddedAttributes = $reflectionProperty->getAttributes(Embedded::class);
-        if (!empty($embeddedAttributes)) {
+        if (count($embeddedAttributes) > 0) {
             return $this->getProperties($value, $unitOfWork);
         }
 
+        // @phpstan-ignore identical.alwaysFalse
         if ($value::class === 'Money\\Money') {
+            // @mago-expect analysis:mixed-operand,non-existent-method(2),non-existent-class-like(4),mixed-method-access
             // @phpstan-ignore-next-line
             return $value->getCurrency()->getCode() . ' ' . $value->getAmount();
         }
 
-        // @phpstan-ignore-next-line cast.string
-        return (string) $value;
+        return $value;
     }
 
     /**
-     * @param PersistentCollection<int, object> $collectionChange
-     *
-     * @return null|array{0: class-string, 1: int|string}
+     * @return null|list{class-string|string, mixed}
      */
     private function getClassAndIdForCollectionChange(
         UnitOfWork $unitOfWork,
-        PersistentCollection $collectionChange
+        PersistentCollection $collectionChange,
     ): ?array {
         $owner = $collectionChange->getOwner();
 
@@ -349,6 +375,7 @@ final readonly class DoctrineAuditListener
             }
             $class = $parentClass->getName();
         }
+        // @mago-expect analysis:mixed-assignment
         $id = $unitOfWork->getSingleIdentifierValue($owner);
 
         return [$class, $id];
@@ -357,32 +384,31 @@ final readonly class DoctrineAuditListener
     /**
      * @param PersistentCollection<int, mixed> $collection
      *
-     * @return array{from: string|int|array<mixed>|null, to: string|int|array<mixed>|null}
+     * @return array{from: string|int|array<mixed>|object|mixed|null, to: string|int|array<mixed>|object|mixed|null}
      */
     private function getChangesForCollection(
         UnitOfWork $unitOfWork,
         string $className,
-        PersistentCollection $collection
+        PersistentCollection $collection,
     ): array {
         $mapping = $collection->getMapping();
         $originalData = $this->getOriginalCollectionData($collection);
         $newData = new ArrayCollection($collection->getValues());
 
-        $reflectionProperty = new ReflectionProperty(
-            $className,
-            $mapping->fieldName
-        );
+        // @mago-expect analysis:possibly-invalid-argument
+        // @phpstan-ignore argument.type
+        $reflectionProperty = new ReflectionProperty($className, $mapping->fieldName);
 
         return [
             'from' => $this->transform(
                 $unitOfWork,
                 $reflectionProperty,
-                $originalData
+                $originalData,
             ),
             'to' => $this->transform(
                 $unitOfWork,
                 $reflectionProperty,
-                $newData
+                $newData,
             ),
         ];
     }
@@ -399,10 +425,13 @@ final readonly class DoctrineAuditListener
         $inserts = $collection->getInsertDiff();
         $deletions = $collection->getDeleteDiff();
 
+        // @mago-expect analysis:mixed-assignment
         foreach ($deletions as $deletion) {
             $originalData->add($deletion);
         }
 
+        // @mago-expect lint:prefer-early-continue
+        // @mago-expect analysis:mixed-assignment
         foreach ($collection as $item) {
             if (!in_array($item, $inserts, true)) {
                 $originalData->add($item);

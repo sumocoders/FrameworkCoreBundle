@@ -2,6 +2,7 @@ td.action {
   text-align: center;
   width: 90px;
 
+  /* stylelint-disable-next-line selector-class-pattern */
   &.actionSmall {
     width: 25px;
   }

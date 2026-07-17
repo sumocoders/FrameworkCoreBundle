@@ -14,7 +14,7 @@ class MenuBuilder
 
     public function __construct(
         FactoryInterface $factory,
-        EventDispatcherInterface $eventDispatcher
+        EventDispatcherInterface $eventDispatcher,
     ) {
         $this->factory = $factory;
         $this->eventDispatcher = $eventDispatcher;
@@ -29,9 +29,9 @@ class MenuBuilder
         $this->eventDispatcher->dispatch(
             new ConfigureMenuEvent(
                 $this->factory,
-                $menu
+                $menu,
             ),
-            ConfigureMenuEvent::EVENT_NAME
+            ConfigureMenuEvent::EVENT_NAME,
         );
 
         $this->reorderMenuItems($menu);
@@ -50,10 +50,15 @@ class MenuBuilder
                 $this->reorderMenuItems($menuItem);
             }
 
+            // @mago-expect analysis:mixed-assignment
             $orderNumber = $menuItem->getExtra('orderNumber');
 
+            // @mago-expect lint:no-else-clause
             if ($orderNumber !== null) {
-                if (!isset($menuOrderArray[$orderNumber])) {
+                // @mago-expect lint:no-else-clause
+                // @mago-expect analysis:mixed-argument,impossible-type-comparison,redundant-logical-operation,impossible-null-type-comparison
+                // @phpstan-ignore booleanOr.rightAlwaysFalse
+                if (!array_key_exists($orderNumber, $menuOrderArray) || is_null($menuOrderArray[$orderNumber])) {
                     $menuOrderArray[$orderNumber] = $menuItem->getName();
                 } else {
                     $alreadyTaken[$orderNumber] = $menuItem->getName();
@@ -65,10 +70,10 @@ class MenuBuilder
 
         ksort($menuOrderArray);
 
-        if (!empty($alreadyTaken)) {
+        if (count($alreadyTaken) > 0) {
             foreach ($alreadyTaken as $key => $value) {
                 $keysArray = array_keys($menuOrderArray);
-                $position = array_search($key, $keysArray);
+                $position = array_search($key, $keysArray, true);
 
                 if ($position === false) {
                     continue;
@@ -77,20 +82,20 @@ class MenuBuilder
                 $menuOrderArray = array_merge(
                     array_slice($menuOrderArray, 0, $position),
                     [$value],
-                    array_slice($menuOrderArray, $position)
+                    array_slice($menuOrderArray, $position),
                 );
             }
         }
 
         ksort($menuOrderArray);
 
-        if (!empty($addLast)) {
+        if (count($addLast) > 0) {
             foreach ($addLast as $value) {
                 $menuOrderArray[] = $value;
             }
         }
 
-        if (!empty($menuOrderArray)) {
+        if (count($menuOrderArray) > 0) {
             $menu->reorderChildren($menuOrderArray);
         }
     }

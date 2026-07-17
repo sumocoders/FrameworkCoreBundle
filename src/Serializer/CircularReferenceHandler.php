@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping\Id;
 
 class CircularReferenceHandler
 {
-    public function __invoke($object)
+    public function __invoke(object $object): ?string
     {
         return $this->getId($object);
     }
@@ -18,7 +18,6 @@ class CircularReferenceHandler
 
         foreach ($properties as $property) {
             if ($property->getAttributes(Id::class)) {
-                $property->setAccessible(true);
                 return (string) $property->getValue($object);
             }
         }

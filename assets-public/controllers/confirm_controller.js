@@ -7,8 +7,9 @@ export default class extends Controller {
     confirmationMessage: { type: String, default: 'Are you sure?' },
     cancelButtonText: { type: String, default: 'Cancel' },
     confirmButtonText: { type: String, default: 'Ok' },
-    closeButtonText: { type: String, default: 'Close' },
+    closeButtonText: { type: String, default: 'Close' }
   }
+
   static targets = ['element']
 
   connect () {

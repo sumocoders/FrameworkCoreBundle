@@ -11,6 +11,7 @@ class BelgiumPostCodes extends ResourceBundle
      */
     public static function getNames(): array
     {
+        // @mago-expect analysis:mixed-return-statement
         return self::readEntry(['Names'], 'nl', false);
     }
 

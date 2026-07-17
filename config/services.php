@@ -123,8 +123,8 @@ return static function (ContainerConfigurator $container): void {
         ->tag(
             'kernel.event_listener',
             [
-                'event' => 'kernel.controller',
-                'method' => 'onKernelController',
+                'event' => 'kernel.controller_arguments',
+                'method' => 'onKernelControllerArguments',
                 'priority' => -1
             ]
         )
@@ -138,8 +138,8 @@ return static function (ContainerConfigurator $container): void {
         ->tag(
             'kernel.event_listener',
             [
-                'event' => 'kernel.controller',
-                'method' => 'onKernelController',
+                'event' => 'kernel.controller_arguments',
+                'method' => 'onKernelControllerArguments',
                 'priority' => -1
             ]
         )

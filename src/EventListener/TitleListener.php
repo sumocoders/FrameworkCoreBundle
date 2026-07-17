@@ -2,24 +2,16 @@
 
 namespace SumoCoders\FrameworkCoreBundle\EventListener;
 
-use ReflectionClass;
+use ReflectionMethod;
 use SumoCoders\FrameworkCoreBundle\Attribute\Title;
 use SumoCoders\FrameworkCoreBundle\Service\Fallbacks;
 use SumoCoders\FrameworkCoreBundle\Service\PageTitle;
 use SumoCoders\FrameworkCoreBundle\ValueObject\Route;
-use Symfony\Bridge\Doctrine\Attribute\MapEntity;
-use Symfony\Component\HttpKernel\Event\KernelEvent;
+use Symfony\Component\HttpKernel\Event\ControllerArgumentsEvent;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Doctrine\ORM\EntityManagerInterface;
 
-/**
- * Class TitleListener
- *
- * This class is responsible for handling the title of the page.
- * It listens to the kernel controller event and sets the title based on the Title attribute.
- */
 class TitleListener
 {
     public function __construct(
@@ -27,85 +19,64 @@ class TitleListener
         private Fallbacks $fallbacks,
         private RouterInterface $router,
         private TranslatorInterface $translator,
-        private EntityManagerInterface $manager,
         private PropertyAccessorInterface $propertyAccess,
     ) {
     }
 
-    /**
-     * Event listener for the kernel controller event.
-     *
-     * @param KernelEvent $event
-     */
-    public function onKernelController(KernelEvent $event): void
+    public function onKernelControllerArguments(ControllerArgumentsEvent $event): void
     {
-        // Get the controller and its methods
-        $controller = is_array($event->getController()) ? $event->getController()[0] : $event->getController();
-        $methods = (new ReflectionClass($controller))->getMethods();
+        $method = $this->resolveMethod($event->getController());
+        if ($method === null) {
+            return;
+        }
 
-        // Loop through the methods and process the Title attributes
-        foreach ($methods as $method) {
-            $attributes = $method->getAttributes(Title::class, \ReflectionAttribute::IS_INSTANCEOF);
+        $attributes = $this->getTitleAttributes($method);
+        if (empty($attributes)) {
+            return;
+        }
 
-            if (empty($attributes)) {
-                continue;
+        $parameters = $event->getNamedArguments();
+
+        foreach ($attributes as $attribute) {
+            $titleAttribute = $attribute->newInstance();
+
+            if (!$titleAttribute->isExtend()) {
+                $this->pageTitleService->setTitle($titleAttribute->getTitle());
+                return;
             }
 
-            // Process the parameters of the method
-            $parameters = $this->processParameters($method->getParameters(), $event->getRequest()->attributes->all());
+            $title = $this->processTitle($titleAttribute->getTitle(), $parameters);
 
-            // Loop through the Title attributes and set the page title
-            foreach ($attributes as $attribute) {
-                $titleAttribute = $attribute->newInstance();
-
-                if (!$titleAttribute->isExtend()) {
-                    $this->pageTitleService->setTitle($titleAttribute->getTitle());
-                    return;
-                }
-
-                $title = $this->processTitle($titleAttribute->getTitle(), $parameters);
-
-                if ($titleAttribute->hasParent()) {
-                    $title .= $this->getTitleFromParent($titleAttribute->getParent(), $parameters);
-                }
-
-                $this->pageTitleService->setTitle($title . ' - ' . $this->fallbacks->get('site_title'));
+            if ($titleAttribute->hasParent()) {
+                $title .= $this->getTitleFromParent($titleAttribute->getParent(), $parameters);
             }
+
+            $this->pageTitleService->setTitle($title . ' - ' . $this->fallbacks->get('site_title'));
         }
     }
 
-    /**
-     * Process the parameters of a method.
-     *
-     * @param array<\ReflectionParameter> $reflextionParameters
-     * @param array<mixed> $parameters
-     * @return array<mixed>
-     */
-    private function processParameters(array $reflextionParameters, array $parameters): array
+    private function resolveMethod(mixed $controller): ?ReflectionMethod
     {
-        // Loop through the reflection parameters and process the MapEntity attributes
-        foreach ($reflextionParameters as $reflextionParameter) {
-            $parameterName = $reflextionParameter->getName();
-
-            if (!array_key_exists($parameterName, $parameters)) {
-                continue;
-            }
-
-            $parameterAttributes = $reflextionParameter->getAttributes(MapEntity::class);
-            if (empty($parameterAttributes)) {
-                continue;
-            }
-
-            // Get the mapping and value of the parameter
-            $mapping = $parameterAttributes[0]->getArguments()['mapping'] ?? null;
-            $value = $mapping !== null && isset($parameters[$parameterName])
-                ? $this->manager->getRepository($reflextionParameter->getType()->getName())->findOneBy([$mapping[$parameterName] => $parameters[$parameterName]])
-                : $this->manager->getRepository($reflextionParameter->getType()->getName())->find($parameters[$parameterName]);
-
-            $parameters[$parameterName] = $value;
+        if (is_array($controller)) {
+            return new ReflectionMethod($controller[0], $controller[1]);
         }
 
-        return $parameters;
+        if (is_object($controller) && !$controller instanceof \Closure) {
+            return new ReflectionMethod($controller, '__invoke');
+        }
+
+        return null;
+    }
+
+    /** @return array<\ReflectionAttribute<Title>> */
+    private function getTitleAttributes(ReflectionMethod $method): array
+    {
+        $attributes = $method->getAttributes(Title::class, \ReflectionAttribute::IS_INSTANCEOF);
+        if ($attributes !== []) {
+            return $attributes;
+        }
+
+        return $method->getDeclaringClass()->getAttributes(Title::class, \ReflectionAttribute::IS_INSTANCEOF);
     }
 
     /**
@@ -122,7 +93,7 @@ class TitleListener
 
         $title = '';
         // Loop through the Title attributes of the method and process them
-        foreach ($method->getAttributes(Title::class, \ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
+        foreach ($this->getTitleAttributes($method) as $attribute) {
             $parentAttribute = $attribute->newInstance();
             $title .= ' - ' . $this->processTitle($parentAttribute->getTitle(), $parameters);
 
@@ -182,13 +153,15 @@ class TitleListener
 
             // Get the controller and method of the route
             $controller = $route->getDefault('_controller');
-            $method = strpos($controller, '::') > 0 ? explode('::', $controller)[1] : '__invoke';
+            $hasMethod = strpos($controller, '::') > 0;
+            $controllerClass = $hasMethod ? explode('::', $controller)[0] : $controller;
+            $method = $hasMethod ? explode('::', $controller)[1] : '__invoke';
 
             // Get the required parameters of the route
             $requiredParameters = array_filter($route->compile()->getVariables(), fn($parameter) => $route->getDefault($parameter) === null);
 
             return [
-                'controller' => $controller,
+                'controller' => $controllerClass,
                 'method' => $method,
                 'parameters' => $requiredParameters,
             ];

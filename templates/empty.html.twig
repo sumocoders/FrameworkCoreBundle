@@ -1,6 +1,63 @@
-{% block head %}
-    {% include '@SumoCodersFrameworkCore/head.html.twig' with {title: block('title') is defined ? block('title') : page_title} %}
-{% endblock %}
+<!doctype html>
+<html lang="{{ app.request.locale }}">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+        {% block title %}
+            {{ page_title }}
+        {% endblock %}
+    </title>
+
+    {% block meta %}
+        {# Call both script and style so both nonces are generated #}
+        {% set csp_nonce = csp_nonce('script') %}
+        {% set csp_nonce = csp_nonce('style') %}
+        <meta name="csp-nonce" content="{{ csp_nonce }}">
+        <meta name="author" content="SumoCoders">
+    {% endblock %}
+
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{{ asset('styles/style.scss') }}">
+    {% endblock %}
+
+    {% block javascripts %}
+        {{ importmap('app', {'nonce': csp_nonce('script')}) }}
+    {% endblock %}
+
+    {% block icons %}
+        <link rel="apple-touch-icon" href="{{ asset('images/apple-touch-icon.png') }}">
+        <link rel="image_src" href="{{ asset('images/image_src.png') }}"/>
+        <link rel="shortcut icon" sizes="196x196" href="{{ asset('images/android-icon.png') }}">
+    {% endblock %}
+
+    {% block favicon %}
+        <link rel="icon" sizes="96x96" href="{{ asset('images/favicon.png') }}">
+        <link rel="shortcut icon" href="{{ asset('images/favicon.ico') }}">
+    {% endblock %}
+
+    {% block windows_tile %}
+        {# Windows 8 tile #}
+        <meta name="application-name" content="{{ fallbacks.get('site_title') }}"/>
+        <meta name="msapplication-TileColor" content="#3380aa"/>
+        <meta name="msapplication-TileImage" content="{{ asset('images/metro-tile.png') }}"/>
+    {% endblock %}
+
+    {% block og %}
+        <meta property="og:image" content="{{ asset('images/image_src.png') }}"/>
+    {% endblock %}
+
+    {% block twitter %}
+        {# Twitter #}
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="{{ fallbacks.get('site_title') }}">
+        <meta name="twitter:image" content="{{ asset('images/image_src.png') }}"/>
+    {% endblock %}
+
+    {% block end_head %}
+    {% endblock %}
+</head>
 
 <body class="body-empty">
 {{ include('@SumoCodersFrameworkCore/settheme.html.twig') }}

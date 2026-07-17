@@ -1,10 +1,25 @@
-# Stimulus
+# Stimulus controllers
 
-For our javascript needs we use Symfony UX with Stimulus. See the Symfony site for
-information https://symfony.com/bundles/StimulusBundle/current/index.html or the stimulus documentation for more
-information: https://stimulus.hotwired.dev/handbook/introduction
+The bundle provides pre-built Stimulus controllers for common UI patterns. These are registered automatically when the
+frontend assets are installed.
 
-We have a few default components that can be used in your project:
+## Prerequisites
+
+Assets installed: see [installation.md](installation.md). Import the bundle's controllers in your
+`assets/controllers.json` or `assets/bootstrap.js`.
+
+## Lifecycle hooks
+
+Every Stimulus controller supports:
+
+| Method         | When it runs                                          |
+|----------------|-------------------------------------------------------|
+| `connect()`    | When the controller's element is connected to the DOM |
+| `disconnect()` | When the element is removed from the DOM              |
+
+Custom controllers should call `super.connect()` if they extend a bundle controller.
+
+## Bundle controllers
 
 ## Clipboard
 
@@ -201,7 +216,6 @@ Set the `data-controller='busy-submit'` on the form tag or in your form type:
         'attr' => ['data-controller' => 'busy-submit'],
     ]);
 ```
-
 
 ## Confirm modal
 

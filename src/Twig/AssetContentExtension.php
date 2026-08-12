@@ -2,6 +2,7 @@
 
 namespace SumoCoders\FrameworkCoreBundle\Twig;
 
+use Symfony\Component\Asset\Exception\AssetNotFoundException;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Twig\Attribute\AsTwigFunction;
 
@@ -13,8 +14,14 @@ final readonly class AssetContentExtension
     }
 
     #[AsTwigFunction('asset_content', isSafe: ['html'])]
-    public function getAssetContent(string $path): string
+    public function getAssetContent(string $path): ?string
     {
-        return $this->assetMapper->getAsset($path)->content;
+        $asset = $this->assetMapper->getAsset($path);
+
+        if ($asset === null) {
+            throw new AssetNotFoundException($path);
+        }
+
+        return $asset->content;
     }
 }

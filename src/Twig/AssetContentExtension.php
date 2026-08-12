@@ -5,16 +5,16 @@ namespace SumoCoders\FrameworkCoreBundle\Twig;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Twig\Attribute\AsTwigFunction;
 
-final readonly class MailCssExtension
+final readonly class AssetContentExtension
 {
     public function __construct(
         private AssetMapperInterface $assetMapper,
     ) {
     }
 
-    #[AsTwigFunction('mail_css', isSafe: ['html'])]
-    public function getMailCss(): string
+    #[AsTwigFunction('asset_content', isSafe: ['html'])]
+    public function getAssetContent(string $path): string
     {
-        return $this->assetMapper->getAsset('styles/mail.scss')->content;
+        return $this->assetMapper->getAsset($path)->content;
     }
 }

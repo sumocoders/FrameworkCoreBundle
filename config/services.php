@@ -25,6 +25,7 @@ use SumoCoders\FrameworkCoreBundle\Service\PageTitle;
 use SumoCoders\FrameworkCoreBundle\Service\Security\NonceGenerator;
 use SumoCoders\FrameworkCoreBundle\Twig\ContentExtension;
 use SumoCoders\FrameworkCoreBundle\Twig\FrameworkExtension;
+use SumoCoders\FrameworkCoreBundle\Twig\MailCssExtension;
 use SumoCoders\FrameworkCoreBundle\Twig\PaginatorExtension;
 use SumoCoders\FrameworkCoreBundle\Twig\PaginatorRuntime;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -111,6 +112,9 @@ return static function (ContainerConfigurator $container): void {
         ->tag('twig.attribute_extension')
 
         ->set('framework.content_extension', ContentExtension::class)
+        ->tag('twig.attribute_extension')
+
+        ->set('framework.mail_css_extension', MailCssExtension::class)
         ->tag('twig.attribute_extension')
 
         /*

@@ -5,7 +5,7 @@ frontend assets are installed.
 
 ## Prerequisites
 
-Assets installed: see [installation.md](installation.md). Import the bundle's controllers in your
+Assets installed: see [frontend-development.md](frontend-development.md). Import the bundle's controllers in your
 `assets/controllers.json` or `assets/bootstrap.js`.
 
 ## Lifecycle hooks

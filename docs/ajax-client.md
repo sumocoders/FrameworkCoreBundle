@@ -5,7 +5,7 @@ spinners. Provided by the bundle's JavaScript assets.
 
 ## Prerequisites
 
-JavaScript assets must be installed: see [installation.md](installation.md).
+JavaScript assets must be installed: see [frontend-development.md](frontend-development.md).
 
 Import the client in your Stimulus controller:
 

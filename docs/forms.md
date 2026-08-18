@@ -36,7 +36,7 @@ $builder->add('photo', ImageType::class, [
 | Option                 | Type     | Default                      | Required | Description                                         |
 |------------------------|----------|------------------------------|----------|-----------------------------------------------------|
 | `image_class`          | `string` |                              | yes      | FQCN of your `AbstractImage` subclass               |
-| `label`                | `string` |                              | yes      | Form field label                                    |
+| `label`                | `string` |                              | no       | Form field label (standard Symfony form option)     |
 | `help`                 | `string` |                              | yes      | Help text below the field                           |
 | `accept`               | `string` | `'image/*'`                  | yes      | Accepted MIME types for the file input              |
 | `show_preview`         | `bool`   | `true`                       | yes      | Show current image as a preview                     |
@@ -75,7 +75,7 @@ $builder->add('document', FileType::class, [
 | Option                | Type           | Default                          | Required | Description                                           |
 |-----------------------|----------------|----------------------------------|----------|-------------------------------------------------------|
 | `file_class`          | `string`       |                                  | yes      | FQCN of your `AbstractFile` subclass                  |
-| `label`               | `string`       |                                  | yes      | Form field label                                      |
+| `label`               | `string`       |                                  | no       | Form field label (standard Symfony form option)       |
 | `help`                | `string`       |                                  | yes      | Help text below the field                             |
 | `accept`              | `string\|null` | `null`                           | yes      | Accepted MIME types for the file input (`null` = any) |
 | `show_preview`        | `bool`         | `true`                           | yes      | Show a link to the current file                       |

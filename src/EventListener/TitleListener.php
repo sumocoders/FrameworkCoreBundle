@@ -130,7 +130,7 @@ class TitleListener
     private function getTitleAttributes(ReflectionMethod $method): array
     {
         $attributes = $method->getAttributes(Title::class, \ReflectionAttribute::IS_INSTANCEOF);
-        if ($attributes !== []) {
+        if ($attributes !== [] || $method->getName() !== '__invoke') {
             return $attributes;
         }
 

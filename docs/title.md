@@ -77,9 +77,9 @@ class MyPageController
 
 ### Class-level attribute
 
-`#[Title]` is preferably placed on the class rather than the method for invokable controllers. It is picked up for
-any method on that class that does not have its own `#[Title]` attribute - on a multi-action controller, keep
-`#[Title]` on the relevant method instead:
+`#[Title]` is preferably placed on the class rather than the method for invokable controllers. The class-level
+attribute is only used as a fallback for `__invoke`; on a multi-action controller, keep `#[Title]` on each relevant
+method instead:
 
 ```php
 #[Title('My Page Title')]

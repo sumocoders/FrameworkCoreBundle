@@ -18,7 +18,7 @@ class-level placement; when both are present, the method-level attribute wins.
 
 The `PageTitle` service resolves the title in this order:
 
-1. A title set explicitly via `#[Title]` on the controller method.
+1. A title set explicitly via `#[Title]` on the controller method, or on the controller class as a fallback for `__invoke`.
 2. The breadcrumb trail in reverse order, joined with ` - `, appended with the site title.
 3. The `fallback.site_title` value alone if no breadcrumbs are present.
 

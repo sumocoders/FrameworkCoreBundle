@@ -48,7 +48,7 @@ Requirements:
 HTTP request
   └─ kernel.controller_arguments (priority -1)
        ├─ BreadcrumbListener     reads #[Breadcrumb] from class + method, populates BreadcrumbTrail
-       └─ TitleListener          reads #[Title] from method, writes PageTitle. Falls back to BreadcrumbTrail if no #[Title] present
+       └─ TitleListener          reads #[Title] from method, falling back to class-level #[Title] for __invoke, writes PageTitle. Falls back to BreadcrumbTrail if no #[Title] present
 ```
 
 ### Key injectable services

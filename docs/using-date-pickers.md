@@ -32,7 +32,7 @@ The bundle adds two convenience options to the date/time types:
 |----------------|----------------|----------------|------------------------------------------------|
 | `minimum_date` | `string\|null` | `null`         | Earliest selectable date, formatted as `d/m/Y` |
 | `maximum_date` | `string\|null` | `null`         | Latest selectable date, formatted as `d/m/Y`   |
-| `format`       | `string`       | `'dd/MM/yyyy'` | Display format (Flatpickr format string)       |
+| `format`       | `string`       | `'dd/MM/yyyy'` | Display format (ICU date format, same as Symfony's `format` option). Only the bundle's default patterns (`dd/MM/yyyy`, `HH:mm`, `dd/MM/yyyy HH:mm`) are mapped to a Flatpickr `data-date-format` |
 
 ```php
 $builder->add('date', DateType::class, [
@@ -55,8 +55,8 @@ $builder->add('date', DateType::class, [
     'minimum_date' => (new \DateTimeImmutable('last week'))->format('d/m/Y'),
     'maximum_date' => (new \DateTimeImmutable('next week'))->format('d/m/Y'),
     'attr'         => [
-        'data-date-min-date'    => '01/01/1993',
-        'data-date-show-months' => 2,
+        'data-min-date'   => '01/01/1993',
+        'data-show-months' => 2,
     ],
 ]);
 ```

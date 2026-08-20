@@ -4,6 +4,7 @@ namespace SumoCoders\FrameworkCoreBundle\EventListener;
 
 use Doctrine\ORM\EntityManagerInterface;
 use ReflectionClass;
+use ReflectionMethod;
 use SumoCoders\FrameworkCoreBundle\Attribute\Title;
 use SumoCoders\FrameworkCoreBundle\Service\Fallbacks;
 use SumoCoders\FrameworkCoreBundle\Service\PageTitle;
@@ -49,7 +50,7 @@ class TitleListener
 
         // Loop through the methods and process the Title attributes
         foreach ($methods as $method) {
-            $attributes = $method->getAttributes(Title::class, \ReflectionAttribute::IS_INSTANCEOF);
+            $attributes = $this->getTitleAttributes($method);
 
             if (count($attributes) === 0) {
                 continue;
@@ -125,6 +126,17 @@ class TitleListener
         return $parameters;
     }
 
+    /** @return array<\ReflectionAttribute<Title>> */
+    private function getTitleAttributes(ReflectionMethod $method): array
+    {
+        $attributes = $method->getAttributes(Title::class, \ReflectionAttribute::IS_INSTANCEOF);
+        if ($attributes !== [] || $method->getName() !== '__invoke') {
+            return $attributes;
+        }
+
+        return $method->getDeclaringClass()->getAttributes(Title::class, \ReflectionAttribute::IS_INSTANCEOF);
+    }
+
     /**
      * Get the title from the parent route.
      *
@@ -141,7 +153,7 @@ class TitleListener
 
         $title = '';
         // Loop through the Title attributes of the method and process them
-        foreach ($method->getAttributes(Title::class, \ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
+        foreach ($this->getTitleAttributes($method) as $attribute) {
             $parentAttribute = $attribute->newInstance();
             $title .= ' - ' . $this->processTitle($parentAttribute->getTitle(), $parameters);
 

@@ -1,6 +1,17 @@
 # AJAX client
 
-The AJAX client is a simple wrapper around [`Axios`](https://axios-http.com/).
+A pre-configured [Axios](https://axios-http.com/) wrapper with CSRF support, toast notifications, and busy-button
+spinners. Provided by the bundle's JavaScript assets.
+
+## Prerequisites
+
+JavaScript assets must be installed: see [frontend-development.md](frontend-development.md).
+
+Import the client in your Stimulus controller:
+
+```javascript
+import ajaxClient from '../js/ajax_client.js'
+```
 
 ## Default Axios Config
 
@@ -116,7 +127,7 @@ A simple way to "protect" the AJAX calls is by using a CSRF token. This is done 
 ```javascript
 ajaxClient.csrf_token = this.csrfTokenValue
 ajaxClient.post(this.urlValue, data)
-  ...
+...
 ```
 
 With this the csrf token is added to the payload of the request, with the key `csrf_token`.
@@ -136,5 +147,28 @@ The content of a clicked button can be replaced by a spinner during the request.
 ```javascript
 ajaxClient.busy_targets = [buttonNode]
 ajaxClient.post(this.urlValue, data)
-  ...
+...
 ```
+
+## File upload (multipart)
+
+For file uploads, use `FormData` and set `Content-Type` to `multipart/form-data`:
+
+```javascript
+const formData = new FormData()
+formData.append('file', fileInput.files[0])
+
+ajaxClient.post(this.urlValue, formData, {
+  headers: { 'Content-Type': 'multipart/form-data' }
+}).then(response => {
+  // handle response
+})
+```
+
+## Troubleshooting
+
+- **CSRF token invalid**: ensure the token id passed to `isCsrfTokenValid()` on the server matches the id used to
+  generate the token in Twig
+- **Toast not showing**: verify the response JSON contains a `message` key; without it, no toast is triggered
+- **Request times out immediately**: the default timeout is 2500ms; override it per request:
+  `ajaxClient.get(url, { timeout: 10000 })`

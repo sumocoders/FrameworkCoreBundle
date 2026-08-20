@@ -23,6 +23,7 @@ use SumoCoders\FrameworkCoreBundle\Service\BreadcrumbTrail;
 use SumoCoders\FrameworkCoreBundle\Service\Fallbacks;
 use SumoCoders\FrameworkCoreBundle\Service\PageTitle;
 use SumoCoders\FrameworkCoreBundle\Service\Security\NonceGenerator;
+use SumoCoders\FrameworkCoreBundle\Twig\AssetContentExtension;
 use SumoCoders\FrameworkCoreBundle\Twig\ContentExtension;
 use SumoCoders\FrameworkCoreBundle\Twig\FrameworkExtension;
 use SumoCoders\FrameworkCoreBundle\Twig\PaginatorExtension;
@@ -111,6 +112,9 @@ return static function (ContainerConfigurator $container): void {
         ->tag('twig.attribute_extension')
 
         ->set('framework.content_extension', ContentExtension::class)
+        ->tag('twig.attribute_extension')
+
+        ->set('framework.asset_content_extension', AssetContentExtension::class)
         ->tag('twig.attribute_extension')
 
         /*

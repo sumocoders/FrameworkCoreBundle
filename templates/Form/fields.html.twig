@@ -119,11 +119,11 @@
   {% endif %}
 {%- endblock collection_rows -%}
 
-{% macro renderCollectionItem(item, allow_delete, allow_drag_and_drop) %}
+{% macro renderCollectionItem(item, allow_delete = false, allow_drag_and_drop = false) %}
   <li>
     <div class="card card-collection-item collection-item" data-role="collection-item">
       <div class="card-body">
-        {% if allow_drag_and_drop is defined and allow_drag_and_drop %}
+        {% if allow_drag_and_drop %}
           <span class="btn btn-secondary collection-item-drag-and-drop"
              title="{{ 'forms.buttons.changeOrder'|trans|ucfirst }}"
              data-role="collection-item-change-order"
@@ -133,7 +133,7 @@
         {% endif %}
         {{ form_widget(item) }}
         {{ form_errors(item) }}
-        {% if allow_delete is defined and allow_delete %}
+        {% if allow_delete %}
           <button type="button" class="btn btn-outline-danger collection-item-delete"  title="{{ 'forms.buttons.removeItem'|trans|ucfirst }}" data-action="form-collection#deleteItem">
             <i class="bi bi-trash"></i> <span class="visually-hidden">{{ 'forms.buttons.removeItem'|trans|ucfirst }}</span>
           </button>

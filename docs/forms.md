@@ -151,6 +151,30 @@ $builder->add('contacts', CollectionType::class, [
 ]);
 ```
 
+#### Reusing the row markup in your own form theme
+
+Each collection row is rendered by the `renderCollectionItem` macro in
+`templates/Form/fields.html.twig`. If your project overrides the `collection_widget` or
+`collection_rows` block, import the macro and call it so your rows keep the same markup,
+drag handle, and delete button:
+
+```twig
+{% block collection_rows %}
+  {% import '@SumoCodersFrameworkCore/Form/fields.html.twig' as formMacros %}
+
+  <ul data-role="collection-item-container" class="list-unstyled" data-form-collection-target="itemContainer">
+    {% for child in form %}
+      {{ formMacros.renderCollectionItem(child, allow_delete, allow_drag_and_drop) }}
+    {% endfor %}
+  </ul>
+{% endblock %}
+```
+
+The signature is `renderCollectionItem(item, allow_delete = false, allow_drag_and_drop = false)`.
+Only `item` is required; omitting either boolean renders the row without that control. Import
+the macro inside the block that uses it, not at the root of your theme: form theme blocks run
+in the context of the template being rendered, so a root-level import is out of scope there.
+
 ### PasswordType
 
 Adds a show/hide toggle button to `PasswordType` fields.

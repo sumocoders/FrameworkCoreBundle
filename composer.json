@@ -50,7 +50,12 @@
     "squizlabs/php_codesniffer": "^4.0",
     "phpstan/phpstan": "^2.2",
     "vincentlanglet/twig-cs-fixer": "^4.0",
-    "micheh/phpcs-gitlab": "^2.1"
+    "micheh/phpcs-gitlab": "^2.1",
+    "phpunit/phpunit": "^12.0",
+    "sentry/sentry-symfony": "^5.13"
+  },
+  "suggest": {
+    "sentry/sentry-symfony": "Enables the sentry_user_context feature: attaches the authenticated (and, when impersonated, impersonator) user identifier to the Sentry scope."
   },
   "autoload": {
     "psr-4": {

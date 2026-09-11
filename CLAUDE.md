@@ -34,10 +34,17 @@ No phpstan or phpcs config exists in this repo. Those are configured per-project
 
 Two event listeners fire on every request:
 
-1. `BreadcrumbListener` (`kernel.controller_arguments`, priority -1): reads `#[Breadcrumb]` attributes from the matched
-   controller and populates `BreadcrumbTrail`.
-2. `TitleListener` (`kernel.controller_arguments`, priority -1): reads `#[Title]` attributes and writes to `PageTitle`.
-   Falls back to breadcrumbs if no `#[Title]` is present.
+1. `BreadcrumbListener` (`kernel.controller`, priority -1): reflects the matched controller for `#[Breadcrumb]`
+   attributes and populates `BreadcrumbTrail`.
+2. `TitleListener` (`kernel.controller`, priority -1): reflects the matched controller for `#[Title]` attributes and
+   writes to `PageTitle`. Falls back to breadcrumbs if no `#[Title]` is present.
+
+Both listeners hook the generic `kernel.controller` event and manually reflect the resolved controller (see
+`config/services.php`) — this is the pre-existing architecture. A migration to Symfony 8.1's dedicated
+per-attribute events (`kernel.controller_arguments.<FQCN>`, dropping the manual reflection) was prototyped on
+`feature/symfony-8.1-controller-attribute-events` but never merged; this file previously described that unmerged
+branch's design as if it were current. Correct as of 2026-09-11 — don't reintroduce that description until the
+branch actually lands.
 
 `PageTitle` and `BreadcrumbTrail` are request-scoped services aliased for direct injection.
 
@@ -69,8 +76,6 @@ For invokable controllers, prefer placing `#[Route]`, `#[Breadcrumb]`, and `#[Ti
   handling. See `docs/encrypted.md`, `docs/uploading-files.md`, `docs/uploading-images.md`.
 - **Twig** (`src/Twig/`): `FrameworkExtension`, `PaginatorExtension`, `ContentExtension`; `PageTitle` is available as a
   string in templates.
-- **Doctrine extension** (`src/Extensions/Doctrine/MatchAgainst.php`): custom DQL function for MySQL
-  `MATCH ... AGAINST` full-text search.
 
 ### Service registration
 

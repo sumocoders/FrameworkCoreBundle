@@ -21,6 +21,7 @@ Requirements:
 | [breadcrumb.md](breadcrumb.md)                     | `#[Breadcrumb]` attribute, builds breadcrumb trails from controller annotations        |
 | [title.md](title.md)                               | `#[Title]` attribute, sets the page `<title>` and `<h1>`                               |
 | [audit-trail.md](audit-trail.md)                   | `#[AuditTrail]` attribute, logs entity creates/updates/deletes                         |
+| [sentry-user-context.md](sentry-user-context.md)   | Attaches the authenticated (and impersonator) user id to the Sentry scope             |
 | [pagination.md](pagination.md)                     | `Paginator`, wraps a Doctrine QueryBuilder for paginated results                       |
 | [menu.md](menu.md)                                 | `MenuBuilder` + `ConfigureMenuEvent`, KnpMenu-based navigation                         |
 | [forms.md](forms.md)                               | Custom form types (`ImageType`, `FileType`, `BelgiumPostCodeType`) and type extensions |
@@ -46,6 +47,9 @@ Requirements:
 
 ```
 HTTP request
+  ├─ kernel.request
+  │    └─ SentryUserContextListener   attaches the authenticated (and impersonator) user id to the Sentry scope,
+  │                                   when sentry_user_context.enabled and a Sentry hub are both present
   └─ kernel.controller_arguments (priority -1)
        ├─ BreadcrumbListener     reads #[Breadcrumb] from class + method, populates BreadcrumbTrail
        └─ TitleListener          reads #[Title] from method, falling back to class-level #[Title] for __invoke, writes PageTitle. Falls back to BreadcrumbTrail if no #[Title] present
@@ -77,7 +81,8 @@ For invokable controllers, prefer placing `#[Route]`, `#[Breadcrumb]`, and `#[Ti
 ### Service configuration
 
 All services are registered in `config/services.php` using PHP-format DI config. Autowiring and autoconfiguration are
-enabled. `Configuration.php` is intentionally empty. No runtime bundle config is needed.
+enabled. `Configuration.php` defines one real option, `sentry_user_context.enabled` (default `true`) — see
+[sentry-user-context.md](sentry-user-context.md).
 
 ---
 

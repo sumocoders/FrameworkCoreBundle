@@ -1,9 +1,10 @@
 # Testing
 
-The repo has no `tests/` directory and no PHPUnit configuration (no `phpunit.xml`, no `phpunit/phpunit` dev
-dependency), even though `CLAUDE.md` documents `symfony php vendor/bin/phpunit` as the command to run tests. This
-is a pre-existing gap in the bundle, not tied to any one feature — it predates and is independent of the
-sentry-user-context work.
+PHPUnit scaffolding exists as of the sentry-user-context feature: `phpunit.xml.dist`, `tests/bootstrap.php`,
+`phpunit/phpunit` (`^12.0`, `require-dev`), and the `SumoCoders\FrameworkCoreBundle\Tests\` → `tests/` PSR-4
+autoload mapping (previously present in `composer.json` but unused, no `tests/` directory behind it).
 
-Any feature that wants real test coverage has to add `tests/` + `phpunit.xml` (and the `phpunit/phpunit` dev
-dependency) itself first; nothing to build on exists yet.
+Coverage is limited to one file: `tests/EventListener/SentryUserContextListenerTest.php` (5 tests). Every other
+listener/service in the bundle — `BreadcrumbListener`, `TitleListener`, `AuditLogger`, `DefaultMenuListener`, etc.
+— still has zero test coverage. Don't assume "PHPUnit is set up" means the bundle is tested; it means the
+scaffolding now exists for the next feature to build on, same as `SentryUserContextListenerTest.php` did.

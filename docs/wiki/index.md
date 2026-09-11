@@ -33,6 +33,8 @@ usage instructions. Project-wide conventions live in `docs/memory/`; decision ra
   - [Commands](infrastructure/commands.md) — `sumo:translate`, `sumo:maintenance:create-pr-for-outdated-dependencies`
   - [Doctrine extension listener](infrastructure/doctrine-extension-listener.md) — `DoctrineExtensionListener`
     (currently unregistered/dead code — see entry)
+  - [Sentry user context](infrastructure/sentry-user-context.md) — `SentryUserContextListener`, attaches
+    authenticated/impersonating user identifiers to the Sentry scope
 
 ## Known doc bugs found while writing this wiki (see `docs/memory/mistakes.md` for the log)
 

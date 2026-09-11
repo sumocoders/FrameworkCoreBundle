@@ -192,7 +192,15 @@ Bootstrap 5.3 paints striped, hover and active rows with
 `box-shadow: inset 0 0 0 9999px var(--bs-table-bg-state, var(--bs-table-bg-type, ...))`. Do not
 reset `box-shadow` on `.table` cells: that switch is the whole row-state mechanism, and
 clearing it silently disables striping, hover and active together. Only the `thead` cells reset
-it, so the header stays flat. The bundle renders no table markup itself; `docs/crud.md` prescribes
+it, so the header stays flat.
+
+`$table-hover-bg` is `rgba($black, 0.075)` rather than stock's
+`rgba(var(--#{$prefix}emphasis-color-rgb), $table-hover-bg-factor)`, so hover darkens in dark
+mode instead of lightening and reads faint on a dark row. That is a reviewed, accepted
+deviation: leave it alone unless asked. `$table-active-bg` shares the same form but its factor
+is still unresolved, see open questions.
+
+The bundle renders no table markup itself; `docs/crud.md` prescribes
 `<table class="table">` with `<th class="text-end">` action columns.
 
 **Alerts and toasts.** Flash messages render as **toasts, not alerts**:
@@ -225,7 +233,8 @@ keep it there.
 
 **components/**: `accordion` (dark-mode `.accordion-button` only), `alerts` (icon glyph via
 `::before`, dark-mode recoloring), `autocomplete` (jQuery UI `.ui-autocomplete` menu skin),
-`back-to-top` (floating `.back-to-top` button), `buttons` (dark-mode `rgba($value, 0.8)` per theme color),
+`back-to-top` (floating `.back-to-top` button), `buttons` (dark-mode `rgba($value, 0.8)` per
+theme color),
 `cards` (card shell, `.card-dashboard`, `.card-collection`, `.btn-square`), `datagrids`
 (`td.action` column widths), `datepicker` (Flatpickr skin), `dropdowns` (`.dropdown-header`
 only), `empty-state` (`.no-items-icons` sizing), `forms` (`.form-group`, required `abbr`, widget
@@ -432,12 +441,11 @@ Do not:
   and dark mode resolves `--bs-body-color` and `--menu-color` to `#fff`. Dark text is therefore
   pure white rather than the softer off-white intended.
 - TODO: `$gray-850` and `$gray-900` are both `#2d2f35`. Is the duplication intentional?
-- TODO: `$table-hover-bg` and `$table-active-bg` use `rgba($black, ...)` where stock uses
-  `rgba(var(--#{$prefix}emphasis-color-rgb), ...)`, so both darken in dark mode instead of
-  lightening; hover is near-invisible on a dark row. `$table-active-bg-factor` is also `0.75`
-  against a stock `0.1`, next to a hover factor of `0.075`, which looks like a dropped zero.
-  These were unobservable while the row-state box-shadow was reset. Now that striping and hover
-  render, both values show, and `0.75` reads as a near-black overlay. Confirm the intent.
+- TODO: `$table-active-bg` has the same hardcoded `rgba($black, ...)` form, and
+  `$table-active-bg-factor` is `0.75` against a stock `0.1`, next to a hover factor of `0.075`,
+  which looks like a dropped zero. Both were unobservable while the row-state box-shadow was
+  reset; now that active rows paint, `0.75` renders as a near-black overlay. Still to confirm,
+  separately from the hover decision above.
 - TODO: `layouts/_header.scss:22` sets `.user-nav { background-color: var(--user-bg) }`, but
   `--user-bg` is never declared in any `:root` or `[data-bs-theme]` block. The Sass `$user-bg` /
   `$user-bg-dark` variables exist but are only read through `color-contrast()` and

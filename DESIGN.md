@@ -147,6 +147,11 @@ tokens: `$input-btn-focus-width: 0.2rem`, `$input-btn-focus-color: rgba($compone
 Inputs focus to a neutral gray border with a soft black glow, not a primary-colored ring.
 `$input-box-shadow: none` removes the stock inset shadow.
 
+Those values are tuned for a light surface, so `components/_forms.scss` inverts them under
+`color-mode(dark)`: a `$gray-400` `#ced4da` border with a `rgba($white, 0.25)` glow. Without
+that override both the border and the black glow vanish against the `#383a43` dark background,
+which fails WCAG 2.4.7. Keep the pair in step when changing either.
+
 ## Components
 
 Bootstrap is a **selective** build: `assets/scss/_bootstrap-imports.scss` lists each Bootstrap
@@ -178,11 +183,16 @@ an `input-group` with a `bi bi-calendar-fill` / `bi bi-clock-fill` addon, driven
 `.card.card-collection` > `.card-body` > `ul` > `li.collection-item`, with 40x40 circular
 add/remove/drag buttons at `left: -20px` / `right: -20px`, straddling the item edge.
 
-**Tables.** `components/_tables.scss` strips Bootstrap's inset box-shadow borders and adds a
-solid bottom border; headers are bold on `var(--bs-body-bg)`. Cell padding is bumped to
-`0.75rem` (stock `0.5rem`). `$table-striped-bg` is a 5% tint of `--bs-emphasis-color-rgb`, so
-stripes adapt to the active theme. `$table-active-bg-factor` is `0.75` against a stock `0.1`,
-noted in open questions. The bundle renders no table markup itself; `docs/crud.md` prescribes
+**Tables.** `components/_tables.scss` adds a solid bottom border and bold headers on
+`var(--bs-body-bg)`. Cell padding is bumped to `0.75rem` (stock `0.5rem`).
+`$table-striped-bg` is a 5% tint of `--bs-emphasis-color-rgb`, so stripes adapt to the active
+theme. `$table-active-bg-factor` is `0.75` against a stock `0.1`, noted in open questions.
+
+Bootstrap 5.3 paints striped, hover and active rows with
+`box-shadow: inset 0 0 0 9999px var(--bs-table-bg-state, var(--bs-table-bg-type, ...))`. Do not
+reset `box-shadow` on `.table` cells: that switch is the whole row-state mechanism, and
+clearing it silently disables striping, hover and active together. Only the `thead` cells reset
+it, so the header stays flat. The bundle renders no table markup itself; `docs/crud.md` prescribes
 `<table class="table">` with `<th class="text-end">` action columns.
 
 **Alerts and toasts.** Flash messages render as **toasts, not alerts**:
@@ -426,7 +436,8 @@ Do not:
   `rgba(var(--#{$prefix}emphasis-color-rgb), ...)`, so both darken in dark mode instead of
   lightening; hover is near-invisible on a dark row. `$table-active-bg-factor` is also `0.75`
   against a stock `0.1`, next to a hover factor of `0.075`, which looks like a dropped zero.
-  Same defect class as the `$table-striped-bg` fix; left alone pending a decision on intent.
+  These were unobservable while the row-state box-shadow was reset. Now that striping and hover
+  render, both values show, and `0.75` reads as a near-black overlay. Confirm the intent.
 - TODO: `layouts/_header.scss:22` sets `.user-nav { background-color: var(--user-bg) }`, but
   `--user-bg` is never declared in any `:root` or `[data-bs-theme]` block. The Sass `$user-bg` /
   `$user-bg-dark` variables exist but are only read through `color-contrast()` and

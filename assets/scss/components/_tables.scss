@@ -1,10 +1,6 @@
 table.table {
   border-bottom: $table-border-width solid $table-border-color;
 
-  > :not(caption) > * > * {
-    box-shadow: none;
-  }
-
   thead {
     background-color: var(--bs-body-bg);
     color: var(--bs-body-color);

@@ -185,20 +185,15 @@ add/remove/drag buttons at `left: -20px` / `right: -20px`, straddling the item e
 
 **Tables.** `components/_tables.scss` adds a solid bottom border and bold headers on
 `var(--bs-body-bg)`. Cell padding is bumped to `0.75rem` (stock `0.5rem`).
-`$table-striped-bg` is a 5% tint of `--bs-emphasis-color-rgb`, so stripes adapt to the active
-theme. `$table-active-bg-factor` is `0.75` against a stock `0.1`, noted in open questions.
+Row states are stock: striped, hover and active are `5%`, `7.5%` and `10%` tints of
+`--bs-emphasis-color-rgb`, so all three adapt to the active theme and stay in that order of
+prominence.
 
 Bootstrap 5.3 paints striped, hover and active rows with
 `box-shadow: inset 0 0 0 9999px var(--bs-table-bg-state, var(--bs-table-bg-type, ...))`. Do not
 reset `box-shadow` on `.table` cells: that switch is the whole row-state mechanism, and
 clearing it silently disables striping, hover and active together. Only the `thead` cells reset
 it, so the header stays flat.
-
-`$table-hover-bg` is `rgba($black, 0.075)` rather than stock's
-`rgba(var(--#{$prefix}emphasis-color-rgb), $table-hover-bg-factor)`, so hover darkens in dark
-mode instead of lightening and reads faint on a dark row. That is a reviewed, accepted
-deviation: leave it alone unless asked. `$table-active-bg` shares the same form but its factor
-is still unresolved, see open questions.
 
 The bundle renders no table markup itself; `docs/crud.md` prescribes
 `<table class="table">` with `<th class="text-end">` action columns.
@@ -441,11 +436,6 @@ Do not:
   and dark mode resolves `--bs-body-color` and `--menu-color` to `#fff`. Dark text is therefore
   pure white rather than the softer off-white intended.
 - TODO: `$gray-850` and `$gray-900` are both `#2d2f35`. Is the duplication intentional?
-- TODO: `$table-active-bg` has the same hardcoded `rgba($black, ...)` form, and
-  `$table-active-bg-factor` is `0.75` against a stock `0.1`, next to a hover factor of `0.075`,
-  which looks like a dropped zero. Both were unobservable while the row-state box-shadow was
-  reset; now that active rows paint, `0.75` renders as a near-black overlay. Still to confirm,
-  separately from the hover decision above.
 - TODO: `layouts/_header.scss:22` sets `.user-nav { background-color: var(--user-bg) }`, but
   `--user-bg` is never declared in any `:root` or `[data-bs-theme]` block. The Sass `$user-bg` /
   `$user-bg-dark` variables exist but are only read through `color-contrast()` and

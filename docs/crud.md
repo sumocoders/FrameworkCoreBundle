@@ -565,12 +565,20 @@ final class DeleteController extends AbstractController
 
 ## Templates
 
+Page templates extend your application's `templates/base.html.twig`, which in turn extends
+`@SumoCodersFrameworkCore/base.html.twig`. Page content goes in `{% block main %}`; the bundle
+base defines no `content` block. The surrounding slots (`header_title`, `header_navigation`,
+`header_actions_left`, `header_actions_right`) are described in
+[button-locations.md](button-locations.md).
+
 ### index.html.twig
 
-Use a table when the entity has multiple columns worth showing; use cards otherwise.
+Use a table when the entity has multiple columns worth showing, otherwise one card per item.
+Either way the content sits in a card. Tables keep the `card-body`: a list section usually
+carries a title or intro text alongside the table, and `card-body` gives that room.
 
 ```twig
-{% extends 'layout.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block header_navigation %}
     <a href="{{ path('item_create') }}" class="btn btn-primary">
@@ -579,43 +587,47 @@ Use a table when the entity has multiple columns worth showing; use cards otherw
     </a>
 {% endblock %}
 
-{% block content %}
-    <table class="table">
-        <thead>
-            <tr>
-                <th>{{ 'item.label.name'|trans }}</th>
-                <th class="text-end"></th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in items %}
-                <tr>
-                    <td>{{ item.name }}</td>
-                    <td class="text-end">
-                        <a href="{{ path('item_update', {item: item.id}) }}" class="btn btn-sm btn-secondary">
-                            <i class="bi bi-pencil"></i>
-                            {{ 'item.actions.update'|trans }}
-                        </a>
-                    </td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="2">
-                        <div class="data-no-results">
-                            <img src="{{ asset('images/no-results.svg') }}" alt="">
-                            {{ 'item.no_results'|trans }}
-                        </div>
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+{% block main %}
+    <div class="card mb-3">
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>{{ 'item.label.name'|trans }}</th>
+                        <th class="text-end"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                        <tr>
+                            <td>{{ item.name }}</td>
+                            <td class="text-end">
+                                <a href="{{ path('item_update', {item: item.id}) }}" class="btn btn-sm btn-secondary">
+                                    <i class="bi bi-pencil"></i>
+                                    {{ 'item.actions.update'|trans }}
+                                </a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="2">
+                                <div class="data-no-results">
+                                    <img src="{{ asset('images/no-results.svg') }}" alt="">
+                                    {{ 'item.no_results'|trans }}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
 
-    {% if items.hasToPaginate %}
-        <div class="d-flex justify-content-center">
-            {{ pagination(items) }}
+            {% if items.hasToPaginate %}
+                <div class="d-flex justify-content-center">
+                    {{ pagination(items) }}
+                </div>
+            {% endif %}
         </div>
-    {% endif %}
+    </div>
 {% endblock %}
 ```
 
@@ -624,12 +636,16 @@ Use a table when the entity has multiple columns worth showing; use cards otherw
 Add each form field separately with `form_row`.
 
 ```twig
-{% extends 'layout.html.twig' %}
+{% extends 'base.html.twig' %}
 
-{% block content %}
-    {{ form_start(form) }}
-        {{ form_row(form.name) }}
-    {{ form_end(form) }}
+{% block main %}
+    <div class="card mb-3">
+        <div class="card-body">
+            {{ form_start(form) }}
+                {{ form_row(form.name) }}
+            {{ form_end(form) }}
+        </div>
+    </div>
 {% endblock %}
 
 {% block header_actions_right %}
@@ -646,12 +662,16 @@ The delete button uses the `confirm` Stimulus controller (see [stimulus.md](stim
 `header_actions_left` because it is a destructive action.
 
 ```twig
-{% extends 'layout.html.twig' %}
+{% extends 'base.html.twig' %}
 
-{% block content %}
-    {{ form_start(form) }}
-        {{ form_row(form.name) }}
-    {{ form_end(form) }}
+{% block main %}
+    <div class="card mb-3">
+        <div class="card-body">
+            {{ form_start(form) }}
+                {{ form_row(form.name) }}
+            {{ form_end(form) }}
+        </div>
+    </div>
 {% endblock %}
 
 {% block header_actions_left %}
@@ -662,10 +682,10 @@ The delete button uses the `confirm` Stimulus controller (see [stimulus.md](stim
                 confirmationMessage: 'item.delete.confirm'|trans({item: item.name}),
                 cancelButtonText: 'dialogs.buttons.cancel'|trans,
                 confirmButtonText: 'item.actions.delete'|trans,
-            }
+            },
         ) }}
     >
-        {{ form_start(delete_form, { attr: { 'data-confirm-target': 'element' }}) }}
+        {{ form_start(delete_form, {attr: {'data-confirm-target': 'element'}}) }}
             <button class="btn btn-danger" type="submit">
                 <i class="bi bi-trash"></i>
                 {{ 'item.actions.delete'|trans }}

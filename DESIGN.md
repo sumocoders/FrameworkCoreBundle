@@ -20,7 +20,7 @@ instead of the variable.
 
 ## Colors
 
-**Brand — all stock.** `$primary: $blue` `#0d6efd` (buttons, links, focus, sidebar background),
+**Brand, all stock.** `$primary: $blue` `#0d6efd` (buttons, links, focus, sidebar background),
 `$secondary: $gray-600` `#6c757d`, `$dark: $gray-800` `#383a43` (stock points at `$gray-900`).
 The bundle ships a neutral base and expects the application to override `$primary`.
 
@@ -51,10 +51,10 @@ properties, never the Sass variables, so a runtime theme swap works. Dark counte
 | `$menu-color`        | `$white` `#fff`      | `--menu-color`        | `#fff`                |
 | `$menu-active-bg`    | `rgba($black, 0.3)`  | `--menu-active-bg`    | `rgba($black, 0.3)`   |
 | `$menu-active-color` | `$white` `#fff`      | `--menu-active-color` | `#fff`                |
-| `$user-bg`           | `$top-color`         | —                     | `$gray-850`           |
-| —                    | `#b2cadd`            | `--error-bg`          | `#4B6376`             |
-| —                    | `#ebf3f9`            | `--error-content-bg`  | `#81919F`             |
-| —                    | `$white`             | `--back-to-top-bg`    | `$gray-700`           |
+| `$user-bg`           | `$top-color`         | n/a                   | `$gray-850`           |
+| n/a                  | `#b2cadd`            | `--error-bg`          | `#4B6376`             |
+| n/a                  | `#ebf3f9`            | `--error-content-bg`  | `#81919F`             |
+| n/a                  | `$white`             | `--back-to-top-bg`    | `$gray-700`           |
 
 `$logo-bg` and `$user-bg` default to `$top-color`; `$user-dropdown-bg` to `$dropdown-bg`;
 `$navbar-toggler-color` to `var(--bs-body-color)`; `$loading-indicator-color` to `$primary`.
@@ -64,7 +64,7 @@ properties, never the Sass variables, so a runtime theme swap works. Dark counte
 **Family.** `$font-family-sans-serif` prepends `"Lato"` to the stock system stack;
 `$headings-font-family` is `null`, so headings use the body family.
 `assets/scss/base/_fonts.scss` contains only a commented-out `font-import` mixin, so **the
-bundle names Lato but never loads it** — applications must ship the `@font-face` blocks or the
+bundle names Lato but never loads it**. Applications must ship the `@font-face` blocks or the
 stack falls through to `system-ui`.
 
 **Scale.** Base `$font-size-base: 1rem`, `$line-height-base: 1.5`. Compressed hard for admin
@@ -151,8 +151,8 @@ Inputs focus to a neutral gray border with a soft black glow, not a primary-colo
 
 Bootstrap is a **selective** build: `assets/scss/_bootstrap-imports.scss` lists each Bootstrap
 partial explicitly, and a component not on that list produces no CSS. Project components live
-in `assets/scss/components/` and `assets/scss/layouts/`, imported by `assets/scss/_imports.scss`
-— that import list is the component inventory.
+in `assets/scss/components/` and `assets/scss/layouts/`, imported by `assets/scss/_imports.scss`.
+That import list is the component inventory.
 
 **Buttons.** Pill radius `30px`, wide horizontal padding `$input-btn-padding-x: 1.5rem` (stock
 `0.75rem`), `$input-btn-padding-x-sm: 1rem` (stock `0.5rem`); vertical padding stays stock at
@@ -180,8 +180,9 @@ add/remove/drag buttons at `left: -20px` / `right: -20px`, straddling the item e
 
 **Tables.** `components/_tables.scss` strips Bootstrap's inset box-shadow borders and adds a
 solid bottom border; headers are bold on `var(--bs-body-bg)`. Cell padding is bumped to
-`0.75rem` (stock `0.5rem`) and `$table-active-bg-factor: 0.75` (stock `0.1`) makes the active
-row emphatic. The bundle renders no table markup itself; `docs/crud.md` prescribes
+`0.75rem` (stock `0.5rem`). `$table-striped-bg` is a 5% tint of `--bs-emphasis-color-rgb`, so
+stripes adapt to the active theme. `$table-active-bg-factor` is `0.75` against a stock `0.1`,
+noted in open questions. The bundle renders no table markup itself; `docs/crud.md` prescribes
 `<table class="table">` with `<th class="text-end">` action columns.
 
 **Alerts and toasts.** Flash messages render as **toasts, not alerts**:
@@ -191,8 +192,8 @@ row emphatic. The bundle renders no table markup itself; `docs/crud.md` prescrib
 translucent); each `.toast-{state}` gets a `6px` left border, a `32px` circular
 `.toast-icon-wrapper`, and a `5px` progress bar, positioned bottom-right on mobile and
 top-right from `md`. `.alert-*` is still styled in `components/_alerts.scss` (Bootstrap Icons
-glyph via `::before`, `padding-left: $spacer * 2.5`) but **nothing in the bundle renders it** —
-it exists for application use.
+glyph via `::before`, `padding-left: $spacer * 2.5`) but **nothing in the bundle renders it**.
+It exists for application use.
 
 **Pagination.** `templates/Twig/pagination.html.twig` plus `components/_pagination.scss`. Page
 links are `min-height: 34px`, `margin: 2px`, bordered `var(--bs-border-color)`, flipping to
@@ -200,7 +201,7 @@ links are `min-height: 34px`, `margin: 2px`, bordered `var(--bs-border-color)`, 
 `$pagination-hover-color` both point at `var(--bs-body-color)`, not the link color.
 
 **Empty states.** `.data-no-results` (`components/_no-results.scss`): centered column,
-`1.125rem`, `var(--bs-gray-600)`, `140px` illustration — see `docs/no-results.md`.
+`1.125rem`, `var(--bs-gray-600)`, `140px` illustration. See `docs/no-results.md`.
 `.no-items-icons` scales `2rem` -> `4rem` (`sm`) -> `7rem` (`lg`).
 
 ### Full partial inventory
@@ -208,11 +209,11 @@ links are `min-height: 34px`, `margin: 2px`, bordered `var(--bs-border-color)`, 
 Every entry in `assets/scss/_imports.scss`, in import order. Those not detailed above carry
 small adjustments only.
 
-**base/** — `fonts` (commented-out mixin, loads nothing), `images` (`img { max-width: 100% }`),
+**base/**: `fonts` (commented-out mixin, loads nothing), `images` (`img { max-width: 100% }`),
 `type` (h1/h2 to `1.3rem` below `sm`). `no-sidebar` is imported **last** as an override layer;
 keep it there.
 
-**components/** — `accordion` (dark-mode `.accordion-button` only), `alerts` (icon glyph via
+**components/**: `accordion` (dark-mode `.accordion-button` only), `alerts` (icon glyph via
 `::before`, dark-mode recoloring), `autocomplete` (jQuery UI `.ui-autocomplete` menu skin),
 `back-to-top` (floating `.back-to-top` button), `buttons` (dark-mode `rgba($value, 0.8)` per theme color),
 `cards` (card shell, `.card-dashboard`, `.card-collection`, `.btn-square`), `datagrids`
@@ -228,11 +229,11 @@ weight, border handling), `toasts` (variants, icon wrapper, progress bar), `no-r
 weak/medium/strong/very-strong), `toggle-password` (`.toggle-password-*` control), `icons`
 (`.bi` and `.menu-item-icon` sizing).
 
-**layouts/** — `framework` (header title, `.buttons-fixed`, `.actions`, `.main-content`),
+**layouts/**: `framework` (header title, `.buttons-fixed`, `.actions`, `.main-content`),
 `search` (`.search-box` in the top bar), `header` (`.sub-nav`, `.main-header`, sidebar offset
 from `lg`), `actions` (`.action-buttons` spacing).
 
-**plugins/** — `tom-select`, `quill` (editor skins).
+**plugins/**: `tom-select`, `quill` (editor skins).
 
 Authored but **not imported**, so producing no CSS: `components/_editorjs.scss`,
 `components/_mark.scss`, `plugins/_bootstrap-tagsinput.scss`.
@@ -243,10 +244,10 @@ Authored but **not imported**, so producing no CSS: `components/_editorjs.scss`,
 |---------------------------------------|------------------------------------------|---------------------------------------------------------|
 | `templates/base.html.twig`            | `body-base`                              | Standard admin page: top bar, sidebar, fixed action bar |
 | `templates/base_no_sidebar.html.twig` | `body-base` + `.main-wrapper-no-sidebar` | Same without the sidebar                                |
-| `templates/user.html.twig`            | —                                        | Auth screens: centered card                             |
+| `templates/user.html.twig`            | n/a                                      | Auth screens: centered card                             |
 | `templates/base_error.html.twig`      | `error-page`                             | Error pages, loads `error.scss`                         |
 | `templates/empty.html.twig`           | `body-empty`                             | Bare container, no chrome                               |
-| `templates/Mail/base.html.twig`       | —                                        | Inky/Foundation email layout, inlines `mail.scss`       |
+| `templates/Mail/base.html.twig`       | n/a                                      | Inky/Foundation email layout, inlines `mail.scss`       |
 
 ### Page composition
 
@@ -359,7 +360,7 @@ imports                                 base, components, layouts, plugins
 ```
 
 A token defined after the Bootstrap `variables` import is invisible to Bootstrap. All three
-entry points follow this order — `style.scss`, `error.scss`, `mail.scss`. The latter two had it
+entry points follow this order: `style.scss`, `error.scss`, `mail.scss`. The latter two had it
 inverted until recently, which silently made every override in this document inert for error
 pages and emails; if you add a fourth entry point, copy the order from `style.scss`.
 `mail.scss` omits `bootstrap-variables-dark` on purpose, since Foundation for Emails has no
@@ -415,12 +416,17 @@ Do not:
 - TODO: confirm Lato. `$font-family-sans-serif` names it but `assets/scss/base/_fonts.scss` is
   entirely commented out, so the bundle never loads the font. Should the bundle ship the
   `@font-face` blocks, or is that the application's job?
-- TODO: `$white: #e1e1e1` in `_bootstrap-variables-dark.scss:15` is dead code — `$white` is
+- TODO: `$white: #e1e1e1` in `_bootstrap-variables-dark.scss:15` is dead code. `$white` is
   already bound to `#fff` by `_bootstrap-variables.scss:14` and `!default` makes the later
   declaration a no-op. Confirmed by compiling: `#e1e1e1` appears zero times in the 434KB output,
   and dark mode resolves `--bs-body-color` and `--menu-color` to `#fff`. Dark text is therefore
   pure white rather than the softer off-white intended.
 - TODO: `$gray-850` and `$gray-900` are both `#2d2f35`. Is the duplication intentional?
+- TODO: `$table-hover-bg` and `$table-active-bg` use `rgba($black, ...)` where stock uses
+  `rgba(var(--#{$prefix}emphasis-color-rgb), ...)`, so both darken in dark mode instead of
+  lightening; hover is near-invisible on a dark row. `$table-active-bg-factor` is also `0.75`
+  against a stock `0.1`, next to a hover factor of `0.075`, which looks like a dropped zero.
+  Same defect class as the `$table-striped-bg` fix; left alone pending a decision on intent.
 - TODO: `layouts/_header.scss:22` sets `.user-nav { background-color: var(--user-bg) }`, but
   `--user-bg` is never declared in any `:root` or `[data-bs-theme]` block. The Sass `$user-bg` /
   `$user-bg-dark` variables exist but are only read through `color-contrast()` and
@@ -430,11 +436,11 @@ Do not:
   unimported, but wrong if it is ever added to `_imports.scss`.
 - TODO: `$sidebar-width-sizer: 5.5rem` is declared twice on consecutive lines
   (`_bootstrap-variables.scss:1731-1732`).
-- TODO: `$table-striped-bg` is `var(--bs-emphasis-color)`, a solid color, where stock wraps it in
-  `rgba(..., $table-striped-bg-factor)`. Striped rows may render fully opaque. Confirm before
-  relying on `.table-striped`.
-- TODO: `$font-family-base` and `$font-family-code` interpolate `$variable-prefix`, which
-  Bootstrap renamed to `$prefix` in 5.3.
+- TODO: `$font-family-base` and `$font-family-code` interpolate `$variable-prefix`, the name
+  Bootstrap deprecated in favour of `$prefix`. Not broken: the fork defines
+  `$variable-prefix: bs-` at `_bootstrap-variables.scss:392` with `$prefix: $variable-prefix`
+  on the next line, and the compiled CSS emits `var(--bs-font-sans-serif)` correctly. Worth
+  renaming before a Bootstrap version drops the alias.
 - TODO: the header comment in `_bootstrap-imports.scss` still says `Bootstrap v5.0.2`; the
   codebase targets 5.3.
 - TODO: `components/_editorjs.scss` and `components/_mark.scss` exist but are not in

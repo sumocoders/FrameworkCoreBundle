@@ -760,7 +760,7 @@ $table-accent-bg: $white !default;
 $table-th-font-weight: null !default;
 $table-striped-color: $table-color !default;
 $table-striped-bg-factor: 0.05 !default;
-$table-striped-bg: var(--#{$prefix}emphasis-color) !default;
+$table-striped-bg: rgba(var(--#{$prefix}emphasis-color-rgb), $table-striped-bg-factor) !default;
 $table-active-color: $table-color !default;
 $table-active-bg-factor: 0.75 !default;
 $table-active-bg: rgba($black, $table-active-bg-factor) !default;

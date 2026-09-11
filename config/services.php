@@ -7,6 +7,7 @@ use SumoCoders\FrameworkCoreBundle\Command\TranslateCommand;
 use SumoCoders\FrameworkCoreBundle\DoctrineListener\DoctrineAuditListener;
 use SumoCoders\FrameworkCoreBundle\EventListener\BreadcrumbListener;
 use SumoCoders\FrameworkCoreBundle\EventListener\ResponseSecurer;
+use SumoCoders\FrameworkCoreBundle\EventListener\SentryUserContextListener;
 use SumoCoders\FrameworkCoreBundle\EventListener\TitleListener;
 use SumoCoders\FrameworkCoreBundle\Form\Extension\TogglePasswordTypeExtension;
 use SumoCoders\FrameworkCoreBundle\Form\Type\BelgiumPostCodeType;
@@ -145,6 +146,19 @@ return static function (ContainerConfigurator $container): void {
                 'event' => 'kernel.controller',
                 'method' => 'onKernelController',
                 'priority' => -1
+            ]
+        )
+
+        /*
+         * Sentry user context
+         */
+        ->set('framework.sentry_user_context_listener', SentryUserContextListener::class)
+        ->bind('bool $enabled', param('sumo_coders_framework_core.sentry_user_context.enabled'))
+        ->tag(
+            'kernel.event_listener',
+            [
+                'event' => 'kernel.request',
+                'method' => 'onKernelRequest'
             ]
         )
 

@@ -32,6 +32,7 @@ Requirements:
 | [button-locations.md](button-locations.md)         | Toolbar and form submit button placement conventions                                   |
 | [language-switch.md](language-switch.md)           | Multi-locale navigation switcher                                                       |
 | [frontend-development.md](frontend-development.md) | SCSS variables, dark mode, JS components                                               |
+| [../DESIGN.md](../DESIGN.md)                       | Design system: tokens, type scale, components, conventions                             |
 | [ajax-client.md](ajax-client.md)                   | Axios-based AJAX client with CSRF and toast support                                    |
 | [asset-mapper.md](asset-mapper.md)                 | Adding CSS/JS packages via Symfony AssetMapper                                         |
 | [dark-mode.md](dark-mode.md)                       | Dark mode support and how to disable it                                                |

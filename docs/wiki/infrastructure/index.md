@@ -12,6 +12,8 @@ propagation, maintenance console commands, and Doctrine extension wiring.
 - [commands.md](commands.md) — `sumo:translate` and `sumo:maintenance:create-pr-for-outdated-dependencies`
 - [doctrine-extension-listener.md](doctrine-extension-listener.md) — Gedmo Blameable/Loggable current-user wiring
   (currently unregistered — see gotcha in that entry)
+- [sentry-user-context.md](sentry-user-context.md) — `SentryUserContextListener`, attaches the authenticated (and
+  impersonating) user's identifier to the Sentry scope; on by default, inert without Sentry installed
 
 ## Note: no MySQL full-text search DQL function exists in this repo
 

@@ -39,7 +39,7 @@ Add the following to `templates/navigation.html.twig`, between the logo and the 
             {% for locale in locales %}
                 <li>
                     <a class="dropdown-item {{ locale == app.request.locale ? 'active' : '' }}"
-                       href="{{ path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')|merge({'_locale': locale})) }}">
+                       href="{{ path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')|merge({_locale: locale})) }}">
                         {{ locale|upper }}
                     </a>
                 </li>

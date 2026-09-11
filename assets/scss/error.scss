@@ -1,7 +1,10 @@
 // Bootstrap variables
+// Order matters: the bundle's overrides must come before Bootstrap's own variables,
+// otherwise Bootstrap's !default values win and every override here is ignored.
 @import "../../../../../vendor/twbs/bootstrap/scss/functions";
+@import 'bootstrap-variables';
+@import 'bootstrap-variables-dark';
 @import '../../../../../vendor/twbs/bootstrap/scss/variables';
 @import "../../../../../vendor/twbs/bootstrap/scss/variables-dark";
-@import 'bootstrap-variables';
 @import 'bootstrap-imports';
 @import "base/error";

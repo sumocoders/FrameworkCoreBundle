@@ -32,19 +32,22 @@ No phpstan or phpcs config exists in this repo. Those are configured per-project
 
 ### Request lifecycle
 
-Two event listeners fire on every request:
+Three event listeners fire on every (main) request:
 
-1. `BreadcrumbListener` (`kernel.controller`, priority -1): reflects the matched controller for `#[Breadcrumb]`
+1. `SentryUserContextListener` (`kernel.request`): when `sentry_user_context.enabled` is `true` and a Sentry hub is
+   registered, attaches the authenticated user's identifier — and, when impersonating, the impersonator's
+   identifier — to the Sentry scope. No-ops otherwise (disabled, no hub, no authenticated user, sub-request).
+2. `BreadcrumbListener` (`kernel.controller`, priority -1): reflects the matched controller for `#[Breadcrumb]`
    attributes and populates `BreadcrumbTrail`.
-2. `TitleListener` (`kernel.controller`, priority -1): reflects the matched controller for `#[Title]` attributes and
+3. `TitleListener` (`kernel.controller`, priority -1): reflects the matched controller for `#[Title]` attributes and
    writes to `PageTitle`. Falls back to breadcrumbs if no `#[Title]` is present.
 
-Both listeners hook the generic `kernel.controller` event and manually reflect the resolved controller (see
-`config/services.php`) — this is the pre-existing architecture. A migration to Symfony 8.1's dedicated
-per-attribute events (`kernel.controller_arguments.<FQCN>`, dropping the manual reflection) was prototyped on
-`feature/symfony-8.1-controller-attribute-events` but never merged; this file previously described that unmerged
-branch's design as if it were current. Correct as of 2026-09-11 — don't reintroduce that description until the
-branch actually lands.
+`BreadcrumbListener` and `TitleListener` hook the generic `kernel.controller` event and manually reflect the resolved
+controller (see `config/services.php`) — this is the pre-existing architecture. A migration to Symfony 8.1's
+dedicated per-attribute events (`kernel.controller_arguments.<FQCN>`, dropping the manual reflection) was
+prototyped on `feature/symfony-8.1-controller-attribute-events` but never merged; this file previously described
+that unmerged branch's design as if it were current. Correct as of 2026-09-11 — don't reintroduce that description
+until the branch actually lands.
 
 `PageTitle` and `BreadcrumbTrail` are request-scoped services aliased for direct injection.
 
@@ -70,6 +73,9 @@ For invokable controllers, prefer placing `#[Route]`, `#[Breadcrumb]`, and `#[Ti
   that event to add items. See `docs/menu.md`.
 - **Audit trail** (`src/DoctrineListener/DoctrineAuditListener.php`): Doctrine `onFlush` + `postPersist` listener that
   logs creates/updates/deletes via `AuditLogger`. Entities opt in with `#[AuditTrail]`. See `docs/audit-trail.md`.
+- **Sentry user context** (`src/EventListener/SentryUserContextListener.php`): attaches the authenticated (and
+  impersonator) user identifier to the Sentry scope. On by default; toggle off via
+  `sentry_user_context.enabled`. See `docs/sentry-user-context.md`.
 - **Forms** (`src/Form/`): custom types (`ImageType`, `FileType`, `BelgiumPostCodeType`) and extensions wiring date
   pickers, toggle-password, and collection UI. See `docs/forms.md`.
 - **DBAL types** (`src/DBALType/`): `EncryptedDBALType`, `AbstractImageType`, `AbstractFileType` for custom column
@@ -80,8 +86,9 @@ For invokable controllers, prefer placing `#[Route]`, `#[Breadcrumb]`, and `#[Ti
 ### Service registration
 
 All services are registered in `config/services.php` (PHP-format DI config, no YAML). The bundle extension
-(`src/DependencyInjection/SumoCodersFrameworkCoreExtension.php`) loads that file. `Configuration.php` is intentionally
-empty. No runtime bundle config is needed.
+(`src/DependencyInjection/SumoCodersFrameworkCoreExtension.php`) loads that file. `Configuration.php` defines one
+real option, `sentry_user_context.enabled` (default `true`), processed in the extension and bound into
+`SentryUserContextListener` via a container parameter.
 
 ## Documentation
 

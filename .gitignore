@@ -2,3 +2,4 @@
 composer.lock
 .phpcs-cache
 .twig-cs-fixer.cache
+.phpunit.result.cache

@@ -8,9 +8,9 @@
 consuming applications built on this bundle). That's expected here: this repo is a shared bundle providing
 cross-cutting *subsystems* (breadcrumbs, audit trail, pagination, uploads, ...), not an app with domain features.
 
-Consequence for `docs/wiki/`: top-level namespaces mirror the bundle's subsystems (matching the grouping already
-used in `docs/index.md`'s table), not features — there's no `contact/`/`company/`-style feature directory to
-key off of.
+Consequence for `docs/*.md`: each file mirrors one of the bundle's subsystems (matching the grouping already
+used in `docs/index.md`'s table, with a Usage section followed by an Internals section), not a feature — there's
+no `contact/`/`company/`-style feature directory to key off of.
 
 ## Event listener registration
 

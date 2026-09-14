@@ -33,6 +33,22 @@ template.html.twig
 {% endblock %}
 ```
 
+## Internals
+
+The base template wraps your content in one `{% apply inky_to_html|inline_css(asset_content('styles/mail.scss')) %}`
+chain:
+
+1. `inky_to_html` (from `twig/inky-extra`) expands Foundation-for-Emails Inky tags (`<container>`, `<row>`,
+   `<columns>`, `<spacer>`, `<center>`) into table-based HTML.
+2. `inline_css` (from `twig/cssinliner-extra`) then inlines that CSS as `style` attributes on each element, because
+   mail clients ignore `<style>`/`<link>` tags.
+
+The CSS itself is sourced via the bundle's own `asset_content()` Twig function
+(`src/Twig/AssetContentExtension.php`), which resolves through Symfony AssetMapper (compiled/versioned assets)
+rather than reading straight from `public/`. This is why `asset_content()` exists as a separate function from the
+more generic `content()` extension. It throws an `AssetNotFoundException` if `styles/mail.scss` isn't resolvable by
+AssetMapper in the consuming project.
+
 ## Template styling
 
 Mail templates use [Foundation for Emails](https://get.foundation/emails/docs/global.html) for responsive table-based

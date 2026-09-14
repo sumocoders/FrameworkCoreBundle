@@ -58,6 +58,31 @@ If an admin is impersonating `jane.doe` at the time, the event additionally carr
 impersonation.impersonator_id: admin
 ```
 
+## Internals
+
+- **Listener priority**: `SentryUserContextListener` is registered on `kernel.request` with no explicit priority.
+  Symfony's own firewall listener runs on that same event at priority `8`, so it always runs first — by the time
+  this listener runs, the security token (and thus the authenticated user, if any) is already available on
+  `Security::getUser()`.
+- **Deliberate inconsistency, do not "fix" it**: this listener detects impersonation via
+  `isGranted('IS_IMPERSONATOR')` combined with checking that the token is a `SwitchUserToken` instance. Elsewhere
+  in the bundle, `AuditLogger::getImpersonatingUser()` detects impersonation via `isGranted('ROLE_PREVIOUS_ADMIN')`
+  with no `instanceof` check at all. Both are correct for their own use case — this divergence is an accepted,
+  documented decision (see ADR-0004 below), not something to reconcile as a side effect of an unrelated change.
+
+Decision records for the design choices behind this feature:
+
+- [`docs/adr/0001-sentry-user-identity-generic-identifier-only.md`](adr/0001-sentry-user-identity-generic-identifier-only.md) —
+  why only the generic `getUserIdentifier()` is sent, never email or other profile data.
+- [`docs/adr/0002-sentry-symfony-suggest-only-not-required.md`](adr/0002-sentry-symfony-suggest-only-not-required.md) —
+  why `sentry/sentry-symfony` is a `suggest`, not a hard dependency, and how the nullable `?HubInterface` autowiring
+  makes that work.
+- [`docs/adr/0003-first-bundle-config-option-parameter-wiring.md`](adr/0003-first-bundle-config-option-parameter-wiring.md) —
+  `sentry_user_context.enabled` is the bundle's first real config option, and why it's wired via a container
+  parameter bound to a constructor flag rather than conditional service registration.
+- [`docs/adr/0004-impersonation-detection-diverges-from-auditlogger.md`](adr/0004-impersonation-detection-diverges-from-auditlogger.md) —
+  why this listener's impersonation check intentionally diverges from `AuditLogger`'s.
+
 ## Troubleshooting
 
 - **Nothing shows up in Sentry**: confirm `sentry_user_context.enabled` hasn't been explicitly set to `false` —

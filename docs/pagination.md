@@ -172,6 +172,25 @@ To reset the filter, remove the session key:
 $request->getSession()->remove('user_filter');
 ```
 
+## Internals
+
+`paginate()` tunes two Doctrine ORM paginator knobs automatically; neither is exposed as an option:
+
+- **No JOINs in the query**: disables the count query's `DISTINCT` (`CountWalker::HINT_DISTINCT => false`) for a
+  faster count, since without joins duplicate root rows can't occur.
+- **`HAVING` clause present**: turns on `setUseOutputWalkers(true)`. Output walkers are otherwise left off, since
+  they're slower and only needed for `GROUP BY`/`HAVING` correctness.
+
+`getLastPage()` and the internal `getNumberOfPages()` both compute `ceil($numResults / $pageSize)`, but
+`getNumberOfPages()` clamps to a minimum of 1, while `getLastPage()` can be `0` when there are zero results.
+`hasNextPage()` compares against `getLastPage()`, so the two are not interchangeable if you ever subclass this
+class.
+
+`calculateStartAndEndPage()` is **not** called automatically by `getStartPage()`/`getEndPage()` — those getters
+error on the typed property unless `calculateStartAndEndPage()` has run first. In practice this only matters if
+you're not using the bundle's own `pagination()` Twig function, which calls it for you. The window it computes is
+±3 pages around the current page, clamped to the valid range.
+
 ## Troubleshooting
 
 - **Total count is wrong with JOINs**: the paginator sets `HINT_DISTINCT => false` when no JOINs are present. With

@@ -162,6 +162,22 @@ Inherits all `AbstractFile` methods plus:
 - EXIF data is not stripped. For user-uploaded images consider stripping EXIF in the lifecycle callback before calling
   `upload()`.
 
+## Internals
+
+`AbstractImage::getWebPath()` overrides the parent `AbstractFile` behavior. It first tries the normal web path
+(`AbstractFile::getWebPath()`, which is an empty string unless a file actually exists on disk). If that's empty, it
+falls back to the `FALLBACK_IMAGE` constant if one is set on the subclass. If `FALLBACK_IMAGE` is still `null` at
+that point, it **throws a `RuntimeException`** (`'No fallback image set for ' . static::class`) — this is the one
+place in this whole value-object hierarchy that throws on a missing file instead of degrading gracefully;
+`AbstractFile::getWebPath()` itself just returns an empty string.
+
+Practical consequence: calling `.webPath` unconditionally in a template on an entity that might have neither an
+uploaded image nor a `FALLBACK_IMAGE` constant produces a 500 error, not a broken `<img>` tag. Every subclass used
+in a template needs either a real uploaded file at render time or a `FALLBACK_IMAGE` set.
+
+`FALLBACK_IMAGE` must be an absolute public path (e.g. `/images/no-avatar.png`) — it's returned as-is, not resolved
+relative to `getUploadDir()`.
+
 ## Troubleshooting
 
 - **Image not uploaded after form submit**: verify the three lifecycle methods (`prepareToUpload`, `upload`, `remove`)

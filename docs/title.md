@@ -190,12 +190,29 @@ In Twig, `PageTitle` is available as a string (via `__toString`):
 <h1>{{ pageTitle }}</h1>
 ```
 
+## Internals
+
+- `TitleListener` reflects **all** methods on the controller class — `getMethods()` with no visibility filter — unlike
+  `BreadcrumbListener`, which only scans public methods. The same multi-action controller hazard applies: a `{param}`
+  title on an unrelated action can throw for requests that don't carry that same-named argument.
+- `extend: false` sets the title verbatim and then returns immediately from the **entire listener invocation**, not
+  just the current attribute. In practice, if reflection happens to visit an `extend: false` method before other
+  `#[Title]`-carrying methods on the same class, those later attributes are never even inspected for that request.
+  `Fallbacks::get('site_title')` is also never consulted on the `extend: false` path.
+
+### Exceptions
+
+| Exception               | Thrown when                                                                       |
+|--------------------------|------------------------------------------------------------------------------------|
+| `\Exception` (generic)   | A `{param}` placeholder in the title has no matching key among the method's resolved parameters |
+
 ## Troubleshooting
 
 - **`{param}` not resolving**: the placeholder must match the exact name of a controller argument. For objects, use
   `{object.property}` not `{object}`
 - **Title missing site name**: verify `fallbacks.site_title` is set in `parameters` in `config/services.yaml`
 - **Parent chain not working**: each route in the chain must exist and have `#[Title]` or `#[Breadcrumb]` attributes;
-  the chain resolves by dispatching a subrequest to fetch the parent's title
+  the chain resolves via direct reflection and an in-process method call within the same listener invocation, not by
+  dispatching an HTTP subrequest
 - **`extend: false` still appends site title**: check that `extend:` is passed as a named argument:
   `#[Title('My Title', extend: false)]`

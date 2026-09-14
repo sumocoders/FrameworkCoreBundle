@@ -246,6 +246,40 @@ class BookDetailController
 breadcrumb.authors: 'Authors'
 ```
 
+## Internals
+
+`BreadcrumbListener` (like `TitleListener`) hooks the generic `kernel.controller` event (`onKernelController`,
+priority `-1`), not `kernel.controller_arguments`. At that point in the request lifecycle, Symfony knows which
+controller will run but hasn't resolved its argument values yet - no `#[MapEntity]` objects, no auto-cast scalars,
+only raw strings on `$request->attributes`. To read `{object.property}` and `parameters:` values, the listener does
+its own `EntityManager` repository lookup (`find()`, or `findOneBy()` when the matching controller parameter carries
+`#[MapEntity]`) to replicate what the argument resolver would otherwise have given it for free.
+
+`processBreadcrumbs()` reflects the controller class and iterates **every public method** on it, not just the one
+that matched the current route. On a multi-action controller where more than one action carries its own
+`#[Breadcrumb]`, breadcrumbs are generated for *every* one of those actions on *every* request, regardless of which
+route actually matched.
+
+> **Gotcha**: because of that, a `{param}` breadcrumb title on an unrelated action that doesn't have that param on the
+> current request throws an uncaught `RuntimeException` - not the swallowed `EntityNotFoundException` - and can break
+> a completely different route. This is exactly why the project convention favors single-action invokable
+> controllers with class-level attributes: it keeps a controller's breadcrumbs from leaking into other routes.
+
+### Exceptions
+
+| Exception | Thrown when | Caught? |
+|---|---|---|
+| `InvalidArgumentException` | Resolved controller class is abstract | No - propagates |
+| `Exception\Breadcrumb\EntityNotFoundException` | `{expr}`/`parameters:` repository lookup returns a non-object | Yes - skips just that one breadcrumb |
+| `RuntimeException` | Route parameter missing; object interpolation without a `.property` path; parent route not found; required route/parent parameters can't be resolved | No - propagates and fails the request |
+
+### `parent:` chaining order
+
+`addBreadcrumbsForParent()` recurses **before** the current attribute's own breadcrumb is added, so ancestors always
+land earlier in the trail than the page that references them. Route parameters for the parent are auto-filled from
+the current request's route attributes when the parameter names match (e.g. `/{author}/{book}` supplies `author` to
+a parent named `author_detail` without you having to repeat it).
+
 ## Troubleshooting
 
 - **Breadcrumb not appearing**: on a multi-action controller, a class-level `#[Breadcrumb]` is only picked up for

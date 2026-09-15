@@ -100,7 +100,7 @@ return static function (ContainerConfigurator $container): void {
         ->set('framework.file_type', FileType::class)
         ->tag('form.type', ['alias' => 'sumoFile'])
 
-        ->set('framework.file_type', BelgiumPostCodeType::class)
+        ->set('framework.belgium_post_code_type', BelgiumPostCodeType::class)
         ->tag('form.type', ['alias' => 'sumoBelgiumPostCode'])
 
         /*

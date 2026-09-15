@@ -6,6 +6,7 @@ use Psr\Log\LoggerInterface;
 use SumoCoders\FrameworkCoreBundle\Enum\EventAction;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Security\Core\Authentication\Token\SwitchUserToken;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class AuditLogger
@@ -62,14 +63,21 @@ class AuditLogger
 
     private function getImpersonatingUser(): ?UserInterface
     {
-        if ($this->security->isGranted('ROLE_PREVIOUS_ADMIN')) {
-            // phpcs:ignore Generic.Files.LineLength.TooLong
-            // @mago-expect analysis:possible-method-access-on-null,mixed-return-statement,mixed-method-access,non-existent-method
-            // @phpstan-ignore method.notFound
-            return $this->security->getToken()->getOriginalToken()->getUser();
+        if (!$this->security->isGranted('IS_IMPERSONATOR')) {
+            return null;
         }
 
-        return null;
+        $token = $this->security->getToken();
+        if (!$token instanceof SwitchUserToken) {
+            return null;
+        }
+
+        $originalUser = $token->getOriginalToken()->getUser();
+        if (!$originalUser instanceof UserInterface) {
+            return null;
+        }
+
+        return $originalUser;
     }
 
     private function getLoggedInUser(): ?UserInterface

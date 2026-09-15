@@ -9,7 +9,7 @@ use SumoCoders\FrameworkCoreBundle\ValueObject\Route;
 final class Breadcrumb
 {
     private string $title;
-    // @phpstan-ignore missingType.iterableValue
+    /** @var array<array-key, mixed> */
     private array $parameters;
     private ?Route $route;
     private ?Route $parent;

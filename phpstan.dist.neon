@@ -50,4 +50,4 @@ parameters:
     -
       identifier: missingType.iterableValue
       path: src/ValueObject/Route.php
-      count: 4
+      count: 3

@@ -47,6 +47,11 @@ class Paginator implements Countable, IteratorAggregate
             $query->setHint(CountWalker::HINT_DISTINCT, false);
         }
 
+        // Doctrine\ORM\Tools\Pagination\Paginator is deprecated since doctrine/orm 3.7 in favor of the
+        // stateless OffsetPaginator, which returns an immutable WindowPage instead of exposing
+        // getIterator()/count()/setUseOutputWalkers(). Migrating this class's public API to that shape
+        // is a separate, larger change and isn't done here.
+        // @mago-expect analysis:deprecated-class
         $paginator = new DoctrinePaginator($query, true);
 
         $useOutputWalkers = $this->queryBuilder->getDQLPart('having') !== null;

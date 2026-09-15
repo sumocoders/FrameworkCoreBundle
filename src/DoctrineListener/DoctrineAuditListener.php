@@ -108,7 +108,6 @@ final readonly class DoctrineAuditListener
                 if (str_contains($field, '.')) {
                     [$property, $subProperty] = explode('.', $field);
 
-                    // @mago-expect analysis:possibly-invalid-argument
                     $fieldReflection = new ReflectionProperty($className, $property);
                     $embeddedAttributes = $fieldReflection->getAttributes(Embedded::class);
                     if (count($embeddedAttributes) === 0) {
@@ -122,7 +121,6 @@ final readonly class DoctrineAuditListener
 
                     // @mago-expect lint:no-else-clause
                 } else {
-                    // @mago-expect analysis:possibly-invalid-argument
                     $fieldReflection = new ReflectionProperty($className, $field);
                 }
 

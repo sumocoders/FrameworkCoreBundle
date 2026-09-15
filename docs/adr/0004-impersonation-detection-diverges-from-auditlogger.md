@@ -1,5 +1,7 @@
 # Sentry impersonation detection uses IS_IMPERSONATOR, diverging from AuditLogger
 
+> **Superseded by [ADR-0005](0005-converge-auditlogger-impersonation-with-is-impersonator.md).**
+
 `SentryUserContextListener` detects impersonation via `$security->isGranted('IS_IMPERSONATOR')` combined with
 `$token instanceof Symfony\Component\Security\Core\Authentication\Token\SwitchUserToken`, then reads
 `$token->getOriginalToken()->getUser()`. This mirrors the reference implementation exactly.

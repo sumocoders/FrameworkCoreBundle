@@ -49,11 +49,6 @@ impersonation.impersonator_id: admin
   Symfony's own firewall listener runs on that same event at priority `8`, so it always runs first — by the time
   this listener runs, the security token (and thus the authenticated user, if any) is already available on
   `Security::getUser()`.
-- **Deliberate inconsistency, do not "fix" it**: this listener detects impersonation via
-  `isGranted('IS_IMPERSONATOR')` combined with checking that the token is a `SwitchUserToken` instance. Elsewhere
-  in the bundle, `AuditLogger::getImpersonatingUser()` detects impersonation via `isGranted('ROLE_PREVIOUS_ADMIN')`
-  with no `instanceof` check at all. Both are correct for their own use case — this divergence is an accepted,
-  documented decision (see ADR-0004 below), not something to reconcile as a side effect of an unrelated change.
 
 Decision records for the design choices behind this feature:
 
@@ -66,7 +61,9 @@ Decision records for the design choices behind this feature:
   `sentry_user_context.enabled` was briefly the bundle's first real config option, wired via a container
   parameter bound to a constructor flag; it was removed shortly after, and the feature is now always active.
 - [`docs/adr/0004-impersonation-detection-diverges-from-auditlogger.md`](adr/0004-impersonation-detection-diverges-from-auditlogger.md) —
-  why this listener's impersonation check intentionally diverges from `AuditLogger`'s.
+  why this listener's impersonation check intentionally diverged from `AuditLogger`'s. Superseded by ADR-0005.
+- [`docs/adr/0005-converge-auditlogger-impersonation-with-is-impersonator.md`](adr/0005-converge-auditlogger-impersonation-with-is-impersonator.md) —
+  why `AuditLogger`'s impersonation check was later converged onto this listener's idiom, superseding ADR-0004.
 
 ## Troubleshooting
 

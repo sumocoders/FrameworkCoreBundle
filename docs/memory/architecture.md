@@ -31,11 +31,13 @@ removal). If a config option is added again, the established pattern was: `Exten
 no precedent for conditionally registering/removing service definitions (`hasDefinition()`/`removeDefinition()`)
 based on config — follow the parameter+runtime-guard shape rather than introducing conditional wiring.
 
-## Two impersonation-detection idioms coexist
+## Impersonation detection uses one shared idiom
 
-Symfony's switch-user ("impersonation") feature is checked two different ways in this bundle:
-`AuditLogger::getImpersonatingUser()` uses `isGranted('ROLE_PREVIOUS_ADMIN')` with no `instanceof
-SwitchUserToken` guard; `SentryUserContextListener::getImpersonatorId()` uses `isGranted('IS_IMPERSONATOR')` +
-an explicit `$token instanceof SwitchUserToken` check. Both are correct, deliberately diverging (see
-`docs/adr/0004-impersonation-detection-diverges-from-auditlogger.md`) — there is no single canonical pattern to
-copy. Check both existing call sites before adding a third.
+Symfony's switch-user ("impersonation") feature is checked the same way everywhere in this bundle:
+`AuditLogger::getImpersonatingUser()` and `SentryUserContextListener::getImpersonatorId()` both use
+`isGranted('IS_IMPERSONATOR')` followed by an explicit `$token instanceof SwitchUserToken` guard (and an
+`instanceof UserInterface` guard on the resulting user). This converged per
+`docs/adr/0005-converge-auditlogger-impersonation-with-is-impersonator.md`, which supersedes
+`docs/adr/0004-impersonation-detection-diverges-from-auditlogger.md` documenting the original divergence. No
+shared helper was extracted — each method is a separate, structurally identical private method. Follow this
+idiom for any new impersonation check.

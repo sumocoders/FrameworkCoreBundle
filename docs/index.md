@@ -61,7 +61,7 @@ Blameable/Loggable tracking. To use it, a consuming app must register it as a se
 HTTP request
   ├─ kernel.request
   │    └─ SentryUserContextListener   attaches the authenticated (and impersonator) user id to the Sentry scope,
-  │                                   when sentry_user_context.enabled and a Sentry hub are both present
+  │                                   when a Sentry hub is present
   └─ kernel.controller_arguments (priority -1)
        ├─ BreadcrumbListener     reads #[Breadcrumb] from class + method, populates BreadcrumbTrail
        └─ TitleListener          reads #[Title] from method, falling back to class-level #[Title] for __invoke, writes PageTitle. Falls back to BreadcrumbTrail if no #[Title] present
@@ -93,7 +93,7 @@ For invokable controllers, prefer placing `#[Route]`, `#[Breadcrumb]`, and `#[Ti
 ### Service configuration
 
 All services are registered in `config/services.php` using PHP-format DI config. Autowiring and autoconfiguration are
-enabled. `Configuration.php` defines one real option, `sentry_user_context.enabled` (default `true`) — see
+enabled. `Configuration.php` is currently an empty tree — the bundle defines no config options — see
 [sentry-user-context.md](sentry-user-context.md).
 
 ---

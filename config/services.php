@@ -153,7 +153,6 @@ return static function (ContainerConfigurator $container): void {
          * Sentry user context
          */
         ->set('framework.sentry_user_context_listener', SentryUserContextListener::class)
-        ->bind('bool $enabled', param('sumo_coders_framework_core.sentry_user_context.enabled'))
         ->tag(
             'kernel.event_listener',
             [

@@ -14,14 +14,13 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * Attaches the current authenticated user's identifier (and, when impersonating, the impersonator's identifier)
  * to the Sentry scope, so errors reported to Sentry are tied to a user.
  *
- * No-ops entirely when the feature is disabled, when no Sentry hub is registered (Sentry is an optional
- * dependency), on sub-requests, or when there is no authenticated user.
+ * No-ops entirely when no Sentry hub is registered (Sentry is an optional dependency), on sub-requests, or
+ * when there is no authenticated user.
  */
 class SentryUserContextListener
 {
     public function __construct(
         private readonly Security $security,
-        private readonly bool $enabled,
         private readonly ?HubInterface $hub = null,
     ) {
     }
@@ -30,7 +29,7 @@ class SentryUserContextListener
     {
         $hub = $this->hub;
 
-        if (!$this->enabled || $hub === null || !$event->isMainRequest()) {
+        if ($hub === null || !$event->isMainRequest()) {
             return;
         }
 

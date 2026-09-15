@@ -17,24 +17,12 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class SentryUserContextListenerTest extends TestCase
 {
-    public function testDoesNothingWhenDisabled(): void
-    {
-        $hub = $this->createMock(HubInterface::class);
-        $hub->expects($this->never())->method('configureScope');
-
-        $security = $this->createMock(Security::class);
-        $security->expects($this->never())->method('getUser');
-
-        $listener = new SentryUserContextListener($security, false, $hub);
-        $listener->onKernelRequest($this->createMainRequestEvent());
-    }
-
     public function testDoesNothingWhenHubIsNull(): void
     {
         $security = $this->createMock(Security::class);
         $security->expects($this->never())->method('getUser');
 
-        $listener = new SentryUserContextListener($security, true, null);
+        $listener = new SentryUserContextListener($security, null);
         $listener->onKernelRequest($this->createMainRequestEvent());
     }
 
@@ -46,7 +34,7 @@ class SentryUserContextListenerTest extends TestCase
         $security = $this->createStub(Security::class);
         $security->method('getUser')->willReturn(null);
 
-        $listener = new SentryUserContextListener($security, true, $hub);
+        $listener = new SentryUserContextListener($security, $hub);
         $listener->onKernelRequest($this->createMainRequestEvent());
     }
 
@@ -66,7 +54,7 @@ class SentryUserContextListenerTest extends TestCase
                 $callback($scope);
             });
 
-        $listener = new SentryUserContextListener($security, true, $hub);
+        $listener = new SentryUserContextListener($security, $hub);
         $listener->onKernelRequest($this->createMainRequestEvent());
 
         self::assertNotNull($scope->getUser());
@@ -95,7 +83,7 @@ class SentryUserContextListenerTest extends TestCase
             $callback($scope);
         });
 
-        $listener = new SentryUserContextListener($security, true, $hub);
+        $listener = new SentryUserContextListener($security, $hub);
         $listener->onKernelRequest($this->createMainRequestEvent());
 
         $appliedEvent = $scope->applyToEvent(Event::createEvent(), null, null);

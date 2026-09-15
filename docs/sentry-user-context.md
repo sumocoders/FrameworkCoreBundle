@@ -9,28 +9,14 @@ additional context.
 - A Sentry hub must be registered in the container. In practice this means the consuming project has installed and
   configured [`sentry/sentry-symfony`](https://github.com/getsentry/sentry-symfony) (DSN, `config/bundles.php`, etc.)
   — that setup is entirely the consuming project's own concern, not this bundle's.
-- The feature is on by default; set `sentry_user_context.enabled` to `false` via bundle config to turn it off
-  (see below).
+- The feature is always active — there is no configuration option to turn it off.
 
 If Sentry is not installed at all, `SentryUserContextListener` autowires a `null` hub and no-ops on every request —
 the bundle installs and works fine in projects that never touch Sentry.
 
-## Options
-
-| Parameter                       | Type   | Default | Description                                                    |
-|----------------------------------|--------|---------|------------------------------------------------------------------|
-| `sentry_user_context.enabled`   | `bool` | `true`  | Attaches the authenticated user's identity to Sentry's scope |
-
 ## Configuration
 
-Enabled by default — no configuration needed to turn it on. To disable it:
-
-```yaml
-# config/packages/sumo_coders_framework_core.yaml
-sumo_coders_framework_core:
-    sentry_user_context:
-        enabled: false
-```
+None — this feature has no configuration options. It is always active whenever a Sentry hub is registered.
 
 ## What gets attached
 
@@ -40,8 +26,7 @@ sumo_coders_framework_core:
 - **Impersonation**: when the request is impersonated (`IS_IMPERSONATOR` + a `SwitchUserToken`), the original
   (impersonating) user's identifier is attached as a separate `impersonation` context: `['impersonator_id' => ...]`.
 
-Nothing is attached when there is no authenticated user, when the feature is disabled, or when no Sentry hub is
-registered.
+Nothing is attached when there is no authenticated user or when no Sentry hub is registered.
 
 ## Full example
 
@@ -78,15 +63,14 @@ Decision records for the design choices behind this feature:
   why `sentry/sentry-symfony` is a `suggest`, not a hard dependency, and how the nullable `?HubInterface` autowiring
   makes that work.
 - [`docs/adr/0003-first-bundle-config-option-parameter-wiring.md`](adr/0003-first-bundle-config-option-parameter-wiring.md) —
-  `sentry_user_context.enabled` is the bundle's first real config option, and why it's wired via a container
-  parameter bound to a constructor flag rather than conditional service registration.
+  `sentry_user_context.enabled` was briefly the bundle's first real config option, wired via a container
+  parameter bound to a constructor flag; it was removed shortly after, and the feature is now always active.
 - [`docs/adr/0004-impersonation-detection-diverges-from-auditlogger.md`](adr/0004-impersonation-detection-diverges-from-auditlogger.md) —
   why this listener's impersonation check intentionally diverges from `AuditLogger`'s.
 
 ## Troubleshooting
 
-- **Nothing shows up in Sentry**: confirm `sentry_user_context.enabled` hasn't been explicitly set to `false` —
-  the feature is on by default. Also check `sentry/sentry-symfony` (or another package providing a
+- **Nothing shows up in Sentry**: check `sentry/sentry-symfony` (or another package providing a
   `Sentry\State\HubInterface` service) is installed and configured; `SentryUserContextListener` no-ops entirely
   when no hub is registered.
 - **Nothing is attached on an anonymous request**: expected — the listener only acts when there is an authenticated

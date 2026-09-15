@@ -21,13 +21,15 @@ runs on rather than trusting a class's docblock or an out-of-date summary elsewh
 
 ## Config-driven service behavior
 
-`Configuration.php` was an empty tree until the sentry-user-context feature added its first real option
-(`sentry_user_context.enabled`). The pattern: `Extension::load()` calls `processConfiguration()` and
-`$container->setParameter('sumo_coders_framework_core.<option>', ...)`; `config/services.php` binds that
-parameter to the target service's constructor argument with `->bind('<type> $name', param('...'))`, and the
-service itself no-ops at runtime when the flag is off. There is no precedent for conditionally
-registering/removing service definitions (`hasDefinition()`/`removeDefinition()`) based on config — follow the
-parameter+runtime-guard shape for future config options rather than introducing conditional wiring.
+`Configuration.php` briefly had its first real option (`sentry_user_context.enabled`) but it was removed shortly
+after introduction — the feature is now always active, and the tree is empty again (see
+`docs/adr/0003-first-bundle-config-option-parameter-wiring.md`, updated to record both the introduction and the
+removal). If a config option is added again, the established pattern was: `Extension::load()` calls
+`processConfiguration()` and `$container->setParameter('sumo_coders_framework_core.<option>', ...)`;
+`config/services.php` binds that parameter to the target service's constructor argument with
+`->bind('<type> $name', param('...'))`, and the service itself no-ops at runtime when the flag is off. There is
+no precedent for conditionally registering/removing service definitions (`hasDefinition()`/`removeDefinition()`)
+based on config — follow the parameter+runtime-guard shape rather than introducing conditional wiring.
 
 ## Two impersonation-detection idioms coexist
 

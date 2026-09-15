@@ -83,6 +83,26 @@ When adding an encrypted column to an existing table with data:
 2. In a separate migration, read and re-save each row through the entity manager so the DBAL type encrypts the values
 3. Apply any `NOT NULL` constraint in a third migration after the backfill
 
+## Internals
+
+- The key (`$_ENV['ENCRYPTION_KEY']`) is hex-decoded via `sodium_hex2bin()` on every call to
+  `convertToDatabaseValue()`/`convertToPHPValue()` — there is no in-request caching of the decoded key.
+- `getSQLDeclaration()` always returns `'TEXT COMMENT \'(Encrypted)\''`. Any length options set on the
+  `#[ORM\Column]` attribute are ignored, and the `(Encrypted)` comment is applied automatically — this is why it
+  shows up in the database schema.
+
+### Failure modes
+
+| Condition                                             | Result                                                                                 |
+|--------------------------------------------------------|-----------------------------------------------------------------------------------------|
+| `ENCRYPTION_KEY` unset/blank                          | `RuntimeException` on both read and write, before any sodium call                       |
+| `ENCRYPTION_KEY` malformed hex                        | Uncaught `SodiumException` from `sodium_hex2bin()`                                       |
+| Stored value not in `nonce\|ciphertext` hex form      | `explode()`/`sodium_hex2bin()` rejects it, or the pair fails authentication              |
+| Ciphertext fails authentication                       | `sodium_crypto_secretbox_open()` returns `false`, caught and rethrown as `ConversionException` |
+
+Only the last row produces a `ConversionException` — catching just that exception type will not catch the
+missing/malformed-key cases above it.
+
 ## Troubleshooting
 
 - **`RuntimeException: ENCRYPTION_KEY should be a valid 64 character key`**: the env var is missing or not loaded.

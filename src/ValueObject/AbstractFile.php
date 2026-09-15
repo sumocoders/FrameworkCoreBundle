@@ -3,8 +3,8 @@
 namespace SumoCoders\FrameworkCoreBundle\ValueObject;
 
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Sluggable\Util\Urlizer;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 
 /**
  * The following things are mandatory to use this class.
@@ -127,9 +127,12 @@ abstract class AbstractFile
         // do whatever you want to generate a unique name
         $filename = sha1(uniqid((string) mt_rand(), true));
         if ($this->namePrefix !== null) {
-            // @mago-expect analysis:non-existent-method
-            // @phpstan-ignore staticMethod.notFound
-            $filename = Urlizer::urlize($this->namePrefix) . '_' . $filename;
+            $filename =
+                (string) new AsciiSlugger()
+                    ->slug($this->namePrefix)
+                    ->lower()
+                . '_'
+                . $filename;
         }
         // @mago-expect analysis:possibly-null-operand
         $this->fileName = $filename . '.' . $file->guessExtension();

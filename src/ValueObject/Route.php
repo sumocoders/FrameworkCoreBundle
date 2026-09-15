@@ -5,6 +5,7 @@ namespace SumoCoders\FrameworkCoreBundle\ValueObject;
 class Route
 {
     private string $name;
+    /** @var array<array-key, mixed>|null */
     private ?array $parameters;
 
     // @mago-expect analysis:imprecise-type

@@ -21,13 +21,18 @@ Requirements:
 | [breadcrumb.md](breadcrumb.md)                     | `#[Breadcrumb]` attribute, builds breadcrumb trails from controller annotations        |
 | [title.md](title.md)                               | `#[Title]` attribute, sets the page `<title>` and `<h1>`                               |
 | [audit-trail.md](audit-trail.md)                   | `#[AuditTrail]` attribute, logs entity creates/updates/deletes                         |
+| [sentry-user-context.md](sentry-user-context.md)   | Attaches the authenticated (and impersonator) user id to the Sentry scope             |
+| [nonce-generator.md](nonce-generator.md)           | `NonceGenerator`, lets a request supply its own CSP nonce via `X-CSP-Nonce`           |
+| [commands.md](commands.md)                         | Console commands: translation extraction and dependency-update merge requests         |
 | [pagination.md](pagination.md)                     | `Paginator`, wraps a Doctrine QueryBuilder for paginated results                       |
+| [serializer.md](serializer.md)                     | `CircularReferenceHandler` + `MaxDepthHandler`, opt-in Symfony Serializer id resolvers |
 | [menu.md](menu.md)                                 | `MenuBuilder` + `ConfigureMenuEvent`, KnpMenu-based navigation                         |
 | [forms.md](forms.md)                               | Custom form types (`ImageType`, `FileType`, `BelgiumPostCodeType`) and type extensions |
 | [uploading-files.md](uploading-files.md)           | `AbstractFile` + DBAL type, file upload value objects wired to Doctrine                |
 | [uploading-images.md](uploading-images.md)         | `AbstractImage` + DBAL type, image upload value objects with fallback support          |
 | [encrypted.md](encrypted.md)                       | `EncryptedDBALType`, transparent field-level encryption via libsodium                  |
 | [mails.md](mails.md)                               | Bundle email base template and async dispatch pattern                                  |
+| [twig-extensions.md](twig-extensions.md)           | `theme`/`sidebarIsOpen`/`content`/`asset_content` Twig functions and the `ucfirst` filter |
 | [using-date-pickers.md](using-date-pickers.md)     | Date/time picker form type extensions                                                  |
 | [button-locations.md](button-locations.md)         | Toolbar and form submit button placement conventions                                   |
 | [language-switch.md](language-switch.md)           | Multi-locale navigation switcher                                                       |
@@ -38,6 +43,14 @@ Requirements:
 | [stimulus.md](stimulus.md)                         | Stimulus controllers provided by the bundle                                            |
 | [no-results.md](no-results.md)                     | Standard empty-state / no-results UI component                                         |
 
+### Unused code
+
+`src/EventListener/DoctrineExtensionListener.php` (Gedmo Blameable/Loggable wiring) is not registered anywhere in
+`config/services.php` and is not autoconfigured — it's dead code as shipped. `gedmo/doctrine-extensions` is a
+dependency, so the classes it needs are available, but installing this bundle alone does not enable
+Blameable/Loggable tracking. To use it, a consuming app must register it as a service itself and tag it for
+`kernel.request` / `onKernelRequest`.
+
 ---
 
 ## Architecture
@@ -46,6 +59,9 @@ Requirements:
 
 ```
 HTTP request
+  ├─ kernel.request
+  │    └─ SentryUserContextListener   attaches the authenticated (and impersonator) user id to the Sentry scope,
+  │                                   when a Sentry hub is present
   └─ kernel.controller_arguments (priority -1)
        ├─ BreadcrumbListener     reads #[Breadcrumb] from class + method, populates BreadcrumbTrail
        └─ TitleListener          reads #[Title] from method, falling back to class-level #[Title] for __invoke, writes PageTitle. Falls back to BreadcrumbTrail if no #[Title] present
@@ -77,7 +93,8 @@ For invokable controllers, prefer placing `#[Route]`, `#[Breadcrumb]`, and `#[Ti
 ### Service configuration
 
 All services are registered in `config/services.php` using PHP-format DI config. Autowiring and autoconfiguration are
-enabled. `Configuration.php` is intentionally empty. No runtime bundle config is needed.
+enabled. `Configuration.php` is currently an empty tree — the bundle defines no config options — see
+[sentry-user-context.md](sentry-user-context.md).
 
 ---
 

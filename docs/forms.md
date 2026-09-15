@@ -212,3 +212,48 @@ Username: 'Enter your username'
 ```
 
 No change to the form builder is needed.
+
+---
+
+## Internals
+
+### Known bug: duplicate service id for `FileType` and `BelgiumPostCodeType`
+
+`config/services.php` registers both `Form\Type\FileType` and `Form\Type\BelgiumPostCodeType` under the **same**
+service id, `framework.file_type`. This looks like a copy-paste artifact rather than an intentional shared service.
+Because both `->set()` calls target the same id, the second call (`BelgiumPostCodeType`) silently overwrites the
+first `Definition` in the container — `FileType`'s registration never actually reaches the container.
+
+**If `FileType` doesn't seem to register as a form type (e.g. `$builder->add(..., FileType::class)` fails to
+resolve, or behaves as though the service isn't tagged `form.type`), check this duplicate service id first**
+before assuming the type class itself is broken.
+
+### `ImageType` / `FileType` — control flow
+
+Both types share the same internal shape (`ImageType` for `AbstractImage`, `FileType` for `AbstractFile`):
+
+1. **`PRE_SET_DATA`** adds a core Symfony `file` sub-field. A `NotBlank` constraint is only attached to it when no
+   file/image exists yet **and** the field is `required` — so resubmitting a form without touching the file input
+   never fails validation once a value already exists.
+2. A `remove` checkbox sub-field is added only when `show_remove_file` / `show_remove_image` is `true`, mapped to
+   the value object's `pendingDeletion` property.
+3. **`empty_data`** returns an anonymous class extending `stdClass` (with `setFile`/`getFile`/`setPendingDeletion`/
+   `getPendingDeletion`) as a stand-in view-data holder. This exists because the real `data_class` is the abstract
+   value-object class, which can't be instantiated directly.
+4. On submit, a `CallbackTransformer` calls `$fileClass::fromUploadedFile(...)` to build the real value object, and
+   **deliberately returns a clone** of it rather than the original instance — this gives Doctrine's change tracking
+   a new object identity to detect, which is what triggers the property being marked dirty and the entity's
+   lifecycle callbacks running.
+
+### `BelgiumPostCodeType` — data source caveats
+
+- The postcode list is always read from the **`nl` locale** resource bundle, regardless of the application's
+  current request locale. There is no French or German label variant, even in a multi-locale app.
+- `choice_translation_domain` is forced to `false`, so the `"<postcode> - <municipality>"` labels are never passed
+  through the translator, in any locale.
+- The source data includes non-geographic "postcodes" — embassies, parliamentary chambers, and similar large
+  recipients — alongside real municipalities. Treat the list as "valid Belgian postal codes", not strictly
+  "municipalities".
+- Resolving the type's options throws a `LogicException` if `symfony/intl` isn't installed. If you see that
+  exception when using `BelgiumPostCodeType`, add `symfony/intl` as a dependency rather than looking for a
+  configuration mistake.

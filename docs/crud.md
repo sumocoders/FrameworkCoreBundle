@@ -10,6 +10,22 @@ Symfony Messenger for mutations.
 - Ask whether audit logging is needed before adding `#[AuditTrail]` to the entity (see [audit-trail.md](audit-trail.md))
 - Ask whether a menu item should be added after the CRUD is in place (see [menu.md](menu.md))
 
+## What the bundle contributes vs. what you write
+
+The bundle supplies a handful of building blocks used by this pattern: the `#[Breadcrumb]`/`#[Title]` attributes,
+`Paginator`, the form extensions in `src/Form/`, and the opt-in `#[AuditTrail]` attribute. Everything else shown
+below — controllers, DTO, messages, handlers, form type, entity, repository, templates, translations, tests — is
+hand-written per feature in the consuming app; none of it lives in this bundle.
+
+A few things are easy to miss when following this pattern:
+
+- The DTO is never instantiated directly, only through the `CreateXMessage`/`UpdateXMessage` subclasses. Validation
+  constraints declared on the abstract DTO are only ever exercised via those concrete message classes.
+- `UpdateXMessage`'s constructor pre-fills the DTO from the existing entity, and the form's `getData()` is dispatched
+  as-is — there is no separate step that maps form data back onto a message.
+- `DeleteController` validates a CSRF-protected empty form before dispatching the delete message. Deletes should
+  never be triggered by a bare GET link.
+
 ## File structure
 
 ```

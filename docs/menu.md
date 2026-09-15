@@ -129,6 +129,32 @@ $paymentsItem->addChild(
 $menu->addChild($paymentsItem);
 ```
 
+## Internals
+
+`createMainMenu()` creates the root menu item, dispatches `ConfigureMenuEvent` so listeners can add/mutate children,
+and then runs an internal `reorderMenuItems()` step. This step is not part of the public API described above, but it
+affects the final order of every menu you build:
+
+- Any menu item can be given an `orderNumber` extra:
+
+  ```php
+  $factory->createItem($label, ['extras' => ['orderNumber' => 10]]);
+  ```
+
+  After all listeners have run, direct children of a menu are reordered by that number, lowest first.
+- Items without an `orderNumber` are appended after the numbered ones, in the order they were originally inserted.
+- If two items end up with the same `orderNumber`, this does not throw an error. The second item is spliced in
+  immediately before the item it collided with.
+
+`enableChildRoutes($item, $prefix)` (see [Active state for child routes](#active-state-for-child-routes)) sets a
+`routes` extra on the item. This bundle's own menu template does not read that extra — it is consumed by
+KnpMenuBundle's built-in "current item" voter, which uses it to decide active/current styling when the menu is
+rendered. If there is no active request (for example, when a menu is built from a console command),
+`enableChildRoutes()` silently does nothing.
+
+`ConfigureMenuEvent` also exposes `setFactory()`/`setMenu()` methods. These are `private` and not used anywhere in
+this bundle — only `getFactory()`/`getMenu()` are part of the actual API used by listeners.
+
 ## Troubleshooting
 
 - **Menu item not highlighted**: add the route to `extras.routes` or use `enableChildRoutes` with the correct prefix

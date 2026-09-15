@@ -206,7 +206,7 @@ class BreadcrumbListener
                 );
             }
 
-            // @mago-expect analysis:mixed-argument,mixed-assignment
+            // @mago-expect analysis:mixed-assignment
             $title = $this->propertyAccess->getValue($attribute, $propertyPath);
         }
 
@@ -290,7 +290,6 @@ class BreadcrumbListener
                     );
                 }
 
-                // @mago-expect analysis:mixed-argument
                 $parameters[$key] = $this->propertyAccess->getValue($attribute, $propertyPath);
             }
 

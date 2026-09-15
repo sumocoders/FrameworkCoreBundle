@@ -140,12 +140,13 @@ See [forms.md](forms.md) for the full `FileType` options reference.
 
 ```twig
 {% if user.document %}
-    <a href="{{ user.document }}">Download document</a>
+    <a href="{{ user.document.webPath }}">Download document</a>
 {% endif %}
 ```
 
-`AbstractFile` implements `__toString()` returning the web path (`/files/user/documents/<filename>`), or an empty string
-if no file exists.
+`AbstractFile` implements `__toString()` returning the raw stored filename (used internally by the DBAL type), **not**
+the web path — always call `getWebPath()` explicitly in templates. `getWebPath()` returns an empty string if no file
+exists.
 
 ## `AbstractFile` API
 
@@ -157,6 +158,37 @@ if no file exists.
 | `hasFile()`             | Whether a new `UploadedFile` is pending          |
 | `markForDeletion()`     | Schedules the file for removal on next flush     |
 | `setNamePrefix(string)` | Prepends a slug to the generated filename        |
+
+## Internals
+
+The overall data flow, from database column to bytes on disk:
+
+```
+Doctrine column (VARCHAR 255, the filename only)
+   ⇅ AbstractFileType::convertToPHPValue / convertToDatabaseValue
+Value object (AbstractFile subclass) — filename + optional pending UploadedFile
+   ⇅ entity lifecycle callbacks (PrePersist/PreUpdate, PostPersist/PostUpdate, PostRemove)
+Filesystem (public/files/<uploadDir>/<generatedName>.<ext>)
+```
+
+- The DBAL type only converts between the database value and the value object (`convertToPHPValue()` /
+  `convertToDatabaseValue()`); it never touches the filesystem.
+- The value object holds either a previously stored filename or a pending `UploadedFile` — never both at once.
+- `PrePersist`/`PreUpdate` → `prepareToUpload()`: assigns the generated filename (no bytes moved yet).
+- `PostPersist`/`PostUpdate` → `upload()`: moves the pending file to
+  `public/files/<uploadDir>/<generatedName>.<ext>`, deleting the old file first if one is being replaced.
+- `PostRemove` → `remove()`: deletes the file from disk.
+
+**Caveat**: `upload()` runs in `PostPersist`/`PostUpdate`, which fires **after** the database row has already been
+committed by the flush. If the actual file move fails at that point, the DB row is left pointing at a file that was
+never successfully written — there is no automatic rollback of the DB write.
+
+`setFile(UploadedFile $file)` on the value object does not mutate in place: it **returns a clone** of the object
+rather than `$this`. This is deliberate — it's what makes the change visible to Doctrine's change tracking when a
+new file replaces an old one on the same entity.
+
+The value object's constructor is `protected`. Subclasses can only be built through the `fromUploadedFile()` /
+`fromString()` static factories — never `new SubclassName()` directly.
 
 ## Troubleshooting
 

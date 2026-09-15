@@ -24,9 +24,12 @@ class AuditLoggerTest extends TestCase
         $switchUserToken = $this->createStub(SwitchUserToken::class);
         $switchUserToken->method('getOriginalToken')->willReturn($originalToken);
 
-        $security = $this->createStub(Security::class);
+        $security = $this->createMock(Security::class);
         $security->method('getUser')->willReturn($user);
-        $security->method('isGranted')->willReturn(true);
+        $security->expects($this->once())
+            ->method('isGranted')
+            ->with('IS_IMPERSONATOR')
+            ->willReturn(true);
         $security->method('getToken')->willReturn($switchUserToken);
 
         $loggedMessage = null;
@@ -48,9 +51,12 @@ class AuditLoggerTest extends TestCase
     {
         $user = $this->createUser('jane.doe');
 
-        $security = $this->createStub(Security::class);
+        $security = $this->createMock(Security::class);
         $security->method('getUser')->willReturn($user);
-        $security->method('isGranted')->willReturn(false);
+        $security->expects($this->once())
+            ->method('isGranted')
+            ->with('IS_IMPERSONATOR')
+            ->willReturn(false);
 
         $loggedMessage = null;
         $auditTrailLogger = $this->createMock(LoggerInterface::class);

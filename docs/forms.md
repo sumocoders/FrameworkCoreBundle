@@ -217,17 +217,6 @@ No change to the form builder is needed.
 
 ## Internals
 
-### Known bug: duplicate service id for `FileType` and `BelgiumPostCodeType`
-
-`config/services.php` registers both `Form\Type\FileType` and `Form\Type\BelgiumPostCodeType` under the **same**
-service id, `framework.file_type`. This looks like a copy-paste artifact rather than an intentional shared service.
-Because both `->set()` calls target the same id, the second call (`BelgiumPostCodeType`) silently overwrites the
-first `Definition` in the container — `FileType`'s registration never actually reaches the container.
-
-**If `FileType` doesn't seem to register as a form type (e.g. `$builder->add(..., FileType::class)` fails to
-resolve, or behaves as though the service isn't tagged `form.type`), check this duplicate service id first**
-before assuming the type class itself is broken.
-
 ### `ImageType` / `FileType` — control flow
 
 Both types share the same internal shape (`ImageType` for `AbstractImage`, `FileType` for `AbstractFile`):

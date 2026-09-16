@@ -43,14 +43,6 @@ Requirements:
 | [stimulus.md](stimulus.md)                         | Stimulus controllers provided by the bundle                                            |
 | [no-results.md](no-results.md)                     | Standard empty-state / no-results UI component                                         |
 
-### Unused code
-
-`src/EventListener/DoctrineExtensionListener.php` (Gedmo Blameable/Loggable wiring) is not registered anywhere in
-`config/services.php` and is not autoconfigured — it's dead code as shipped. `gedmo/doctrine-extensions` is a
-dependency, so the classes it needs are available, but installing this bundle alone does not enable
-Blameable/Loggable tracking. To use it, a consuming app must register it as a service itself and tag it for
-`kernel.request` / `onKernelRequest`.
-
 ---
 
 ## Architecture

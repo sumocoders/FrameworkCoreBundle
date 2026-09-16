@@ -22,7 +22,6 @@
   "prefer-stable": true,
   "require": {
     "php": "^8.5",
-    "gedmo/doctrine-extensions": "^3.17",
     "knplabs/knp-menu-bundle": "^3.4",
     "symfony/form": "^8.0",
     "symfony/asset": "^8.0",

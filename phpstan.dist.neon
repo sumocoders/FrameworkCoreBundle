@@ -30,7 +30,6 @@ parameters:
       paths:
         - src/DoctrineListener/DoctrineAuditListener.php
         - src/EventListener/BreadcrumbListener.php
-        - src/EventListener/DoctrineExtensionListener.php
         - src/Pagination/Paginator.php
         - src/Twig/PaginatorExtension.php
     -

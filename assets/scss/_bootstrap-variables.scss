@@ -758,6 +758,8 @@ $table-color: var(--#{$prefix}body-color) !default;
 $table-bg: var(--#{$prefix}body-bg) !default;
 $table-accent-bg: transparent !default;
 $table-th-font-weight: null !default;
+// stylelint-disable color-function-alias-notation -- these three match Bootstrap 5.3 stock
+// verbatim; rewriting them to rgb() would diverge the fork for no gain
 $table-striped-color: $table-color !default;
 $table-striped-bg-factor: 0.05 !default;
 $table-striped-bg: rgba(var(--#{$prefix}emphasis-color-rgb), $table-striped-bg-factor) !default;
@@ -767,6 +769,7 @@ $table-active-bg: rgba(var(--#{$prefix}emphasis-color-rgb), $table-active-bg-fac
 $table-hover-color: $table-color !default;
 $table-hover-bg-factor: 0.075 !default;
 $table-hover-bg: rgba(var(--#{$prefix}emphasis-color-rgb), $table-hover-bg-factor) !default;
+// stylelint-enable color-function-alias-notation
 $table-border-factor: 0.1 !default;
 $table-border-width: var(--#{$prefix}border-width) !default;
 $table-border-color: var(--#{$prefix}border-color) !default;
@@ -1729,7 +1732,6 @@ $pre-color: null !default;
 // Sidebar
 
 $sidebar-width-sizer: 5.5rem;
-$sidebar-width-sizer: 5.5rem;
 $sidebar-width-closed: $sidebar-width-sizer !default;
 $sidebar-width-open: $sidebar-width-sizer * 2.75 !default;
 
@@ -1751,6 +1753,11 @@ $user-dropdown-bg: $dropdown-bg !default;
 $navbar-toggler-color: var(--bs-body-color) !default;
 $loading-indicator-color: $primary !default;
 
+// Fonts
+// Relative to the application's compiled CSS, the same shape as $bootstrap-icons-font-dir.
+// Override in the application to serve the files from somewhere else.
+$framework-font-dir: "../../vendor/sumocoders/framework-core-bundle/assets/fonts" !default;
+
 :root {
   --top-color: #{$top-color};
   --error-bg: #b2cadd;
@@ -1760,4 +1767,5 @@ $loading-indicator-color: $primary !default;
   --menu-color: #{$menu-color};
   --menu-active-bg: #{$menu-active-bg};
   --menu-active-color: #{$menu-active-color};
+  --user-bg: #{$user-bg};
 }

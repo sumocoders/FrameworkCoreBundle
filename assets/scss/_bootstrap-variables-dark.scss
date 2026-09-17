@@ -12,7 +12,10 @@
 /**
  * Global colors
  */
-$white: #e1e1e1 !default;
+// Off-white for dark surfaces. Cannot reuse $white: that is a single global Sass variable
+// also feeding $theme-colors, $color-contrast-light and $top-color, so rebinding it would
+// change light mode too.
+$white-dark: #e1e1e1 !default;
 
 
 // scss-docs-start sass-dark-mode-vars
@@ -52,15 +55,15 @@ $dark-border-subtle-dark: $gray-800 !default;
 
 // scss-docs-end theme-border-subtle-dark-variables
 
-$body-color-dark: $white !default;
+$body-color-dark: $white-dark !default;
 $body-bg-dark: $gray-800 !default;
 $body-secondary-color-dark: rgba($body-color-dark, .75) !default;
 $body-secondary-bg-dark: $gray-800 !default;
 $body-tertiary-color-dark: rgba($body-color-dark, .5) !default;
 $body-tertiary-bg-dark: color.mix($gray-800, $gray-900, 50%) !default;
-$body-emphasis-color-dark: $white !default;
+$body-emphasis-color-dark: $white-dark !default;
 $border-color-dark: $gray-600 !default;
-$border-color-translucent-dark: rgba($white, .15) !default;
+$border-color-translucent-dark: rgba($white-dark, .15) !default;
 $headings-color-dark: inherit !default;
 $link-color-dark: tint-color($primary, 40%) !default;
 $link-hover-color-dark: shift-color($link-color-dark, -$link-shade-percentage) !default;
@@ -75,7 +78,7 @@ $mark-bg-dark: #420b2a !default;
 
 $form-select-indicator-color-dark: $body-color-dark !default;
 $form-select-indicator-dark: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path fill='none' stroke='#{$form-select-indicator-color-dark}' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/></svg>") !default;
-$form-switch-color-dark: rgba($white, .25) !default;
+$form-switch-color-dark: rgba($white-dark, .25) !default;
 $form-switch-bg-image-dark: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'><circle r='3' fill='#{$form-switch-color-dark}'/></svg>") !default;
 
 // scss-docs-start form-validation-colors-dark
@@ -119,9 +122,9 @@ $btn-close-filter-dark: $btn-close-white-filter !default;
 $user-bg-dark: $gray-850 !default;
 $top-color-dark: $gray-850 !default;
 $menu-bg-dark: $gray-850 !default;
-$menu-color-dark: $white !default;
+$menu-color-dark: $white-dark !default;
 $menu-active-bg-dark: rgba($black, 0.3) !default;
-$menu-active-color-dark: $white !default;
+$menu-active-color-dark: $white-dark !default;
 
 [data-bs-theme="dark"] {
   --top-color: #{$top-color-dark};
@@ -132,4 +135,5 @@ $menu-active-color-dark: $white !default;
   --menu-color: #{$menu-color-dark};
   --menu-active-bg: #{$menu-active-bg-dark};
   --menu-active-color: #{$menu-active-color-dark};
+  --user-bg: #{$user-bg-dark};
 }

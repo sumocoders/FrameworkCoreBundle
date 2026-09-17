@@ -40,6 +40,7 @@ Requirements:
 | [../DESIGN.md](../DESIGN.md)                       | Design system: tokens, type scale, components, conventions                             |
 | [ajax-client.md](ajax-client.md)                   | Axios-based AJAX client with CSRF and toast support                                    |
 | [asset-mapper.md](asset-mapper.md)                 | Adding CSS/JS packages via Symfony AssetMapper                                         |
+| [editorjs.md](editorjs.md)                         | EditorJS theming: follows the Bootstrap colour mode in light and dark                   |
 | [dark-mode.md](dark-mode.md)                       | Dark mode support and how to disable it                                                |
 | [stimulus.md](stimulus.md)                         | Stimulus controllers provided by the bundle                                            |
 | [no-results.md](no-results.md)                     | Standard empty-state / no-results UI component                                         |

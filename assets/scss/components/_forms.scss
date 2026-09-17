@@ -24,4 +24,16 @@
       background-color: $gray-700;
     }
   }
+
+  /**
+   * The light-mode focus style is a dark grey border with a black glow, both of which
+   * disappear against the dark surface. Invert it: light border, light glow.
+   */
+  .form-control,
+  .form-select {
+    &:focus {
+      border-color: $gray-400;
+      box-shadow: 0 0 4px rgba($white, 0.25);
+    }
+  }
 }

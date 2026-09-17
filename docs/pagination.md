@@ -76,7 +76,7 @@ The `Paginator` is iterable and countable. Use the `pagination()` Twig function 
         <div>{{ item.name }}</div>
     {% endfor %}
 {% else %}
-    {% include 'partials/no-results.html.twig' %}
+    {{ include('partials/no-results.html.twig') }}
 {% endif %}
 
 {% if items.hasToPaginate %}

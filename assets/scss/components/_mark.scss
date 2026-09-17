@@ -1,6 +1,0 @@
-@include color-mode(dark) {
-  mark,
-  .mark {
-    color: color-contrast($mark-bg);
-  }
-}

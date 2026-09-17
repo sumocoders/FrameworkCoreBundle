@@ -26,9 +26,9 @@ template.html.twig
 
 {% block content %}
     <p>Hello {{ customer_name }},</p>
-    
+
     <p>Some hardcoded content</p>
-    
+
     <p>{{ 'Some translated content'|trans }}</p>
 {% endblock %}
 ```

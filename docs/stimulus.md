@@ -231,10 +231,10 @@ For example when you have a form to delete an entity:
                 confirmationMessage: 'Are you sure you want to delete this {entity}?'|trans({entity: entity.title}),
                 cancelButtonText: 'Cancel'|trans,
                 confirmButtonText: 'Delete'|trans,
-            }
+            },
         ) }}
     >
-        {{ form(delete_form, { attr: { 'data-confirm-target': 'element' }}) }}
+        {{ form(delete_form, {attr: {'data-confirm-target': 'element'}}) }}
     </div>
 ```
 
@@ -249,7 +249,7 @@ Or an example with a link:
                 confirmationMessage: 'Are you sure you want to open the SumoCoders website?',
                 cancelButtonText: 'Cancel',
                 confirmButtonText: 'Open SumoCoders website',
-            }
+            },
         ) }}
     >
         <a

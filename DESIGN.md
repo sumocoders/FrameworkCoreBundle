@@ -12,9 +12,9 @@ theme, not a consuming project's separate frontend tree (`assets/styles/frontend
 **This bundle does not compile on its own.** `style.scss` imports Bootstrap through
 `../../../../../vendor/twbs/bootstrap/`, five levels up, resolving only from inside a consuming
 application's vendor tree. `twbs/bootstrap` and `twbs/bootstrap-icons` are not in this bundle's
-`composer.json`; the application supplies them.
+`composer.json`; the application supplies them. See Peer dependencies.
 
-Everything below is a deliberate deviation from stock Bootstrap 5.3.3. Stock values are not
+Everything below is a deliberate deviation from stock Bootstrap 5. Stock values are not
 repeated. Where a partial sets a value directly, that override is what ships and is documented
 instead of the variable.
 
@@ -25,9 +25,14 @@ instead of the variable.
 The bundle ships a neutral base and expects the application to override `$primary`.
 
 `$theme-colors` carries a **ninth, non-stock entry: `"white": $white`**. Every
-`@each $color in $theme-colors` loop therefore also emits a `-white` variant, which is where
-`.text-bg-white` (used by the sidebar badge), `.btn-white`, `.alert-white` and `.toast-white`
-come from. Removing that entry silently deletes those classes.
+`@each $color in $theme-colors` loop therefore also emits a `-white` variant: `.text-bg-white`,
+`.btn-white`, `.btn-outline-white`, `.alert-white`, `.toast-white`, `.link-white`,
+`.link-underline-white`, `.list-group-item-white` and `.focus-ring-white`, about 4KB of the
+compiled stylesheet.
+
+The bundle itself uses exactly one of them, `.text-bg-white` on the sidebar badge in
+`templates/Menu/menu.html.twig`. The rest exist for applications. Removing the entry silently
+deletes all of them, so swap the badge to `bg-white text-dark` first if you ever drop it.
 
 **Neutrals.** Two grays are darkened; the rest of the ramp is Bootstrap's.
 `$body-color: $gray-900` `#2d2f35` (stock `#212529`), `$body-bg: $light` -> `$gray-100`
@@ -48,10 +53,10 @@ properties, never the Sass variables, so a runtime theme swap works. Dark counte
 |----------------------|----------------------|-----------------------|-----------------------|
 | `$top-color`         | `$white` `#fff`      | `--top-color`         | `$gray-850` `#2d2f35` |
 | `$menu-bg`           | `$primary` `#0d6efd` | `--menu-bg`           | `$gray-850` `#2d2f35` |
-| `$menu-color`        | `$white` `#fff`      | `--menu-color`        | `#fff`                |
+| `$menu-color`        | `$white` `#fff`      | `--menu-color`        | `#e1e1e1`             |
 | `$menu-active-bg`    | `rgba($black, 0.3)`  | `--menu-active-bg`    | `rgba($black, 0.3)`   |
-| `$menu-active-color` | `$white` `#fff`      | `--menu-active-color` | `#fff`                |
-| `$user-bg`           | `$top-color`         | n/a                   | `$gray-850`           |
+| `$menu-active-color` | `$white` `#fff`      | `--menu-active-color` | `#e1e1e1`             |
+| `$user-bg`           | `$top-color`         | `--user-bg`           | `$gray-850` `#2d2f35` |
 | n/a                  | `#b2cadd`            | `--error-bg`          | `#4B6376`             |
 | n/a                  | `#ebf3f9`            | `--error-content-bg`  | `#81919F`             |
 | n/a                  | `$white`             | `--back-to-top-bg`    | `$gray-700`           |
@@ -63,9 +68,34 @@ properties, never the Sass variables, so a runtime theme swap works. Dark counte
 
 **Family.** `$font-family-sans-serif` prepends `"Lato"` to the stock system stack;
 `$headings-font-family` is `null`, so headings use the body family.
-`assets/scss/base/_fonts.scss` contains only a commented-out `font-import` mixin, so **the
-bundle names Lato but never loads it**. Applications must ship the `@font-face` blocks or the
-stack falls through to `system-ui`.
+
+The bundle ships Lato itself. `assets/fonts/` holds the woff2 and woff files and the SIL Open
+Font License, and `assets/scss/base/_fonts.scss` declares them through a `font-import` mixin.
+Self-hosted on purpose: no Google Fonts request, so no third-party call from an admin page and
+nothing to allow in the CSP that `nelmio/security-bundle` manages.
+
+Six faces are declared, the weights the bundle actually uses:
+
+| Weight | Upright           | Italic                  | Used by                                  |
+|--------|-------------------|-------------------------|------------------------------------------|
+| 300    | `Lato-Light`      | `Lato-LightItalic`      | `$display-font-weight`, `$lead-font-weight` |
+| 400    | `Lato-Regular`    | `Lato-Italic`           | `$font-weight-base`                      |
+| 700    | `Lato-Bold`       | `Lato-BoldItalic`       | `$headings-font-weight`                  |
+
+`$font-weight-semibold: 600` is used by `layouts/_header.scss` and `layouts/_framework.scss`,
+but Lato ships no 600 weight, so the browser synthesises it toward Bold. `Lato-Black` (900) and
+`Lato-Hairline` (100) sit in `assets/fonts/` but are deliberately **not** declared. Nothing
+references them, and an undeclared face is never downloaded. An application that wants one adds
+its own `@font-face` pointing at the bundle file.
+
+`$framework-font-dir` holds the path, defaulting to
+`../../vendor/sumocoders/framework-core-bundle/assets/fonts`, resolved relative to the
+application's compiled CSS. It carries `!default`, so an application that serves the files from
+elsewhere can override it before importing the bundle. `font-display: swap` on every face:
+text paints immediately in the fallback and reflows when Lato lands.
+
+`style.scss` and `error.scss` both import the fonts. `mail.scss` does not, on purpose. Mail
+clients do not load webfonts, so the `@font-face` blocks would be dead weight in inlined CSS.
 
 **Scale.** Base `$font-size-base: 1rem`, `$line-height-base: 1.5`. Compressed hard for admin
 density: Bootstrap's h1 is 2.5x base, this is 1.6x.
@@ -249,8 +279,11 @@ from `lg`), `actions` (`.action-buttons` spacing).
 
 **plugins/**: `tom-select`, `quill` (editor skins).
 
-Authored but **not imported**, so producing no CSS: `components/_editorjs.scss`,
-`components/_mark.scss`, `plugins/_bootstrap-tagsinput.scss`.
+`components/_editorjs.scss` is a dark-mode patch for editor.js, all `.ce-*` and `.cdx-*`
+selectors. It compiles for every application but matches nothing unless that application loads
+editor.js, so applications that use the editor get the dark theme without copying it locally.
+
+Authored but **not imported**, so producing no CSS: `plugins/_bootstrap-tagsinput.scss`.
 
 ### Layouts
 
@@ -326,9 +359,17 @@ Bootstrap 5.3 color modes, `$enable-dark-mode: true`. `templates/settheme.html.t
 light / dark / auto dropdown.
 
 Tokens live in `assets/scss/_bootstrap-variables-dark.scss`: `$body-bg-dark: $gray-800`
-`#383a43`, `$body-color-dark: $white` -> `#fff` (see open questions),
-`$border-color-dark: $gray-600` `#6c757d`, and `$menu-bg-dark` / `$top-color-dark` /
-`$user-bg-dark` all `$gray-850` `#2d2f35`.
+`#383a43`, `$body-color-dark: $white-dark` `#e1e1e1`, `$border-color-dark: $gray-600`
+`#6c757d`, and `$menu-bg-dark` / `$top-color-dark` / `$user-bg-dark` all `$gray-850` `#2d2f35`.
+
+**`$white-dark`, not `$white`.** Dark text is a soft `#e1e1e1`, not pure white, at roughly 8.6:1
+against `$body-bg-dark`. It needs its own variable because `$white` is a single global Sass
+variable, not a per-theme one: it also feeds `$theme-colors`, `$color-contrast-light` and
+`$top-color`, the light header background. Rebinding `$white` inside the dark file would change
+light mode too. Six dark tokens read `$white-dark`: `$body-color-dark`,
+`$body-emphasis-color-dark`, `$border-color-translucent-dark`, `$form-switch-color-dark`,
+`$menu-color-dark` and `$menu-active-color-dark`. `$mark-color-dark` follows through
+`$body-color-dark`.
 
 Component-level dark styles use `@include color-mode(dark) { ... }`, one block at the end of the
 relevant file. The mixin cannot be nested.
@@ -425,34 +466,40 @@ Do not:
   `mb-3` / `gy-3` between them.
 - Edit compiled CSS in the application's `public/assets/`.
 
-## Open questions
+## Known quirks
 
-- TODO: confirm Lato. `$font-family-sans-serif` names it but `assets/scss/base/_fonts.scss` is
-  entirely commented out, so the bundle never loads the font. Should the bundle ship the
-  `@font-face` blocks, or is that the application's job?
-- TODO: `$white: #e1e1e1` in `_bootstrap-variables-dark.scss:15` is dead code. `$white` is
-  already bound to `#fff` by `_bootstrap-variables.scss:14` and `!default` makes the later
-  declaration a no-op. Confirmed by compiling: `#e1e1e1` appears zero times in the 434KB output,
-  and dark mode resolves `--bs-body-color` and `--menu-color` to `#fff`. Dark text is therefore
-  pure white rather than the softer off-white intended.
-- TODO: `$gray-850` and `$gray-900` are both `#2d2f35`. Is the duplication intentional?
-- TODO: `layouts/_header.scss:22` sets `.user-nav { background-color: var(--user-bg) }`, but
-  `--user-bg` is never declared in any `:root` or `[data-bs-theme]` block. The Sass `$user-bg` /
-  `$user-bg-dark` variables exist but are only read through `color-contrast()` and
-  `shade-color()`. `.user-nav` currently gets no background.
-- TODO: `components/_mark.scss` computes `color-contrast($mark-bg)` inside a dark-mode block,
-  reading the light `#fcf8e3` rather than `$mark-bg-dark` `#420b2a`. Moot while the file stays
-  unimported, but wrong if it is ever added to `_imports.scss`.
-- TODO: `$sidebar-width-sizer: 5.5rem` is declared twice on consecutive lines
-  (`_bootstrap-variables.scss:1731-1732`).
-- TODO: `$font-family-base` and `$font-family-code` interpolate `$variable-prefix`, the name
-  Bootstrap deprecated in favour of `$prefix`. Not broken: the fork defines
-  `$variable-prefix: bs-` at `_bootstrap-variables.scss:392` with `$prefix: $variable-prefix`
-  on the next line, and the compiled CSS emits `var(--bs-font-sans-serif)` correctly. Worth
-  renaming before a Bootstrap version drops the alias.
-- TODO: the header comment in `_bootstrap-imports.scss` still says `Bootstrap v5.0.2`; the
-  codebase targets 5.3.
-- TODO: `components/_editorjs.scss` and `components/_mark.scss` exist but are not in
-  `_imports.scss`, so they produce no CSS. Dead files, or a missing import?
-- TODO: `twbs/bootstrap` and `twbs/bootstrap-icons` are undeclared peer dependencies. Should
-  they be added to `composer.json`?
+Things that look like bugs but are deliberate. Each was checked against compiled output.
+
+- **`$gray-850` and `$gray-900` are both `#2d2f35`.** Not a copy-paste slip. `$gray-850` is a
+  named hook for the application chrome (`$top-color-dark`, `$menu-bg-dark`, `$user-bg-dark`)
+  so a project can darken the sidebar without moving `$body-color`. Keep both names even while
+  the values match.
+- **`$font-family-base` and `$font-family-code` interpolate `$variable-prefix`**, the name
+  Bootstrap deprecated in favour of `$prefix`. The fork defines `$variable-prefix: bs-` at
+  `_bootstrap-variables.scss:392` with `$prefix: $variable-prefix` on the next line, and the
+  compiled CSS emits `var(--bs-font-sans-serif)` correctly. Fork-internal, so renaming buys
+  nothing until the fork is rebased on a Bootstrap that drops the alias.
+- **`mark` has no bundle partial.** Bootstrap 5.3 already emits `--bs-highlight-color` and
+  `--bs-highlight-bg` per theme, resolving to `#e1e1e1` on `#420b2a` in dark. A bundle override
+  could only duplicate or regress that.
+- **The focus model is Bootstrap 5.2's**, not 5.3's `$focus-ring-*` tokens. See
+  Elevation and shape. Deliberate, and revisiting it is its own piece of work.
+
+## Peer dependencies
+
+`style.scss` imports Bootstrap and Bootstrap Icons straight out of `vendor/twbs/`, five levels
+up, but neither package is in this bundle's `composer.json`. That is deliberate: the application
+picks the Bootstrap version, and a `require` here would let the bundle pin a major against the
+project's wishes. `sumocoders/application-skeleton` supplies them instead.
+
+Both imports are hard `@import`s, so a missing package fails the SCSS build with a
+file-not-found, not a degraded page.
+
+| Package                | Declared in the skeleton |
+|------------------------|--------------------------|
+| `twbs/bootstrap`       | `^5.3`                   |
+| `twbs/bootstrap-icons` | `^1.13`                  |
+
+Both are on skeleton `master`, so a project scaffolded from it builds without extra steps. If
+you ever see `style.scss` fail on a missing `vendor/twbs/` path, the project predates one of
+those entries; add it there rather than here.

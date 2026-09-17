@@ -1,5 +1,36 @@
 # Upgrade guide
 
+## To 18.1
+
+Two changes are visible in every project on update. Neither needs code changes, but both are
+worth a look before you deploy.
+
+**The admin now renders in Lato.** The bundle ships the font itself in `assets/fonts/` and
+declares it in `assets/scss/base/_fonts.scss`. Until now `$font-family-sans-serif` named Lato
+but nothing loaded it, so every admin fell through to `system-ui`: SF Pro on macOS, Segoe UI
+Variable on Windows, Roboto on Android. Rebuild your styles and the whole admin switches to one
+typeface. Because Lato's metrics differ from the system fonts, expect small shifts in button
+widths, table column fits and line wrapping. Check any screen where text sits close to its
+container.
+
+If a project already loads its own font, override `$font-family-sans-serif` as before. To serve
+the files from somewhere other than the bundle, override `$framework-font-dir`. Both take
+effect before the bundle imports, as usual. Mail templates are unaffected on purpose.
+
+**Dark-mode text softened from `#fff` to `#e1e1e1`.** The dark file always meant to do this, but
+the declaration was a no-op, so dark text shipped pure white. It now runs through a new
+`$white-dark` variable. Contrast against `$body-bg-dark` stays around 8.6:1, well past WCAG AA.
+If a project pinned any of `$body-color-dark`, `$body-emphasis-color-dark`,
+`$border-color-translucent-dark`, `$form-switch-color-dark`, `$menu-color-dark` or
+`$menu-active-color-dark`, those overrides still win.
+
+Smaller, no action needed: `--user-bg` is now declared on `:root` and `[data-bs-theme="dark"]`,
+so `.user-nav` gets the background it always referenced. It resolves to the same value as
+`--top-color` in both themes, so nothing changes colour. `components/_editorjs.scss` is now
+imported, adding dark-mode styles for editor.js that stay inert unless the project loads the
+editor. `components/_mark.scss` was removed; Bootstrap's own `--bs-highlight-*` already covers
+it.
+
 ## JS
 
 Sinds versie 5 zijn ale data attrbiuten van Bootstrap ge"namespaced". Dit wil dus zeggen dat ipv data-toggle, het nu data-*bs*-toggle is.

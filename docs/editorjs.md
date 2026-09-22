@@ -1,23 +1,66 @@
 # EditorJS
 
 The bundle themes [EditorJS](https://editorjs.io) so it follows the application's Bootstrap colour mode in both
-light and dark. It does not ship EditorJS itself: the JavaScript, the Stimulus controller and the form widget stay
-in the consuming application.
+light and dark. It ships styling only: the JavaScript, the Stimulus controller and the form integration stay in the
+consuming application, and the bundle makes no assumption about how they are wired.
+
+It themes the editor UI. Content rendered from stored EditorJS JSON is the application's own markup and is not
+covered here.
 
 ## Prerequisites
 
 - **EditorJS 2.28 or newer.** The theming hangs off the custom properties that `.ce-popover` gained in 2.28, plus
   the `.cdx-search-field` markup introduced with it. Older versions render with EditorJS's own light palette and
   no error.
-- EditorJS registered in the application's `importmap.php`. `importmap:require @editorjs/editorjs` fails, because
-  jsDelivr cannot bundle the package as ESM. Vendor `dist/editorjs.mjs` (and each tool's `.mjs`) into
-  `assets/editorjs/` and map them by path instead.
-- A CSP nonce shim if the application enforces `style-src`. EditorJS injects its stylesheet through a generated
-  `<style>` tag, which CSP blocks. See [nonce-generator.md](nonce-generator.md).
+- **EditorJS loaded in a way importmap supports.** See below.
+- **A CSP that allows EditorJS's injected stylesheet.** EditorJS writes its CSS into a generated `<style>` tag. An
+  application whose `style-src` keeps `'unsafe-inline'` needs nothing; one that uses a nonce or hash instead needs
+  the nonce shim from [nonce-generator.md](nonce-generator.md).
+
+### Loading EditorJS
+
+`importmap:require @editorjs/editorjs` fails, because jsDelivr cannot bundle the core as ESM
+([jsdelivr#18574](https://github.com/jsdelivr/jsdelivr/issues/18574),
+[symfony#53999](https://github.com/symfony/symfony/issues/53999)). The tool packages (`@editorjs/header`,
+`@editorjs/table`, ...) map through importmap normally; only the core needs a workaround. Both approaches below
+are in use across projects, and the theming works with either.
+
+| Approach                | How                                                                                                              | Trade-off                                                                    |
+|-------------------------|------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------|
+| Import from a CDN       | `import Editor from 'https://esm.sh/@editorjs/editorjs@latest'` in the controller; add `https://esm.sh` to `script-src` and `connect-src` | Nothing to vendor, but a runtime dependency on a third party and two CSP entries |
+| Vendor the ESM build    | Copy `dist/editorjs.mjs` (and each tool's `.mjs`) into `assets/editorjs/` and map them by path in `importmap.php`  | Self-hosted, no CSP change, but upgrades are manual                            |
 
 ## Usage
 
-Wrap the editor holder in `.editor-js`, and keep the value in a hidden textarea:
+The theming targets EditorJS's own class names (`.ce-*`, `.cdx-*`), so it applies as soon as the bundle's
+stylesheet is loaded, whatever markup the editor is mounted in. Controller names, target names and the element
+that holds the editor are the application's choice; nothing in the bundle depends on them.
+
+One class is the application's to add: `.editor-js` gives the holder a minimum height, so an empty editor is still
+a visible target. It is optional.
+
+Two integration shapes are in use.
+
+**A form type with a form theme block.** The type extends `TextareaType` and sets its own block prefix; the theme
+renders the hidden textarea plus a holder next to it:
+
+```twig
+{% block editor_js_row %}
+    <div class="form-group" data-controller="editor-js">
+        {{ form_label(form) }}
+        {{ form_widget(form, {attr: {class: 'visually-hidden'}}) }}
+        <div data-editor-js-target="holder" class="editor-js"></div>
+    </div>
+    {{ form_errors(form) }}
+{% endblock %}
+
+{% block editor_js_widget %}
+    {% set attr = attr|merge({'data-editor-js-target': 'textarea'}) %}
+    {{ form_widget(form, {attr: attr}) }}
+{% endblock %}
+```
+
+**Markup written directly in a template:**
 
 ```twig
 <div data-controller="editorjs">
@@ -26,20 +69,23 @@ Wrap the editor holder in `.editor-js`, and keep the value in a hidden textarea:
 </div>
 ```
 
-`.form-control` gives the editor the standard field border; `.editor-js` gives it a minimum height so an empty
-editor is still a visible target.
+`.form-control` is what gives the editor the standard field border. Without it the editor sits on the page
+background, which is what a full-width content editor usually wants.
 
 ## What is styled
 
 | Selector                                        | What it covers                                                  |
 |-------------------------------------------------|-----------------------------------------------------------------|
-| `.editor-js`                                    | Minimum height of the editor area                                |
+| `.editor-js`                                    | Minimum height of the editor area (opt-in)                       |
 | `.ce-popover`                                   | The block popover: surface, text, borders, icons, hover, focus    |
 | `.ce-inline-toolbar`                            | The toolbar shown when text is selected                           |
 | `.ce-toolbar__plus`, `.ce-toolbar__settings-btn`| The plus button and the block settings handle                     |
 | `.cdx-search-field`                             | The popover's search input and its placeholder                    |
 | `.cdx-notify--error`                            | Error notifications                                               |
 | `.cdx-input:empty::before`                      | Placeholder text inside tool inputs                               |
+
+Custom tools written in a project bring their own class names and their own styling. The bundle covers the editor
+chrome, not the tools.
 
 ## Troubleshooting
 
@@ -50,10 +96,23 @@ its own, upgrade EditorJS.
 **The editor has no styling at all, in either mode.** EditorJS's own stylesheet was blocked by CSP. Look for a
 `style-src` violation in the console and add the nonce shim.
 
+**The editor never appears and the console shows a module or CORS error.** The core is not loading. Check the
+loading approach: a CDN import needs `script-src` and `connect-src` entries, a vendored build needs the `.mjs`
+path present in `importmap.php`.
+
+**The editor area collapses to a single line when empty.** The holder has no `.editor-js` class.
+
 **Hover states are invisible.** The project overrides `$gray-700` or `$gray-850` to the same value as
 `$body-bg-dark`. Keep them distinct.
 
 ## Internals
+
+### Only EditorJS's own classes, plus one opt-in
+
+The stylesheet deliberately hooks nothing but EditorJS's generated class names and `.editor-js`. That is why the
+same file works for a form-type integration, for hand-written template markup, and for projects that mount the
+editor from their own controller under any name. Adding a project's wrapper class here would tie the bundle to one
+application's markup.
 
 ### Custom properties over selector overrides
 

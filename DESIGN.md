@@ -203,6 +203,10 @@ tile: `$box-shadow` on hover and `:focus-within`, a stretched `::after` link ove
 icon, and an `h2` forced to `$font-size-base` (`1.2rem` from `md`). `.card-collection` is the
 form-collection container: dashed `1px var(--bs-gray-400)` on `var(--top-color)`.
 
+`overflow: hidden` clips anything positioned outside the card: an autocomplete (Tom Select) list,
+a `.dropdown-menu` or a popover gets cut off at the card edge. A card that holds one takes
+`.overflow-visible`; every other card keeps the default. See `docs/card-layouts.md`.
+
 **Forms.** Theme at `templates/Form/fields.html.twig`, built on `bootstrap_5_layout.html.twig`.
 Rows use `.form-group` with `margin-bottom: $spacer`, replacing Bootstrap 5's `mb-3`. Required
 fields get an `<abbr>` styled to `var(--bs-primary-text-emphasis)` with no underline; labels are
@@ -226,7 +230,8 @@ clearing it silently disables striping, hover and active together. Only the `the
 it, so the header stays flat.
 
 The bundle renders no table markup itself; `docs/crud.md` prescribes
-`<table class="table">` with `<th class="text-end">` action columns.
+`<table class="table">` with `<th class="text-end">` action columns. `.table-responsive` goes
+on a wrapper `<div>` around the table, never on the `<table>`.
 
 **Alerts and toasts.** Flash messages render as **toasts, not alerts**:
 `templates/notifications.html.twig` maps flashbag keys `success` -> `success`,
@@ -334,6 +339,31 @@ and take `gy-3` on the containing `.row` instead, so the gutter does the spacing
     </div>
 {% endblock %}
 ```
+
+A section with a title puts it in `.card-header`, not as a heading inside `.card-body`.
+
+**Overview pages** follow one order: a filter card, a result summary (count, plus a reset link
+while a filter is active), the results, then `{{ pagination() }}`. In the filter card, a widget
+rendered without a label gets a `placeholder` and an `aria-label`, and there is one primary
+button; secondary actions such as export are `btn-outline-secondary`, pushed right. "Nothing yet"
+and "no matches for this filter" are separate empty states, and only the second gets a reset link.
+
+**Item cards** in an overview grid:
+
+- Title as `<h2 class="h5 card-title">`, since the page `<h1>` lives in the header bar. When the
+  item has a detail page, the title is a `link-body-emphasis` link to it.
+- Status badges sit next to the title, not on their own line.
+- Show a field only when it has a value; never a label with nothing after it. Prefer a
+  `list-unstyled` list with one Bootstrap Icon per field over "Label: value" rows, and
+  `.text-truncate` on long values.
+- Actions go in `.card-footer.d-flex.gap-2` as `btn-sm` buttons. Which actions an item has depends
+  on the entity; leave the footer out when there are none. An icon-only button carries `title`
+  and `data-controller="tooltip"` on the button itself plus `.visually-hidden` text.
+- Cards in a row stretch to the tallest one. When items can have little content, give the card
+  body a `min-height` through a project class so a sparse row does not collapse to title height.
+
+`docs/card-layouts.md` has complete, copyable examples of section cards, an overview page and an
+item card.
 
 This is the standard for new templates. Existing pages in consuming projects predate it and
 put form rows straight into `{% block main %}`, so treat non-carded pages as unconverted, not
@@ -453,6 +483,9 @@ Do:
 - Keep `base/_no-sidebar.scss` last in `_imports.scss`.
 - Wrap every `{% block main %}` section in `.card` > `.card-body`, one card per section or
   per overview item, separated with `mb-3` or a `gy-3` row.
+- Put a section title in `.card-header`.
+- Add `.overflow-visible` to a card that holds an autocomplete, dropdown or popover.
+- Give every icon-only button an accessible name and put its tooltip on the button.
 
 Do not:
 
@@ -465,6 +498,8 @@ Do not:
 - Put content straight into `{% block main %}` with no card around it.
 - Wrap several unrelated sections in one shared card, or let two cards touch with no
   `mb-3` / `gy-3` between them.
+- Render a field label with no value after it, in a card or anywhere else.
+- Put `.table-responsive` on the `<table>` itself; it only works on a wrapper.
 - Edit compiled CSS in the application's `public/assets/`.
 
 ## Known quirks

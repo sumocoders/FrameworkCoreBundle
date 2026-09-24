@@ -267,7 +267,10 @@ links are `min-height: 34px`, `margin: 2px`, bordered `var(--bs-border-color)`, 
 
 **Empty states.** `.data-no-results` (`components/_no-results.scss`): centered column,
 `1.125rem`, `var(--bs-gray-600)`, `140px` illustration. See `docs/no-results.md`.
-`.no-items-icons` scales `2rem` -> `4rem` (`sm`) -> `7rem` (`lg`).
+`.no-items-icons` scales `2rem` -> `4rem` (`sm`) -> `7rem` (`lg`). Use it when the page's main
+list is empty. An empty section inside a larger page (the notes or contacts of a detail page)
+gets one `<p class="text-body-secondary mb-0">` line instead, so it does not take more room
+than the section would with content in it.
 
 ### Full partial inventory
 
@@ -327,6 +330,8 @@ background.
 - A page with several forms or sections -> **one card per section**, never a single card
   wrapping them all.
 - An overview -> **one card per item**, not one card around the whole list.
+- Related items on a detail page -> **one card holding a responsive list**, not a grid of item
+  cards. See Detail pages below.
 - A table -> `.card` > `.card-body` like anything else. Keep the `card-body` rather than
   letting the table run edge to edge against the card: a list section usually carries a
   title or intro text alongside the table, and `card-body` gives that room.
@@ -379,8 +384,22 @@ and "no matches for this filter" are separate empty states, and only the second 
 - Cards in a row stretch to the tallest one. When items can have little content, give the card
   body a `min-height` through a project class so a sparse row does not collapse to title height.
 
-`docs/card-layouts.md` has complete, copyable examples of section cards, an overview page and an
-item card.
+**Detail pages** keep the record compact, because its related lists can grow long:
+
+- Two columns from `xl`: a main column (`col-xl-9`) with the record's own fields and its related
+  lists, and a side column (`col-xl-3`) for secondary information such as history. Below `xl` the
+  side column stacks under the main one. Put `align-items-start` on the `.row` (see Template
+  traps).
+- The record's fields go in a `dl.row`, label and value side by side, and only the fields that
+  have a value.
+- Each related collection gets its own titled card: a count badge next to the title, and its
+  "add" action as a `btn-sm` in the same header. The list itself is a responsive list: a
+  `list-group-flush` whose items are grid rows. From `md` up the columns line up under a header
+  row and read as a table; below `md` each item stacks into its own block and empty fields drop
+  out. Bootstrap's grid, order and display utilities do this without custom CSS.
+
+`docs/card-layouts.md` has complete, copyable examples of section cards, an overview page, an
+item card and a detail page.
 
 This is the standard for new templates. Existing pages in consuming projects predate it and
 put form rows straight into `{% block main %}`, so treat non-carded pages as unconverted, not
@@ -549,6 +568,10 @@ Mistakes that render without an error but break behavior.
   `display: none` that CSS uses to show or hide an element. Put the utility on an inner element.
 - **Collection widgets overlap side by side.** Their buttons stick out 20px past each item, more
   than half the default `1.875rem` gutter. Use `.gx-5` on the row (see Form layout).
+- **Stacked cards in a column disappear.** `.card` has `height: 100%`, and a `.col` in a `.row`
+  stretches to the height of the tallest column. The first card then fills its whole column and
+  pushes the cards below it out of view. Put `align-items-start` on the `.row`, so each column
+  keeps the height of its own content.
 
 ## Peer dependencies
 

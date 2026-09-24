@@ -2,8 +2,8 @@
 
 Every page built on `base.html.twig` puts its content in cards (see "Page composition" in
 [../DESIGN.md](../DESIGN.md)). This page shows the layouts that come up in almost every project: section
-cards, a form split into sections, an overview page with a filter and a grid of item cards, and the empty
-state that goes with it.
+cards, a form split into sections, an overview page with a filter and a grid of item cards, the empty state
+that goes with it, and a detail page with related lists that read as a table on desktop and as cards on mobile.
 
 The examples use a placeholder entity called `item`. Replace the routes, fields and translation keys with your
 own. Keys under `datagrids.actions.*` ship with the bundle; the others are project keys you add yourself.
@@ -305,6 +305,132 @@ The actions:
 - Prefer keeping destructive actions (delete) out of the card footer, next to harmless actions. The detail or
   edit page has a place for them in `header_actions_left`, behind a confirmation (see
   [button-locations.md](button-locations.md)).
+
+## Detail page
+
+A detail page shows one record, the collections related to it, and secondary information such as its history.
+Related collections can grow long, so they are lists inside one card each, not a grid of item cards.
+
+```twig
+{% block main %}
+    {# align-items-start: without it the first card in each column stretches to fill the column. #}
+    <div class="row align-items-start">
+        <div class="col-xl-9">
+            <div class="card mb-3">
+                <div class="card-header">
+                    {{ 'item.detail.information'|trans }}
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">{{ 'item.name'|trans }}</dt>
+                        <dd class="col-sm-8">{{ item.name }}</dd>
+                        {% if item.email %}
+                            <dt class="col-sm-4">{{ 'item.email'|trans }}</dt>
+                            <dd class="col-sm-8"><a href="mailto:{{ item.email }}">{{ item.email }}</a></dd>
+                        {% endif %}
+                    </dl>
+                </div>
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-header d-flex align-items-center justify-content-between gap-2">
+                    <span>
+                        {{ 'item.contacts'|trans }}
+                        {% if item.contacts is not empty %}
+                            <span class="badge text-bg-secondary rounded-pill ms-1">{{ item.contacts|length }}</span>
+                        {% endif %}
+                    </span>
+                    <a class="btn btn-outline-primary btn-sm" href="{{ path('item_contact_add', {item: item.id}) }}">
+                        <i class="bi bi-plus"></i>
+                        {{ 'item.contacts.add'|trans }}
+                    </a>
+                </div>
+                {% if item.contacts is not empty %}
+                    <div class="list-group list-group-flush">
+                        {# Header row, only where the list reads as a table. #}
+                        <div class="list-group-item d-none d-md-block small fw-bold">
+                            <div class="row gx-2">
+                                <div class="col-md-4">{{ 'item.contact.name'|trans }}</div>
+                                <div class="col-md-4">{{ 'item.contact.email'|trans }}</div>
+                                <div class="col-md-3">{{ 'item.contact.phone'|trans }}</div>
+                            </div>
+                        </div>
+                        {% for contact in item.contacts %}
+                            <div class="list-group-item">
+                                <div class="row align-items-center gx-2 gy-1">
+                                    <div class="col-9 col-md-4 order-1">
+                                        <a href="{{ path('contact_detail', {contact: contact.id}) }}">{{ contact.name }}</a>
+                                    </div>
+                                    {# The action sits next to the name on mobile and in the last column on desktop. #}
+                                    <div class="col-3 col-md-1 order-2 order-md-4 text-end">
+                                        <a class="btn btn-outline-primary btn-sm"
+                                           href="{{ path('item_contact_edit', {item: item.id, contact: contact.id}) }}"
+                                           title="{{ 'datagrids.actions.edit'|trans|ucfirst }}"
+                                           data-controller="tooltip" data-bs-placement="top"
+                                        >
+                                            <i class="bi bi-pencil-fill"></i>
+                                            <span class="visually-hidden">{{ 'datagrids.actions.edit'|trans|ucfirst }}</span>
+                                        </a>
+                                    </div>
+                                    {# Empty fields drop out on mobile but keep their column on desktop. #}
+                                    <div class="col-12 col-md-4 order-3 order-md-2 text-truncate {{ contact.email ? '' : 'd-none d-md-block' }}">
+                                        <i class="bi bi-envelope me-2 d-md-none" title="{{ 'item.contact.email'|trans }}"></i>
+                                        <a href="mailto:{{ contact.email }}">{{ contact.email }}</a>
+                                    </div>
+                                    <div class="col-12 col-md-3 order-4 order-md-3 text-nowrap {{ contact.phone ? '' : 'd-none d-md-block' }}">
+                                        <i class="bi bi-telephone me-2 d-md-none" title="{{ 'item.contact.phone'|trans }}"></i>
+                                        <a href="tel:{{ contact.phone }}">{{ contact.phone }}</a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="card-body">
+                        <p class="text-body-secondary mb-0">{{ 'item.contacts.empty'|trans }}</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col-xl-3">
+            <div class="card mb-3">
+                <div class="card-header">
+                    {{ 'item.detail.history'|trans }}
+                </div>
+                {% if item.history is not empty %}
+                    <ul class="list-group list-group-flush small">
+                        {% for entry in item.history %}
+                            <li class="list-group-item">{{ entry.message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <div class="card-body">
+                        <p class="text-body-secondary mb-0">{{ 'item.detail.no_history'|trans }}</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+```
+
+The responsive list:
+
+- Every item row uses the same `col-md-*` widths as the header row, so the columns line up like a table from
+  `md` up. Below `md` the columns become `col-12`, stack, and the header row is hidden.
+- `order-*` / `order-md-*` put the action next to the name on mobile and in the last column on desktop.
+- An empty field gets `d-none d-md-block`: it takes no space in the stacked block, but keeps its column on
+  desktop so the rows stay aligned.
+- The icons are only there on mobile (`d-md-none`), where the header row that names the columns is hidden.
+- `gx-2` narrows the gutter, so longer column labels still fit on one line.
+
+The page as a whole:
+
+- The side column only appears from `xl`. Below that, a table-like list and a narrow column do not both fit, so
+  the side column stacks under the main one.
+- An empty related collection shows one muted line, not the full [no-results](no-results.md) illustration.
+- The list sits directly in the card (`list-group-flush`, no `.card-body`), so its dividers run edge to edge.
 
 ## Cards with little content
 

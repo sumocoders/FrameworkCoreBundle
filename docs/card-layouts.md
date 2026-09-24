@@ -2,7 +2,8 @@
 
 Every page built on `base.html.twig` puts its content in cards (see "Page composition" in
 [../DESIGN.md](../DESIGN.md)). This page shows the layouts that come up in almost every project: section
-cards, an overview page with a filter and a grid of item cards, and the empty state that goes with it.
+cards, a form split into sections, an overview page with a filter and a grid of item cards, and the empty
+state that goes with it.
 
 The examples use a placeholder entity called `item`. Replace the routes, fields and translation keys with your
 own. Keys under `datagrids.actions.*` ship with the bundle; the others are project keys you add yourself.
@@ -43,8 +44,89 @@ inside the body.
 
 - A form page is a card too: `<div class="card mb-3"><div class="card-body">{{ form(form) }}</div></div>`.
 - A form with several sections keeps one `form_start()` / `form_end()` around all of its cards, so the submit
-  button in the fixed toolbar (see [button-locations.md](button-locations.md)) still submits everything.
+  button in the fixed toolbar (see [button-locations.md](button-locations.md)) still submits everything. See
+  [Form layout](#form-layout).
 - `.table-responsive` goes on a wrapper `<div>`, never on the `<table>` itself. On the table it does nothing.
+
+## Form layout
+
+A form with more than a handful of fields gets one titled card per group of related fields. When the create
+and update pages show the same form, the layout lives in one partial that both include.
+
+```twig
+{# item/_form.html.twig #}
+{{ form_start(form) }}
+
+<div class="card mb-3">
+    <div class="card-header">
+        {{ 'item.form.section.general'|trans }}
+    </div>
+    <div class="card-body">
+        {# Fields the rest of the form depends on come first. #}
+        <div class="row">
+            <div class="col-md-4 col-lg-3">
+                {{ form_row(form.country) }}
+            </div>
+            <div class="col-md-8 col-lg-9">
+                <div class="form-group">
+                    {{ form_label(form.reference) }}
+                    <div class="input-group">
+                        {{ form_widget(form.reference) }}
+                        {# Merge: passing attr on its own drops the Stimulus attributes set in the form type. #}
+                        {{ form_widget(form.lookup, {attr: form.lookup.vars.attr|merge({class: 'btn-outline-primary'})}) }}
+                    </div>
+                    {{ form_errors(form.reference) }}
+                    <div class="form-text">{{ 'item.form.lookup_help'|trans }}</div>
+                </div>
+            </div>
+        </div>
+        {{ form_row(form.name) }}
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header">
+        {{ 'item.form.section.contact'|trans }}
+    </div>
+    <div class="card-body">
+        {{ form_row(form.address) }}
+        {# Collection buttons stick out 20px on both sides: .gx-5 keeps them apart. #}
+        <div class="row gx-5">
+            <div class="col-md-6">
+                {{ form_row(form.phones) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.emails) }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header">
+        {{ 'item.remarks'|trans }}
+    </div>
+    <div class="card-body">
+        {# The card title already names the only field in it. #}
+        {{ form_row(form.remarks, {label: false, attr: {'aria-label': 'item.remarks'|trans}}) }}
+    </div>
+</div>
+
+{{ form_end(form) }}
+```
+
+```twig
+{# item/create.html.twig and item/update.html.twig #}
+{% block main %}
+    {{ include('item/_form.html.twig') }}
+{% endblock %}
+```
+
+- Order fields by task flow. Here the country and reference feed a lookup that fills in the name, so they come
+  before it.
+- Short, related fields share a row; long text and textareas take the full width.
+- An action on a single field (look up, generate, copy) sits in an `.input-group` with that field. The
+  `.form-text` explains what it does, and `form_errors()` stays below the input group.
 
 ## Overview page
 

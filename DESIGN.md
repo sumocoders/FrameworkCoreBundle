@@ -217,6 +217,23 @@ an `input-group` with a `bi bi-calendar-fill` / `bi bi-clock-fill` addon, driven
 `.card.card-collection` > `.card-body` > `ul` > `li.collection-item`, with 40x40 circular
 add/remove/drag buttons at `left: -20px` / `right: -20px`, straddling the item edge.
 
+**Form layout.** A form with more than a handful of fields splits into titled section cards
+(see Page composition), with one `form_start()` / `form_end()` around all of them so the
+toolbar submit button still sends everything. Within a card:
+
+- Order fields by task flow. A field that other fields depend on comes first: the input a
+  lookup searches on, a type selector that changes the rest of the form.
+- Short related fields share a `.row` with `col-md-*` columns; long text fields and textareas
+  take the full width. Two collection widgets side by side need `.gx-5` on the row, because
+  their buttons stick out 20px on both sides and overlap in the default gutter.
+- An action that works on one field (look up, generate, copy) attaches to it in an
+  `.input-group`, with a `.form-text` below saying what it does. `form_errors()` goes below the
+  input group, not inside it.
+- A field that is alone in a titled card drops its visible label (`label: false`) and keeps an
+  `aria-label`, so the card title is not repeated.
+- When create and update share a custom layout, put it in a `_form.html.twig` partial that both
+  include. `docs/card-layouts.md` has a complete example.
+
 **Tables.** `components/_tables.scss` adds a solid bottom border and bold headers on
 `var(--bs-body-bg)`. Cell padding is bumped to `0.75rem` (stock `0.5rem`).
 Row states are stock: striped, hover and active are `5%`, `7.5%` and `10%` tints of
@@ -520,6 +537,18 @@ Things that look like bugs but are deliberate. Each was checked against compiled
   could only duplicate or regress that.
 - **The focus model is Bootstrap 5.2's**, not 5.3's `$focus-ring-*` tokens. See
   Elevation and shape. Deliberate, and revisiting it is its own piece of work.
+
+## Template traps
+
+Mistakes that render without an error but break behavior.
+
+- **`form_widget(field, {attr: {...}})` replaces the form type's `attr`.** Stimulus
+  `data-controller`, `data-action` and `data-*-target` attributes set in the form type are gone.
+  Merge instead: `form_widget(field, {attr: field.vars.attr|merge({class: 'btn-outline-primary'})})`.
+- **Display utilities are `!important`.** `.d-flex`, `.d-block` and friends override any
+  `display: none` that CSS uses to show or hide an element. Put the utility on an inner element.
+- **Collection widgets overlap side by side.** Their buttons stick out 20px past each item, more
+  than half the default `1.875rem` gutter. Use `.gx-5` on the row (see Form layout).
 
 ## Peer dependencies
 

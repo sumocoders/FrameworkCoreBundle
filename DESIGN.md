@@ -460,7 +460,8 @@ Do not:
   at once.
 - Add a Bootstrap component's styles by hand; add its import to `_bootstrap-imports.scss`.
 - Nest `color-mode()`.
-- Assume Lato is loaded. It is named but not shipped.
+- Load Lato from Google Fonts or another CDN. The bundle ships and declares it, and
+  `$framework-font-dir` points an application at another copy.
 - Put content straight into `{% block main %}` with no card around it.
 - Wrap several unrelated sections in one shared card, or let two cards touch with no
   `mb-3` / `gy-3` between them.

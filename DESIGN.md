@@ -225,6 +225,12 @@ reset `box-shadow` on `.table` cells: that switch is the whole row-state mechani
 clearing it silently disables striping, hover and active together. Only the `thead` cells reset
 it, so the header stays flat.
 
+Contextual rows (`.table-primary` through `.table-danger`) are stock pastel tints in light mode.
+Bootstrap compiles them once and never redefines them per theme, so `components/_tables.scss`
+rebuilds them under `color-mode(dark)` as a 30% blend of the theme color into `$body-bg-dark`,
+with light text. Links inside a contextual row take the row's text color, underlined: the
+primary link color has too little contrast on most tints.
+
 The bundle renders no table markup itself; `docs/crud.md` prescribes
 `<table class="table">` with `<th class="text-end">` action columns.
 
@@ -236,7 +242,9 @@ translucent); each `.toast-{state}` gets a `6px` left border, a `32px` circular
 `.toast-icon-wrapper`, and a `5px` progress bar, positioned bottom-right on mobile and
 top-right from `md`. `.alert-*` is still styled in `components/_alerts.scss` (Bootstrap Icons
 glyph via `::before`, `padding-left: $spacer * 2.5`) but **nothing in the bundle renders it**.
-It exists for application use.
+It exists for application use. The glyph sits on the first line of text; add
+`.alert-icon-centered` when the content is a single row taller than a line of text, such as a
+button, to center the glyph on that row.
 
 **Pagination.** `templates/Twig/pagination.html.twig` plus `components/_pagination.scss`. Page
 links are `min-height: 34px`, `margin: 2px`, bordered `var(--bs-border-color)`, flipping to

@@ -62,6 +62,14 @@
   }
 }
 
+// The icon sits on the first line of text. When the content is a single row that is taller than a line of
+// text, such as a button, center the icon on that row instead.
+.alert-icon-centered::before {
+  top: 50%;
+  height: auto;
+  transform: translateY(-50%);
+}
+
 .alert .error-list-item {
   margin-top: map.get($spacers, 1);
   margin-bottom: map.get($spacers, 1);

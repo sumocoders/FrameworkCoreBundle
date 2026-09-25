@@ -26,6 +26,23 @@ Override Bootstrap dark-mode CSS variables in `assets/scss/_bootstrap-variables-
 }
 ```
 
+## Pin one theme on a layout
+
+A layout that must always render in one theme, such as a customer-facing page with its own styling, leaves out
+`settheme.html.twig` and sets the attribute itself:
+
+```twig
+<script nonce="{{ csp_nonce('script') }}">
+    document.documentElement.setAttribute('data-bs-theme', 'light')
+</script>
+```
+
+- Set it on `<html>`, not on `<body>`. The dark rules are scoped under `[data-bs-theme=dark]` on `<html>`, so a
+  `data-bs-theme="light"` on `<body>` still leaves every one of them matching.
+- Keep it a script, not a static attribute on `<html>`: with Turbo, navigating from an admin page in dark mode keeps
+  the `<html>` element and its attribute, and only the script sets it back.
+- The `nonce` is needed because `nelmio/security-bundle` sends a CSP that blocks inline scripts without one.
+
 ## Disable dark mode
 
 1. Set `$enable-dark-mode: false` in `assets/scss/_bootstrap-variables.scss`

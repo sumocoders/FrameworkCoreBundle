@@ -203,6 +203,10 @@ tile: `$box-shadow` on hover and `:focus-within`, a stretched `::after` link ove
 icon, and an `h2` forced to `$font-size-base` (`1.2rem` from `md`). `.card-collection` is the
 form-collection container: dashed `1px var(--bs-gray-400)` on `var(--top-color)`.
 
+`overflow: hidden` clips anything positioned outside the card: an autocomplete (Tom Select) list,
+a `.dropdown-menu` or a popover gets cut off at the card edge. A card that holds one takes
+`.overflow-visible`; every other card keeps the default. See `docs/card-layouts.md`.
+
 **Forms.** Theme at `templates/Form/fields.html.twig`, built on `bootstrap_5_layout.html.twig`.
 Rows use `.form-group` with `margin-bottom: $spacer`, replacing Bootstrap 5's `mb-3`. Required
 fields get an `<abbr>` styled to `var(--bs-primary-text-emphasis)` with no underline; labels are
@@ -212,6 +216,28 @@ an `input-group` with a `bi bi-calendar-fill` / `bi bi-clock-fill` addon, driven
 `date-time-picker` Stimulus controller (Flatpickr). Collection widgets nest
 `.card.card-collection` > `.card-body` > `ul` > `li.collection-item`, with 40x40 circular
 add/remove/drag buttons at `left: -20px` / `right: -20px`, straddling the item edge.
+
+**Form layout.** A form with more than a handful of fields splits into titled section cards
+(see Page composition), with one `form_start()` / `form_end()` around all of them so the
+toolbar submit button still sends everything. Within a card:
+
+- Order fields by task flow. A field that other fields depend on comes first: the input a
+  lookup searches on, a type selector that changes the rest of the form.
+- Short related fields share a `.row` with `col-md-*` columns; long text fields and textareas
+  take the full width. Two collection widgets side by side need `.gx-5` on the row, because
+  their buttons stick out 20px on both sides and overlap in the default gutter.
+- An action that works on one field (look up, generate, copy) attaches to it in an
+  `.input-group`, with a `.form-text` below saying what it does. `form_errors()` goes below the
+  input group, not inside it.
+- A field that is alone in a titled card drops its visible label (`label: false`) and keeps an
+  `aria-label`, so the card title is not repeated.
+- A create page puts `autofocus` on its first field, so typing can start straight away. An edit
+  page does not: people open it to check something as often as to change it. Merge the attribute
+  into the form type's `attr` (see Template traps).
+- A checkbox in a row with labelled inputs sits above them, because it has no label on top. Put
+  `align-self-md-end pb-md-2` on its column so it lines up with the inputs.
+- When create and update share a custom layout, put it in a `_form.html.twig` partial that both
+  include. `docs/card-layouts.md` has a complete example.
 
 **Tables.** `components/_tables.scss` adds a solid bottom border and bold headers on
 `var(--bs-body-bg)`. Cell padding is bumped to `0.75rem` (stock `0.5rem`).
@@ -232,7 +258,8 @@ with light text. Links inside a contextual row take the row's text color, underl
 primary link color has too little contrast on most tints.
 
 The bundle renders no table markup itself; `docs/crud.md` prescribes
-`<table class="table">` with `<th class="text-end">` action columns.
+`<table class="table">` with `<th class="text-end">` action columns. `.table-responsive` goes
+on a wrapper `<div>` around the table, never on the `<table>`.
 
 **Alerts and toasts.** Flash messages render as **toasts, not alerts**:
 `templates/notifications.html.twig` maps flashbag keys `success` -> `success`,
@@ -253,7 +280,10 @@ links are `min-height: 34px`, `margin: 2px`, bordered `var(--bs-border-color)`, 
 
 **Empty states.** `.data-no-results` (`components/_no-results.scss`): centered column,
 `1.125rem`, `var(--bs-gray-600)`, `140px` illustration. See `docs/no-results.md`.
-`.no-items-icons` scales `2rem` -> `4rem` (`sm`) -> `7rem` (`lg`).
+`.no-items-icons` scales `2rem` -> `4rem` (`sm`) -> `7rem` (`lg`). Use it when the page's main
+list is empty. An empty section inside a larger page (the notes or contacts of a detail page)
+gets one `<p class="text-body-secondary mb-0">` line instead, so it does not take more room
+than the section would with content in it.
 
 ### Full partial inventory
 
@@ -313,6 +343,8 @@ background.
 - A page with several forms or sections -> **one card per section**, never a single card
   wrapping them all.
 - An overview -> **one card per item**, not one card around the whole list.
+- Related items on a detail page -> **one card holding a responsive list**, not a grid of item
+  cards. See Detail pages below.
 - A table -> `.card` > `.card-body` like anything else. Keep the `card-body` rather than
   letting the table run edge to edge against the card: a list section usually carries a
   title or intro text alongside the table, and `card-body` gives that room.
@@ -342,6 +374,59 @@ and take `gy-3` on the containing `.row` instead, so the gutter does the spacing
     </div>
 {% endblock %}
 ```
+
+A section with a title puts it in `.card-header`, not as a heading inside `.card-body`.
+
+**Overview pages** follow one order: a filter card, the results, then `{{ pagination() }}` only
+when `hasToPaginate` is true. In the filter card, every field has a visible label (`form_row()`);
+a placeholder is at most an example value. There is one primary button; secondary actions such
+as export are `btn-outline-secondary`, pushed right. The chosen filters stay filled in, so a
+small filter card needs no reset button. A filter with more than four inputs gets a reset button
+(`btn-outline-secondary`) next to its filter button while a filter is active. Overviews never
+show a result count. "Nothing yet" and "no matches for this filter" are separate empty states.
+Filter fields get fixed `col-*` widths, never `col-auto` (see Template traps), and a filter row
+that has to fit on one line does so from `xl`, not `lg`. When the filter has default values, the
+controller runs the query with those defaults on the first visit, so the page never opens on an
+empty list that only fills after pressing the filter button:
+
+```php
+$form->handleRequest($request);
+if (!$form->isSubmitted() || $form->isValid()) {
+    $items = $this->itemRepository->findFiltered($filterData);
+}
+```
+
+**Item cards** in an overview grid:
+
+- Title as `<h2 class="h5 card-title">`, since the page `<h1>` lives in the header bar. When the
+  item has a detail page, the title is a `link-body-emphasis` link to it.
+- Status badges sit next to the title, not on their own line.
+- Show a field only when it has a value; never a label with nothing after it. Prefer a
+  `list-unstyled` list with one Bootstrap Icon per field over "Label: value" rows, and
+  `.text-truncate` on long values. The icon gets `aria-hidden="true"` and a `.visually-hidden`
+  label next to it, so screen readers know what the value is.
+- Actions go in `.card-footer.d-flex.gap-2` as `btn-sm` buttons. Which actions an item has depends
+  on the entity; leave the footer out when there are none. An icon-only button carries `title`
+  and `data-controller="tooltip"` on the button itself plus `.visually-hidden` text.
+- Cards in a row stretch to the tallest one. When items can have little content, give the card
+  body a `min-height` through a project class so a sparse row does not collapse to title height.
+
+**Detail pages** keep the record compact, because its related lists can grow long:
+
+- Two columns from `xl`: a main column (`col-xl-9`) with the record's own fields and its related
+  lists, and a side column (`col-xl-3`) for secondary information such as history. Below `xl` the
+  side column stacks under the main one. Put `align-items-start` on the `.row` (see Template
+  traps).
+- The record's fields go in a `dl.row`, label and value side by side, and only the fields that
+  have a value.
+- Each related collection gets its own titled card, with its "add" action as a `btn-sm` in the
+  same header. No count next to the title: like overviews, detail pages never show counts. The list itself is a responsive list: a
+  `list-group-flush` whose items are grid rows. From `md` up the columns line up under a header
+  row and read as a table; below `md` each item stacks into its own block and empty fields drop
+  out. Bootstrap's grid, order and display utilities do this without custom CSS.
+
+`docs/card-layouts.md` has complete, copyable examples of section cards, an overview page, an
+item card and a detail page.
 
 This is the standard for new templates. Existing pages in consuming projects predate it and
 put form rows straight into `{% block main %}`, so treat non-carded pages as unconverted, not
@@ -441,6 +526,7 @@ color modes; `error.scss` includes it because `templates/base_error.html.twig` p
 | Layout / shell               | `assets/scss/layouts/`                                                         |
 | Interactive behaviour        | a Stimulus controller in `assets-public/controllers/`                          |
 | Email styling                | `assets/scss/mail.scss` (Inky + Foundation for Emails)                         |
+| One-off styling in a project | a Bootstrap utility class, else a class in the project's `assets/styles/`      |
 
 **Partials must be underscore-prefixed** and reached through an `@import`. A partial not listed
 in `_imports.scss` produces no CSS.
@@ -461,6 +547,9 @@ Do:
 - Keep `base/_no-sidebar.scss` last in `_imports.scss`.
 - Wrap every `{% block main %}` section in `.card` > `.card-body`, one card per section or
   per overview item, separated with `mb-3` or a `gy-3` row.
+- Put a section title in `.card-header`.
+- Add `.overflow-visible` to a card that holds an autocomplete, dropdown or popover.
+- Give every icon-only button an accessible name and put its tooltip on the button.
 
 Do not:
 
@@ -473,6 +562,16 @@ Do not:
 - Put content straight into `{% block main %}` with no card around it.
 - Wrap several unrelated sections in one shared card, or let two cards touch with no
   `mb-3` / `gy-3` between them.
+- Render a field label with no value after it, in a card or anywhere else.
+- Put `.table-responsive` on the `<table>` itself; it only works on a wrapper.
+- Write inline styles: no `style="..."` attribute and no `<style>` block in a template. Use a
+  Bootstrap utility class, and when none fits, add a named class to the project's SCSS. The CSP
+  that `sumocoders/application-skeleton` configures allows `style-src 'self'` only, so the
+  browser blocks every `style` attribute and every `<style>` block without a nonce: they look
+  fine while writing a template and do nothing in the page. Inline styles also escape the
+  dark-mode tokens and stylelint. In JavaScript, toggle a
+  class rather than setting `element.style`; set a style property only for a value that has to
+  be measured at runtime, such as an element's height.
 - Edit compiled CSS in the application's `public/assets/`.
 
 ## Known quirks
@@ -493,6 +592,31 @@ Things that look like bugs but are deliberate. Each was checked against compiled
   could only duplicate or regress that.
 - **The focus model is Bootstrap 5.2's**, not 5.3's `$focus-ring-*` tokens. See
   Elevation and shape. Deliberate, and revisiting it is its own piece of work.
+
+## Template traps
+
+Mistakes that render without an error but break behavior.
+
+- **`form_widget(field, {attr: {...}})` replaces the form type's `attr`.** Stimulus
+  `data-controller`, `data-action` and `data-*-target` attributes set in the form type are gone.
+  Merge instead: `form_widget(field, {attr: field.vars.attr|merge({autofocus: true})})`. `merge()`
+  replaces a key, so a class the form type already sets is lost the same way; append to it instead:
+  `{class: (field.vars.attr.class|default('') ~ ' btn-outline-primary')|trim}`.
+- **Display utilities are `!important`.** `.d-flex`, `.d-block` and friends override any
+  `display: none` that CSS uses to show or hide an element. Put the utility on an inner element.
+- **Collection widgets overlap side by side.** Their buttons stick out 20px past each item, more
+  than half the default `1.875rem` gutter. Use `.gx-5` on the row (see Form layout).
+- **Stacked cards in a column disappear.** `.card` has `height: 100%`, and a `.col` in a `.row`
+  stretches to the height of the tallest column. The first card then fills its whole column and
+  pushes the cards below it out of view. Put `align-items-start` on the `.row`, so each column
+  keeps the height of its own content.
+- **Breakpoints ignore the sidebar.** Bootstrap's breakpoints read the viewport width, but the
+  open sidebar takes `$sidebar-width-open` (242px) of it. At a 1000px viewport, `lg` columns share
+  about 750px of content width. Layouts that need room, such as a one-line filter or a table next
+  to a side column, belong on `xl`.
+- **An autocomplete in `col-auto` grows to its longest option.** A Tom Select or plain `<select>`
+  in a `col-auto` column is as wide as its widest option text, and pushes the rest of the row onto
+  new lines. Give it a fixed `col-*` width.
 
 ## Peer dependencies
 

@@ -649,7 +649,10 @@ carries a title or intro text alongside the table, and `card-body` gives that ro
 
 ### create.html.twig
 
-Add each form field separately with `form_row`.
+Add each form field separately with `form_row`. The create and update templates below repeat the form markup,
+which is fine for a few fields. Once the form gets a custom layout (section cards, fields side by side), move it
+into a `_form.html.twig` partial that both templates include. See
+[card-layouts.md](card-layouts.md#form-layout).
 
 ```twig
 {% extends 'base.html.twig' %}

@@ -43,7 +43,8 @@ Requirements:
 | [editorjs.md](editorjs.md)                         | EditorJS theming: follows the Bootstrap colour mode in light and dark                   |
 | [dark-mode.md](dark-mode.md)                       | Dark mode support and how to disable it                                                |
 | [stimulus.md](stimulus.md)                         | Stimulus controllers provided by the bundle                                            |
-| [no-results.md](no-results.md)                     | Standard empty-state / no-results UI component                                         |
+| [no-results.md](no-results.md)                     | Empty states: the no-results component for a page, a muted line inside a section       |
+| [card-layouts.md](card-layouts.md)                 | Example card layouts: section cards, forms, overview with filter, item cards, detail page |
 
 ---
 

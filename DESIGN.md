@@ -225,6 +225,12 @@ reset `box-shadow` on `.table` cells: that switch is the whole row-state mechani
 clearing it silently disables striping, hover and active together. Only the `thead` cells reset
 it, so the header stays flat.
 
+Contextual rows (`.table-primary` through `.table-danger`) are stock pastel tints in light mode.
+Bootstrap compiles them once and never redefines them per theme, so `components/_tables.scss`
+rebuilds them under `color-mode(dark)` as a 30% blend of the theme color into `$body-bg-dark`,
+with light text. Links inside a contextual row take the row's text color, underlined: the
+primary link color has too little contrast on most tints.
+
 The bundle renders no table markup itself; `docs/crud.md` prescribes
 `<table class="table">` with `<th class="text-end">` action columns.
 

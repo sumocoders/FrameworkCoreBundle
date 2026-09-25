@@ -1,3 +1,6 @@
+@use "sass:color";
+@use "sass:map";
+
 table.table {
   border-bottom: $table-border-width solid $table-border-color;
 
@@ -17,8 +20,23 @@ table.table {
   }
 }
 
+// The link color has too little contrast on a colored row (orange on yellow, for example).
+// Links take the row's text color there, underlined so they still read as links.
+@each $state in primary, secondary, success, info, warning, danger {
+  .table-#{$state} a:not(.btn) {
+    color: var(--#{$prefix}table-color);
+    text-decoration: underline;
+  }
+}
+
 @include color-mode(dark) {
   table.table {
     border-color: $gray-700;
+  }
+
+  // Bootstrap compiles the table variants once, from light tints, so they stay pastel on a dark
+  // background. Rebuild them as a muted blend of the theme color into the dark body background.
+  @each $state in primary, secondary, success, info, warning, danger {
+    @include table-variant($state, color.mix(map.get($theme-colors, $state), $body-bg-dark, 30%));
   }
 }

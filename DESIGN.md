@@ -515,6 +515,7 @@ color modes; `error.scss` includes it because `templates/base_error.html.twig` p
 | Layout / shell               | `assets/scss/layouts/`                                                         |
 | Interactive behaviour        | a Stimulus controller in `assets-public/controllers/`                          |
 | Email styling                | `assets/scss/mail.scss` (Inky + Foundation for Emails)                         |
+| One-off styling in a project | a Bootstrap utility class, else a class in the project's `assets/styles/`      |
 
 **Partials must be underscore-prefixed** and reached through an `@import`. A partial not listed
 in `_imports.scss` produces no CSS.
@@ -552,6 +553,14 @@ Do not:
   `mb-3` / `gy-3` between them.
 - Render a field label with no value after it, in a card or anywhere else.
 - Put `.table-responsive` on the `<table>` itself; it only works on a wrapper.
+- Write inline styles: no `style="..."` attribute and no `<style>` block in a template. Use a
+  Bootstrap utility class, and when none fits, add a named class to the project's SCSS. The CSP
+  that `sumocoders/application-skeleton` configures allows `style-src 'self'` only, so the
+  browser blocks every `style` attribute and every `<style>` block without a nonce: they look
+  fine while writing a template and do nothing in the page. Inline styles also escape the
+  dark-mode tokens and stylelint. In JavaScript, toggle a
+  class rather than setting `element.style`; set a style property only for a value that has to
+  be measured at runtime, such as an element's height.
 - Edit compiled CSS in the application's `public/assets/`.
 
 ## Known quirks

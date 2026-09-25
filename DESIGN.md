@@ -242,7 +242,9 @@ translucent); each `.toast-{state}` gets a `6px` left border, a `32px` circular
 `.toast-icon-wrapper`, and a `5px` progress bar, positioned bottom-right on mobile and
 top-right from `md`. `.alert-*` is still styled in `components/_alerts.scss` (Bootstrap Icons
 glyph via `::before`, `padding-left: $spacer * 2.5`) but **nothing in the bundle renders it**.
-It exists for application use.
+It exists for application use. The glyph sits on the first line of text; add
+`.alert-icon-centered` when the content is a single row taller than a line of text, such as a
+button, to center the glyph on that row.
 
 **Pagination.** `templates/Twig/pagination.html.twig` plus `components/_pagination.scss`. Page
 links are `min-height: 34px`, `margin: 2px`, bordered `var(--bs-border-color)`, flipping to

@@ -72,8 +72,9 @@ and update pages show the same form, the layout lives in one partial that both i
                     {{ form_label(form.reference) }}
                     <div class="input-group">
                         {{ form_widget(form.reference) }}
-                        {# Merge: passing attr on its own drops the Stimulus attributes set in the form type. #}
-                        {{ form_widget(form.lookup, {attr: form.lookup.vars.attr|merge({class: 'btn-outline-primary'})}) }}
+                        {# Merge: passing attr on its own drops the Stimulus attributes set in the form type. The class is
+                           appended, because merge() would replace a class the form type already sets. #}
+                        {{ form_widget(form.lookup, {attr: form.lookup.vars.attr|merge({class: (form.lookup.vars.attr.class|default('') ~ ' btn-outline-primary')|trim})}) }}
                     </div>
                     {{ form_errors(form.reference) }}
                     <div class="form-text">{{ 'item.form.lookup_help'|trans }}</div>
@@ -168,10 +169,10 @@ An overview is built from four parts, top to bottom:
             {{ form_start(form) }}
             <div class="row gy-2 align-items-center">
                 <div class="col-md-5 col-lg-4">
-                    {{ form_widget(form.term, {attr: {
+                    {{ form_widget(form.term, {attr: form.term.vars.attr|merge({
                         placeholder: 'item.filter.term'|trans|ucfirst,
                         'aria-label': 'item.filter.term'|trans|ucfirst,
-                    }}) }}
+                    })}) }}
                 </div>
                 <div class="col-auto">
                     <button type="submit" class="btn btn-primary">
@@ -230,6 +231,9 @@ An overview is built from four parts, top to bottom:
     </div>
 {% endblock %}
 ```
+
+The result summary is left out when there are no results: the empty state below already says so, and "0 items"
+above "no items found" repeats it.
 
 `items` is a [Paginator](pagination.md), which provides `numResults`. The count key uses ICU plurals, so it needs
 the `+intl-icu` translation domain:

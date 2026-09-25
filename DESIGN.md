@@ -370,7 +370,8 @@ and take `gy-3` on the containing `.row` instead, so the gutter does the spacing
 A section with a title puts it in `.card-header`, not as a heading inside `.card-body`.
 
 **Overview pages** follow one order: a filter card, a result summary (count, plus a reset link
-while a filter is active), the results, then `{{ pagination() }}`. In the filter card, a widget
+while a filter is active, and left out when there are no results because the empty state covers
+that), the results, then `{{ pagination() }}`. In the filter card, a widget
 rendered without a label gets a `placeholder` and an `aria-label`, and there is one primary
 button; secondary actions such as export are `btn-outline-secondary`, pushed right. "Nothing yet"
 and "no matches for this filter" are separate empty states, and only the second gets a reset link.
@@ -588,7 +589,9 @@ Mistakes that render without an error but break behavior.
 
 - **`form_widget(field, {attr: {...}})` replaces the form type's `attr`.** Stimulus
   `data-controller`, `data-action` and `data-*-target` attributes set in the form type are gone.
-  Merge instead: `form_widget(field, {attr: field.vars.attr|merge({class: 'btn-outline-primary'})})`.
+  Merge instead: `form_widget(field, {attr: field.vars.attr|merge({'aria-label': 'Search'})})`. `merge()`
+  replaces a key, so a class the form type already sets is lost the same way; append to it instead:
+  `{class: (field.vars.attr.class|default('') ~ ' btn-outline-primary')|trim}`.
 - **Display utilities are `!important`.** `.d-flex`, `.d-block` and friends override any
   `display: none` that CSS uses to show or hide an element. Put the utility on an inner element.
 - **Collection widgets overlap side by side.** Their buttons stick out 20px past each item, more

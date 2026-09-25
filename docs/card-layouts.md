@@ -127,6 +127,28 @@ and update pages show the same form, the layout lives in one partial that both i
 - Short, related fields share a row; long text and textareas take the full width.
 - An action on a single field (look up, generate, copy) sits in an `.input-group` with that field. The
   `.form-text` explains what it does, and `form_errors()` stays below the input group.
+- On the create page, the first field gets `autofocus`. Pass it into the partial and merge it, so the form type's
+  own attributes survive:
+
+  ```twig
+  {# item/create.html.twig #}
+  {{ include('item/_form.html.twig', {autofocus: true}) }}
+
+  {# item/_form.html.twig #}
+  {{ form_row(form.name, {attr: form.name.vars.attr|merge({autofocus: autofocus|default(false)})}) }}
+  ```
+
+  A `false` attribute is not rendered, so the update page includes the partial without it.
+- A checkbox next to labelled inputs in the same row sits too high. `align-self-md-end pb-md-2` on its column lines
+  it up with the inputs:
+
+  ```twig
+  <div class="row">
+      <div class="col-md-4">{{ form_row(form.language) }}</div>
+      <div class="col-md-4">{{ form_row(form.birthDate) }}</div>
+      <div class="col-md-4 align-self-md-end pb-md-2">{{ form_row(form.wantsCard) }}</div>
+  </div>
+  ```
 
 ## Overview page
 
@@ -219,8 +241,16 @@ item.overview.count: '{count, plural, one {# item} other {# items}}'
 
 Notes on the filter card:
 
-- A widget rendered with `form_widget()` has no visible label. Give it a `placeholder` and an `aria-label`.
+- A widget rendered with `form_widget()` has no visible label. Give it a `placeholder` and an `aria-label`. When the
+  form type already sets them, reuse its label: `{attr: form.owner.vars.attr|merge({'aria-label':
+  form.owner.vars.label|trans|ucfirst})}`.
+- Give every filter field a fixed width (`col-md-6 col-xl-2`, ...), not `col-auto`: an autocomplete in `col-auto`
+  grows to its longest option. Put the one-line layout on `xl`, because the sidebar takes 242px of the viewport
+  that the `lg` breakpoint measures.
 - One primary button per filter card. Everything else is `btn-outline-secondary`.
+- When the filter has default values (a date range, a status), show the results for those defaults on the first
+  visit. The controller runs the query unless a submitted filter is invalid; see Overview pages in
+  [../DESIGN.md](../DESIGN.md).
 - "No data yet" and "no matches for this filter" are different situations and get different messages. Only the
   second one gets a reset link. See [no-results.md](no-results.md).
 

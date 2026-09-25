@@ -40,6 +40,25 @@ When the empty list is one section of a larger page, such as the notes or contac
 </div>
 ```
 
+## Inside a table
+
+A table that is one section of a page gets the same muted line, as a row that spans every column. Keep the
+`colspan` equal to the number of header columns, counting each header's own `colspan`:
+
+```twig
+<tbody>
+{% for task in tasks %}
+    <tr>{# ... #}</tr>
+{% else %}
+    <tr>
+        <td colspan="5" class="text-body-secondary">{{ 'your.translation.key'|trans }}</td>
+    </tr>
+{% endfor %}
+</tbody>
+```
+
+When the table is the page's main list, put the full no-results component in that cell instead.
+
 ## Accessibility
 
 The `<img>` carries an empty `alt=""` because it is decorative. The text content must be meaningful on its own.

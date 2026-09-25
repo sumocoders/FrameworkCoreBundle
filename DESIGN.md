@@ -231,6 +231,11 @@ toolbar submit button still sends everything. Within a card:
   input group, not inside it.
 - A field that is alone in a titled card drops its visible label (`label: false`) and keeps an
   `aria-label`, so the card title is not repeated.
+- A create page puts `autofocus` on its first field, so typing can start straight away. An edit
+  page does not: people open it to check something as often as to change it. Merge the attribute
+  into the form type's `attr` (see Template traps).
+- A checkbox in a row with labelled inputs sits above them, because it has no label on top. Put
+  `align-self-md-end pb-md-2` on its column so it lines up with the inputs.
 - When create and update share a custom layout, put it in a `_form.html.twig` partial that both
   include. `docs/card-layouts.md` has a complete example.
 
@@ -369,6 +374,17 @@ while a filter is active), the results, then `{{ pagination() }}`. In the filter
 rendered without a label gets a `placeholder` and an `aria-label`, and there is one primary
 button; secondary actions such as export are `btn-outline-secondary`, pushed right. "Nothing yet"
 and "no matches for this filter" are separate empty states, and only the second gets a reset link.
+Filter fields get fixed `col-*` widths, never `col-auto` (see Template traps), and a filter row
+that has to fit on one line does so from `xl`, not `lg`. When the filter has default values, the
+controller runs the query with those defaults on the first visit, so the page never opens on an
+empty list that only fills after pressing the filter button:
+
+```php
+$form->handleRequest($request);
+if (!$form->isSubmitted() || $form->isValid()) {
+    $items = $this->itemRepository->findFiltered($filterData);
+}
+```
 
 **Item cards** in an overview grid:
 
@@ -572,6 +588,13 @@ Mistakes that render without an error but break behavior.
   stretches to the height of the tallest column. The first card then fills its whole column and
   pushes the cards below it out of view. Put `align-items-start` on the `.row`, so each column
   keeps the height of its own content.
+- **Breakpoints ignore the sidebar.** Bootstrap's breakpoints read the viewport width, but the
+  open sidebar takes `$sidebar-width-open` (242px) of it. At a 1000px viewport, `lg` columns share
+  about 750px of content width. Layouts that need room, such as a one-line filter or a table next
+  to a side column, belong on `xl`.
+- **An autocomplete in `col-auto` grows to its longest option.** A Tom Select or plain `<select>`
+  in a `col-auto` column is as wide as its widest option text, and pushes the rest of the row onto
+  new lines. Give it a fixed `col-*` width.
 
 ## Peer dependencies
 

@@ -14,6 +14,21 @@ Put them in {% block header_navigation %}
 {% endblock %}
 ```
 
+### Back to the parent record
+
+A page for a record that belongs to another one (a note of an item, a line of an order) links back to that
+parent here, with its name. It tells the user which record they are working on, and gives them a way back
+without the sidebar or the browser's back button:
+
+```twig
+{% block header_navigation %}
+    <a class="btn btn-outline-secondary" href="{{ path('item_detail', {item: item.id}) }}">
+        <i class="bi bi-arrow-left"></i>
+        {{ item.name }}
+    </a>
+{% endblock %}
+```
+
 ## Fixed toolbar on the bottom
 
 Buttons in the fixed toolbar on the bottom are used for primary actions that users frequently need to access.

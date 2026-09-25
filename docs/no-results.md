@@ -15,19 +15,21 @@ produces zero results. For an empty section inside a larger page, see [Inside a 
 Replace `'your.translation.key'` with a translation key appropriate to the context (e.g. `'users.empty'`,
 `'orders.no_results'`).
 
-## With a filter hint
+## After filtering
 
-When the empty state is caused by an active filter, add a reset link so the user can clear it:
+When the list is empty because of an active filter, say so in its own message ("no items match these filters"),
+not the message for an empty list. The filled-in filter fields already show what was searched for, so the empty
+state gets no reset button:
 
 ```twig
-{% if filtersActive %}
-    <div class="data-no-results">
-        <img src="{{ asset('images/no-results.svg') }}" alt="">
-        {{ 'your.translation.key'|trans }}
-        <a href="{{ path(app.request.attributes.get('_route')) }}">{{ 'general.reset_filters'|trans }}</a>
-    </div>
-{% endif %}
+<div class="data-no-results">
+    <img src="{{ asset('images/no-results.svg') }}" alt="">
+    {{ (filtersActive ? 'items.no_matches' : 'items.empty')|trans }}
+</div>
 ```
+
+A filter with more than four inputs gets a reset button next to its filter button instead; see the overview page in
+[card-layouts.md](card-layouts.md#overview-page).
 
 ## Inside a section
 
@@ -42,22 +44,24 @@ When the empty list is one section of a larger page, such as the notes or contac
 
 ## Inside a table
 
-A table that is one section of a page gets the same muted line, as a row that spans every column. Keep the
-`colspan` equal to the number of header columns, counting each header's own `colspan`:
+A table without rows is left out, and the muted line takes its place. An empty `<thead>` above a message that
+sits in a spanning cell reads as a broken table:
 
 ```twig
-<tbody>
-{% for task in tasks %}
-    <tr>{# ... #}</tr>
-{% else %}
-    <tr>
-        <td colspan="5" class="text-body-secondary">{{ 'your.translation.key'|trans }}</td>
-    </tr>
-{% endfor %}
-</tbody>
+<div class="card-body">
+    {% if tasks is not empty %}
+        <div class="table-responsive">
+            <table class="table">
+                {# ... #}
+            </table>
+        </div>
+    {% else %}
+        <p class="text-body-secondary mb-0">{{ 'your.translation.key'|trans }}</p>
+    {% endif %}
+</div>
 ```
 
-When the table is the page's main list, put the full no-results component in that cell instead.
+When the table is the page's main list, render the full no-results component instead of the table.
 
 ## Accessibility
 

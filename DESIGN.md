@@ -369,12 +369,13 @@ and take `gy-3` on the containing `.row` instead, so the gutter does the spacing
 
 A section with a title puts it in `.card-header`, not as a heading inside `.card-body`.
 
-**Overview pages** follow one order: a filter card, a result summary (count, plus a reset link
-while a filter is active, and left out when there are no results because the empty state covers
-that), the results, then `{{ pagination() }}`. In the filter card, a widget
-rendered without a label gets a `placeholder` and an `aria-label`, and there is one primary
-button; secondary actions such as export are `btn-outline-secondary`, pushed right. "Nothing yet"
-and "no matches for this filter" are separate empty states, and only the second gets a reset link.
+**Overview pages** follow one order: a filter card, the results, then `{{ pagination() }}` only
+when `hasToPaginate` is true. In the filter card, every field has a visible label (`form_row()`);
+a placeholder is at most an example value. There is one primary button; secondary actions such
+as export are `btn-outline-secondary`, pushed right. The chosen filters stay filled in, so a
+small filter card needs no reset button. A filter with more than four inputs gets a reset button
+(`btn-outline-secondary`) next to its filter button while a filter is active. Overviews never
+show a result count. "Nothing yet" and "no matches for this filter" are separate empty states.
 Filter fields get fixed `col-*` widths, never `col-auto` (see Template traps), and a filter row
 that has to fit on one line does so from `xl`, not `lg`. When the filter has default values, the
 controller runs the query with those defaults on the first visit, so the page never opens on an
@@ -394,7 +395,8 @@ if (!$form->isSubmitted() || $form->isValid()) {
 - Status badges sit next to the title, not on their own line.
 - Show a field only when it has a value; never a label with nothing after it. Prefer a
   `list-unstyled` list with one Bootstrap Icon per field over "Label: value" rows, and
-  `.text-truncate` on long values.
+  `.text-truncate` on long values. The icon gets `aria-hidden="true"` and a `.visually-hidden`
+  label next to it, so screen readers know what the value is.
 - Actions go in `.card-footer.d-flex.gap-2` as `btn-sm` buttons. Which actions an item has depends
   on the entity; leave the footer out when there are none. An icon-only button carries `title`
   and `data-controller="tooltip"` on the button itself plus `.visually-hidden` text.
@@ -409,8 +411,8 @@ if (!$form->isSubmitted() || $form->isValid()) {
   traps).
 - The record's fields go in a `dl.row`, label and value side by side, and only the fields that
   have a value.
-- Each related collection gets its own titled card: a count badge next to the title, and its
-  "add" action as a `btn-sm` in the same header. The list itself is a responsive list: a
+- Each related collection gets its own titled card, with its "add" action as a `btn-sm` in the
+  same header. No count next to the title: like overviews, detail pages never show counts. The list itself is a responsive list: a
   `list-group-flush` whose items are grid rows. From `md` up the columns line up under a header
   row and read as a table; below `md` each item stacks into its own block and empty fields drop
   out. Bootstrap's grid, order and display utilities do this without custom CSS.
@@ -589,7 +591,7 @@ Mistakes that render without an error but break behavior.
 
 - **`form_widget(field, {attr: {...}})` replaces the form type's `attr`.** Stimulus
   `data-controller`, `data-action` and `data-*-target` attributes set in the form type are gone.
-  Merge instead: `form_widget(field, {attr: field.vars.attr|merge({'aria-label': 'Search'})})`. `merge()`
+  Merge instead: `form_widget(field, {attr: field.vars.attr|merge({autofocus: true})})`. `merge()`
   replaces a key, so a class the form type already sets is lost the same way; append to it instead:
   `{class: (field.vars.attr.class|default('') ~ ' btn-outline-primary')|trim}`.
 - **Display utilities are `!important`.** `.d-flex`, `.d-block` and friends override any

@@ -153,12 +153,11 @@ and update pages show the same form, the layout lives in one partial that both i
 
 ## Overview page
 
-An overview is built from four parts, top to bottom:
+An overview is built from three parts, top to bottom:
 
 1. A filter card, when the list can be filtered.
-2. A result summary: the number of results, plus a reset link while a filter is active.
-3. The results: a grid with one card per item, or one card holding a table.
-4. Pagination.
+2. The results: a grid with one card per item, or one card holding a table.
+3. Pagination, when there is more than one page.
 
 ```twig
 {% block main %}
@@ -167,21 +166,22 @@ An overview is built from four parts, top to bottom:
     <div class="card mb-3">
         <div class="card-body">
             {{ form_start(form) }}
-            <div class="row gy-2 align-items-center">
-                <div class="col-md-5 col-lg-4">
-                    {{ form_widget(form.term, {attr: form.term.vars.attr|merge({
-                        placeholder: 'item.filter.term'|trans|ucfirst,
-                        'aria-label': 'item.filter.term'|trans|ucfirst,
-                    })}) }}
+            {# align-items-end: the buttons line up with the inputs, under the labels. #}
+            <div class="row align-items-end">
+                <div class="col-md-6 col-xl-3">
+                    {{ form_row(form.term) }}
                 </div>
-                <div class="col-auto">
+                <div class="col-md-6 col-xl-3">
+                    {{ form_row(form.status) }}
+                </div>
+                <div class="col-auto mb-3">
                     <button type="submit" class="btn btn-primary">
                         <i class="bi bi-search"></i>
                         {{ 'item.filter.submit'|trans }}
                     </button>
                 </div>
                 {# Secondary actions (export, ...) sit apart from the primary one, pushed right. #}
-                <div class="col-auto ms-md-auto">
+                <div class="col-auto ms-md-auto mb-3">
                     <button type="submit" class="btn btn-outline-secondary" formaction="{{ path('item_export') }}" data-turbo="false">
                         <i class="bi bi-file-earmark-arrow-down"></i>
                         {{ 'item.filter.export'|trans }}
@@ -191,16 +191,6 @@ An overview is built from four parts, top to bottom:
             {{ form_end(form) }}
         </div>
     </div>
-
-    {% if items.numResults > 0 %}
-        <p class="text-body-secondary mb-3">
-            {{ 'item.overview.count'|trans({count: items.numResults}) }}
-            {% if is_filtered %}
-                &middot;
-                <a href="{{ path(app.request.attributes.get('_route')) }}">{{ 'general.reset_filters'|trans }}</a>
-            {% endif %}
-        </p>
-    {% endif %}
 
     <div class="row g-3 mb-3">
         {% for item in items %}
@@ -213,12 +203,7 @@ An overview is built from four parts, top to bottom:
                     <div class="card-body">
                         <div class="data-no-results">
                             <img src="{{ asset('images/no-results.svg') }}" alt="">
-                            {% if is_filtered %}
-                                {{ 'item.overview.no_matches'|trans }}
-                                <a href="{{ path(app.request.attributes.get('_route')) }}">{{ 'general.reset_filters'|trans }}</a>
-                            {% else %}
-                                {{ 'item.overview.empty'|trans }}
-                            {% endif %}
+                            {{ (is_filtered ? 'item.overview.no_matches' : 'item.overview.empty')|trans }}
                         </div>
                     </div>
                 </div>
@@ -226,37 +211,47 @@ An overview is built from four parts, top to bottom:
         {% endfor %}
     </div>
 
-    <div class="d-flex justify-content-center">
-        {{ pagination(items) }}
-    </div>
+    {% if items.hasToPaginate %}
+        <div class="d-flex justify-content-center">
+            {{ pagination(items) }}
+        </div>
+    {% endif %}
 {% endblock %}
 ```
 
-The result summary is left out when there are no results: the empty state below already says so, and "0 items"
-above "no items found" repeats it.
-
-`items` is a [Paginator](pagination.md), which provides `numResults`. The count key uses ICU plurals, so it needs
-the `+intl-icu` translation domain:
-
-```yaml
-# translations/messages+intl-icu.nl.yaml
-item.overview.count: '{count, plural, one {# item} other {# items}}'
-```
+`items` is a [Paginator](pagination.md): `hasToPaginate` is true when there is more than one page.
 
 Notes on the filter card:
 
-- A widget rendered with `form_widget()` has no visible label. Give it a `placeholder` and an `aria-label`. When the
-  form type already sets them, reuse its label: `{attr: form.owner.vars.attr|merge({'aria-label':
-  form.owner.vars.label|trans|ucfirst})}`.
-- Give every filter field a fixed width (`col-md-6 col-xl-2`, ...), not `col-auto`: an autocomplete in `col-auto`
+- Every filter field has a visible label above it (`form_row()`), like any other form. A placeholder disappears
+  as soon as someone types, so it is at most an example value, never the label.
+- The chosen filters stay filled in after submitting, so the card itself shows what the list is filtered on. A
+  small filter card needs no reset button.
+- A filter with more than four inputs is harder to read back at a glance. Give it a reset button next to the filter
+  button while a filter is active:
+
+  ```twig
+  <div class="col-auto mb-3">
+      <button type="submit" class="btn btn-primary">{{ 'item.filter.submit'|trans }}</button>
+  </div>
+  {% if is_filtered %}
+      <div class="col-auto mb-3">
+          <a class="btn btn-outline-secondary" href="{{ path(app.request.attributes.get('_route')) }}">
+              {{ 'general.reset_filters'|trans }}
+          </a>
+      </div>
+  {% endif %}
+  ```
+- Never show a result count, on any overview.
+- Give every filter field a fixed width (`col-md-6 col-xl-3`, ...), not `col-auto`: an autocomplete in `col-auto`
   grows to its longest option. Put the one-line layout on `xl`, because the sidebar takes 242px of the viewport
   that the `lg` breakpoint measures.
 - One primary button per filter card. Everything else is `btn-outline-secondary`.
 - When the filter has default values (a date range, a status), show the results for those defaults on the first
   visit. The controller runs the query unless a submitted filter is invalid; see Overview pages in
   [../DESIGN.md](../DESIGN.md).
-- "No data yet" and "no matches for this filter" are different situations and get different messages. Only the
-  second one gets a reset link. See [no-results.md](no-results.md).
+- "No data yet" and "no matches for this filter" are different situations and get different messages. See
+  [no-results.md](no-results.md).
 
 ## Item card
 
@@ -287,13 +282,15 @@ An item card has three regions. Use the ones the item needs and leave the others
             <ul class="list-unstyled mt-3 mb-0">
                 {% if item.email %}
                     <li class="text-truncate">
-                        <i class="bi bi-envelope me-2" title="{{ 'item.email'|trans }}"></i>
+                        <i class="bi bi-envelope me-2" aria-hidden="true"></i>
+                        <span class="visually-hidden">{{ 'item.email'|trans }}:</span>
                         <a href="mailto:{{ item.email }}">{{ item.email }}</a>
                     </li>
                 {% endif %}
                 {% if item.phone %}
                     <li class="text-truncate">
-                        <i class="bi bi-telephone me-2" title="{{ 'item.phone'|trans }}"></i>
+                        <i class="bi bi-telephone me-2" aria-hidden="true"></i>
+                        <span class="visually-hidden">{{ 'item.phone'|trans }}:</span>
                         <a href="tel:{{ item.phone }}">{{ item.phone }}</a>
                     </li>
                 {% endif %}
@@ -323,11 +320,9 @@ The title:
 The fields:
 
 - Show a field only when it has a value. A label followed by nothing ("Email:") is noise.
-- A short list with a Bootstrap Icon per field reads faster than "Label: value" rows. The icon carries a `title`
-  so the meaning is still available.
+- A short list with a Bootstrap Icon per field reads faster than "Label: value" rows. The icon is decorative
+  (`aria-hidden="true"`), and a `.visually-hidden` label next to it tells screen readers what the value is.
 - Long values (e-mail addresses, URLs) get `.text-truncate` so they cannot push the card wider than its column.
-- Collections from imported or legacy data can hold empty strings. Filter them before rendering
-  (`item.emails|filter(email => email is not empty)`), or the list shows an icon with no value next to it.
 
 The actions:
 
@@ -368,12 +363,7 @@ Related collections can grow long, so they are lists inside one card each, not a
 
             <div class="card mb-3">
                 <div class="card-header d-flex align-items-center justify-content-between gap-2">
-                    <span>
-                        {{ 'item.contacts'|trans }}
-                        {% if item.contacts is not empty %}
-                            <span class="badge text-bg-secondary rounded-pill ms-1">{{ item.contacts|length }}</span>
-                        {% endif %}
-                    </span>
+                    {{ 'item.contacts'|trans }}
                     <a class="btn btn-outline-primary btn-sm" href="{{ path('item_contact_add', {item: item.id}) }}">
                         <i class="bi bi-plus"></i>
                         {{ 'item.contacts.add'|trans }}
@@ -408,11 +398,13 @@ Related collections can grow long, so they are lists inside one card each, not a
                                     </div>
                                     {# Empty fields drop out on mobile but keep their column on desktop. #}
                                     <div class="col-12 col-md-4 order-3 order-md-2 text-truncate {{ contact.email ? '' : 'd-none d-md-block' }}">
-                                        <i class="bi bi-envelope me-2 d-md-none" title="{{ 'item.contact.email'|trans }}"></i>
+                                        <i class="bi bi-envelope me-2 d-md-none" aria-hidden="true"></i>
+                                        <span class="visually-hidden">{{ 'item.contact.email'|trans }}:</span>
                                         <a href="mailto:{{ contact.email }}">{{ contact.email }}</a>
                                     </div>
                                     <div class="col-12 col-md-3 order-4 order-md-3 text-nowrap {{ contact.phone ? '' : 'd-none d-md-block' }}">
-                                        <i class="bi bi-telephone me-2 d-md-none" title="{{ 'item.contact.phone'|trans }}"></i>
+                                        <i class="bi bi-telephone me-2 d-md-none" aria-hidden="true"></i>
+                                        <span class="visually-hidden">{{ 'item.contact.phone'|trans }}:</span>
                                         <a href="tel:{{ contact.phone }}">{{ contact.phone }}</a>
                                     </div>
                                 </div>
@@ -456,7 +448,8 @@ The responsive list:
 - `order-*` / `order-md-*` put the action next to the name on mobile and in the last column on desktop.
 - An empty field gets `d-none d-md-block`: it takes no space in the stacked block, but keeps its column on
   desktop so the rows stay aligned.
-- The icons are only there on mobile (`d-md-none`), where the header row that names the columns is hidden.
+- The icons are only there on mobile (`d-md-none`), where the header row that names the columns is hidden. They
+  are decorative; the `.visually-hidden` label next to each one names the value for screen readers.
 - `gx-2` narrows the gutter, so longer column labels still fit on one line.
 
 The page as a whole:

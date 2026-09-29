@@ -25,6 +25,9 @@ A few things are easy to miss when following this pattern:
   as-is — there is no separate step that maps form data back onto a message.
 - `DeleteController` validates a CSRF-protected empty form before dispatching the delete message. Deletes should
   never be triggered by a bare GET link.
+- Flash messages are rendered as is: the bundle's `_toast.html.twig` does not translate them, so translate them in the
+  controller (`$this->translator->trans('item.flash.created')`). The layout renders three flash types: `success`,
+  `report` (shown as info) and `warning` (shown as danger, not auto-hidden).
 
 ## File structure
 
@@ -243,6 +246,34 @@ final class ItemType extends AbstractType
     }
 }
 ```
+
+### Enum fields
+
+To show a backed enum's cases as translated labels, implement `TranslatableInterface` on the enum:
+
+```php
+<?php
+
+namespace App\Enum;
+
+use Symfony\Contracts\Translation\TranslatableInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
+
+enum ItemStatus: string implements TranslatableInterface
+{
+    case Draft = 'draft';
+    case Published = 'published';
+
+    public function trans(TranslatorInterface $translator, ?string $locale = null): string
+    {
+        return $translator->trans('item.status.' . $this->value, locale: $locale);
+    }
+}
+```
+
+An `EnumType` field then uses these labels without a `choice_label` option, and in Twig you pass the case
+straight through the filter: `{{ item.status|trans }}`. Use keys in the form `<entity>.<field>.<case-value>`, e.g.
+`item.status.draft`.
 
 ## Repository
 

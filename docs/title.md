@@ -148,6 +148,24 @@ class BlogDetailController
 Dynamic parameters are resolved from the named controller arguments. If a placeholder is not found, an exception is
 thrown.
 
+An entity argument used in an `{object.property}` placeholder **must** carry `#[MapEntity]`, even when Symfony's
+argument resolver would load it fine without one. Without `#[MapEntity]`, the placeholder receives the raw route
+value (e.g. the id) instead of the entity, and the request fails with a 500. `#[Breadcrumb]` does not have this
+requirement, so a controller can have a working `#[Breadcrumb('{item.name}')]` and a broken `#[Title('{item.name}')]`.
+A bare `#[MapEntity]` without options is enough:
+
+```php
+#[Route('/admin/items/{item}', name: 'item_detail')]
+#[Title('{item.name}')]
+class DetailController
+{
+    public function __invoke(#[MapEntity] Item $item): Response
+    {
+        // ...
+    }
+}
+```
+
 ### Disable automatic appending
 
 Pass `extend: false` to set the title verbatim, with no translation, no parent chain, and no site title appended:
@@ -199,6 +217,11 @@ In Twig, `PageTitle` is available as a string (via `__toString`):
   just the current attribute. In practice, if reflection happens to visit an `extend: false` method before other
   `#[Title]`-carrying methods on the same class, those later attributes are never even inspected for that request.
   `Fallbacks::get('site_title')` is also never consulted on the `extend: false` path.
+- `TitleListener` runs on `kernel.controller`, before argument resolution, so it loads entities itself in
+  `processParameters()`. It only does that for parameters with a `#[MapEntity]` attribute (using `mapping` when
+  set, `find()` on the route value otherwise); every other parameter keeps its raw route value.
+  `BreadcrumbListener` instead looks up the entity for any parameter whose name matches the placeholder, based on the
+  parameter's type, with or without `#[MapEntity]`. The two listeners behave differently here.
 
 ### Exceptions
 
@@ -210,6 +233,8 @@ In Twig, `PageTitle` is available as a string (via `__toString`):
 
 - **`{param}` not resolving**: the placeholder must match the exact name of a controller argument. For objects, use
   `{object.property}` not `{object}`
+- **500 on `{object.property}` (`UnexpectedTypeException` from PropertyAccess)**: the entity argument is missing
+  `#[MapEntity]`, so the title tries to read a property from the raw route id. Add `#[MapEntity]` to the argument
 - **Title missing site name**: verify `fallbacks.site_title` is set in `parameters` in `config/services.yaml`
 - **Parent chain not working**: each route in the chain must exist and have `#[Title]` or `#[Breadcrumb]` attributes;
   the chain resolves via direct reflection and an in-process method call within the same listener invocation, not by

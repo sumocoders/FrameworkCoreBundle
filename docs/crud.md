@@ -610,6 +610,52 @@ final class DeleteController extends AbstractController
 }
 ```
 
+### Using the handler's result
+
+When the controller needs the outcome of a message (e.g. whether anything changed, to pick the right flash), let
+the handler return it and dispatch with Symfony's `HandleTrait` instead of `$this->messageBus->dispatch()`. The
+example is abbreviated: the imports for `Item` and `PublishItemMessage` are left out.
+
+```php
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\HandleTrait;
+use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
+
+final class PublishController extends AbstractController
+{
+    use HandleTrait;
+
+    /**
+     * HandleTrait declares the $messageBus property itself, so it's assigned here instead of promoted.
+     */
+    public function __construct(
+        MessageBusInterface $messageBus,
+        private readonly TranslatorInterface $translator,
+    ) {
+        $this->messageBus = $messageBus;
+    }
+
+    public function __invoke(Item $item): Response
+    {
+        $changed = $this->handle(new PublishItemMessage($item));
+
+        $this->addFlash(
+            $changed ? 'success' : 'report',
+            $this->translator->trans($changed ? 'item.flash.published' : 'item.flash.already_published'),
+        );
+
+        return $this->redirectToRoute('item_index');
+    }
+}
+```
+
+`HandleTrait` declares a private `$messageBus` property and reads the bus from it, so assign it in the constructor
+instead of promoting it (a promoted `private readonly` property would conflict with the trait's declaration).
+`handle()` only works when the message is handled synchronously by exactly one handler: it throws if the message is
+routed to an async transport or has zero or several handlers.
+
 ## Templates
 
 Page templates extend your application's `templates/base.html.twig`, which in turn extends

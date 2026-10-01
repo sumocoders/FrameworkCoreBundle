@@ -131,6 +131,7 @@ class BreadcrumbListener
         // We're dealing with an expression, e.g. {item.name}
         if ($title[0] === '{' && $title[-1] === '}') {
             $expression = substr($title, 1, strlen($title) - 2);
+            $propertyPath = null;
 
             // @mago-expect lint:no-else-clause
             if (str_contains($expression, '.')) {
@@ -198,8 +199,7 @@ class BreadcrumbListener
                 );
             }
 
-            // @mago-expect lint:no-isset
-            if (!isset($propertyPath)) {
+            if ($propertyPath === null) {
                 throw new RuntimeException(
                     'When using objects in a breadcrumb, you have to specify which method to read.'
                     . ' E.g. {object.name}',
@@ -227,6 +227,7 @@ class BreadcrumbListener
         if (count($parameters)) {
             // @mago-expect analysis:mixed-assignment
             foreach ($parameters as $key => $parameterValue) {
+                $propertyPath = null;
                 // @mago-expect lint:no-else-clause
                 // @mago-expect analysis:mixed-argument
                 if (str_contains($parameterValue, '.')) {
@@ -282,8 +283,7 @@ class BreadcrumbListener
                     );
                 }
 
-                // @mago-expect lint:no-isset
-                if (!isset($propertyPath)) {
+                if ($propertyPath === null) {
                     throw new RuntimeException(
                         'When using objects in a breadcrumb, you have to specify which method to read.'
                         . ' E.g. {object.name}',

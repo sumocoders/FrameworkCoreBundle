@@ -108,7 +108,7 @@ final readonly class DoctrineAuditListener
                 if (str_contains($field, '.')) {
                     [$property, $subProperty] = explode('.', $field);
 
-                    $fieldReflection = new ReflectionProperty($className, $property);
+                    $fieldReflection = $entityUpdateReflectionClass->getProperty($property);
                     $embeddedAttributes = $fieldReflection->getAttributes(Embedded::class);
                     if (count($embeddedAttributes) === 0) {
                         continue;
@@ -121,7 +121,7 @@ final readonly class DoctrineAuditListener
 
                     // @mago-expect lint:no-else-clause
                 } else {
-                    $fieldReflection = new ReflectionProperty($className, $field);
+                    $fieldReflection = $entityUpdateReflectionClass->getProperty($field);
                 }
 
                 $sensitiveDataAttributes = $fieldReflection->getAttributes(SensitiveData::class);

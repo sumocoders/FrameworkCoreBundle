@@ -272,8 +272,7 @@ class CreatePrForOutdatedDependenciesCommand
         if (!is_callable($commandsToRun)) {
             throw new \InvalidArgumentException('The $commandsToRun parameter must be a callable.');
         }
-        // @mago-expect analysis:less-specific-nested-argument-type
-        call_user_func_array($commandsToRun, $arguments);
+        $commandsToRun(...$arguments);
 
         // push to remote
         $this->runCommand(

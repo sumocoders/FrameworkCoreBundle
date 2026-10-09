@@ -434,8 +434,8 @@ namespace App\Controller\Item\Admin;
 use App\Repository\ItemRepository;
 use SumoCoders\FrameworkCoreBundle\Attribute\Breadcrumb;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/admin/items', name: 'item_index')]
@@ -447,10 +447,10 @@ final class OverviewController extends AbstractController
     ) {
     }
 
-    public function __invoke(Request $request): Response
+    public function __invoke(#[MapQueryParameter] int $page = 1): Response
     {
         $items = $this->repository->getPaginated()
-            ->paginate($request->query->getInt('page', 1));
+            ->paginate($page);
 
         return $this->render('item/index.html.twig', ['items' => $items]);
     }

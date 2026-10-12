@@ -38,7 +38,8 @@ class ItemRepository extends ServiceEntityRepository
 
 ### Controller
 
-Call `paginate()` with the current page number from the query string:
+Call `paginate()` with the current page number from the query string. Map it onto a controller argument with
+`#[MapQueryParameter]` instead of reading it from the `Request`:
 
 ```php
 <?php
@@ -47,17 +48,17 @@ namespace App\Controller\Item;
 
 use App\Repository\ItemRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/items', name: 'item_index')]
 final class Index extends AbstractController
 {
-    public function __invoke(Request $request, ItemRepository $itemRepository): Response
+    public function __invoke(ItemRepository $itemRepository, #[MapQueryParameter] int $page = 1): Response
     {
         $items = $itemRepository->getPaginated()
-            ->paginate($request->query->getInt('page', 1));
+            ->paginate($page);
 
         return $this->render('item/index.html.twig', [
             'items' => $items,
@@ -130,19 +131,19 @@ public function getPaginated(string $sortField = 'name', string $sortDirection =
 }
 ```
 
-Controller:
+Controller, with `$page` mapped as above:
 
 ```php
 $users = $userRepository->getPaginated(
     $request->query->get('sort', 'name'),
     $request->query->get('direction', 'ASC'),
-)->paginate($request->query->getInt('page', 1));
+)->paginate($page);
 ```
 
 ## Filters with session persistence
 
 Without session storage, the filter resets when the user navigates to page 2. Store filter data in the session to
-persist it across page requests.
+persist it across page requests. `$page` is mapped with `#[MapQueryParameter]` as above.
 
 ```php
 <?php
@@ -163,7 +164,7 @@ if ($form->isSubmitted() && $form->isValid()) {
 }
 
 $users = $userRepository->getFiltered($filterData)
-    ->paginate($request->query->getInt('page', 1));
+    ->paginate($page);
 ```
 
 To reset the filter, remove the session key:
@@ -197,4 +198,6 @@ you're not using the bundle's own `pagination()` Twig function, which calls it f
   JOINs, ensure your query does not produce duplicate root entities
 - **`paginate()` not called**: always call `paginate()` before passing the paginator to the template; calling only the
   constructor does not execute the query
-- **Page parameter missing**: use `$request->query->getInt('page', 1)` so an absent `?page=` defaults to page 1
+- **Page parameter missing**: give the argument a default (`#[MapQueryParameter] int $page = 1`) so an absent
+  `?page=` defaults to page 1. A value that isn't an integer (`?page=abc`) returns a 404; `0` or a negative number
+  is clamped to page 1 by `paginate()`

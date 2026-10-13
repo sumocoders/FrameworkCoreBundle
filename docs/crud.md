@@ -155,6 +155,11 @@ accepts the entity in its constructor and assigns the inherited properties direc
 form is initialised with the message, so `$form->getData()` returns the message directly and can be dispatched
 without conversion.
 
+These messages have no transport, so they are handled synchronously and the controller can redirect right after
+dispatching. To send a message to a transport, put `#[AsMessage('async')]`
+(`Symfony\Component\Messenger\Attribute\AsMessage`) on the message class instead of adding it under
+`messenger.routing`.
+
 ```php
 <?php
 

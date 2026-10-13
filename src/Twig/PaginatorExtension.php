@@ -28,7 +28,7 @@ readonly class PaginatorExtension
         $route = $request->attributes->get('_route');
 
         // Make sure we read the route parameters from the passed option array
-        // @mago-expect analysis:mixed-argument(2),possible-method-access-on-null(2),possibly-null-property-access
+        // @mago-expect analysis:mixed-argument,possible-method-access-on-null(2),possibly-null-property-access
         $routeParams = array_merge($request->query->all(), $request->attributes->get('_route_params', []));
 
         $paginator->calculateStartAndEndPage();

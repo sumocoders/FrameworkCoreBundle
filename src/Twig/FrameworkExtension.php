@@ -32,7 +32,7 @@ readonly class FrameworkExtension
         }
 
         // @mago-expect analysis:possible-method-access-on-null,possibly-null-property-access
-        return 'theme-' . $this->requestStack->getCurrentRequest()->cookies->get('theme');
+        return 'theme-' . $this->requestStack->getCurrentRequest()->cookies->get('theme', '');
     }
 
     #[AsTwigFunction('sidebarIsOpen')]

@@ -109,12 +109,12 @@ class TitleListener
             $mapping = $parameterAttributes[0]->getArguments()['mapping'] ?? null;
             // @mago-expect lint:no-else-clause
             if ($mapping !== null && $parameters[$parameterName] !== null) {
-                // @mago-expect analysis:possible-method-access-on-null,non-existent-method(2),mixed-argument,mixed-array-access,invalid-array-element-key,less-specific-argument
+                // @mago-expect analysis:possible-method-access-on-null,non-existent-method(2),possibly-invalid-argument,mixed-array-access,invalid-array-element-key,less-specific-argument
                 $value = $this->manager
                     ->getRepository($reflextionParameter->getType()->getName())
                     ->findOneBy([$mapping[$parameterName] => $parameters[$parameterName]]);
             } else {
-                // @mago-expect analysis:possible-method-access-on-null,non-existent-method(2),mixed-argument
+                // @mago-expect analysis:possible-method-access-on-null,non-existent-method(2),possibly-invalid-argument
                 $value = $this->manager
                     ->getRepository($reflextionParameter->getType()->getName())
                     ->find($parameters[$parameterName]);

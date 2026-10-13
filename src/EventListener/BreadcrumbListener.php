@@ -158,7 +158,7 @@ class BreadcrumbListener
             $mapping = null;
             foreach ($method->getParameters() as $parameter) {
                 if ($parameter->name === $attributeName) {
-                    // @mago-expect analysis:possible-method-access-on-null,non-existent-method(2),mixed-assignment
+                    // @mago-expect analysis:possible-method-access-on-null,non-existent-method(2)
                     $name = $parameter->getType()->getName();
                     // @mago-expect lint:prefer-early-continue
                     foreach ($parameter->getAttributes() as $attribute) {
@@ -183,17 +183,17 @@ class BreadcrumbListener
 
             // @mago-expect lint:no-isset,no-else-clause
             if ($mapping !== null && isset($mapping[$attributeName])) {
-                // @mago-expect analysis:mixed-argument,invalid-array-element-key,less-specific-argument
+                // @mago-expect analysis:possibly-invalid-argument,invalid-array-element-key,less-specific-argument
                 $attribute = $this->manager
                     ->getRepository($name)
                     ->findOneBy([$mapping[$attributeName] => $attributeId]);
             } else {
-                // @mago-expect analysis:mixed-argument
+                // @mago-expect analysis:possibly-invalid-argument
                 $attribute = $this->manager->getRepository($name)->find($attributeId);
             }
 
             if (!is_object($attribute)) {
-                // @mago-expect analysis:mixed-operand(2)
+                // @mago-expect analysis:mixed-operand
                 throw new EntityNotFoundException(
                     'Could not resolve entity ' . $name . ' with ID ' . $attributeId,
                 );
@@ -213,7 +213,7 @@ class BreadcrumbListener
         if ($breadcrumb->hasRoute()) {
             $this->resolveRouteParameters($breadcrumb);
 
-            // @mago-expect analysis:mixed-argument(3),possible-method-access-on-null(2)
+            // @mago-expect analysis:mixed-argument,possible-method-access-on-null(2),possibly-null-argument
             return new Breadcrumb(
                 $title,
                 $this->router->generate(
@@ -258,7 +258,7 @@ class BreadcrumbListener
                 foreach ($method->getParameters() as $parameter) {
                     // @mago-expect lint:prefer-early-continue
                     if ($parameter->name === $attributeName) {
-                        // @mago-expect analysis:possible-method-access-on-null,non-existent-method(2),mixed-assignment
+                        // @mago-expect analysis:possible-method-access-on-null,non-existent-method(2)
                         $name = $parameter->getType()->getName();
                     }
                 }
@@ -273,11 +273,11 @@ class BreadcrumbListener
                     );
                 }
 
-                // @mago-expect analysis:mixed-argument
+                // @mago-expect analysis:possibly-invalid-argument
                 $attribute = $this->manager->getRepository($name)->find($attributeId);
 
                 if (!is_object($attribute)) {
-                    // @mago-expect analysis:mixed-operand(2)
+                    // @mago-expect analysis:mixed-operand
                     throw new RuntimeException(
                         'Could not resolve entity ' . $name . ' with ID ' . $attributeId,
                     );
@@ -392,7 +392,7 @@ class BreadcrumbListener
     private function resolveRouteParameters(BreadcrumbAttribute $breadcrumb): void
     {
         $route = $breadcrumb->getRoute();
-        // @mago-expect analysis:mixed-argument,possible-method-access-on-null
+        // @mago-expect analysis:possible-method-access-on-null
         $routeInformation = $this->getRouteInformation($route->getName());
         // @mago-expect analysis:mixed-assignment,possibly-null-array-access
         $requiredParameters = $routeInformation['parameters'];
@@ -435,7 +435,7 @@ class BreadcrumbListener
 
         // @mago-expect analysis:invalid-iterator,mixed-assignment,possibly-null-array-access
         foreach ($routeInformation['parameters'] as $requiredParameter) {
-            // @mago-expect analysis:mixed-argument(2),possible-method-access-on-null
+            // @mago-expect analysis:mixed-argument,possible-method-access-on-null,possibly-null-argument
             if (!\array_key_exists($requiredParameter, $route->getParameters())) {
                 throw new RuntimeException(
                     // @mago-expect analysis:mixed-operand

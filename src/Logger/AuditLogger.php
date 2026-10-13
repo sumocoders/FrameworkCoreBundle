@@ -54,7 +54,7 @@ class AuditLogger
     private function getIpAddress(): ?string
     {
         if ($this->requestStack->getCurrentRequest() !== null) {
-            // @mago-expect analysis:possible-method-access-on-null,mixed-return-statement
+            // @mago-expect analysis:possible-method-access-on-null
             return $this->requestStack->getCurrentRequest()->getClientIp();
         }
 
@@ -95,7 +95,7 @@ class AuditLogger
     private function getRoles(): array
     {
         if ($this->security->getUser() !== null) {
-            // @mago-expect analysis:possible-method-access-on-null,mixed-return-statement
+            // @mago-expect analysis:possible-method-access-on-null
             return $this->security->getUser()->getRoles();
         }
 
@@ -106,7 +106,7 @@ class AuditLogger
     {
         // If a request is available, return the current URI
         if ($this->requestStack->getCurrentRequest() !== null) {
-            // @mago-expect analysis:possible-method-access-on-null,mixed-return-statement
+            // @mago-expect analysis:possible-method-access-on-null
             return $this->requestStack->getCurrentRequest()->getUri();
         }
 

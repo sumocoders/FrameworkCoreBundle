@@ -158,7 +158,7 @@ class Paginator implements Countable, IteratorAggregate
         }
 
         if ($results instanceof IteratorAggregate) {
-            // @mago-expect analysis:mixed-return-statement,non-existent-method(2)
+            // @mago-expect analysis:less-specific-return-statement
             return $results->getIterator();
         }
 

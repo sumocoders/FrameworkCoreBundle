@@ -134,8 +134,10 @@ Override the block in your `templates/base.html.twig`:
   is prevented.
 - `MenuQuickSearchProvider` builds the menu through `framework.menu_builder` on every search, translates labels the
   way `templates/Menu/menu.html.twig` renders them (`trans` with the item's `translation_params` and
-  `translation_domain` extras, then `ucfirst`), skips items with `display` off and submenu parents linking to `#`.
-  Items your menu listener doesn't add for the current user don't show up either.
+  `translation_domain` extras, then `ucfirst`; a `false` domain keeps the label untranslated), skips items with
+  `display` off and submenu parents linking to `#`. Items your menu listener doesn't add for the current user don't
+  show up either. Results take a Bootstrap icon name, so an item without an icon or with a Font Awesome icon gets the
+  menu's fallback, `circle-fill`.
 - Both scorers share `GivenOrderScorer::DROP_OFF` (0.9), so a given rank scores the same whichever scorer produced it.
 
 ## Troubleshooting

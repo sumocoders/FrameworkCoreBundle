@@ -49,6 +49,14 @@ final class MenuQuickSearchProviderTest extends TestCase
         static::assertSame([], self::search('secret'));
     }
 
+    public function testItFallsBackToTheMenuIconForMissingOrNonBootstrapIcons(): void
+    {
+        static::assertSame(
+            ['circle-fill', 'circle-fill'],
+            array_map(static fn (QuickSearchResult $result): string => $result->icon, self::search('icon')),
+        );
+    }
+
     public function testItTranslatesLabelsUnlessTheDomainIsFalse(): void
     {
         static::assertSame(['Invoices'], self::texts('invoices'));
@@ -79,6 +87,11 @@ final class MenuQuickSearchProviderTest extends TestCase
             $users->addChild('list', ['uri' => '/users']);
             $users->addChild('roles', ['uri' => '/roles']);
             $menu->addChild('menu.billing', ['uri' => '/invoices']);
+            $menu->addChild('no icon', ['uri' => '/plain']);
+            $menu->addChild('font awesome icon', [
+                'uri' => '/fa',
+                'labelAttributes' => ['icon' => 'fa-solid fa-house'],
+            ]);
             $menu->addChild('reports', ['uri' => '/reports', 'extras' => ['translation_domain' => false]]);
         });
         $translator = new Translator('en');

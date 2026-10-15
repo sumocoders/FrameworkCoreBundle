@@ -67,7 +67,8 @@ final readonly class MenuQuickSearchProvider implements QuickSearchProvider
                 $matches[] = [
                     'text' => implode(' › ', $path),
                     'url' => $url,
-                    'icon' => is_string($icon) ? str_replace('bi bi-', '', $icon) : '',
+                    // Results take a Bootstrap icon name; anything else gets the menu's own fallback icon.
+                    'icon' => is_string($icon) && str_starts_with($icon, 'bi bi-') ? substr($icon, 6) : 'circle-fill',
                 ];
             }
 

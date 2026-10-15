@@ -1,5 +1,20 @@
 # Upgrade guide
 
+## To 19.2
+
+**Quick search (Cmd+K / Ctrl+K).** Every page on the bundle's `base.html.twig` now has a search modal over the main
+menu, and applications can add their own sources. See [docs/quick-search.md](docs/quick-search.md). The bundle now
+requires `symfony/ux-live-component`. To finish the update:
+
+1. Check `config/routes/ux_live_component.yaml` exists (Flex adds it with the package's recipe); without it the
+   results don't update while typing.
+2. Register the Stimulus controller: add
+   `'sumocoders/SearchModal' => ['path' => './vendor/sumocoders/framework-core-bundle/assets-public/controllers/search_modal_controller.js']`
+   to `importmap.php`, and `import SearchModal from 'sumocoders/SearchModal'` +
+   `app.register('search-modal', SearchModal)` to `assets/bootstrap.js`.
+3. Already built your own Cmd+K search? Remove it, or switch the bundle's off with
+   `{% block quick_search %}{% endblock %}`, so the page doesn't get two modals.
+
 ## To 18.1
 
 Two changes are visible in every project on update. Neither needs code changes, but both are

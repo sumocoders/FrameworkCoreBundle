@@ -113,7 +113,7 @@ class CreatePrForOutdatedDependenciesCommand
             $this->runConsoleCommand(
                 [
                     'command' => 'importmap:update',
-                    $package['name'],
+                    'packages' => [$package['name']],
                     '--no-interaction' => true,
                     '--ansi' => true,
                 ],
@@ -360,6 +360,10 @@ class CreatePrForOutdatedDependenciesCommand
             foreach ($command as $key => $value) {
                 if (is_bool($value) && $value) {
                     $commandString[] = $key;
+                    continue;
+                }
+                if (is_array($value)) {
+                    array_push($commandString, ...$value);
                     continue;
                 }
                 $commandString[] = $value;

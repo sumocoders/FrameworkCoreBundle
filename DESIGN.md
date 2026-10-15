@@ -152,7 +152,8 @@ The shell uses `.container-fluid` with no row/column wrapper. Bootstrap's grid a
 
 **Z-index.** `$zindex-offcanvas: 2105` and `$zindex-offcanvas-backdrop: 2100` (stock `1045` /
 `1040`) deliberately lift offcanvas above modals; `$zindex-modal-backdrop: 1040` (stock
-`1050`); bundle-only `$zindex-backtotop: 1035`. `.buttons-fixed` sits at `2000`.
+`1050`); bundle-only `$zindex-backtotop: 1035`. `.buttons-fixed` sits at `2000`, dropped to
+`$zindex-modal-backdrop - 1` under `.modal-open` so the backdrop covers it.
 
 ## Elevation and shape
 

@@ -1,5 +1,6 @@
-.modal-backdrop.in {
-  z-index: 9999999;
+// .buttons-fixed sits at z-index 2000, above the modal backdrop; drop it below the backdrop while a modal is open.
+.modal-open .buttons-fixed {
+  z-index: $zindex-modal-backdrop - 1;
 }
 
 .modal-content {

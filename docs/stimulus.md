@@ -264,6 +264,7 @@ Or an example with a link:
 
 ## Search modal
 
-`search-modal` opens the quick search modal on Cmd+K / Ctrl+K, focuses its input and moves focus through the results
-with the arrow keys. The bundle's `base.html.twig` already wires it up; see [quick-search.md](quick-search.md) for
-registering it in your application.
+`search-modal` opens and closes the quick search modal, focuses its input and moves focus through the results with the
+arrow keys. The Cmd+K / Ctrl+K shortcut is bound with `data-action` in `templates/quick_search.html.twig`, which the
+bundle's `base.html.twig` already includes; see [quick-search.md](quick-search.md) for registering it in your
+application.

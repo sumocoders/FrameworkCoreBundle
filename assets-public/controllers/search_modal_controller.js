@@ -1,8 +1,8 @@
 import { Controller } from '@hotwired/stimulus'
 import { Modal } from 'bootstrap'
 
-// Opens the quick search modal (see docs/quick-search.md) on Cmd+K / Ctrl+K and moves focus through its results
-// with the arrow keys.
+// Opens, closes and focuses the quick search modal (see docs/quick-search.md) and moves focus through its results
+// with the arrow keys. The shortcut is bound in templates/quick_search.html.twig.
 export default class extends Controller {
   open (event) {
     event.preventDefault()

@@ -19,6 +19,8 @@ core:
         navigation: navigation
 
     quick_search:
+        placeholder: Search…
+        no_results: No results
         source:
             navigation: Navigation
 

@@ -1,0 +1,15 @@
+{# No fade class, so close() on turbo:before-cache hides the modal before Turbo snapshots the page. #}
+<div class="modal"
+     id="quick-search"
+     tabindex="-1"
+     aria-label="{{ 'core.quick_search.placeholder'|trans }}"
+     data-controller="search-modal"
+     data-action="keydown.meta+k@window->search-modal#open keydown.ctrl+k@window->search-modal#open shown.bs.modal->search-modal#focus keydown.down->search-modal#next keydown.up->search-modal#previous turbo:before-cache@document->search-modal#close">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-body">
+        {{ component('SumoCodersFrameworkCore:QuickSearch') }}
+      </div>
+    </div>
+  </div>
+</div>

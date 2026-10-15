@@ -32,6 +32,7 @@ use SumoCoders\FrameworkCoreBundle\Twig\ContentExtension;
 use SumoCoders\FrameworkCoreBundle\Twig\FrameworkExtension;
 use SumoCoders\FrameworkCoreBundle\Twig\PaginatorExtension;
 use SumoCoders\FrameworkCoreBundle\Twig\PaginatorRuntime;
+use SumoCoders\FrameworkCoreBundle\Twig\Components\QuickSearch as QuickSearchComponent;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -84,6 +85,7 @@ return static function (ContainerConfigurator $container): void {
             service('framework.menu_builder'),
             service('translator')
         ])
+        ->set(QuickSearchComponent::class)
 
         /*
          * Forms

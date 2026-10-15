@@ -84,6 +84,10 @@ final readonly class MenuQuickSearchProvider implements QuickSearchProvider
         $parameters = $item->getExtra('translation_params', []);
         // @mago-expect analysis:mixed-assignment
         $domain = $item->getExtra('translation_domain', 'messages');
+        // A false domain means "don't translate", the label is shown as is.
+        if ($domain === false) {
+            return ucfirst($item->getLabel());
+        }
 
         return ucfirst($this->translator->trans(
             $item->getLabel(),

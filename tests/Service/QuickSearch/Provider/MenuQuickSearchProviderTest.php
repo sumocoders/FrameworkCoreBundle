@@ -11,7 +11,8 @@ use SumoCoders\FrameworkCoreBundle\Menu\MenuBuilder;
 use SumoCoders\FrameworkCoreBundle\Service\QuickSearch\Provider\MenuQuickSearchProvider;
 use SumoCoders\FrameworkCoreBundle\ValueObject\QuickSearchResult;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Component\Translation\IdentityTranslator;
+use Symfony\Component\Translation\Loader\ArrayLoader;
+use Symfony\Component\Translation\Translator;
 
 final class MenuQuickSearchProviderTest extends TestCase
 {
@@ -48,6 +49,21 @@ final class MenuQuickSearchProviderTest extends TestCase
         static::assertSame([], self::search('secret'));
     }
 
+    public function testItTranslatesLabelsUnlessTheDomainIsFalse(): void
+    {
+        static::assertSame(['Invoices'], self::texts('invoices'));
+        static::assertSame(['Reports'], self::texts('reports'));
+        static::assertSame([], self::texts('translated'));
+    }
+
+    /**
+     * @return list<string>
+     */
+    private static function texts(string $query): array
+    {
+        return array_map(static fn (QuickSearchResult $result): string => $result->text, self::search($query));
+    }
+
     /**
      * @return list<QuickSearchResult>
      */
@@ -62,11 +78,13 @@ final class MenuQuickSearchProviderTest extends TestCase
             $users = $menu->addChild('users', ['uri' => '#']);
             $users->addChild('list', ['uri' => '/users']);
             $users->addChild('roles', ['uri' => '/roles']);
+            $menu->addChild('menu.billing', ['uri' => '/invoices']);
+            $menu->addChild('reports', ['uri' => '/reports', 'extras' => ['translation_domain' => false]]);
         });
-        $provider = new MenuQuickSearchProvider(
-            new MenuBuilder(new MenuFactory(), $dispatcher),
-            new IdentityTranslator(),
-        );
+        $translator = new Translator('en');
+        $translator->addLoader('array', new ArrayLoader());
+        $translator->addResource('array', ['menu.billing' => 'invoices', 'reports' => 'translated reports'], 'en');
+        $provider = new MenuQuickSearchProvider(new MenuBuilder(new MenuFactory(), $dispatcher), $translator);
 
         return $provider->search($query, 10);
     }

@@ -23,6 +23,7 @@ use SumoCoders\FrameworkCoreBundle\Menu\MenuBuilder;
 use SumoCoders\FrameworkCoreBundle\Service\BreadcrumbTrail;
 use SumoCoders\FrameworkCoreBundle\Service\Fallbacks;
 use SumoCoders\FrameworkCoreBundle\Service\PageTitle;
+use SumoCoders\FrameworkCoreBundle\Service\QuickSearch\Provider\MenuQuickSearchProvider;
 use SumoCoders\FrameworkCoreBundle\Service\QuickSearch\Provider\QuickSearchProvider;
 use SumoCoders\FrameworkCoreBundle\Service\QuickSearch\QuickSearch;
 use SumoCoders\FrameworkCoreBundle\Service\Security\NonceGenerator;
@@ -78,6 +79,11 @@ return static function (ContainerConfigurator $container): void {
             tagged_iterator(QuickSearchProvider::class)
         ])
         ->alias(QuickSearch::class, 'framework.quick_search')
+        ->set('framework.quick_search.menu_provider', MenuQuickSearchProvider::class)
+        ->args([
+            service('framework.menu_builder'),
+            service('translator')
+        ])
 
         /*
          * Forms

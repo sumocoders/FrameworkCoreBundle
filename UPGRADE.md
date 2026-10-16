@@ -237,11 +237,15 @@ No action needed (new `base_no_sidebar.html.twig` layout).
 No action needed. 10.0.0 replaced `#[SensitiveData]` with PHP's `#[\SensitiveParameter]` and 10.0.1 reverted that.
 Only projects that switched while on exactly 10.0.0 must switch back to `#[SensitiveData]`.
 
-## JS
+## Upgrading legacy projects
 
-Sinds versie 5 zijn ale data attrbiuten van Bootstrap ge"namespaced". Dit wil dus zeggen dat ipv data-toggle, het nu data-*bs*-toggle is.
+For projects coming from much older versions of the bundle, or from pre-Symfony 5 codebases.
 
-Je kan dit oplossen door een search & replace te doen door heel je project.
+### Bootstrap 5 data attributes
+
+Since version 5, all Bootstrap data attributes are namespaced. So instead of `data-toggle` it's now `data-bs-toggle`.
+
+You can fix this with a search & replace across the whole project.
 
 ```
 data-toggle="modal" -> data-bs-toggle="modal"
@@ -249,24 +253,30 @@ data-trigger="focus" -> data-bs-trigger="focus"
 
 // etc...
 ```
-## PHP
 
-### Manieren om up te graden
-Je gaat best door de oude applicatie en maakt een inschatting van welke staat de code & dependencies zijn.
+### Ways to upgrade
 
-Afhankelijk van de staat van de codebase kies je voor een update strategy:
-* Upgrade in het project zelf (laag aantal code changes, geen major dependency changes)
-* Volledige rewrite in nieuw Symfony project (structuur van codebase is volledig anders dan moderne Symfony applicatie, veel code changes, veel dependency conflicten)
-* Strangler Fig van de oude applicatie (zie https://symfony.com/doc/current/migration.html#introducing-symfony-to-the-existing-application) (legacy project zonder Symfony langzaam migreren naar Symfony)
+Go through the old application and estimate the state of the code and dependencies.
+
+Depending on the state of the codebase, pick an upgrade strategy:
+* Upgrade within the project itself (few code changes, no major dependency changes)
+* Full rewrite in a new Symfony project (the structure of the codebase is completely different from a modern Symfony
+  application, lots of code changes, lots of dependency conflicts)
+* Strangler Fig of the old application (see https://symfony.com/doc/current/migration.html#introducing-symfony-to-the-existing-application)
+  (slowly migrate a legacy project without Symfony to Symfony)
 
 ### Bundles & Namespaces
 
-Als het project <Symfony 3 is, staat je code mogelijk nog in bundles in src/. Indien dit het geval is begin je best met in PHPStorm de oude src/ folder te renamen naar src_old/, een nieuwe src/ folder te maken, en vervolgens alle code uit de bundles samen te voegen in de nieuwe src/ folder. Normaal gezien zal PHPStorm dan automatisch de juiste namespace al klaarzetten in je files.
+If the project is older than Symfony 3, your code may still live in bundles in src/. If so, start by renaming the old
+src/ folder to src_old/ in PHPStorm, create a new src/ folder, and then merge all code from the bundles into the new
+src/ folder. PHPStorm should then set the correct namespace in your files automatically.
 
 ### Breadcrumbs
-De breadcrumbs in onze core bundle zijn niet BC. Als ze nog op de oude manier werken (met de listener in de controller) dan moet je dit manueel refactoren.
 
-Oude manier:
+The breadcrumbs in our core bundle are not backwards compatible. If they still work the old way (with the listener in
+the controller), you have to refactor them manually.
+
+Old way:
 ```php
 $this->breadCrumbBuilder->addSimpleItem(
     'order.header.index',
@@ -275,12 +285,12 @@ $this->breadCrumbBuilder->addSimpleItem(
     )
 );
 ```
-Nieuwe manier:
+New way:
 ```php
     #[Breadcrumb('order.header.index')]
     public function __invoke(
 ```
-Als het enkel annotation -> attributen is, kan je volgende Rector sets gebruiken:
+If it's only annotations -> attributes, you can use the following Rector sets:
 
 ```php
 DoctrineSetList::ANNOTATIONS_TO_ATTRIBUTES,
@@ -288,13 +298,16 @@ SymfonySetList::ANNOTATIONS_TO_ATTRIBUTES,
 ```
 
 ### Pagination
-Sinds v5.1.0 van de core bundle is paginatie niet meer met Pagerfanta, maar met onze eigen versie. Hiervoor zijn er een aantal changes (manueel) nodig:
-* Vervang in de repository alle oude `Pagerfanta` objecten door onze eigen `Paginator` objecten. Beide hebben een QueryBuilder als parameter, zelfde werking.
-* Vervang in je template de oude Pagerfanta Twig helper door onze eigen Twig helper.
+
+Since v5.1.0 of the core bundle, pagination no longer uses Pagerfanta but our own implementation. This needs a few
+(manual) changes:
+* In the repository, replace all old `Pagerfanta` objects with our own `Paginator` objects. Both take a QueryBuilder
+  as parameter and work the same way.
+* In your template, replace the old Pagerfanta Twig helper with our own Twig helper.
 ```twig
     {{ pagination(your_paginated_items) }}
 ```
-* Pas je Controllers aan naar de nieuwe werking:
+* Update your controllers to the new approach:
 ```php
 // getItems returns a Paginator object with a QueryBuilder inside.
 $paginatedItems = $itemRepository->getItems();
@@ -303,13 +316,17 @@ $paginatedItems->paginate($request->query->getInt('page', 1));
 ```
 
 ### VO -> ENUM
-Vroeger gebruikten we veel ValueObjects, ook om simpele string values op te slaan. Sinds PHP8 hebben we hiervoor native enums.
 
-Je kan je VOs dus omzetten naar enums (indien ze enkel een vaste lijst string values kunnen hebben). Zaken zoals Money, Coordinates of Range zijn nog steeds VOs. Zaken zoals Gender, Province, etc.. zijn enums.
+We used to use a lot of ValueObjects, also to store simple string values. Since PHP 8 we have native enums for this.
 
-Hiervoor is geen tool beschikbaar, Rector kan dit niet. Je moet dus zelf enums gaan maken en overal in de code dit aanpassen. Omdat dit best wel veel werk is, is het niet altijd de moeite om dit te doen. Is een nice-to-have.
+So you can convert your VOs to enums (if they can only hold a fixed list of string values). Things like Money,
+Coordinates or Range are still VOs. Things like Gender, Province, etc. are enums.
 
-In je entities gebruik je `#[ORM\COlumn(enumType: <enum_fqcn>)` van Doctrine. In je Symfony forms gebruik je het `EnumType` form type.
+There is no tool for this, Rector can't do it. You have to create the enums yourself and update the code everywhere.
+Because this is quite a lot of work, it's not always worth doing. It's a nice-to-have.
+
+In your entities, use Doctrine's `#[ORM\Column(enumType: <enum_fqcn>)]`. In your Symfony forms, use the `EnumType`
+form type.
 
 ```php
 enum Gender: string
@@ -319,7 +336,8 @@ enum Gender: string
 }
 ```
 ### Annotation -> attributes
-Gebruik Rector, met volgende config:
+
+Use Rector, with the following config:
 ```php
 <?php
 
@@ -364,23 +382,27 @@ return function (RectorConfig $rectorConfig): void {
 ```
 
 ### Security
-Pre Symfony 5 was de security.yaml anders. Onder andere de password encoders/hashers config is aangepast.
+
+Before Symfony 5, security.yaml looked different. Among other things, the password encoders/hashers config changed.
 
 config/packages/security.yaml
 ```yaml
-    # oud
+    # old
     encoders:
         App\Entity\User\User:
             algorithm: auto
 
-    # nieuw
+    # new
     password_hashers:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
 ```
 
-Indien er een oude user implementatie (met msgphp bundle, of iets ouder) in het projet zit, is het vaak het snelst om alles weg te smijten en https://github.com/sumocoders/Framework-User-Implementation-Example opnieuw over te nemen.
+If the project contains an old user implementation (with the msgphp bundle, or something older), it's often fastest
+to throw it all out and copy https://github.com/sumocoders/Framework-User-Implementation-Example again.
+
 ### Config
-De Sentry configuratie om errors te ignoren is aangepast. Je gebruikt nu best deze syntax:
+
+The Sentry configuration for ignoring errors changed. Use this syntax:
 
 config/packages/sentry.yaml
 ```yaml

@@ -142,7 +142,9 @@ Layout and dark-mode rework.
   `$menu-active-color`, plus their `-dark` variants.
 - **`symfony/ux-toggle-password` removed.** The bundle ships its own `TogglePasswordTypeExtension`, on by default for
   every password field. Remove the UX package and its importmap/`controllers.json` entry, and register the bundle's
-  controller: importmap `sumocoders/TogglePassword` pointing to `controllers/toggle_password_controller.js`, and
+  controller:
+  `symfony console importmap:require sumocoders/TogglePassword --path "./vendor/sumocoders/framework-core-bundle/assets-public/controllers/toggle_password_controller.js"`,
+  then in `assets/bootstrap.js` `import TogglePassword from 'sumocoders/TogglePassword'` and
   `app.register('toggle-password', TogglePassword)`.
 - Navigation is now an offcanvas. The user menu, the theme toggler and the new language toggler live in it.
 - The `logo_image` block moved from `navigation.html.twig` to `base.html.twig`, and there are new blocks

@@ -1,0 +1,24 @@
+<div{{ attributes }}>
+  <input type="search"
+         class="form-control form-control-lg"
+         data-model="debounce(300)|query"
+         autocomplete="off"
+         placeholder="{{ 'core.quick_search.placeholder'|trans }}"
+         aria-label="{{ 'core.quick_search.placeholder'|trans }}">
+  {% set results = this.results %}
+  {% if results is not null %}
+    {% if results is empty %}
+      <p class="text-body-secondary mb-0 mt-3">{{ 'core.quick_search.no_results'|trans }}</p>
+    {% else %}
+      <div class="list-group mt-3">
+        {% for result in results %}
+          <a class="list-group-item list-group-item-action d-flex align-items-center" href="{{ result.url }}">
+            <i class="bi bi-{{ result.icon }} me-2" aria-hidden="true"></i>
+            <span>{{ result.text }}</span>
+            <span class="badge text-bg-secondary ms-auto">{{ result.source }}</span>
+          </a>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endif %}
+</div>

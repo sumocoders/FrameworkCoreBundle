@@ -27,6 +27,7 @@ Requirements:
 | [pagination.md](pagination.md)                     | `Paginator`, wraps a Doctrine QueryBuilder for paginated results                       |
 | [serializer.md](serializer.md)                     | `CircularReferenceHandler` + `MaxDepthHandler`, opt-in Symfony Serializer id resolvers |
 | [menu.md](menu.md)                                 | `MenuBuilder` + `ConfigureMenuEvent`, KnpMenu-based navigation                         |
+| [quick-search.md](quick-search.md)                 | Cmd+K search modal over the menu and application-defined providers                     |
 | [forms.md](forms.md)                               | Custom form types (`ImageType`, `FileType`, `BelgiumPostCodeType`) and type extensions |
 | [uploading-files.md](uploading-files.md)           | `AbstractFile` + DBAL type, file upload value objects wired to Doctrine                |
 | [uploading-images.md](uploading-images.md)         | `AbstractImage` + DBAL type, image upload value objects with fallback support          |

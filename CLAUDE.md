@@ -71,6 +71,9 @@ For invokable controllers, prefer placing `#[Route]`, `#[Breadcrumb]`, and `#[Ti
   results, prev/next. See `docs/pagination.md`.
 - **Menu** (`src/Menu/MenuBuilder.php`): KnpMenu builder dispatching `ConfigureMenuEvent`; consuming apps listen to
   that event to add items. See `docs/menu.md`.
+- **Quick search** (`src/Service/QuickSearch/`, `src/Twig/Components/QuickSearch.php`): Cmd+K modal in
+  `base.html.twig`, a live component over tagged `QuickSearchProvider`s (the bundle ships the menu provider). See
+  `docs/quick-search.md`.
 - **Audit trail** (`src/DoctrineListener/DoctrineAuditListener.php`): Doctrine `onFlush` + `postPersist` listener that
   logs creates/updates/deletes via `AuditLogger`. Entities opt in with `#[AuditTrail]`. See `docs/audit-trail.md`.
 - **Sentry user context** (`src/EventListener/SentryUserContextListener.php`): attaches the authenticated (and

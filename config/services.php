@@ -23,12 +23,16 @@ use SumoCoders\FrameworkCoreBundle\Menu\MenuBuilder;
 use SumoCoders\FrameworkCoreBundle\Service\BreadcrumbTrail;
 use SumoCoders\FrameworkCoreBundle\Service\Fallbacks;
 use SumoCoders\FrameworkCoreBundle\Service\PageTitle;
+use SumoCoders\FrameworkCoreBundle\Service\QuickSearch\Provider\MenuQuickSearchProvider;
+use SumoCoders\FrameworkCoreBundle\Service\QuickSearch\Provider\QuickSearchProvider;
+use SumoCoders\FrameworkCoreBundle\Service\QuickSearch\QuickSearch;
 use SumoCoders\FrameworkCoreBundle\Service\Security\NonceGenerator;
 use SumoCoders\FrameworkCoreBundle\Twig\AssetContentExtension;
 use SumoCoders\FrameworkCoreBundle\Twig\ContentExtension;
 use SumoCoders\FrameworkCoreBundle\Twig\FrameworkExtension;
 use SumoCoders\FrameworkCoreBundle\Twig\PaginatorExtension;
 use SumoCoders\FrameworkCoreBundle\Twig\PaginatorRuntime;
+use SumoCoders\FrameworkCoreBundle\Twig\Components\QuickSearch as QuickSearchComponent;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -39,6 +43,7 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\param;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\tagged_iterator;
 
 return static function (ContainerConfigurator $container): void {
     $container->parameters()
@@ -66,6 +71,21 @@ return static function (ContainerConfigurator $container): void {
             service('event_dispatcher')
         ])
         ->tag('knp_menu.menu_builder', ['method' => 'createMainMenu', 'alias' => 'side_menu'])
+
+        /*
+         * Quick search
+         */
+        ->set('framework.quick_search', QuickSearch::class)
+        ->args([
+            tagged_iterator(QuickSearchProvider::class)
+        ])
+        ->alias(QuickSearch::class, 'framework.quick_search')
+        ->set('framework.quick_search.menu_provider', MenuQuickSearchProvider::class)
+        ->args([
+            service('framework.menu_builder'),
+            service('translator')
+        ])
+        ->set(QuickSearchComponent::class)
 
         /*
          * Forms

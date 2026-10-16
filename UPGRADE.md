@@ -226,8 +226,10 @@ No action needed (new `base_no_sidebar.html.twig` layout).
 - Legacy JS was replaced by Stimulus controllers in `assets-public/controllers/` (clipboard, date-time-picker,
   form-collection, password-strength-checker, popover, scroll-to-top, sidebar-collapsable, tabs, theme, toast,
   tooltip) and the helpers `js/toast.js` (`sumocoders/addToast`), `js/cookie.js` and `js/debounce.js`. Removed:
-  SelectSearch, Popover.js, Tooltip.js, Theme.js, Flash.js, Form.js, and the goback and scrolling JS. Markup using
-  `data-role=...` hooks must switch to `data-controller`.
+  SelectSearch, Popover.js, Tooltip.js, Theme.js, Flash.js, Form.js, and the goback and scrolling JS. Markup that used
+  `data-role=...` to start the old JS must switch to `data-controller`. Keep the `data-role` attributes the new
+  controllers still read inside their element, such as `collection-item` and `collection-item-change-order` in form
+  collections.
 - Add `vendor/sumocoders/framework-core-bundle/assets-public/` to the asset_mapper paths. Each controller is added with
   `symfony console importmap:require sumocoders/<Name> --path "./vendor/sumocoders/framework-core-bundle/assets-public/<path>"`
   and registered in `assets/bootstrap.js` with `app.register('<name>', <Name>)`. See `scripts/assets/js/bootstrap.js`

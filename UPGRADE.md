@@ -135,8 +135,9 @@ Layout and dark-mode rework.
 
 - **`style-dark.scss` removed**, together with `themes/_dark.scss`, `_bootstrap-colors.scss` and `dark/*`. Dark mode
   now uses Bootstrap color modes: `_bootstrap-variables-dark.scss` and `@include color-mode(dark)`. Move project dark
-  overrides into the main stylesheet and remove the second stylesheet `<link>`. To turn dark mode off, set
-  `$enable-dark-mode: false`.
+  overrides into the main stylesheet, delete the project's `assets/styles/style-dark.scss`, remove its entry from
+  `root_sass` in `config/packages/symfonycasts_sass.yaml` (otherwise `sass:build` fails) and remove the second
+  stylesheet `<link>`. To turn dark mode off, set `$enable-dark-mode: false`.
 - New SCSS variables for the menu and top bar: `$top-color`, `$menu-bg`, `$menu-color`, `$menu-active-bg`,
   `$menu-active-color`, plus their `-dark` variants.
 - **`symfony/ux-toggle-password` removed.** The bundle ships its own `TogglePasswordTypeExtension`, on by default for

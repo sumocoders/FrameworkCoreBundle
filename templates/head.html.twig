@@ -11,6 +11,11 @@
         {% set csp_nonce = csp_nonce('style') %}
         <meta name="csp-nonce" content="{{ csp_nonce }}">
         <meta name="author" content="SumoCoders">
+        {% set meta %}{% guard function meta_tags %}{{ meta_tags() }}{% endguard %}{% endset %}
+        {{ meta }}
+        {% if (meta is empty) or ('og:image' not in meta) %}
+            <meta property="og:image" content="{{ absolute_url(asset('images/image_src.png')) }}"/>
+        {% endif %}
     {% endblock %}
 
     {% block stylesheets %}
@@ -37,17 +42,6 @@
         <meta name="application-name" content="{{ fallbacks.get('site_title') }}" />
         <meta name="msapplication-TileColor" content="#3380aa" />
         <meta name="msapplication-TileImage" content="{{ asset('images/metro-tile.png') }}" />
-    {% endblock %}
-
-    {% block og %}
-        <meta property="og:image" content="{{ asset('images/image_src.png') }}" />
-    {% endblock %}
-
-    {% block twitter %}
-        {# Twitter #}
-        <meta name="twitter:card" content="summary_large_image">
-        <meta name="twitter:title" content="{{ fallbacks.get('site_title') }}">
-        <meta name="twitter:image" content="{{ asset('images/image_src.png') }}" />
     {% endblock %}
 
     {% block end_head %}

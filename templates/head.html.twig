@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ title }}</title>
+    <title>{% block title %}{{ page_title }}{% endblock %}</title>
 
     {% block meta %}
         {# Call both script and style so both nonces are generated #}
@@ -53,3 +53,5 @@
     {% block end_head %}
     {% endblock %}
 </head>
+{% block body %}<body></body>{% endblock %}
+</html>

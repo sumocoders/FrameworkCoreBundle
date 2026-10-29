@@ -1,6 +1,6 @@
 {% extends '@SumoCodersFrameworkCore/base_error.html.twig' %}
 
-{% block body %}
+{% block main%}
     <h1>{{ 'error.messages.noRouteFound'|trans }}</h1>
     <p>{{ 'error.messages.noRouteFoundMessage'|trans }}</p>
     {% if app.request.headers.get('referer') is not empty and app.request.headers.get('referer') != app.request.uri %}

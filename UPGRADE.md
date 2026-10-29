@@ -2,6 +2,52 @@
 
 Sections are newest first. Each one lists what to do when upgrading to that version line, patch releases included.
 
+## To 20.0
+
+**The layout templates now extend `head.html.twig` instead of including it.** `head.html.twig` became the root
+template: it owns `<!doctype>`, `<html>`, `<head>` and `</html>`, and ends with an empty
+`{% block body %}<body></body>{% endblock %}` that each layout fills. `base.html.twig`, `base_no_sidebar.html.twig`,
+`base_error.html.twig`, `empty.html.twig` and `user.html.twig` all start with
+`{% extends '@SumoCodersFrameworkCore/head.html.twig' %}`. The win: you can now override a single head block
+(`title`, `meta`, `stylesheets`, `javascripts`, `icons`, `favicon`, `windows_tile`, `og`, `twitter`, `end_head`)
+instead of replacing the whole `<head>`.
+
+1. **`{% block head %}` no longer exists.** A template that still overrides it overrides nothing, and loses its
+   customisation without any error. Override the specific block instead:
+
+   ```twig
+   {# before #}
+   {% block head %}
+       {{ parent() }}
+       <link rel="stylesheet" href="{{ asset('styles/admin.scss') }}">
+   {% endblock %}
+
+   {# after #}
+   {% block stylesheets %}
+       {{ parent() }}
+       <link rel="stylesheet" href="{{ asset('styles/admin.scss') }}">
+   {% endblock %}
+   ```
+
+2. **`{% block body %}` means the whole `<body>` now.** In `base_error.html.twig` it used to be the content hole that
+   `Error/*.html.twig` filled; that hole is called `main` from now on, matching `base.html.twig`. Grep your own error
+   templates for `{% block body %}` and rename it to `{% block main %}`. This one fails silently too: left as `body`,
+   the template replaces the entire error page chrome instead of filling it. Page templates extending
+   `base.html.twig`, `base_no_sidebar.html.twig`, `empty.html.twig` or `user.html.twig` already used `main` and need
+   no change.
+
+3. **Don't `include` `head.html.twig` any more.** It now renders `<body></body>` and `</html>` itself, so a custom
+   layout that includes it and then writes its own `<body>` produces broken markup. Make that layout
+   `{% extends '@SumoCodersFrameworkCore/head.html.twig' %}` and move its body into `{% block body %}`.
+
+4. **The `title` variable became a block.** `<title>` is now `{% block title %}{{ page_title }}{% endblock %}`.
+   Templates that already define `{% block title %}` keep working, it resolves through inheritance instead of being
+   read with `block('title') is defined`. Only a direct `include('...head.html.twig', {title: '...'})` is affected,
+   and that call should become an `extends` per point 3 anyway.
+
+No action needed: `base_no_sidebar.html.twig`'s `<body>` lost its `data-theme-path` attribute. Nothing read it, and
+the `style-dark.scss` it pointed at was already dropped in 15.0.
+
 ## To 19.2
 
 **Quick search (Cmd+K / Ctrl+K).** Every page on the bundle's `base.html.twig` now has a search modal over the main

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ title }}</title>
+    <title>{% block title %}{{ page_title }}{% endblock %}</title>
 
     {% block meta %}
         {# Call both script and style so both nonces are generated #}
@@ -11,6 +11,11 @@
         {% set csp_nonce = csp_nonce('style') %}
         <meta name="csp-nonce" content="{{ csp_nonce }}">
         <meta name="author" content="SumoCoders">
+        {% set meta %}{% guard function meta_tags %}{{ meta_tags() }}{% endguard %}{% endset %}
+        {{ meta }}
+        {% if (meta is empty) or ('og:image' not in meta) %}
+            <meta property="og:image" content="{{ absolute_url(asset('images/image_src.png')) }}"/>
+        {% endif %}
     {% endblock %}
 
     {% block stylesheets %}
@@ -39,17 +44,8 @@
         <meta name="msapplication-TileImage" content="{{ asset('images/metro-tile.png') }}" />
     {% endblock %}
 
-    {% block og %}
-        <meta property="og:image" content="{{ asset('images/image_src.png') }}" />
-    {% endblock %}
-
-    {% block twitter %}
-        {# Twitter #}
-        <meta name="twitter:card" content="summary_large_image">
-        <meta name="twitter:title" content="{{ fallbacks.get('site_title') }}">
-        <meta name="twitter:image" content="{{ asset('images/image_src.png') }}" />
-    {% endblock %}
-
     {% block end_head %}
     {% endblock %}
 </head>
+{% block body %}<body></body>{% endblock %}
+</html>

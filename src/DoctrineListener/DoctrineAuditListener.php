@@ -53,7 +53,6 @@ final readonly class DoctrineAuditListener
             if ($classAndId === null) {
                 continue;
             }
-            // @mago-expect analysis:mixed-assignment
             [$class, $id] = $classAndId;
 
             $collectionUpdatesByOwner[$class][$id][] = $collectionUpdate;
@@ -64,7 +63,6 @@ final readonly class DoctrineAuditListener
             if ($classAndId === null) {
                 continue;
             }
-            // @mago-expect analysis:mixed-assignment
             [$class, $id] = $classAndId;
 
             $collectionDeletionsByOwner[$class][$id][] = $collectionDeletion;
@@ -88,6 +86,9 @@ final readonly class DoctrineAuditListener
             $className = $entityUpdateReflectionClass->getName();
             // @mago-expect analysis:mixed-assignment
             $id = $unitOfWork->getSingleIdentifierValue($entityUpdate);
+            if (!is_int($id) && !is_string($id)) {
+                continue;
+            }
 
             // @mago-expect analysis:mixed-assignment
             $propertiesToTrack = $auditTrailAttributes[0]->getArguments()['fields'] ?? [];
@@ -139,7 +140,6 @@ final readonly class DoctrineAuditListener
 
             if (
                 array_key_exists($className, $collectionUpdatesByOwner)
-                // @mago-expect analysis:less-specific-nested-argument-type,mixed-argument
                 && array_key_exists($id, $collectionUpdatesByOwner[$className])
             ) {
                 foreach ($collectionUpdatesByOwner[$className][$id] as $collectionUpdate) {
@@ -154,7 +154,6 @@ final readonly class DoctrineAuditListener
 
             if (
                 array_key_exists($className, $collectionDeletionsByOwner)
-                // @mago-expect analysis:less-specific-nested-argument-type,mixed-argument
                 && array_key_exists($id, $collectionDeletionsByOwner[$className])
             ) {
                 foreach ($collectionDeletionsByOwner[$className][$id] as $collectionDeletion) {
@@ -355,6 +354,7 @@ final readonly class DoctrineAuditListener
     /**
      * @return null|list{class-string|string, mixed}
      */
+    /** @return array{class-string, int|string}|null */
     private function getClassAndIdForCollectionChange(
         UnitOfWork $unitOfWork,
         PersistentCollection $collectionChange,
@@ -375,6 +375,9 @@ final readonly class DoctrineAuditListener
         }
         // @mago-expect analysis:mixed-assignment
         $id = $unitOfWork->getSingleIdentifierValue($owner);
+        if (!is_int($id) && !is_string($id)) {
+            return null;
+        }
 
         return [$class, $id];
     }

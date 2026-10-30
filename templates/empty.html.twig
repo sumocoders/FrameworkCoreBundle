@@ -1,7 +1,6 @@
-{% block head %}
-    {{ include('@SumoCodersFrameworkCore/head.html.twig', {title: block('title') is defined ? block('title') : page_title}) }}
-{% endblock %}
+{% extends '@SumoCodersFrameworkCore/head.html.twig' %}
 
+{% block body %}
 <body class="body-empty">
 {{ include('@SumoCodersFrameworkCore/settheme.html.twig') }}
 
@@ -10,4 +9,4 @@
       {% block main %}{% endblock %}
     </div>
 </body>
-</html>
+{% endblock %}

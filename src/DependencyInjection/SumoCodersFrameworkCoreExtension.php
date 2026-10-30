@@ -21,5 +21,18 @@ class SumoCodersFrameworkCoreExtension extends Extension
         // An #[AutoconfigureTag] on the interface only works for classes found by resource scanning, which this bundle
         // doesn't do; register it here so the bundle's providers and the application's are both tagged.
         $container->registerForAutoconfiguration(QuickSearchProvider::class)->addTag(QuickSearchProvider::class);
+
+        $container->prependExtensionConfig('doctrine', [
+            'orm' => [
+                'mappings' => [
+                    'FrameworkCoreBundle' => [
+                        'type' => 'attribute',
+                        'dir' => __DIR__ . '/../Entity',
+                        'prefix' => 'SumoCoders\FrameworkCoreBundle\Entity',
+                        'alias' => 'FrameworkCoreBundle',
+                    ],
+                ],
+            ],
+        ]);
     }
 }

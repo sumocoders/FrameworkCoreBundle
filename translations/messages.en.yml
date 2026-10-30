@@ -167,3 +167,29 @@ user:
 'Postcode and municipality': Postcode and municipality
 Show password: Show password
 Hide password: Hide password
+
+seo:
+  card:
+    title: 'SEO settings'
+  label:
+    pageTitle: 'Page title'
+    metaDescription: 'Meta description'
+    robotsIndex: 'Index'
+    robotsFollow: 'Follow links'
+    robotsAdditional: 'Extra robots directives'
+  help:
+    pageTitle: 'The title shown by search engines and in the browser tab.'
+    metaDescription: 'The short text that search engines often display beneath the title in search results.'
+    robotsIndex: 'Determines whether search engines may include this page in their search results.'
+    robotsFollow: 'Determines whether search engines are allowed to follow the links on this page to other pages.'
+    robotsAdditional: 'Additional restrictions. These apply independently of the options listed above and are only necessary in specific cases.'
+  robots:
+    heading: 'Robots'
+    none: 'No choice'
+    index: 'Index'
+    noindex: 'No index'
+    follow: 'Follow'
+    nofollow: 'No follow'
+    noarchive: 'No archive'
+    nosnippet: 'No snippet'
+    noimageindex: 'No image index'

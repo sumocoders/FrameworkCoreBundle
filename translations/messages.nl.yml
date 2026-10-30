@@ -167,3 +167,29 @@ user:
 'Postcode and municipality': Postcode en woonplaats
 Show password: Toon wachtwoord
 Hide password: Verberg wachtwoord
+
+seo:
+  card:
+    title: 'SEO-instellingen'
+  label:
+    pageTitle: 'Paginatitel'
+    metaDescription: 'Metabeschrijving'
+    robotsIndex: 'Indexeren'
+    robotsFollow: 'Links volgen'
+    robotsAdditional: 'Extra robots-richtlijnen'
+  help:
+    pageTitle: 'De titel die zoekmachines en de browsertab tonen.'
+    metaDescription: 'De korte tekst die zoekmachines vaak onder de titel tonen in de zoekresultaten.'
+    robotsIndex: 'Bepaalt of zoekmachines deze pagina mogen opnemen in hun zoekresultaten.'
+    robotsFollow: 'Bepaalt of zoekmachines de links op deze pagina mogen volgen naar andere pagina''s.'
+    robotsAdditional: 'Extra beperkingen. Werken los van de keuzes hierboven en zijn enkel nodig in specifieke gevallen.'
+  robots:
+    heading: 'Robots'
+    none: 'Geen keuze'
+    index: 'Index'
+    noindex: 'No index'
+    follow: 'Follow'
+    nofollow: 'No follow'
+    noarchive: 'No archive'
+    nosnippet: 'No snippet'
+    noimageindex: 'No image index'

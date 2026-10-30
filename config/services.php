@@ -6,40 +6,43 @@ use SumoCoders\FrameworkCoreBundle\Command\Maintenance\CreatePrForOutdatedDepend
 use SumoCoders\FrameworkCoreBundle\Command\TranslateCommand;
 use SumoCoders\FrameworkCoreBundle\DoctrineListener\DoctrineAuditListener;
 use SumoCoders\FrameworkCoreBundle\EventListener\BreadcrumbListener;
-use SumoCoders\FrameworkCoreBundle\EventListener\ResponseSecurer;
+use SumoCoders\FrameworkCoreBundle\EventListener\MetaContextListener;
 use SumoCoders\FrameworkCoreBundle\EventListener\SentryUserContextListener;
 use SumoCoders\FrameworkCoreBundle\EventListener\TitleListener;
-use SumoCoders\FrameworkCoreBundle\Form\Extension\TogglePasswordTypeExtension;
-use SumoCoders\FrameworkCoreBundle\Form\Type\BelgiumPostCodeType;
-use SumoCoders\FrameworkCoreBundle\Form\Type\ImageType;
-use SumoCoders\FrameworkCoreBundle\Form\Type\FileType;
 use SumoCoders\FrameworkCoreBundle\Form\Extension\BirthdayTypeExtension;
 use SumoCoders\FrameworkCoreBundle\Form\Extension\CollectionTypeExtension;
 use SumoCoders\FrameworkCoreBundle\Form\Extension\DateTimeTypeExtension;
 use SumoCoders\FrameworkCoreBundle\Form\Extension\DateTypeExtension;
 use SumoCoders\FrameworkCoreBundle\Form\Extension\TimeTypeExtension;
+use SumoCoders\FrameworkCoreBundle\Form\Extension\TogglePasswordTypeExtension;
+use SumoCoders\FrameworkCoreBundle\Form\Type\BelgiumPostCodeType;
+use SumoCoders\FrameworkCoreBundle\Form\Type\FileType;
+use SumoCoders\FrameworkCoreBundle\Form\Type\ImageType;
+use SumoCoders\FrameworkCoreBundle\Form\Type\SeoType;
 use SumoCoders\FrameworkCoreBundle\Logger\AuditLogger;
 use SumoCoders\FrameworkCoreBundle\Menu\MenuBuilder;
 use SumoCoders\FrameworkCoreBundle\Service\BreadcrumbTrail;
 use SumoCoders\FrameworkCoreBundle\Service\Fallbacks;
+use SumoCoders\FrameworkCoreBundle\Service\MetaContext;
 use SumoCoders\FrameworkCoreBundle\Service\PageTitle;
 use SumoCoders\FrameworkCoreBundle\Service\QuickSearch\Provider\MenuQuickSearchProvider;
 use SumoCoders\FrameworkCoreBundle\Service\QuickSearch\Provider\QuickSearchProvider;
 use SumoCoders\FrameworkCoreBundle\Service\QuickSearch\QuickSearch;
 use SumoCoders\FrameworkCoreBundle\Service\Security\NonceGenerator;
 use SumoCoders\FrameworkCoreBundle\Twig\AssetContentExtension;
+use SumoCoders\FrameworkCoreBundle\Twig\Components\QuickSearch as QuickSearchComponent;
 use SumoCoders\FrameworkCoreBundle\Twig\ContentExtension;
 use SumoCoders\FrameworkCoreBundle\Twig\FrameworkExtension;
+use SumoCoders\FrameworkCoreBundle\Twig\MetaExtension;
 use SumoCoders\FrameworkCoreBundle\Twig\PaginatorExtension;
-use SumoCoders\FrameworkCoreBundle\Twig\PaginatorRuntime;
-use SumoCoders\FrameworkCoreBundle\Twig\Components\QuickSearch as QuickSearchComponent;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use SumoCoders\FrameworkCoreBundle\Twig\SchemaExtension;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\param;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
@@ -191,6 +194,30 @@ return static function (ContainerConfigurator $container): void {
             service('translator')
         ])
         ->alias(PageTitle::class, 'framework.page_title')
+
+        /*
+         * SEO
+         */
+        ->set(MetaContext::class)
+
+        ->set('framework.seo_type', SeoType::class)
+        ->tag('form.type', ['alias' => 'seo'])
+
+        ->set('framework.meta_extension', MetaExtension::class)
+        ->tag('twig.attribute_extension')
+
+        ->set('framework.schema_extension', SchemaExtension::class)
+        ->tag('twig.attribute_extension')
+
+        ->set(MetaContextListener::class)
+        ->tag(
+            'kernel.event_listener',
+            [
+                'event' => 'kernel.controller_arguments',
+                'method' => 'onKernelControllerArguments',
+                'priority' => -2
+            ]
+        )
 
         /*
          * Nelmio Nonce Generator

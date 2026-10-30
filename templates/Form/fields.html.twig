@@ -464,3 +464,82 @@
 {%- block toggle_password_widget -%}
   <div class="{{ toggle_container_classes|join(' ') }}">{{ block('password_widget') }}</div>
 {%- endblock toggle_password_widget -%}
+
+{%- block seo_widget -%}
+    {%- set seo_has_data = form.overridePageTitle.vars.checked
+        or form.overrideMetaDescription.vars.checked
+        or form.robotsIndex.vars.value is not empty
+        or form.robotsFollow.vars.value is not empty
+        or form.robotsAdditional.vars.value|length > 0 -%}
+    <div
+        class="card mb-3 seo-card" {% with {attr: attr|merge({'data-controller': 'seo-meta-form', 'data-seo-meta-form-page-title-source-selector-value': page_title_source_selector})} %}{{ block('widget_attributes') }}{% endwith %}>
+        <div class="card-header p-0">
+            <button
+                type="button"
+                class="btn btn-link w-100 text-start text-decoration-none d-flex align-items-center gap-2 fw-semibold"
+                data-bs-toggle="collapse"
+                data-bs-target="#{{ id }}-collapse"
+                aria-expanded="{{ seo_has_data ? 'true' : 'false' }}"
+                aria-controls="{{ id }}-collapse"
+            >
+                <i class="bi bi-chevron-down"></i>
+                {{ 'seo.card.title'|trans }}
+            </button>
+        </div>
+        <div id="{{ id }}-collapse" class="collapse{{ seo_has_data ? ' show' : '' }}">
+            <div class="card-body">
+                {{ form_label(form.pageTitle) }}
+                <div class="input-group mb-1">
+                    <div class="input-group-text">
+                        {{ form_widget(form.overridePageTitle, {attr: {'data-seo-meta-form-target': 'pageTitleCheckbox', 'data-action': 'change->seo-meta-form#togglePageTitle'}}) }}
+                    </div>
+                    {{ form_widget(form.pageTitle, {attr: {'data-seo-meta-form-target': 'pageTitleField'}}) }}
+                </div>
+                {{ form_help(form.pageTitle) }}
+                {{ form_errors(form.pageTitle) }}
+            </div>
+            <div class="card-body">
+                {{ form_label(form.metaDescription) }}
+                <div class="input-group mb-1">
+                    <div class="input-group-text">
+                        {{ form_widget(form.overrideMetaDescription, {attr: {'data-seo-meta-form-target': 'metaDescriptionCheckbox', 'data-action': 'change->seo-meta-form#toggleMetaDescription'}}) }}
+                    </div>
+                    {{ form_widget(form.metaDescription, {attr: {'data-seo-meta-form-target': 'metaDescriptionField'}}) }}
+                </div>
+                {{ form_help(form.metaDescription) }}
+                {{ form_errors(form.metaDescription) }}
+            </div>
+            <div class="card-body">
+                <h3 class="h6">{{ 'seo.robots.heading'|trans }}</h3>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-check">
+                            {{ form_label(form.robotsIndex) }}
+                            {{ form_widget(form.robotsIndex, {attr: {'aria-describedby': form.robotsIndex.vars.id ~ '_help'}}) }}
+                            {{ form_help(form.robotsIndex) }}
+                            {{ form_errors(form.robotsIndex) }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-check">
+                            {{ form_label(form.robotsFollow) }}
+                            {{ form_widget(form.robotsFollow, {attr: {'aria-describedby': form.robotsFollow.vars.id ~ '_help'}}) }}
+                            {{ form_help(form.robotsFollow) }}
+                            {{ form_errors(form.robotsFollow) }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-check">
+                            {{ form_label(form.robotsAdditional) }}
+                            {{ form_widget(form.robotsAdditional, {attr: {'aria-describedby': form.robotsAdditional.vars.id ~ '_help'}}) }}
+                            {{ form_help(form.robotsAdditional) }}
+                            {{ form_errors(form.robotsAdditional) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{%- endblock seo_widget -%}

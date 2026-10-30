@@ -99,7 +99,7 @@ class TitleListener
         }
 
         $class = new \ReflectionClass($routeInformation['controller']);
-        $method = $class->getMethod($routeInformation['method'] ?? '__invoke');
+        $method = $class->getMethod($routeInformation['method']);
 
         $title = '';
         // Loop through the Title attributes of the method and process them

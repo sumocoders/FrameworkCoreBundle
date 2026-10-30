@@ -40,6 +40,8 @@ readonly class BreadcrumbListener
             [$object, $methodName] = $controller;
             $class = new \ReflectionClass($object);
             $method = $class->getMethod($methodName);
+
+            // @mago-expect analysis:redundant-logical-operation
         } elseif (is_object($controller) && !$controller instanceof \Closure) {
             $class = new \ReflectionClass($controller);
             $method = $class->getMethod('__invoke');
@@ -88,7 +90,9 @@ readonly class BreadcrumbListener
                 $this->breadcrumbTrail->add(
                     $this->generateBreadcrumb($attributeInstance, $namedArguments, $request),
                 );
-            } catch (EntityNotFoundException $e) {
+
+                // @mago-expect lint:no-empty-catch-clause
+            } catch (EntityNotFoundException) {
             }
         }
     }
@@ -221,18 +225,20 @@ readonly class BreadcrumbListener
 
         if ($routeInformation === null) {
             throw new RuntimeException(
-                'A route with name "' . $routeName . '" could not be found. Check your spelling.',
+                'A route with name "'
+                . $routeName
+                . '" could not be resolved to an existing controller class.'
+                . ' Check your spelling.',
             );
         }
 
-        // @mago-expect analysis:possibly-invalid-argument
         $class = new \ReflectionClass($routeInformation['controller']);
         $method = $class->getMethod($routeInformation['method']);
 
         $this->processAttributeFromMethod($method, $class, $namedArguments, $request, new Route($routeName));
     }
 
-    /** @return array{controller: string, method: string, parameters: array<array-key, string>}|null */
+    /** @return array{controller: class-string, method: string, parameters: array<array-key, string>}|null */
     private function getRouteInformation(string $name): ?array
     {
         $routes = $this->router->getRouteCollection()->all();
@@ -244,9 +250,13 @@ readonly class BreadcrumbListener
 
             /** @var string $controller */
             $controller = $route->getDefault('_controller');
-            $hasMethod = str_contains($controller, '::');
-            $controllerClass = $hasMethod ? explode('::', $controller)[0] : $controller;
-            $method = $hasMethod ? explode('::', $controller)[1] : '__invoke';
+            $parts = explode('::', $controller, 2);
+            $controllerClass = $parts[0];
+            $method = $parts[1] ?? '__invoke';
+
+            if (!class_exists($controllerClass)) {
+                continue;
+            }
 
             $compiledRoute = $route->compile();
             /** @var array<array-key, string> $variables */

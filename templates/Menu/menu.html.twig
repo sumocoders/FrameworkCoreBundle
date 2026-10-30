@@ -18,9 +18,10 @@
 
 {% block item %}
   {% if item.parent.name == 'root' and item.hasChildren %}
-    {% set item = item.setLinkAttributes(item.linkAttributes|merge({class: item.linkAttribute('class') ~ ' nav-link d-flex align-items-center dropdown-toggle', 'data-bs-toggle': 'dropdown', role: 'button', 'aria-expanded': false})) %}
+    {% set isOpen = matcher.isCurrent(item) or matcher.isAncestor(item, options.matchingDepth) %}
+    {% set item = item.setLinkAttributes(item.linkAttributes|merge({class: item.linkAttribute('class') ~ ' nav-link d-flex align-items-center dropdown-toggle' ~ (isOpen ? ' show' : ''), 'data-bs-toggle': 'dropdown', 'data-bs-auto-close': 'false', role: 'button', 'aria-expanded': isOpen ? 'true' : false})) %}
     {% set item = item.setAttribute('class', item.attribute('class') ~ ' dropdown nav-item') %}
-    {% set item = item.setChildrenAttributes(item.childrenAttributes|merge({class: item.childrenAttribute('class') ~ ' dropdown-menu', role: 'menu'})) %}
+    {% set item = item.setChildrenAttributes(item.childrenAttributes|merge({class: item.childrenAttribute('class') ~ ' dropdown-menu' ~ (isOpen ? ' show' : ''), role: 'menu'})) %}
   {% elseif item.parent.name == 'root' and not item.hasChildren %}
     {% set item = item.setAttribute('class', item.attribute('class') ~ ' nav-item') %}
     {% set item = item.setLinkAttribute('class', item.linkAttribute('class') ~ ' nav-link d-flex align-items-center') %}

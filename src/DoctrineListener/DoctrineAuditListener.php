@@ -375,6 +375,10 @@ final readonly class DoctrineAuditListener
         }
         // @mago-expect analysis:mixed-assignment
         $id = $unitOfWork->getSingleIdentifierValue($owner);
+        // A new owner has no id yet; only updated entities are looked up, so it can be skipped.
+        if ($id === null) {
+            return null;
+        }
 
         return [$class, $id];
     }

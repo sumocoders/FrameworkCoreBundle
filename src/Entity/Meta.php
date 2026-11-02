@@ -32,6 +32,7 @@ class Meta
     public function setPageTitle(?string $pageTitle): self
     {
         $this->pageTitle = $pageTitle;
+        $this->metaTags = null;
 
         return $this;
     }
@@ -44,6 +45,7 @@ class Meta
     public function setMetaDescription(?string $metaDescription): self
     {
         $this->metaDescription = $metaDescription;
+        $this->metaTags = null;
 
         return $this;
     }
@@ -58,6 +60,7 @@ class Meta
     public function setRobots(array $robots): self
     {
         $this->robots = $robots;
+        $this->metaTags = null;
 
         return $this;
     }

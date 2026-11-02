@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SumoCoders\FrameworkCoreBundle\EventListener;
 
+use Doctrine\Persistence\Proxy;
 use ReflectionClass;
 use SumoCoders\FrameworkCoreBundle\Attribute\HasMeta;
 use SumoCoders\FrameworkCoreBundle\Entity\Meta;
@@ -35,6 +36,14 @@ final readonly class MetaContextListener
             }
 
             $reflection = new ReflectionClass($argument);
+            if ($argument instanceof Proxy) {
+                $reflection = $reflection->getParentClass();
+
+                if ($reflection === false) {
+                    continue;
+                }
+            }
+
             $attributes = $reflection->getAttributes(HasMeta::class);
 
             if (count($attributes) === 0) {

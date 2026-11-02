@@ -404,37 +404,6 @@ Override any of them by defining the same key in your application's own `message
 
 ---
 
-## Internals
-
-- `MetaContextListener` is registered on `kernel.controller_arguments` at **priority `-2`**, one step
-  after `TitleListener` (`-1`). That ordering is load-bearing: `TitleListener` writes the `#[Title]`
-  value into `PageTitle` first, then `MetaContext::setMeta()` overwrites it with the SEO page title, so
-  an explicitly configured SEO title always wins.
-- The listener returns early for sub-requests, and for any route whose name starts with `_` (the
-  profiler, `_wdt`, error routes).
-- It walks `$event->getNamedArguments()` and `return`s after the **first** object argument carrying
-  `#[HasMeta]`. A controller taking two such entities silently uses whichever comes first in the
-  argument list.
-- The slug gate compares `$request->attributes->getString($name)` — the route parameter named after the
-  *argument* — against the entity's slug getter. When they differ, nothing is pushed and the page
-  renders no meta tags.
-- `Meta::getMetaTagsInstance()` memoises the `MetaTags` object on the embeddable instance, so controller
-  additions made before rendering survive into `meta_tags()`. The instance is not a mapped column; it is
-  rebuilt per request.
-- `MetaContext` implements `ResetInterface`. `config/services.php` uses `->autoconfigure()`, which tags
-  any `ResetInterface` implementation as `kernel.reset` — so a long-running worker (FrankenPHP,
-  Messenger) cannot leak one request's `Meta` into the next.
-- `MetaExtension` and `SchemaExtension` are attribute extensions: plain classes using
-  `#[AsTwigFunction]` / `#[AsTwigFilter]` plus the `twig.attribute_extension` tag, like every other Twig
-  extension in this bundle. Neither extends `AbstractExtension`, so neither has `getFunctions()` or
-  `getFilters()` — read the attributes by reflection if you need to assert on them.
-- The ORM mapping for `src/Entity` is prepended by `SumoCodersFrameworkCoreExtension::load()` under the
-  alias `FrameworkCoreBundle`, which is why `Meta` needs no entry in an application's `doctrine.yaml`.
-- The Stimulus controller disables rather than hides the gated inputs (`field.disabled = !checkbox.checked`),
-  so unchecked values are never submitted — which is what lets `applyTo()` treat "unchecked" as `null`.
-
----
-
 ## Troubleshooting
 
 - **No meta tags on a page**: the route parameter value does not equal the entity's slug. Check the
@@ -454,3 +423,37 @@ Override any of them by defining the same key in your application's own `message
   `meta_tags()` never emits one; override the `title` block instead.
 - **The SEO page title is ignored, the `#[Title]` value wins**: `MetaContextListener` must run after
   `TitleListener`. Check it is still registered at priority `-2`.
+
+---
+
+## Internals
+
+- `MetaContextListener` is registered on `kernel.controller_arguments` at **priority `-2`**, one step
+  after `TitleListener` (`-1`). That ordering is load-bearing: `TitleListener` writes the `#[Title]`
+  value into `PageTitle` first, then `MetaContext::setMeta()` overwrites it with the SEO page title, so
+  an explicitly configured SEO title always wins.
+- The listener returns early for sub-requests, and for any route whose name starts with `_` (the
+  profiler, `_wdt`, error routes).
+- It walks `$event->getNamedArguments()` and `return`s after the **first** object argument carrying
+  `#[HasMeta]`. A controller taking two such entities silently uses whichever comes first in the
+  argument list.
+- The slug gate compares `$request->attributes->getString($name)` — the route parameter named after the
+  *argument* — against the entity's slug getter. When they differ, nothing is pushed and the page
+  renders no meta tags.
+- `Meta::getMetaTagsInstance()` memoises the `MetaTags` object on the embeddable instance, so controller
+  additions made before rendering survive into `meta_tags()`. The instance is not a mapped column; it is
+  rebuilt per request. Every setter clears the memo, so a title, description, or robots value changed
+  after the first call still renders.
+  carries none of the entity's attributes, so reflecting the proxy itself would never find `#[HasMeta]`.
+- `MetaContext` implements `ResetInterface`. `config/services.php` uses `->autoconfigure()`, which tags
+  any `ResetInterface` implementation as `kernel.reset` — so a long-running worker (FrankenPHP,
+  Messenger) cannot leak one request's `Meta` into the next.
+- `MetaExtension` and `SchemaExtension` are attribute extensions: plain classes using
+  `#[AsTwigFunction]` / `#[AsTwigFilter]` plus the `twig.attribute_extension` tag, like every other Twig
+  extension in this bundle. Neither extends `AbstractExtension`, so neither has `getFunctions()` or
+  `getFilters()` — read the attributes by reflection if you need to assert on them.
+- The ORM mapping for `src/Entity` is prepended by `SumoCodersFrameworkCoreExtension::load()` under the
+  alias `FrameworkCoreBundle`, which is why `Meta` needs no entry in an application's `doctrine.yaml`.
+- The Stimulus controller disables rather than hides the gated inputs (`field.disabled = !checkbox.checked`),
+  so unchecked values are never submitted — which is what lets `applyTo()` treat "unchecked" as `null`.
+

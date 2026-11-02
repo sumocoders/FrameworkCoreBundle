@@ -17,7 +17,7 @@ final readonly class SchemaExtension
             . PHP_EOL
             . json_encode(
                 $schema->jsonSerialize(),
-                JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES,
+                JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_HEX_TAG,
             )
             . PHP_EOL
             . '</script>'

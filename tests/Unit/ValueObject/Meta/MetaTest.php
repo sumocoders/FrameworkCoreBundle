@@ -187,4 +187,43 @@ final class MetaTest extends TestCase
         static::assertStringContainsString('robots', $html);
         static::assertStringContainsString('noindex', $html);
     }
+
+    public function testSetPageTitleAfterRenderingRebuildsMetaTags(): void
+    {
+        $meta = new Meta();
+        $meta->setPageTitle('Original');
+        $meta->getMetaTagsInstance();
+
+        $meta->setPageTitle('Updated');
+        $html = $meta->getMetaTagsInstance()->__toString();
+
+        static::assertStringContainsString('Updated', $html);
+        static::assertStringNotContainsString('Original', $html);
+    }
+
+    public function testSetMetaDescriptionAfterRenderingRebuildsMetaTags(): void
+    {
+        $meta = new Meta();
+        $meta->setMetaDescription('Original');
+        $meta->getMetaTagsInstance();
+
+        $meta->setMetaDescription('Updated');
+        $html = $meta->getMetaTagsInstance()->__toString();
+
+        static::assertStringContainsString('Updated', $html);
+        static::assertStringNotContainsString('Original', $html);
+    }
+
+    public function testSetRobotsAfterRenderingRebuildsMetaTags(): void
+    {
+        $meta = new Meta();
+        $meta->setRobots([RobotsDirective::NoIndex]);
+        $meta->getMetaTagsInstance();
+
+        $meta->setRobots([RobotsDirective::Follow]);
+        $html = $meta->getMetaTagsInstance()->__toString();
+
+        static::assertStringContainsString('follow', $html);
+        static::assertStringNotContainsString('noindex', $html);
+    }
 }

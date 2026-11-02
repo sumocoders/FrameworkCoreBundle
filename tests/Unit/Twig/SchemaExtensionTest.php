@@ -57,4 +57,18 @@ final class SchemaExtensionTest extends TestCase
         static::assertStringContainsString('My Post', $output);
         static::assertStringContainsString('schema.org', $output);
     }
+
+    public function testValuesCannotCloseTheScriptElement(): void
+    {
+        $schema = new Schema(
+            new CreativeWork(props: ['name' => 'Evil</script><img src=x onerror=alert(1)>'], type: 'BlogPosting'),
+        );
+
+        $output = $this->extension->schemaScript($schema);
+
+        // Exactly one closing tag: the one the filter writes itself.
+        static::assertSame(1, substr_count($output, '</script>'));
+        static::assertStringNotContainsString('<img', $output);
+        static::assertStringContainsString('\\u003C/script\\u003E', $output);
+    }
 }

@@ -56,6 +56,7 @@ final readonly class DoctrineAuditListener
             // @mago-expect analysis:mixed-assignment
             [$class, $id] = $classAndId;
 
+            // @mago-expect analysis:mixed-array-index
             $collectionUpdatesByOwner[$class][$id][] = $collectionUpdate;
         }
 
@@ -67,6 +68,7 @@ final readonly class DoctrineAuditListener
             // @mago-expect analysis:mixed-assignment
             [$class, $id] = $classAndId;
 
+            // @mago-expect analysis:mixed-array-index
             $collectionDeletionsByOwner[$class][$id][] = $collectionDeletion;
         }
 

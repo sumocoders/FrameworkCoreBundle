@@ -2,6 +2,111 @@
 
 Sections are newest first. Each one lists what to do when upgrading to that version line, patch releases included.
 
+## To 20.0
+
+**The layout templates now extend `head.html.twig` instead of including it.** `head.html.twig` became the root
+template: it owns `<!doctype>`, `<html>`, `<head>` and `</html>`, and ends with an empty
+`{% block body %}<body></body>{% endblock %}` that each layout fills. `base.html.twig`, `base_no_sidebar.html.twig`,
+`base_error.html.twig`, `empty.html.twig` and `user.html.twig` all start with
+`{% extends '@SumoCodersFrameworkCore/head.html.twig' %}`. The win: you can now override a single head block
+(`title`, `meta`, `stylesheets`, `javascripts`, `icons`, `favicon`, `windows_tile`, `end_head`) instead of replacing
+the whole `<head>`.
+
+1. **`{% block head %}` no longer exists.** A template that still overrides it overrides nothing, and loses its
+   customisation without any error. Override the specific block instead:
+
+   ```twig
+   {# before #}
+   {% block head %}
+       {{ parent() }}
+       <link rel="stylesheet" href="{{ asset('styles/admin.scss') }}">
+   {% endblock %}
+
+   {# after #}
+   {% block stylesheets %}
+       {{ parent() }}
+       <link rel="stylesheet" href="{{ asset('styles/admin.scss') }}">
+   {% endblock %}
+   ```
+
+2. **`{% block body %}` means the whole `<body>` now.** In `base_error.html.twig` it used to be the content hole that
+   `Error/*.html.twig` filled; that hole is called `main` from now on, matching `base.html.twig`. Grep your own error
+   templates for `{% block body %}` and rename it to `{% block main %}`. This one fails silently too: left as `body`,
+   the template replaces the entire error page chrome instead of filling it. Page templates extending
+   `base.html.twig`, `base_no_sidebar.html.twig`, `empty.html.twig` or `user.html.twig` already used `main` and need
+   no change.
+
+3. **Don't `include` `head.html.twig` any more.** It now renders `<body></body>` and `</html>` itself, so a custom
+   layout that includes it and then writes its own `<body>` produces broken markup. Make that layout
+   `{% extends '@SumoCodersFrameworkCore/head.html.twig' %}` and move its body into `{% block body %}`.
+
+4. **The `title` variable became a block.** `<title>` is now `{% block title %}{{ page_title }}{% endblock %}`.
+   Templates that already define `{% block title %}` keep working, it resolves through inheritance instead of being
+   read with `block('title') is defined`. Only a direct `include('...head.html.twig', {title: '...'})` is affected,
+   and that call should become an `extends` per point 3 anyway.
+
+5. **`{% block og %}` and `{% block twitter %}` are gone.** A template still overriding either overrides nothing,
+   silently, exactly like point 1 — drop those overrides. The blanket `twitter:card` / `twitter:title` /
+   `twitter:image` tags they emitted on every page aren't needed any more; Twitter reads the Open Graph tags, and
+   `Meta` supplies the per-page ones. `og:image` moved into `{% block meta %}` and is now wrapped in
+   `absolute_url()`, as the Open Graph spec requires; it only renders when the page's own meta tags didn't set one.
+
+---
+
+**New: per-entity SEO metadata.** `#[HasMeta]`, the `Meta` embeddable, a ready-made `SeoType` form, the `meta_tags()`
+Twig function and the `schema_script` filter. See [docs/seo.md](docs/seo.md).
+
+**Nothing breaks if you do nothing.** `head.html.twig` calls `meta_tags()` through `{% guard function meta_tags %}`,
+and a page whose controller takes no `#[HasMeta]` entity renders no meta tags. The whole subsystem is opt-in,
+per entity. To start using it:
+
+1. Add `#[HasMeta]` to the entity and give it an embedded `Meta`:
+
+   ```php
+   #[ORM\Entity]
+   #[HasMeta]
+   class Blog
+   {
+       #[ORM\Embedded(class: Meta::class)]
+       private Meta $meta;
+   }
+   ```
+
+   This adds three nullable columns to the entity's own table (`meta_page_title`, `meta_meta_description`,
+   `meta_robots`), so generate a migration. No `doctrine.yaml` change is needed — the bundle prepends its own ORM
+   mapping.
+
+2. Register the Stimulus controller: add
+   `'sumocoders/SeoMetaForm' => ['path' => './vendor/sumocoders/framework-core-bundle/assets-public/controllers/seo_meta_form_controller.js']`
+   to `importmap.php`, and `import SeoMetaForm from 'sumocoders/SeoMetaForm'` +
+   `app.register('seo-meta-form', SeoMetaForm)` to `assets/bootstrap.js`.
+
+3. Add `"@SumoCodersFrameworkCore/Form/fields.html.twig"` to `twig.form_themes` in
+   `config/packages/twig.yaml`, so `{{ form_row(form.seo) }}` renders the SEO card instead of plain inputs.
+
+Meta tags only render on the entity's public page: the listener compares the route parameter value against the
+entity's slug, so admin routes resolving by id stay clean.
+
+---
+
+**`#[MapEntity]` is no longer required for `{object.property}` placeholders.** `TitleListener` and
+`BreadcrumbListener` moved from `kernel.controller` to `kernel.controller_arguments` and now read
+`$event->getNamedArguments()`, so they receive the entities Symfony's argument resolver already loaded.
+
+No action needed, but three things change:
+
+- `#[Title('{blog.title}')]` works on a plain `Blog $blog` argument now. Existing `#[MapEntity]` attributes stay
+  valid and are still needed wherever the route parameter name differs from the argument name — nothing has to be
+  removed.
+- Both listeners stopped doing their own `EntityManager` lookups, so one repository call per placeholder disappears
+  from every request carrying these attributes.
+- Both now reflect **only the matched controller method**. On a multi-action controller, `#[Title]` and
+  `#[Breadcrumb]` attributes on *other* actions are no longer evaluated. If a trail was (accidentally) picking up
+  breadcrumbs from sibling actions, that stops — which is a fix, but it does change rendered output.
+
+No action needed: `base_no_sidebar.html.twig`'s `<body>` lost its `data-theme-path` attribute. Nothing read it, and
+the `style-dark.scss` it pointed at was already dropped in 15.0.
+
 ## To 19.2
 
 **Quick search (Cmd+K / Ctrl+K).** Every page on the bundle's `base.html.twig` now has a search modal over the main

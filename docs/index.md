@@ -20,6 +20,7 @@ Requirements:
 | [crud.md](crud.md)                                 | Standard CRUD pattern: controllers, DTO, form type, templates, translations            |
 | [breadcrumb.md](breadcrumb.md)                     | `#[Breadcrumb]` attribute, builds breadcrumb trails from controller annotations        |
 | [title.md](title.md)                               | `#[Title]` attribute, sets the page `<title>` and `<h1>`                               |
+| [seo.md](seo.md)                                   | `#[HasMeta]`, `Meta` embeddable, `SeoType` form, `meta_tags()` and schema.org output   |
 | [audit-trail.md](audit-trail.md)                   | `#[AuditTrail]` attribute, logs entity creates/updates/deletes                         |
 | [sentry-user-context.md](sentry-user-context.md)   | Attaches the authenticated (and impersonator) user id to the Sentry scope             |
 | [nonce-generator.md](nonce-generator.md)           | `NonceGenerator`, lets a request supply its own CSP nonce via `X-CSP-Nonce`           |

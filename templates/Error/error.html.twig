@@ -1,6 +1,6 @@
 {% extends '@SumoCodersFrameworkCore/base_error.html.twig' %}
 
-{% block body %}
+{% block main %}
     <h1>{{ 'error.messages.crash'|trans }}</h1>
     <p>{{ 'error.messages.crashMessage'|trans }}</p>
     <a href="{{ app.request.headers.get('referer') }}" class="btn btn-outline-primary">{{ 'go back'|trans }}</a>

@@ -248,17 +248,15 @@ breadcrumb.authors: 'Authors'
 
 ## Internals
 
-`BreadcrumbListener` (like `TitleListener`) hooks the generic `kernel.controller` event (`onKernelController`,
-priority `-1`), not `kernel.controller_arguments`. At that point in the request lifecycle, Symfony knows which
-controller will run but hasn't resolved its argument values yet - no `#[MapEntity]` objects, no auto-cast scalars,
-only raw strings on `$request->attributes`. To read `{object.property}` and `parameters:` values, the listener does
-its own `EntityManager` repository lookup (`find()`, or `findOneBy()` when the matching controller parameter carries
-`#[MapEntity]`) to replicate what the argument resolver would otherwise have given it for free.
+`BreadcrumbListener` (like `TitleListener`) hooks `kernel.controller_arguments` (`onKernelControllerArguments`,
+priority `-1`) and reads `$event->getNamedArguments()`. By that point Symfony has resolved the controller's
+arguments, so `{object.property}` and `parameters:` values see real entities and type-cast scalars rather than the
+raw strings on `$request->attributes`. The listener holds no `EntityManager` and performs no repository lookup of
+its own — it reuses whatever the argument resolver already loaded.
 
-`processBreadcrumbs()` reflects the controller class and iterates **every public method** on it, not just the one
-that matched the current route. On a multi-action controller where more than one action carries its own
-`#[Breadcrumb]`, breadcrumbs are generated for *every* one of those actions on *every* request, regardless of which
-route actually matched.
+It reflects **only the method that matched the route**: the method named in an array controller, or `__invoke` on an
+invokable. `#[Breadcrumb]` attributes on other actions of a multi-action controller are not inspected, so a request
+only ever gets the crumbs belonging to the action that actually ran.
 
 > **Gotcha**: because of that, a `{param}` breadcrumb title on an unrelated action that doesn't have that param on the
 > current request throws an uncaught `RuntimeException` - not the swallowed `EntityNotFoundException` - and can break

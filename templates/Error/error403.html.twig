@@ -1,6 +1,6 @@
 {% extends '@SumoCodersFrameworkCore/base_error.html.twig' %}
 
-{% block body %}
+{% block main %}
     <h1>{{ 'error.messages.unauthorized'|trans }}</h1>
     <p>{{ 'error.messages.unauthorizedMessage'|trans }}</p>
     <a href="{{ app.request.headers.get('referer')|default(fallbacks.get('redirect_path', '/')) }}" class="btn btn-outline-primary">{{ 'go back'|trans }}</a>

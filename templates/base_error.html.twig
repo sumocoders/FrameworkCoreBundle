@@ -1,12 +1,10 @@
-{% block head %}
-    {{ include('@SumoCodersFrameworkCore/head.html.twig', {title: block('title') is defined ? block('title') : page_title}) }}
+{% extends '@SumoCodersFrameworkCore/head.html.twig' %}
 
-    {% block stylesheets %}
-        <link rel="stylesheet" href="{{ asset('styles/error.scss') }}">
-    {% endblock %}
-
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles/error.scss') }}">
 {% endblock %}
 
+{% block body %}
 <body class="error-page">
 {{ include('@SumoCodersFrameworkCore/settheme.html.twig') }}
 
@@ -14,11 +12,11 @@
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-7 col-xl-6">
             <div class="header" role="alert">
-                {% block body %}{% endblock %}
+                {% block main %}{% endblock %}
             </div>
             <div id="illustration"></div>
         </div>
     </div>
 </div>
 </body>
-</html>
+{% endblock %}

@@ -11,16 +11,7 @@ parameters:
     -
       identifiers:
         - method.notFound
-        - argument.templateType
       path: src/EventListener/BreadcrumbListener.php
-    -
-      identifier: argument.templateType
-      path: src/EventListener/TitleListener.php
-      count: 2
-    -
-      identifiers:
-        - method.notFound
-      path: src/EventListener/TitleListener.php
     -
       identifier: missingType.iterableValue
       path: src/Logger/AuditLogger.php

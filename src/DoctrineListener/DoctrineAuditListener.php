@@ -53,10 +53,8 @@ final readonly class DoctrineAuditListener
             if ($classAndId === null) {
                 continue;
             }
-            // @mago-expect analysis:mixed-assignment
             [$class, $id] = $classAndId;
 
-            // @mago-expect analysis:mixed-array-index
             $collectionUpdatesByOwner[$class][$id][] = $collectionUpdate;
         }
 
@@ -65,10 +63,8 @@ final readonly class DoctrineAuditListener
             if ($classAndId === null) {
                 continue;
             }
-            // @mago-expect analysis:mixed-assignment
             [$class, $id] = $classAndId;
 
-            // @mago-expect analysis:mixed-array-index
             $collectionDeletionsByOwner[$class][$id][] = $collectionDeletion;
         }
 
@@ -90,6 +86,9 @@ final readonly class DoctrineAuditListener
             $className = $entityUpdateReflectionClass->getName();
             // @mago-expect analysis:mixed-assignment
             $id = $unitOfWork->getSingleIdentifierValue($entityUpdate);
+            if (!is_int($id) && !is_string($id)) {
+                continue;
+            }
 
             // @mago-expect analysis:mixed-assignment
             $propertiesToTrack = $auditTrailAttributes[0]->getArguments()['fields'] ?? [];
@@ -141,7 +140,6 @@ final readonly class DoctrineAuditListener
 
             if (
                 array_key_exists($className, $collectionUpdatesByOwner)
-                // @mago-expect analysis:less-specific-nested-argument-type,mixed-argument
                 && array_key_exists($id, $collectionUpdatesByOwner[$className])
             ) {
                 foreach ($collectionUpdatesByOwner[$className][$id] as $collectionUpdate) {
@@ -156,7 +154,6 @@ final readonly class DoctrineAuditListener
 
             if (
                 array_key_exists($className, $collectionDeletionsByOwner)
-                // @mago-expect analysis:less-specific-nested-argument-type,mixed-argument
                 && array_key_exists($id, $collectionDeletionsByOwner[$className])
             ) {
                 foreach ($collectionDeletionsByOwner[$className][$id] as $collectionDeletion) {
@@ -355,7 +352,7 @@ final readonly class DoctrineAuditListener
     }
 
     /**
-     * @return null|list{class-string|string, mixed}
+     * @return array{0: class-string, 1: int|string}|null
      */
     private function getClassAndIdForCollectionChange(
         UnitOfWork $unitOfWork,
@@ -378,7 +375,7 @@ final readonly class DoctrineAuditListener
         // @mago-expect analysis:mixed-assignment
         $id = $unitOfWork->getSingleIdentifierValue($owner);
         // A new owner has no id yet; only updated entities are looked up, so it can be skipped.
-        if ($id === null) {
+        if (!is_int($id) && !is_string($id)) {
             return null;
         }
 

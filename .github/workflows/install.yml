@@ -10,11 +10,14 @@ jobs:
     container: sumocoders/cli-tools-php85:latest
     steps:
       - uses: actions/checkout@v4
+      # There is no composer.lock, so refresh the cached vendor weekly to pick up new releases.
+      - id: week
+        run: echo "week=$(date +%G-%V)" >> "$GITHUB_OUTPUT"
       - id: composer-cache
         uses: actions/cache@v4
         with:
           path: vendor
-          key: composer-${{ hashFiles('composer.json') }}
+          key: composer-${{ hashFiles('composer.json') }}-${{ steps.week.outputs.week }}
       - name: Install composer dependencies
         if: steps.composer-cache.outputs.cache-hit != 'true'
         run: COMPOSER_MEMORY_LIMIT=-1 composer install --no-scripts --no-progress

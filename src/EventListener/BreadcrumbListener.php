@@ -183,7 +183,7 @@ class BreadcrumbListener
 
             // @mago-expect lint:no-isset,no-else-clause
             if ($mapping !== null && isset($mapping[$attributeName])) {
-                // @mago-expect analysis:possibly-invalid-argument,invalid-array-element-key,less-specific-argument
+                // @mago-expect analysis:possibly-invalid-argument,mixed-array-index,less-specific-argument
                 $attribute = $this->manager
                     ->getRepository($name)
                     ->findOneBy([$mapping[$attributeName] => $attributeId]);

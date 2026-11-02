@@ -202,7 +202,7 @@ body.no-scroll {
         }
       }
 
-      &.dropdown.show:not(.open) .bi-chevron-down {
+      &.dropdown .nav-link.dropdown-toggle.show .bi-chevron-down {
         transform: rotate(180deg);
       }
     }

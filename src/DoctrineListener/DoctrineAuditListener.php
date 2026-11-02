@@ -352,9 +352,8 @@ final readonly class DoctrineAuditListener
     }
 
     /**
-     * @return null|list{class-string|string, mixed}
+     * @return array{0: class-string, 1: int|string}|null
      */
-    /** @return array{class-string, int|string}|null */
     private function getClassAndIdForCollectionChange(
         UnitOfWork $unitOfWork,
         PersistentCollection $collectionChange,
@@ -375,6 +374,7 @@ final readonly class DoctrineAuditListener
         }
         // @mago-expect analysis:mixed-assignment
         $id = $unitOfWork->getSingleIdentifierValue($owner);
+        // A new owner has no id yet; only updated entities are looked up, so it can be skipped.
         if (!is_int($id) && !is_string($id)) {
             return null;
         }

@@ -5,6 +5,7 @@ namespace SumoCoders\FrameworkCoreBundle\Logger;
 use Psr\Log\LoggerInterface;
 use SumoCoders\FrameworkCoreBundle\Enum\EventAction;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\DependencyInjection\Attribute\Target;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\SwitchUserToken;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -14,6 +15,7 @@ class AuditLogger
     public function __construct(
         private readonly Security $security,
         private readonly RequestStack $requestStack,
+        #[Target('audit_trail.logger')]
         private readonly LoggerInterface $auditTrailLogger,
     ) {
     }

@@ -109,8 +109,14 @@ class FileType extends AbstractType
                 // @mago-expect analysis:missing-return-type
                 'empty_data' => static function () {
                     return new class extends StdClass {
-                        protected ?UploadedFile $file;
+                        protected ?UploadedFile $file = null;
                         protected bool $pendingDeletion = false;
+
+                        // sumoFile_widget reads fileName to decide on a preview; an empty field has none
+                        public function getFileName(): null
+                        {
+                            return null;
+                        }
 
                         public function setFile(?UploadedFile $file = null): void
                         {

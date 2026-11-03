@@ -106,8 +106,14 @@ class ImageType extends AbstractType
                 // @mago-expect analysis:missing-return-type
                 'empty_data' => static function () {
                     return new class extends StdClass {
-                        protected ?UploadedFile $file;
+                        protected ?UploadedFile $file = null;
                         protected bool $pendingDeletion = false;
+
+                        // image_widget reads fileName to decide on a preview; an empty field has none
+                        public function getFileName(): null
+                        {
+                            return null;
+                        }
 
                         public function setFile(?UploadedFile $file = null): void
                         {
@@ -150,22 +156,16 @@ class ImageType extends AbstractType
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['show_preview'] = $options['show_preview'];
-        $view->vars['show_remove_image'] =
-            // @mago-expect analysis:mixed-method-access,mixed-operand
-            $options['show_remove_image'] && $form->getData() !== null && $form->getData()->getFileName() !== null;
+        // @mago-expect analysis:mixed-assignment
+        $image = $form->getData();
+        $hasFile = $image instanceof AbstractImage && $image->getFileName() !== null;
         // if you need to have an image you shouldn't be allowed to remove it
-        if ($options['required'] === true) {
-            $view->vars['show_remove_image'] = false;
-        }
-        // @mago-expect analysis:mixed-method-access
-        $filesIsEmpty = $form->getData() === null || $form->getData()->getFileName() === null;
-        $view->vars['required'] = $filesIsEmpty && $options['required'] === true;
+        // @mago-expect analysis:mixed-operand
+        $view->vars['show_remove_image'] = $options['show_remove_image'] && $hasFile && $options['required'] !== true;
+        $view->vars['required'] = !$hasFile && $options['required'] === true;
 
-        $view->vars['preview_url'] = false;
-        if ($form->getData() instanceof AbstractImage) {
-            // @mago-expect analysis:mixed-method-access
-            $view->vars['preview_url'] = $form->getData()->getWebPath();
-        }
+        // getWebPath() throws without a file and fallback; an image without a file has nothing to preview anyway
+        $view->vars['preview_url'] = $hasFile ? $image->getWebPath() : false;
 
         array_map(
             static function (string $optionName) use ($options, &$view): void {

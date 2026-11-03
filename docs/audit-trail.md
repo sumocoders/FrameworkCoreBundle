@@ -5,8 +5,9 @@ with `#[AuditTrail]`.
 
 ## Prerequisites
 
-No extra configuration required. The `DoctrineAuditListener` is registered automatically. To capture logs, configure a
-`audit_trail` channel in `config/packages/monolog.yaml`.
+No extra configuration required. The `DoctrineAuditListener` is registered automatically, and the bundle creates the
+`audit_trail` Monolog channel. To write the audit trail to its own file, add a handler for that channel in
+`config/packages/monolog.yaml`.
 
 ## Usage
 
@@ -232,8 +233,8 @@ empty — the full picture for a create or delete is available in the `Data:` co
 
 ## Troubleshooting
 
-- **No log entries appearing**: verify the `audit_trail` Monolog channel is configured and the log file/handler is
-  writable
+- **No log entries appearing**: check that a Monolog handler receives the `audit_trail` channel (its `channels`
+  option must include it, or not exclude it) and that its log file is writable
 - **All fields tracked instead of specific ones**: `fields:` must list the exact property names as defined on the
   entity, not the column names
 - **Sensitive data visible**: add `#[SensitiveData]` to the property; the value will be masked as `*****` in both old

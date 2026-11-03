@@ -6,10 +6,19 @@ use SumoCoders\FrameworkCoreBundle\Service\QuickSearch\Provider\QuickSearchProvi
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
+use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
-class SumoCodersFrameworkCoreExtension extends Extension
+class SumoCodersFrameworkCoreExtension extends Extension implements PrependExtensionInterface
 {
+    public function prepend(ContainerBuilder $container): void
+    {
+        // AuditLogger has #[Target('audit_trail.logger')], which fails to compile when the channel doesn't exist
+        if ($container->hasExtension('monolog')) {
+            $container->prependExtensionConfig('monolog', ['channels' => ['audit_trail']]);
+        }
+    }
+
     public function load(array $configs, ContainerBuilder $container): void
     {
         $loader = new PhpFileLoader(

@@ -5,8 +5,9 @@ with `#[AuditTrail]`.
 
 ## Prerequisites
 
-No extra configuration required. The `DoctrineAuditListener` is registered automatically. To capture logs, configure a
-`audit_trail` channel in `config/packages/monolog.yaml`.
+No extra configuration required. The `DoctrineAuditListener` is registered automatically, and the bundle creates the
+`audit_trail` Monolog channel. To write the audit trail to its own file, add a handler for that channel in
+`config/packages/monolog.yaml`.
 
 ## Usage
 

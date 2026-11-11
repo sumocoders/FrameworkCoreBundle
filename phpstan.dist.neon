@@ -34,6 +34,11 @@ parameters:
         - missingType.iterableValue
       path: src/Serializer/MaxDepthHandler.php
     -
+      # Doctrine assigns the generated id, PHPStan has no Doctrine extension here to know that
+      identifier: property.unusedType
+      path: src/Mcp/Entity/McpToken.php
+      count: 1
+    -
       identifier: new.static
       path: src/ValueObject/AbstractFile.php
       count: 2

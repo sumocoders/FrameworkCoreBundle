@@ -20,6 +20,11 @@ use SumoCoders\FrameworkCoreBundle\Form\Type\FileType;
 use SumoCoders\FrameworkCoreBundle\Form\Type\ImageType;
 use SumoCoders\FrameworkCoreBundle\Form\Type\SeoType;
 use SumoCoders\FrameworkCoreBundle\Logger\AuditLogger;
+use SumoCoders\FrameworkCoreBundle\Mcp\MessageHandler\CreateMcpTokenHandler;
+use SumoCoders\FrameworkCoreBundle\Mcp\MessageHandler\RevokeMcpTokenHandler;
+use SumoCoders\FrameworkCoreBundle\Mcp\Repository\McpTokenRepository;
+use SumoCoders\FrameworkCoreBundle\Mcp\Security\McpTokenAuthenticator;
+use SumoCoders\FrameworkCoreBundle\Mcp\Security\McpTokenVoter;
 use SumoCoders\FrameworkCoreBundle\Menu\MenuBuilder;
 use SumoCoders\FrameworkCoreBundle\Service\BreadcrumbTrail;
 use SumoCoders\FrameworkCoreBundle\Service\Fallbacks;
@@ -237,5 +242,14 @@ return static function (ContainerConfigurator $container): void {
         ->tag('console.command')
 
         ->set(DoctrineAuditListener::class)
-        ->set(AuditLogger::class);
+        ->set(AuditLogger::class)
+
+        /*
+         * MCP tokens: always registered, the entity is only mapped once mcp_tokens.user_class is set
+         */
+        ->set(McpTokenRepository::class)
+        ->set(McpTokenAuthenticator::class)
+        ->set(McpTokenVoter::class)
+        ->set(CreateMcpTokenHandler::class)
+        ->set(RevokeMcpTokenHandler::class);
 };

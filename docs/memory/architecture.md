@@ -12,6 +12,11 @@ Consequence for `docs/*.md`: each file mirrors one of the bundle's subsystems (m
 used in `docs/index.md`'s table, with a Usage section followed by an Internals section), not a feature — there's
 no `contact/`/`company/`-style feature directory to key off of.
 
+Exception: the opt-in MCP token subsystem lives in `src/Mcp/{Entity,Repository,Message,MessageHandler,Security}/`.
+Its entity can't sit in `src/Entity/`, because the bundle's base Doctrine mapping scans that directory recursively and
+would map `McpToken` in every application (see `docs/adr/0006-mcp-tokens-opt-in-doctrine-mapping.md`). An opt-in
+entity needs its own mapping directory.
+
 ## Event listener registration
 
 All event listener wiring lives in `config/services.php` via `->tag('kernel.event_listener', [...])` (or
@@ -21,8 +26,10 @@ runs on rather than trusting a class's docblock or an out-of-date summary elsewh
 
 ## Config-driven service behavior
 
-`Configuration.php` briefly had its first real option (`sentry_user_context.enabled`) but it was removed shortly
-after introduction — the feature is now always active, and the tree is empty again (see
+`Configuration.php` defines `mcp_tokens.user_class` and `mcp_tokens.token_prefix` (see `docs/mcp-tokens.md`).
+`load()` exposes `token_prefix` as the `sumo_coders_framework_core.mcp_tokens.token_prefix` parameter;
+`prepend()` reads `user_class` to prepend Doctrine config. Services stay registered either way. An earlier option,
+`sentry_user_context.enabled`, was removed shortly after introduction (see
 `docs/adr/0003-first-bundle-config-option-parameter-wiring.md`, updated to record both the introduction and the
 removal). If a config option is added again, the established pattern was: `Extension::load()` calls
 `processConfiguration()` and `$container->setParameter('sumo_coders_framework_core.<option>', ...)`;

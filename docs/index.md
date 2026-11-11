@@ -23,6 +23,7 @@ Requirements:
 | [seo.md](seo.md)                                   | `#[HasMeta]`, `Meta` embeddable, `SeoType` form, `meta_tags()` and schema.org output   |
 | [audit-trail.md](audit-trail.md)                   | `#[AuditTrail]` attribute, logs entity creates/updates/deletes                         |
 | [sentry-user-context.md](sentry-user-context.md)   | Attaches the authenticated (and impersonator) user id to the Sentry scope             |
+| [mcp-tokens.md](mcp-tokens.md)                     | Opt-in personal bearer tokens for an MCP endpoint: entity, authenticator, revoke voter |
 | [nonce-generator.md](nonce-generator.md)           | `NonceGenerator`, lets a request supply its own CSP nonce via `X-CSP-Nonce`           |
 | [commands.md](commands.md)                         | Console commands: translation extraction and dependency-update merge requests         |
 | [pagination.md](pagination.md)                     | `Paginator`, wraps a Doctrine QueryBuilder for paginated results                       |
@@ -90,8 +91,7 @@ For invokable controllers, prefer placing `#[Route]`, `#[Breadcrumb]`, and `#[Ti
 ### Service configuration
 
 All services are registered in `config/services.php` using PHP-format DI config. Autowiring and autoconfiguration are
-enabled. `Configuration.php` is currently an empty tree — the bundle defines no config options — see
-[sentry-user-context.md](sentry-user-context.md).
+enabled. `Configuration.php` defines one option group, `mcp_tokens`, see [mcp-tokens.md](mcp-tokens.md).
 
 ---
 

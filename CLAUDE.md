@@ -86,6 +86,9 @@ For invokable controllers, prefer placing `#[Route]`, `#[Breadcrumb]`, and `#[Ti
   `docs/seo.md`.
 - **Audit trail** (`src/DoctrineListener/DoctrineAuditListener.php`): Doctrine `onFlush` + `postPersist` listener that
   logs creates/updates/deletes via `AuditLogger`. Entities opt in with `#[AuditTrail]`. See `docs/audit-trail.md`.
+- **MCP tokens** (`src/Mcp/`): opt-in personal bearer tokens for an MCP endpoint. `McpToken` entity (mapped only
+  when `mcp_tokens.user_class` is set), `McpTokenAuthenticator` for a stateless firewall, `McpTokenVoter` (own token
+  or `ROLE_ADMIN`), `CreateMcpToken`/`RevokeMcpToken` messages. No controllers or templates. See `docs/mcp-tokens.md`.
 - **Sentry user context** (`src/EventListener/SentryUserContextListener.php`): attaches the authenticated (and
   impersonator) user identifier to the Sentry scope. Always active when a Sentry hub is registered — no
   configuration option to disable it. See `docs/sentry-user-context.md`.
@@ -99,8 +102,8 @@ For invokable controllers, prefer placing `#[Route]`, `#[Breadcrumb]`, and `#[Ti
 ### Service registration
 
 All services are registered in `config/services.php` (PHP-format DI config, no YAML). The bundle extension
-(`src/DependencyInjection/SumoCodersFrameworkCoreExtension.php`) loads that file. `Configuration.php` is
-currently an empty tree — the bundle defines no config options.
+(`src/DependencyInjection/SumoCodersFrameworkCoreExtension.php`) loads that file. `Configuration.php` defines one
+option group, `mcp_tokens` (`user_class`, `token_prefix`); setting `user_class` maps the `McpToken` entity.
 
 ## Documentation
 

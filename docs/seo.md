@@ -223,6 +223,32 @@ class BlogDataTransferObject
 }
 ```
 
+Or declare the whole form on that DTO and drop the form class. `SeoType` has to be named explicitly —
+type guessing does not know what to do with a `SeoDataTransferObject` property:
+
+```php
+use SumoCoders\FrameworkCoreBundle\DataTransferObject\SeoDataTransferObject;
+use SumoCoders\FrameworkCoreBundle\Form\Type\SeoType;
+use Symfony\Component\Form\Attribute\AsFormType;
+use Symfony\Component\Form\Attribute\FormField;
+
+#[AsFormType]
+class BlogDataTransferObject
+{
+    public function __construct(
+        #[FormField]
+        #[NotBlank]
+        public string $title = '',
+        #[FormField]
+        #[NotBlank]
+        public string $content = '',
+        #[FormField(SeoType::class)]
+        public SeoDataTransferObject $seo = new SeoDataTransferObject(),
+    ) {
+    }
+}
+```
+
 When editing, populate it from the entity's existing `Meta`:
 
 ```php

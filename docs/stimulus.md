@@ -167,6 +167,13 @@ This works automatically when you use the `RepeatedPasswordStrengthType` in your
         );
 ```
 
+Or, on a DTO:
+
+```php
+    #[FormField(RepeatedPasswordStrengthType::class)]
+    public ?string $password = null;
+```
+
 ## Password Visibility Toggle
 
 This works automatically when you use the `PasswordType` or `RepeatedPasswordStrengthType` in your form type.
@@ -187,6 +194,18 @@ Options for customizing:
         'hidden_label' => 'Masquer',
         'visible_label' => 'Afficher',
     ]);
+```
+
+Or, on a DTO:
+
+```php
+    #[FormField(PasswordType::class, [
+        'toggle' => false,
+        'use_toggle_form_theme' => false,
+        'hidden_label' => 'Masquer',
+        'visible_label' => 'Afficher',
+    ])]
+    public ?string $password = null;
 ```
 
 ## DateTime pickers

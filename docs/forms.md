@@ -5,6 +5,67 @@ built-in Symfony form types.
 
 ---
 
+## Declaring fields with attributes
+
+A form does not need its own `AbstractType` class. Put `#[AsFormType]` on the class that holds the data
+and `#[FormField]` on each property that should become a field; the class name is then usable wherever a
+form type name is expected.
+
+```php
+<?php
+
+namespace App\Dto;
+
+use App\ValueObject\UserPhoto;
+use SumoCoders\FrameworkCoreBundle\Form\Type\ImageType;
+use Symfony\Component\Form\Attribute\AsFormType;
+use Symfony\Component\Form\Attribute\FormField;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Validator\Constraints\NotBlank;
+
+#[AsFormType]
+class ProfileData
+{
+    // no type given: it is guessed from the property type, as with $builder->add()
+    #[FormField]
+    #[NotBlank]
+    public string $name = '';
+
+    #[FormField(EmailType::class)]
+    public ?string $email = null;
+
+    #[FormField(ImageType::class, ['image_class' => UserPhoto::class])]
+    public ?UserPhoto $photo = null;
+}
+```
+
+```php
+$form = $this->createForm(ProfileData::class, $profileData);
+```
+
+Validation stays where it already is: constraints are read from the validator attributes on the same
+properties, not from `#[FormField]`.
+
+**Use a form class instead when** the form needs form events, a data transformer, a field that only
+exists at runtime, or an option whose value is a service or a closure. Option values on `#[FormField]`
+are compiled into the container, so they must be scalars, arrays, enums, `null`, or a
+`Symfony\Component\DependencyInjection\Reference`. Anything else fails with *"only scalar, array, enum
+and service reference values can be compiled"*. To add that logic to an attribute-declared form without
+giving up the attributes, write an `AbstractTypeExtension` whose `getExtendedTypes()` yields the data
+class.
+
+Two things to know about registration:
+
+- The class is picked up through container autoconfiguration, so it has to be inside the `src/` scan.
+  The default `config/services.yaml` excludes `src/Entity/`, so entities are not registered unless you
+  add them yourself. DTOs under `src/Dto/` or `src/DataTransferObject/` work out of the box.
+- Mistakes — a duplicate field name, an unknown form type, `data_class` set on `#[AsFormType]` — are
+  reported when the container compiles, not on the first request.
+
+Each custom type and extension below is shown both ways. The options are identical in both styles.
+
+---
+
 ## Custom form types
 
 ### ImageType
@@ -29,6 +90,28 @@ $builder->add('photo', ImageType::class, [
     'remove_image_label'    => 'forms.labels.removeImage',
     'required_image_error'  => 'forms.not_blank',
 ]);
+```
+
+Or, on a DTO:
+
+```php
+<?php
+
+use App\ValueObject\UserPhoto;
+use SumoCoders\FrameworkCoreBundle\Form\Type\ImageType;
+use Symfony\Component\Form\Attribute\FormField;
+
+#[FormField(ImageType::class, [
+    'image_class'          => UserPhoto::class,
+    'label'                => 'forms.labels.photo',
+    'help'                 => 'forms.help.photo',
+    'accept'               => 'image/jpeg,image/png,image/webp',
+    'show_preview'         => true,
+    'show_remove_image'    => true,
+    'remove_image_label'   => 'forms.labels.removeImage',
+    'required_image_error' => 'forms.not_blank',
+])]
+public ?UserPhoto $photo = null;
 ```
 
 **Options:**
@@ -70,6 +153,29 @@ $builder->add('document', FileType::class, [
 ]);
 ```
 
+Or, on a DTO:
+
+```php
+<?php
+
+use App\ValueObject\UserDocument;
+use SumoCoders\FrameworkCoreBundle\Form\Type\FileType;
+use Symfony\Component\Form\Attribute\FormField;
+
+#[FormField(FileType::class, [
+    'file_class'          => UserDocument::class,
+    'label'               => 'forms.labels.document',
+    'help'                => 'forms.help.document',
+    'accept'              => 'application/pdf',
+    'show_preview'        => true,
+    'preview_label'       => 'forms.labels.viewCurrentFile',
+    'show_remove_file'    => true,
+    'remove_file_label'   => 'forms.labels.removeFile',
+    'required_file_error' => 'forms.not_blank',
+])]
+public ?UserDocument $document = null;
+```
+
 **Options:**
 
 | Option                | Type           | Default                          | Required | Description                                           |
@@ -94,13 +200,11 @@ A select field restricted to valid Belgian postcodes. Internally uses a predefin
 <?php
 
 use SumoCoders\FrameworkCoreBundle\Form\Type\BelgiumPostCodeType;
-use SumoCoders\FrameworkCoreBundle\ValueObject\BelgiumPostCode;
-use Symfony\Component\Validator\Constraints\NotBlank;
 
 $builder->add('postcode', BelgiumPostCodeType::class);
 ```
 
-Add a `BelgiumPostCode` property to your DTO:
+Either way, the DTO needs a `BelgiumPostCode` property:
 
 ```php
 <?php
@@ -110,6 +214,26 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class AddressData
 {
+    #[NotBlank]
+    public ?BelgiumPostCode $postcode = null;
+}
+```
+
+Or declare the field on that same DTO and drop the form class:
+
+```php
+<?php
+
+use SumoCoders\FrameworkCoreBundle\Form\Type\BelgiumPostCodeType;
+use SumoCoders\FrameworkCoreBundle\ValueObject\BelgiumPostCode;
+use Symfony\Component\Form\Attribute\AsFormType;
+use Symfony\Component\Form\Attribute\FormField;
+use Symfony\Component\Validator\Constraints\NotBlank;
+
+#[AsFormType]
+class AddressData
+{
+    #[FormField(BelgiumPostCodeType::class)]
     #[NotBlank]
     public ?BelgiumPostCode $postcode = null;
 }
@@ -150,6 +274,28 @@ $builder->add('contacts', CollectionType::class, [
     'maximum_required_items' => 5,
 ]);
 ```
+
+Or, on a DTO:
+
+```php
+<?php
+
+use App\Dto\ContactData;
+use Symfony\Component\Form\Attribute\FormField;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+
+#[FormField(CollectionType::class, [
+    'entry_type'             => ContactData::class,
+    'allow_add'              => true,
+    'allow_delete'           => true,
+    'minimum_required_items' => 1,
+    'maximum_required_items' => 5,
+])]
+public array $contacts = [];
+```
+
+`entry_type` takes any form type name, so it accepts an `#[AsFormType]` DTO class (`ContactData` above)
+just as well as a form class (`ContactType`).
 
 #### Reusing the row markup in your own form theme
 
@@ -197,6 +343,18 @@ $builder->add('apiKey', PasswordType::class, [
 ]);
 ```
 
+Or, on a DTO:
+
+```php
+<?php
+
+use Symfony\Component\Form\Attribute\FormField;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+
+#[FormField(PasswordType::class, ['toggle' => false])]
+public ?string $apiKey = null;
+```
+
 ---
 
 ## Translations
@@ -216,6 +374,20 @@ No change to the form builder is needed.
 ---
 
 ## Internals
+
+### Attribute-declared forms and this bundle
+
+- The type extensions in `src/Form/Extension/` target the built-in Symfony types, not a declaration
+  style, so they apply unchanged to a field declared with `#[FormField(DateType::class)]`. Flatpickr,
+  the password toggle, and the collection UI behave the same in both styles.
+- Every option the bundle's own types accept is a scalar, a string FQCN, or an array, so all of them
+  survive the compile-time check that rejects closures and other non-compilable option values.
+- `data_class` cannot be set in `#[AsFormType(options: [...])]` — the annotated class *is* the data
+  class, and passing it throws while the container compiles.
+- Abstract classes carrying `#[AsFormType]` are registered too, specifically so concrete subclasses can
+  inherit their fields. A subclass picks up the fields of the closest ancestor that also has
+  `#[AsFormType]`; without such an ancestor the parent type is `FormType`. See
+  [crud.md](crud.md#without-a-form-class) for how that is used for create/update message classes.
 
 ### `ImageType` / `FileType` — control flow
 

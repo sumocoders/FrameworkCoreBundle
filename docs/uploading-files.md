@@ -134,6 +134,29 @@ $builder->add('document', FileType::class, [
 ]);
 ```
 
+Or, on a DTO:
+
+```php
+<?php
+
+use App\ValueObject\UserDocument;
+use SumoCoders\FrameworkCoreBundle\Form\Type\FileType;
+use Symfony\Component\Form\Attribute\FormField;
+
+#[FormField(FileType::class, [
+    'file_class'          => UserDocument::class,
+    'label'               => 'forms.labels.document',
+    'help'                => 'forms.help.document',
+    'accept'              => 'application/pdf',
+    'show_preview'        => true,
+    'preview_label'       => 'forms.labels.viewCurrentFile',
+    'show_remove_file'    => true,
+    'remove_file_label'   => 'forms.labels.removeFile',
+    'required_file_error' => 'forms.not_blank',
+])]
+public ?UserDocument $document = null;
+```
+
 See [forms.md](forms.md) for the full `FileType` options reference.
 
 ## Template

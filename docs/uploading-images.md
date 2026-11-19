@@ -135,6 +135,28 @@ $builder->add('avatar', ImageType::class, [
 ]);
 ```
 
+Or, on a DTO:
+
+```php
+<?php
+
+use App\ValueObject\UserAvatar;
+use SumoCoders\FrameworkCoreBundle\Form\Type\ImageType;
+use Symfony\Component\Form\Attribute\FormField;
+
+#[FormField(ImageType::class, [
+    'image_class'          => UserAvatar::class,
+    'label'                => 'forms.labels.avatar',
+    'help'                 => 'forms.help.avatar',
+    'accept'               => 'image/jpeg,image/png,image/webp',
+    'show_preview'         => true,
+    'show_remove_image'    => true,
+    'remove_image_label'   => 'forms.labels.removeImage',
+    'required_image_error' => 'forms.not_blank',
+])]
+public ?UserAvatar $avatar = null;
+```
+
 See [forms.md](forms.md) for the full `ImageType` options reference.
 
 ## Template

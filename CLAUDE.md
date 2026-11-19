@@ -90,7 +90,10 @@ For invokable controllers, prefer placing `#[Route]`, `#[Breadcrumb]`, and `#[Ti
   impersonator) user identifier to the Sentry scope. Always active when a Sentry hub is registered — no
   configuration option to disable it. See `docs/sentry-user-context.md`.
 - **Forms** (`src/Form/`): custom types (`ImageType`, `FileType`, `BelgiumPostCodeType`) and extensions wiring date
-  pickers, toggle-password, and collection UI. See `docs/forms.md`.
+  pickers, toggle-password, and collection UI. Since Symfony 8.2 a DTO-backed form that is only a field list can be
+  declared with `#[AsFormType]` / `#[FormField]` on the DTO instead of an `AbstractType` class; the bundle's custom
+  types and extensions work in both styles. Keep a form class for events, transformers, or service-valued options.
+  See `docs/forms.md`.
 - **DBAL types** (`src/DBALType/`): `EncryptedDBALType`, `AbstractImageType`, `AbstractFileType` for custom column
   handling. See `docs/encrypted.md`, `docs/uploading-files.md`, `docs/uploading-images.md`.
 - **Twig** (`src/Twig/`): `FrameworkExtension`, `PaginatorExtension`, `ContentExtension`; `PageTitle` is available as a

@@ -24,6 +24,26 @@ $builder->add('date', DateType::class, [
 ]);
 ```
 
+Or, on a DTO:
+
+```php
+<?php
+
+use Symfony\Component\Form\Attribute\FormField;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+
+#[FormField(DateType::class, [
+    'minimum_date' => '01/01/2026',
+    'maximum_date' => '31/12/2026',
+])]
+public ?\DateTimeInterface $date = null;
+```
+
+Attribute option values have to be compilable, so a `'data'` default and a `minimum_date` computed from
+`\DateTimeImmutable` cannot go in the attribute. Give the property a default value instead of using
+`'data'`, and write the bounds as literal `d/m/Y` strings — or keep the field in a form class when the
+bounds are only known at runtime.
+
 ## Options
 
 The bundle adds two convenience options to the date/time types:

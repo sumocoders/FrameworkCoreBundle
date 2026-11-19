@@ -252,6 +252,52 @@ final class ItemType extends AbstractType
 }
 ```
 
+### Without a form class
+
+When the form type holds nothing but a field list, the fields can be declared on the DTO itself with
+`#[AsFormType]` and `#[FormField]`, and `ItemType` disappears:
+
+```php
+<?php
+
+namespace App\DataTransferObject;
+
+use Symfony\Component\Form\Attribute\AsFormType;
+use Symfony\Component\Form\Attribute\FormField;
+use Symfony\Component\Validator\Constraints\NotBlank;
+
+#[AsFormType]
+abstract class ItemDataTransferObject
+{
+    #[FormField]
+    #[NotBlank]
+    public string $name = '';
+}
+```
+
+The data class is then the form type name, so the controllers pass it to `createForm()` instead of
+`ItemType::class`:
+
+```php
+$form = $this->createForm(ItemDataTransferObject::class, new CreateItemMessage());
+$form = $this->createForm(ItemDataTransferObject::class, new UpdateItemMessage($item));
+```
+
+Two details that make this work with the message classes:
+
+- The DTO being abstract is fine. Abstract data classes are registered as form types on purpose, so
+  that concrete subclasses can inherit their fields. Nothing instantiates `ItemDataTransferObject`
+  here either — the controller always passes a message instance.
+- `CreateItemMessage` and `UpdateItemMessage` need no attribute of their own. They extend the DTO, and
+  `data_class` is satisfied by any instance of it. Add `#[AsFormType]` to a message class only when it
+  should have extra fields of its own; it then inherits the parent's fields and adds to them.
+
+Keep `ItemType` as soon as the form needs more than a field list: form events, a data transformer, a
+field computed at runtime, or an option whose value is a service. Option values on `#[FormField]` are
+compiled into the container and must be scalars, arrays, enums, `null`, or a
+`Symfony\Component\DependencyInjection\Reference`. See
+[forms.md](forms.md#declaring-fields-with-attributes).
+
 ### Enum fields
 
 To show a backed enum's cases as translated labels, implement `TranslatableInterface` on the enum:

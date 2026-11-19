@@ -32,7 +32,7 @@ Requirements:
 | [forms.md](forms.md)                               | Custom form types (`ImageType`, `FileType`, `BelgiumPostCodeType`) and type extensions |
 | [uploading-files.md](uploading-files.md)           | `AbstractFile` + DBAL type, file upload value objects wired to Doctrine                |
 | [uploading-images.md](uploading-images.md)         | `AbstractImage` + DBAL type, image upload value objects with fallback support          |
-| [encrypted.md](encrypted.md)                       | `EncryptedDBALType`, transparent field-level encryption via libsodium                  |
+| [encrypted.md](encrypted.md)                       | `EncryptedDBALType` via libsodium, and `symfony/key-management` with blind indexes     |
 | [mails.md](mails.md)                               | Bundle email base template and async dispatch pattern                                  |
 | [twig-extensions.md](twig-extensions.md)           | `theme`/`sidebarIsOpen`/`content`/`asset_content` Twig functions and the `ucfirst` filter |
 | [using-date-pickers.md](using-date-pickers.md)     | Date/time picker form type extensions                                                  |
